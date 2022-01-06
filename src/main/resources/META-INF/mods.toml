@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+license = "GPLv3"
+issueTrackerURL = "https://github.com/DavidQF555/Multiverse/issues"
+[[mods]]
+modId = "multiverse"
+version = "${file.jarVersion}"
+displayName = "Multiverse"
+displayURL = "https://github.com/DavidQF555/Multiverse"
+#logoFile = "logo.png"
+authors = "DavidQF555"
+description = 'This mod adds a multiverse.'
+[[dependencies.multiverse]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.multiverse]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,1.17)"
+ordering = "NONE"
+side = "BOTH"
