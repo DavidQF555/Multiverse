@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse;
+package io.github.davidqf555.minecraft.multiverse.common;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,12 +14,15 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
+    public final ForgeConfigSpec.ConfigValue<Integer> maxDimensions;
     public final ForgeConfigSpec.ConfigValue<Double> additionalBiomeTypeChance;
     public final ForgeConfigSpec.ConfigValue<Double> fixedTimeChance;
     public final ForgeConfigSpec.ConfigValue<Boolean> inverse;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
+        maxDimensions = builder.comment("This is the max number of Multiverse dimensions")
+                .defineInRange("Max Dimensions", 25, 1, Integer.MAX_VALUE);
         additionalBiomeTypeChance = builder.comment("Each additional biome type has this chance to be in new Multiverse dimensions. ")
                 .defineInRange("Additional Biome Type Chance", 0.1, 0, 1);
         fixedTimeChance = builder.comment("This is the chance that a Multiverse dimension has a random, fixed time. ")

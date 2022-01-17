@@ -1,6 +1,6 @@
-package io.github.davidqf555.minecraft.multiverse.packets;
+package io.github.davidqf555.minecraft.multiverse.common.packets;
 
-import io.github.davidqf555.minecraft.multiverse.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;

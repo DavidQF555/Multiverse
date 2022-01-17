@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse;
+package io.github.davidqf555.minecraft.multiverse.common;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;

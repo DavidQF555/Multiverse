@@ -1,11 +1,11 @@
-package io.github.davidqf555.minecraft.multiverse.world;
+package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Lifecycle;
-import io.github.davidqf555.minecraft.multiverse.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
@@ -50,24 +50,30 @@ public final class DimensionHelper {
         if (index <= 0) {
             return server.getLevel(World.OVERWORLD);
         }
+        RegistryKey<World> world = getRegistryKey(index);
         Map<RegistryKey<World>, ServerWorld> map = server.forgeGetWorldMap();
-        RegistryKey<World> worldKey = createWorldKey(index);
-        if (map.containsKey(worldKey)) {
-            return map.get(worldKey);
-        } else {
-            return createAndRegisterWorldAndDimension(server, map, worldKey, index);
+        if (map.containsKey(world)) {
+            return map.get(world);
         }
+        return createAndRegisterWorldAndDimension(server, map, world, getIndex(world));
     }
 
-    private static RegistryKey<World> createWorldKey(int level) {
-        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, level + ""));
+    private static RegistryKey<World> getRegistryKey(int index) {
+        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, index + ""));
+    }
+
+    public static int getIndex(RegistryKey<World> world) {
+        if (world.location().getNamespace().equals(Multiverse.MOD_ID)) {
+            return Integer.parseInt(world.location().getPath());
+        }
+        return 0;
     }
 
     @SuppressWarnings("deprecation")
     private static ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, Map<RegistryKey<World>, ServerWorld> map, RegistryKey<World> worldKey, int index) {
         ServerWorld overworld = server.getLevel(World.OVERWORLD);
         RegistryKey<Dimension> dimensionKey = RegistryKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
-        Dimension dimension = createFloorDimension(server, index);
+        Dimension dimension = createDimension(server, index);
         IServerConfiguration serverConfig = server.getWorldData();
         DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
         dimensionGeneratorSettings.dimensions().register(dimensionKey, dimension, Lifecycle.experimental());
@@ -81,14 +87,13 @@ public final class DimensionHelper {
         return newWorld;
     }
 
-    private static Dimension createFloorDimension(MinecraftServer server, int level) {
+    private static Dimension createDimension(MinecraftServer server, int index) {
         ServerWorld overworld = server.getLevel(World.OVERWORLD);
-        long seed = overworld.getSeed() + level - 1;
+        long seed = overworld.getSeed() + index;
         SharedSeedRandom random = new SharedSeedRandom(seed);
         boolean ceiling = random.nextBoolean();
         boolean floor = random.nextBoolean() && (!ceiling || ServerConfigs.INSTANCE.inverse.get());
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
-        ResourceLocation effect = randomEffect(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
         BiomeProvider provider = new NetherBiomeProvider(seed, randomBiomes(random).stream().map(key -> (Supplier<Biome>) () -> lookup.getOrThrow(key)).map(sup -> {
             Biome biome = sup.get();
@@ -96,7 +101,9 @@ public final class DimensionHelper {
         }).collect(Collectors.toList()), Optional.empty());
         DimensionSettings settings = createSettings(ceiling, floor);
         ChunkGenerator generator = new MultiverseChunkGenerator(provider, seed, () -> settings);
-        DimensionType type = createDimensionType(ceiling, randomTime(random), effect, lighting);
+        OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
+        ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
+        DimensionType type = createDimensionType(ceiling, time, effect, lighting);
         return new Dimension(() -> type, generator);
     }
 
@@ -219,14 +226,14 @@ public final class DimensionHelper {
         return OptionalLong.empty();
     }
 
-    private static ResourceLocation randomEffect(Random random) {
-        int rand = random.nextInt(3);
+    private static ResourceLocation randomEffect(boolean night, Random random) {
+        int rand = random.nextInt(night ? 3 : 2);
         if (rand == 0) {
-            return DimensionType.END_EFFECTS;
+            return DimensionType.OVERWORLD_EFFECTS;
         } else if (rand == 1) {
             return DimensionType.NETHER_EFFECTS;
         } else {
-            return DimensionType.OVERWORLD_EFFECTS;
+            return DimensionType.END_EFFECTS;
         }
     }
 

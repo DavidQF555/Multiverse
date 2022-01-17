@@ -1,9 +1,9 @@
-package io.github.davidqf555.minecraft.multiverse.world;
+package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
