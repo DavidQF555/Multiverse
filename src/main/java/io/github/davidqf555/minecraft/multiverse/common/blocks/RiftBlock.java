@@ -42,7 +42,7 @@ public class RiftBlock extends ContainerBlock {
         TileEntity tile = world.getBlockEntity(pos);
         if (entity.canChangeDimensions() && world instanceof ServerWorld && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle()) {
             if (!entity.isOnPortalCooldown()) {
-                ServerWorld target = DimensionHelper.getOrCreateWorld(((ServerWorld) world).getServer(), ((RiftTileEntity) tile).getWorld());
+                ServerWorld target = DimensionHelper.getOrCreateWorld(((ServerWorld) world).getServer(), ((RiftTileEntity) tile).getTarget());
                 entity.changeDimension(target, (RiftTileEntity) tile);
             }
             entity.setPortalCooldown();

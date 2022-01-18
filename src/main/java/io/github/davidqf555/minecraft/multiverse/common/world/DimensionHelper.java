@@ -92,7 +92,7 @@ public final class DimensionHelper {
         long seed = overworld.getSeed() + index;
         SharedSeedRandom random = new SharedSeedRandom(seed);
         boolean ceiling = random.nextBoolean();
-        boolean floor = random.nextBoolean() && (!ceiling || ServerConfigs.INSTANCE.inverse.get());
+        boolean floor = random.nextBoolean() || ceiling && !ServerConfigs.INSTANCE.inverse.get();
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
         BiomeProvider provider = new NetherBiomeProvider(seed, randomBiomes(random).stream().map(key -> (Supplier<Biome>) () -> lookup.getOrThrow(key)).map(sup -> {

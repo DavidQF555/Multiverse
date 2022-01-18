@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -13,29 +14,25 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import java.util.Random;
 
-public class RiftFeature extends Feature<NoFeatureConfig> {
+public class RiftFeature extends Feature<RiftConfig> {
 
-    public static final ConfiguredFeature<NoFeatureConfig, RiftFeature> CONFIG = new ConfiguredFeature<>(new RiftFeature(), NoFeatureConfig.INSTANCE);
+    public static final RiftFeature INSTANCE = new RiftFeature();
+    public static final ConfiguredFeature<?, ?> CONFIG = new ConfiguredFeature<>(INSTANCE, RiftConfig.UNKNOWN).decorated(RiftPlacement.CONFIG).chance(ServerConfigs.INSTANCE.riftChance.get());
 
     public RiftFeature() {
-        super(NoFeatureConfig.CODEC);
+        super(RiftConfig.CODEC);
     }
 
     @Override
-    public boolean place(ISeedReader reader, ChunkGenerator gen, Random rand, BlockPos pos, NoFeatureConfig config) {
-        if (rand.nextDouble() < 0.05) {
-            int index = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get() + 1);
-            createRift(reader, rand, pos.offset(0, rand.nextInt(reader.getHeight()), 0), index);
-            return true;
-        }
-        return false;
-    }
-
-    public void createRift(ISeedReader reader, Random rand, BlockPos center, int target) {
+    public boolean place(ISeedReader reader, ChunkGenerator gen, Random rand, BlockPos center, RiftConfig config) {
+        int target = config.getTarget().orElseGet(() -> {
+            int current = DimensionHelper.getIndex(reader.getLevel().dimension());
+            int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+            return world < current ? world : world + 1;
+        });
         BlockState rift = RegistryHandler.RIFT_BLOCK.get().defaultBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
         int totalWidth = getWidth(rand);
@@ -53,14 +50,16 @@ public class RiftFeature extends Feature<NoFeatureConfig> {
                     setBlock(reader, pos, rift);
                     TileEntity tile = reader.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
-                        ((RiftTileEntity) tile).setWorld(target);
+                        ((RiftTileEntity) tile).setTarget(target);
+                        tile.setChanged();
                     }
                 }
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         for (int k = -1; k <= 1; k++) {
                             BlockPos replace = pos.offset(i, j, k);
-                            if (canReplace(reader, replace) && !reader.getBlockState(replace).equals(rift)) {
+                            BlockState state = reader.getBlockState(replace);
+                            if (canReplace(reader, replace) && !state.equals(rift) && state.canOcclude()) {
                                 setBlock(reader, replace, air);
                             }
                         }
@@ -68,6 +67,7 @@ public class RiftFeature extends Feature<NoFeatureConfig> {
                 }
             }
         }
+        return true;
     }
 
     private boolean canReplace(ISeedReader reader, BlockPos pos) {

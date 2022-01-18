@@ -45,6 +45,6 @@ public final class RegistryHandler {
 
     @SubscribeEvent
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
-        event.getRegistry().register(RiftFeature.CONFIG.feature().setRegistryName(RIFT_FEATURE.getId()));
+        event.getRegistry().register(RiftFeature.INSTANCE.setRegistryName(RIFT_FEATURE.getId()));
     }
 }

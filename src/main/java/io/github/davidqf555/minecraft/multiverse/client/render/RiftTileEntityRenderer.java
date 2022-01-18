@@ -44,7 +44,7 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
 
     @Override
     public void render(RiftTileEntity entity, float partial, MatrixStack matrixStack, IRenderTypeBuffer buffer, int overlay, int packedLight) {
-        int world = entity.getWorld();
+        int world = entity.getTarget();
         RANDOM.setSeed(entity.getLevel().getBiomeManager().biomeZoomSeed + world);
         double distSq = entity.getBlockPos().distSqr(renderer.camera.getPosition(), true);
         int layers = getLayers(distSq);

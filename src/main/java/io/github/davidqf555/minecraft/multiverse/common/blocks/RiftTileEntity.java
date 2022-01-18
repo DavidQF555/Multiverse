@@ -1,6 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
@@ -25,18 +27,18 @@ import java.util.function.Function;
 public class RiftTileEntity extends TileEntity implements ITeleporter {
 
     private static final int RANGE = 64;
-    private int world;
+    private int target;
 
     public RiftTileEntity() {
         super(RegistryHandler.RIFT_TILE_ENTITY_TYPE.get());
     }
 
-    public int getWorld() {
-        return world;
+    public int getTarget() {
+        return target;
     }
 
-    public void setWorld(int world) {
-        this.world = world;
+    public void setTarget(int target) {
+        this.target = target;
     }
 
     @Override
@@ -47,15 +49,15 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
     @Override
     public CompoundNBT save(CompoundNBT nbt) {
         super.save(nbt);
-        nbt.putInt("World", getWorld());
+        nbt.putInt("Target", getTarget());
         return nbt;
     }
 
     @Override
     public void load(BlockState state, CompoundNBT nbt) {
         super.load(state, nbt);
-        if (nbt.contains("World", Constants.NBT.TAG_INT)) {
-            setWorld(nbt.getInt("World"));
+        if (nbt.contains("Target", Constants.NBT.TAG_INT)) {
+            setTarget(nbt.getInt("Target"));
         }
     }
 
@@ -68,18 +70,18 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
         BlockPos scaled = new BlockPos(rift.getX() * scale, rift.getY(), rift.getZ() * scale);
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = new BlockPos(MathHelper.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), MathHelper.clamp(scaled.getY(), 1, target.logicalHeight()), MathHelper.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
-        return new PortalInfo(Vector3d.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, RANGE)), entity.getDeltaMovement(), entity.yRot, entity.xRot);
+        int current = DimensionHelper.getIndex(entity.level.dimension());
+        return new PortalInfo(Vector3d.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, RANGE, current)), entity.getDeltaMovement(), entity.yRot, entity.xRot);
     }
 
-    private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range) {
+    private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range, int current) {
         PointOfInterestManager manager = dest.getPoiManager();
         manager.ensureLoadedAndValid(dest, center, range);
-        int current = getWorld();
         return manager.getInSquare(type -> type == RegistryHandler.RIFT_POI_TYPE.get(), center, range, PointOfInterestManager.Status.ANY).map(PointOfInterest::getPos).filter(block -> {
             TileEntity tile = dest.getBlockEntity(block);
-            return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getWorld() == current;
+            return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
         }).min(Comparator.comparingDouble(center::distSqr)).orElseGet(() -> {
-            RegistryHandler.RIFT_FEATURE.get().createRift(dest, rand, center, current);
+            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().generator, rand, center, RiftConfig.of(current));
             return center;
         });
     }

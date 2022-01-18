@@ -18,17 +18,20 @@ public class ServerConfigs {
     public final ForgeConfigSpec.ConfigValue<Double> additionalBiomeTypeChance;
     public final ForgeConfigSpec.ConfigValue<Double> fixedTimeChance;
     public final ForgeConfigSpec.ConfigValue<Boolean> inverse;
+    public final ForgeConfigSpec.ConfigValue<Integer> riftChance;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
         maxDimensions = builder.comment("This is the max number of Multiverse dimensions")
-                .defineInRange("Max Dimensions", 25, 1, Integer.MAX_VALUE);
+                .defineInRange("maxDimensions", 25, 1, Integer.MAX_VALUE);
         additionalBiomeTypeChance = builder.comment("Each additional biome type has this chance to be in new Multiverse dimensions. ")
-                .defineInRange("Additional Biome Type Chance", 0.1, 0, 1);
+                .defineInRange("biomeTypeChance", 0.1, 0, 1);
         fixedTimeChance = builder.comment("This is the chance that a Multiverse dimension has a random, fixed time. ")
-                .defineInRange("Fixed Time Chance", 0.25, 0, 1);
+                .defineInRange("fixedTimeChance", 0.25, 0, 1);
         inverse = builder.comment("This is whether Multiverse dimensions can generate worlds with a ceiling but no floor. Defaulted to false because it is extremely difficult and painful to navigate in these worlds. ")
-                .define("Inverse", false);
+                .define("inverse", false);
+        riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
+                .defineInRange("riftChance", 20, 1, Integer.MAX_VALUE);
         builder.pop();
     }
 }
