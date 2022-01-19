@@ -22,7 +22,7 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_background.png");
     private static final ResourceLocation PARTICLES = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_particles.png");
-    private static final List<RenderType> LAYERS = IntStream.range(1, 17).mapToObj(RiftTileEntityRenderer::createRenderType).collect(Collectors.toList());
+    private static final List<RenderType> LAYERS = IntStream.range(1, 16).mapToObj(RiftTileEntityRenderer::createRenderType).collect(Collectors.toList());
     private static final Random RANDOM = new Random(0);
 
     public RiftTileEntityRenderer(TileEntityRendererDispatcher dispatcher) {
@@ -39,7 +39,7 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
             transparency = RenderState.ADDITIVE_TRANSPARENCY;
             texture = new RenderState.TextureState(PARTICLES, false, false);
         }
-        return RenderType.create("rift", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true, RenderType.State.builder().setTransparencyState(transparency).setTextureState(texture).setTexturingState(new RenderState.PortalTexturingState(layer)).setFogState(RenderState.BLACK_FOG).createCompositeState(false));
+        return RenderType.create("rift", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true, RenderType.State.builder().setTransparencyState(transparency).setTextureState(texture).setTexturingState(new RenderState.PortalTexturingState(layer + 8)).setFogState(RenderState.BLACK_FOG).createCompositeState(false));
     }
 
     @Override
@@ -53,15 +53,18 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
         float blue = RANDOM.nextFloat();
         Matrix4f pose = matrixStack.last().pose();
         renderCube(pose, buffer.getBuffer(LAYERS.get(0)), red, green, blue);
+        float pRed = RANDOM.nextFloat();
+        float pGreen = RANDOM.nextFloat();
+        float pBlue = RANDOM.nextFloat();
         for (int layer = 1; layer < layers; layer++) {
-            renderCubeOffsetColors(pose, buffer.getBuffer(LAYERS.get(layer)), red, green, blue, 1f / (LAYERS.size() - layer + 1));
+            renderCubeOffsetColors(pose, buffer.getBuffer(LAYERS.get(layer)), pRed, pGreen, pBlue, 2f / (LAYERS.size() - layer + 1));
         }
     }
 
-    private void renderCubeOffsetColors(Matrix4f matrix, IVertexBuilder builder, float oRed, float oGreen, float oBlue, float color) {
-        float red = RANDOM.nextFloat() * color + oRed;
-        float green = RANDOM.nextFloat() * color + oGreen;
-        float blue = RANDOM.nextFloat() * color + oBlue;
+    private void renderCubeOffsetColors(Matrix4f matrix, IVertexBuilder builder, float oRed, float oGreen, float oBlue, float factor) {
+        float red = RANDOM.nextFloat() * factor + oRed;
+        float green = RANDOM.nextFloat() * factor + oGreen;
+        float blue = RANDOM.nextFloat() * factor + oBlue;
         renderCube(matrix, builder, red, blue, green);
     }
 
@@ -83,23 +86,23 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
 
     protected int getLayers(double distSq) {
         if (distSq > 36864) {
-            return 2;
+            return 1;
         } else if (distSq > 25600) {
-            return 4;
+            return 3;
         } else if (distSq > 16384) {
-            return 6;
+            return 5;
         } else if (distSq > 9216) {
-            return 8;
+            return 7;
         } else if (distSq > 4096) {
-            return 10;
+            return 9;
         } else if (distSq > 1024) {
-            return 12;
+            return 11;
         } else if (distSq > 576) {
-            return 14;
+            return 13;
         } else if (distSq > 256) {
-            return 15;
+            return 14;
         } else {
-            return 16;
+            return 15;
         }
     }
 
