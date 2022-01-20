@@ -21,6 +21,7 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -71,17 +72,18 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = new BlockPos(MathHelper.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), MathHelper.clamp(scaled.getY(), 1, target.logicalHeight()), MathHelper.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
         int current = DimensionHelper.getIndex(entity.level.dimension());
-        return new PortalInfo(Vector3d.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, RANGE, current)), entity.getDeltaMovement(), entity.yRot, entity.xRot);
+        boolean temporary = entity.level.getBlockState(rift).getValue(RiftBlock.TEMPORARY);
+        return new PortalInfo(Vector3d.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, RANGE, current, temporary)), entity.getDeltaMovement(), entity.yRot, entity.xRot);
     }
 
-    private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range, int current) {
+    private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range, int current, boolean temporary) {
         PointOfInterestManager manager = dest.getPoiManager();
         manager.ensureLoadedAndValid(dest, center, range);
         return manager.getInSquare(type -> type == RegistryHandler.RIFT_POI_TYPE.get(), center, range, PointOfInterestManager.Status.ANY).map(PointOfInterest::getPos).filter(block -> {
             TileEntity tile = dest.getBlockEntity(block);
             return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
         }).min(Comparator.comparingDouble(center::distSqr)).orElseGet(() -> {
-            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().generator, rand, center, RiftConfig.of(current));
+            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), temporary));
             return center;
         });
     }

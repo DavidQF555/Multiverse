@@ -2,8 +2,10 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.items.DimensionSlasherItem;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftFeature;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -23,7 +25,7 @@ public final class RegistryHandler {
     public static final RegistryObject<TileEntityType<RiftTileEntity>> RIFT_TILE_ENTITY_TYPE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.TILE_ENTITIES);
     public static final RegistryObject<PointOfInterestType> RIFT_POI_TYPE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.POI_TYPES);
     public static final RegistryObject<RiftFeature> RIFT_FEATURE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.FEATURES);
-
+    public static final RegistryObject<DimensionSlasherItem> DIMENSION_SLASHER_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "dimension_slasher"), ForgeRegistries.ITEMS);
 
     private RegistryHandler() {
     }
@@ -46,5 +48,10 @@ public final class RegistryHandler {
     @SubscribeEvent
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
         event.getRegistry().register(RiftFeature.INSTANCE.setRegistryName(RIFT_FEATURE.getId()));
+    }
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(new DimensionSlasherItem(1, 1).setRegistryName(DIMENSION_SLASHER_ITEM.getId()));
     }
 }
