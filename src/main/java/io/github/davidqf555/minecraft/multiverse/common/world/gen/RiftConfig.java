@@ -26,14 +26,14 @@ public class RiftConfig implements IFeatureConfig {
             FLOAT_BOUNDS_CODEC.fieldOf("pitch").forGetter(config -> config.pitch),
             FLOAT_BOUNDS_CODEC.fieldOf("roll").forGetter(config -> config.roll),
             Codec.BOOL.fieldOf("temporary").forGetter(config -> config.temporary),
-            Codec.BOOL.fieldOf("remove_near").forGetter(config -> config.removeNearby)
+            Codec.BOOL.fieldOf("natural").forGetter(config -> config.natural)
     ).apply(builder, builder.stable(RiftConfig::new)));
     private final Optional<Integer> target;
     private final MinMaxBounds.IntBound width, height;
     private final MinMaxBounds.FloatBound yaw, pitch, roll;
-    private final boolean temporary, removeNearby;
+    private final boolean temporary, natural;
 
-    public RiftConfig(Optional<Integer> target, MinMaxBounds.IntBound width, MinMaxBounds.IntBound height, MinMaxBounds.FloatBound yaw, MinMaxBounds.FloatBound pitch, MinMaxBounds.FloatBound roll, boolean temporary, boolean removeNearby) {
+    public RiftConfig(Optional<Integer> target, MinMaxBounds.IntBound width, MinMaxBounds.IntBound height, MinMaxBounds.FloatBound yaw, MinMaxBounds.FloatBound pitch, MinMaxBounds.FloatBound roll, boolean temporary, boolean natural) {
         this.target = target;
         this.width = width;
         this.height = height;
@@ -41,11 +41,11 @@ public class RiftConfig implements IFeatureConfig {
         this.pitch = pitch;
         this.roll = roll;
         this.temporary = temporary;
-        this.removeNearby = removeNearby;
+        this.natural = natural;
     }
 
-    public static RiftConfig of(Optional<Integer> target, boolean temporary) {
-        return new RiftConfig(target, new MinMaxBounds.IntBound(1, 4), new MinMaxBounds.IntBound(6, 10), new MinMaxBounds.FloatBound(0f, 180f), new MinMaxBounds.FloatBound(0f, 180f), new MinMaxBounds.FloatBound(0f, 180f), temporary, true);
+    public static RiftConfig of(Optional<Integer> target, boolean temporary, boolean natural) {
+        return new RiftConfig(target, new MinMaxBounds.IntBound(1, 4), new MinMaxBounds.IntBound(6, 10), new MinMaxBounds.FloatBound(0f, 180f), new MinMaxBounds.FloatBound(0f, 180f), new MinMaxBounds.FloatBound(0f, 180f), temporary, natural);
     }
 
     public Optional<Integer> getTarget() {
@@ -56,8 +56,8 @@ public class RiftConfig implements IFeatureConfig {
         return temporary;
     }
 
-    public boolean shouldRemoveNearby() {
-        return removeNearby;
+    public boolean isNatural() {
+        return natural;
     }
 
     public int getWidth(Random random) {

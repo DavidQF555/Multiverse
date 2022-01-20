@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -21,7 +22,7 @@ import java.util.Random;
 public class RiftFeature extends Feature<RiftConfig> {
 
     public static final RiftFeature INSTANCE = new RiftFeature();
-    public static final ConfiguredFeature<?, ?> CONFIG = new ConfiguredFeature<>(INSTANCE, RiftConfig.of(Optional.empty(), false)).decorated(RiftPlacement.CONFIG).chance(ServerConfigs.INSTANCE.riftChance.get());
+    public static final ConfiguredFeature<?, ?> CONFIG = new ConfiguredFeature<>(INSTANCE, RiftConfig.of(Optional.empty(), false, true)).decorated(RiftPlacement.CONFIG).chance(ServerConfigs.INSTANCE.riftChance.get());
 
     public RiftFeature() {
         super(RiftConfig.CODEC);
@@ -34,11 +35,10 @@ public class RiftFeature extends Feature<RiftConfig> {
             int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
             return world < current ? world : world + 1;
         });
-        BlockState rift = RegistryHandler.RIFT_BLOCK.get().defaultBlockState();
-        if (config.isTemporary()) {
-            rift = rift.setValue(RiftBlock.TEMPORARY, true);
-        }
-        boolean remove = config.shouldRemoveNearby();
+        boolean temporary = config.isTemporary();
+        BlockState rift = RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary);
+        BlockState air = Blocks.AIR.defaultBlockState();
+        boolean natural = config.isNatural();
         int totalWidth = config.getWidth(rand);
         int totalHeight = config.getHeight(rand);
         float yaw = config.getYaw(rand) * (float) Math.PI / 180;
@@ -51,7 +51,9 @@ public class RiftFeature extends Feature<RiftConfig> {
                 Vector3d vec = new Vector3d(x + 0.5, y + 0.5, 0.5).xRot(pitch).yRot(yaw).zRot(roll);
                 BlockPos pos = new BlockPos(centerVec.add(vec.x(), vec.y(), vec.z()));
                 if (canReplace(reader, pos)) {
-                    reader.destroyBlock(pos, true);
+                    if (!natural) {
+                        reader.destroyBlock(pos, true);
+                    }
                     setBlock(reader, pos, rift);
                     TileEntity tile = reader.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
@@ -59,14 +61,18 @@ public class RiftFeature extends Feature<RiftConfig> {
                         tile.setChanged();
                     }
                 }
-                if (remove) {
+                if (!temporary) {
                     for (int i = -1; i <= 1; i++) {
                         for (int j = -1; j <= 1; j++) {
                             for (int k = -1; k <= 1; k++) {
                                 BlockPos replace = pos.offset(i, j, k);
                                 BlockState state = reader.getBlockState(replace);
                                 if (canReplace(reader, replace) && !state.equals(rift) && state.canOcclude()) {
-                                    reader.destroyBlock(pos, true);
+                                    if (natural) {
+                                        setBlock(reader, replace, air);
+                                    } else {
+                                        reader.destroyBlock(pos, true);
+                                    }
                                 }
                             }
                         }

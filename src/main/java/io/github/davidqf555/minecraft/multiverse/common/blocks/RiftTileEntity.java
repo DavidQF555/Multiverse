@@ -83,7 +83,7 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
             TileEntity tile = dest.getBlockEntity(block);
             return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
         }).min(Comparator.comparingDouble(center::distSqr)).orElseGet(() -> {
-            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), temporary));
+            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), temporary, false));
             return center;
         });
     }
