@@ -23,17 +23,16 @@ public class DimensionSlasherItem extends SwordItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int count) {
+    public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int remaining) {
         if (world instanceof ServerWorld && entity instanceof PlayerEntity) {
             CooldownTracker cooldowns = ((PlayerEntity) entity).getCooldowns();
             if (!cooldowns.isOnCooldown(this)) {
-                //rotations need work
-                int time = getUseDuration(stack) - count;
-                int width = 10;
-                int height = 3;
+                int count = Math.min(600, getUseDuration(stack) - remaining);
+                int width = 6 + count / 30;
+                int height = 3 + count / 40;
                 Vector3d look = entity.getLookAngle();
                 BlockPos center = new BlockPos(entity.getEyePosition(1).add(look.scale(width + 1.5)));
-                RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), width, height, 0, -entity.getYHeadRot(), -entity.getViewXRot(1) + 90, true, false));
+                RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1), true, false));
                 cooldowns.addCooldown(this, ServerConfigs.INSTANCE.dimensionSlasherCooldown.get());
             }
         }
@@ -54,6 +53,5 @@ public class DimensionSlasherItem extends SwordItem {
         player.startUsingItem(hand);
         return ActionResult.consume(player.getItemInHand(hand));
     }
-
 
 }

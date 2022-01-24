@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -35,7 +36,8 @@ public class RiftFeature extends Feature<RiftConfig> {
             int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
             return world < current ? world : world + 1;
         });
-        BlockState rift = RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, config.isTemporary());
+        Block block = RegistryHandler.RIFT_BLOCK.get();
+        BlockState rift = block.defaultBlockState().setValue(RiftBlock.TEMPORARY, config.isTemporary());
         BlockState air = Blocks.AIR.defaultBlockState();
         boolean natural = config.isNatural();
         int totalWidth = config.getWidth(rand);
@@ -65,11 +67,11 @@ public class RiftFeature extends Feature<RiftConfig> {
                         for (int k = -1; k <= 1; k++) {
                             BlockPos replace = pos.offset(i, j, k);
                             BlockState state = reader.getBlockState(replace);
-                            if (canReplace(reader, replace) && !state.equals(rift) && state.canOcclude()) {
+                            if (canReplace(reader, replace) && !state.getBlock().equals(block)) {
                                 if (natural) {
                                     setBlock(reader, replace, air);
                                 } else {
-                                    reader.destroyBlock(pos, true);
+                                    reader.destroyBlock(replace, true);
                                 }
                             }
                         }
