@@ -37,7 +37,7 @@ public class RiftConfig implements IFeatureConfig {
     }
 
     public static RiftConfig of(Optional<Integer> target, boolean temporary, boolean natural) {
-        return new RiftConfig(target, Pair.of(4, 4), Pair.of(10, 10), Pair.of(0f, 0f), Pair.of(45f, 45f), Pair.of(45f, 45f), temporary, natural);
+        return new RiftConfig(target, Pair.of(4, 4), Pair.of(10, 10), Pair.of(0f, (float) Math.PI), Pair.of(0f, (float) Math.PI), Pair.of(0f, (float) Math.PI), temporary, natural);
     }
 
     public static RiftConfig fixed(Optional<Integer> target, int width, int height, float xRot, float yRot, float zRot, boolean temporary, boolean natural) {
