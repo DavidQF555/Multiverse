@@ -1,15 +1,15 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftFeature;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -18,36 +18,42 @@ import java.util.Optional;
 
 public class DimensionSlasherItem extends SwordItem {
 
-    private static final int COOLDOWN = 10;
-
     public DimensionSlasherItem(int attack, float speed) {
         super(ItemTier.IRON, attack, speed, new Properties().rarity(Rarity.EPIC).tab(ItemGroup.TAB_COMBAT));
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (world instanceof ServerWorld) {
-            CooldownTracker cooldowns = player.getCooldowns();
-            if (cooldowns.isOnCooldown(this)) {
-                return ActionResult.pass(stack);
+    public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int count) {
+        if (world instanceof ServerWorld && entity instanceof PlayerEntity) {
+            CooldownTracker cooldowns = ((PlayerEntity) entity).getCooldowns();
+            if (!cooldowns.isOnCooldown(this)) {
+                //rotations need work
+                int time = getUseDuration(stack) - count;
+                int width = 10;
+                int height = 3;
+                Vector3d look = entity.getLookAngle();
+                BlockPos center = new BlockPos(entity.getEyePosition(1).add(look.scale(width + 1.5)));
+                RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), width, height, 0, -entity.getYHeadRot(), -entity.getViewXRot(1) + 90, true, false));
+                cooldowns.addCooldown(this, ServerConfigs.INSTANCE.dimensionSlasherCooldown.get());
             }
-            Vector3d eye = player.getEyePosition(1);
-            BlockPos center = world.clip(new RayTraceContext(eye, eye.add(player.getLookAngle().scale(4)), RayTraceContext.BlockMode.VISUAL, RayTraceContext.FluidMode.NONE, null)).getBlockPos();
-            RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), player.getRandom(), center, createRiftConfig(player));
-            cooldowns.addCooldown(this, COOLDOWN);
         }
-        return ActionResult.success(stack);
     }
 
-    protected RiftConfig createRiftConfig(PlayerEntity player) {
-        MinMaxBounds.IntBound width = MinMaxBounds.IntBound.exactly(6);
-        MinMaxBounds.IntBound height = MinMaxBounds.IntBound.exactly(1);
-        float yRot = player.getYHeadRot();
-        MinMaxBounds.FloatBound yaw = new MinMaxBounds.FloatBound(yRot, yRot);
-        MinMaxBounds.FloatBound pitch = new MinMaxBounds.FloatBound(player.xRot, player.xRot);
-        MinMaxBounds.FloatBound roll = new MinMaxBounds.FloatBound(0f, 0f);
-        return new RiftConfig(Optional.empty(), width, height, yaw, pitch, roll, true, false);
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
     }
+
+    @Override
+    public UseAction getUseAnimation(ItemStack stack) {
+        return UseAction.BOW;
+    }
+
+    @Override
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        player.startUsingItem(hand);
+        return ActionResult.consume(player.getItemInHand(hand));
+    }
+
 
 }

@@ -19,6 +19,7 @@ public class ServerConfigs {
     public final ForgeConfigSpec.ConfigValue<Double> fixedTimeChance;
     public final ForgeConfigSpec.ConfigValue<Boolean> inverse;
     public final ForgeConfigSpec.ConfigValue<Integer> riftChance;
+    public final ForgeConfigSpec.ConfigValue<Integer> dimensionSlasherCooldown;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
@@ -32,6 +33,8 @@ public class ServerConfigs {
                 .define("inverse", false);
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
                 .defineInRange("riftChance", 20, 1, Integer.MAX_VALUE);
+        dimensionSlasherCooldown = builder.comment("This is the cooldown of the dimension slasher item in ticks. ")
+                .defineInRange("dimensionSlasherCooldown", 500, 0, Integer.MAX_VALUE);
         builder.pop();
     }
 }

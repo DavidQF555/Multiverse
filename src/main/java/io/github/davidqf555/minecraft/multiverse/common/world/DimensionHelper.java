@@ -55,7 +55,7 @@ public final class DimensionHelper {
         if (map.containsKey(world)) {
             return map.get(world);
         }
-        return createAndRegisterWorldAndDimension(server, map, world, getIndex(world));
+        return createAndRegisterWorldAndDimension(server, map, world, index);
     }
 
     private static RegistryKey<World> getRegistryKey(int index) {

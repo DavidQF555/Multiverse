@@ -35,21 +35,20 @@ public class RiftFeature extends Feature<RiftConfig> {
             int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
             return world < current ? world : world + 1;
         });
-        boolean temporary = config.isTemporary();
-        BlockState rift = RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary);
+        BlockState rift = RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, config.isTemporary());
         BlockState air = Blocks.AIR.defaultBlockState();
         boolean natural = config.isNatural();
         int totalWidth = config.getWidth(rand);
         int totalHeight = config.getHeight(rand);
-        float yaw = config.getYaw(rand) * (float) Math.PI / 180;
-        float pitch = config.getPitch(rand) * (float) Math.PI / 180;
-        float roll = config.getRoll(rand) * (float) Math.PI / 180;
+        float xRot = config.getRotX(rand) * (float) Math.PI / 180;
+        float yRot = config.getRotY(rand) * (float) Math.PI / 180;
+        float zRot = config.getRotZ(rand) * (float) Math.PI / 180;
         Vector3d centerVec = Vector3d.atCenterOf(center);
         for (int y = -totalHeight; y <= totalHeight; y++) {
             int width = totalWidth * (totalHeight - MathHelper.abs(y)) / totalHeight;
             for (int x = -width; x <= width; x++) {
-                Vector3d vec = new Vector3d(x + 0.5, y + 0.5, 0.5).xRot(pitch).yRot(yaw).zRot(roll);
-                BlockPos pos = new BlockPos(centerVec.add(vec.x(), vec.y(), vec.z()));
+                Vector3d vec = applyRotation(new Vector3d(x, y, 0), xRot, yRot, zRot);
+                BlockPos pos = new BlockPos(centerVec.add(vec));
                 if (canReplace(reader, pos)) {
                     if (!natural) {
                         reader.destroyBlock(pos, true);
@@ -61,18 +60,16 @@ public class RiftFeature extends Feature<RiftConfig> {
                         tile.setChanged();
                     }
                 }
-                if (!temporary) {
-                    for (int i = -1; i <= 1; i++) {
-                        for (int j = -1; j <= 1; j++) {
-                            for (int k = -1; k <= 1; k++) {
-                                BlockPos replace = pos.offset(i, j, k);
-                                BlockState state = reader.getBlockState(replace);
-                                if (canReplace(reader, replace) && !state.equals(rift) && state.canOcclude()) {
-                                    if (natural) {
-                                        setBlock(reader, replace, air);
-                                    } else {
-                                        reader.destroyBlock(pos, true);
-                                    }
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        for (int k = -1; k <= 1; k++) {
+                            BlockPos replace = pos.offset(i, j, k);
+                            BlockState state = reader.getBlockState(replace);
+                            if (canReplace(reader, replace) && !state.equals(rift) && state.canOcclude()) {
+                                if (natural) {
+                                    setBlock(reader, replace, air);
+                                } else {
+                                    reader.destroyBlock(pos, true);
                                 }
                             }
                         }
@@ -81,6 +78,14 @@ public class RiftFeature extends Feature<RiftConfig> {
             }
         }
         return true;
+    }
+
+    private Vector3d applyRotation(Vector3d vec, float xRot, float yRot, float zRot) {
+        double cos = MathHelper.cos(zRot);
+        double sin = MathHelper.sin(zRot);
+        double x = vec.x() * cos + vec.y() * sin;
+        double y = vec.y() * cos - vec.x() * sin;
+        return new Vector3d(x, y, vec.z()).xRot(xRot).yRot(yRot);
     }
 
     private boolean canReplace(ISeedReader reader, BlockPos pos) {

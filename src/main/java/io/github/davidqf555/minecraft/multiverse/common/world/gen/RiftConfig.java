@@ -1,8 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
 import java.util.Optional;
@@ -10,42 +10,38 @@ import java.util.Random;
 
 public class RiftConfig implements IFeatureConfig {
 
-    private static final Codec<MinMaxBounds.IntBound> INT_BOUNDS_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.optionalFieldOf("min").forGetter(bounds -> Optional.ofNullable(bounds.getMin())),
-            Codec.INT.optionalFieldOf("max").forGetter(bounds -> Optional.ofNullable(bounds.getMax()))
-    ).apply(builder, builder.stable((min, max) -> new MinMaxBounds.IntBound(min.orElse(null), max.orElse(null)))));
-    private static final Codec<MinMaxBounds.FloatBound> FLOAT_BOUNDS_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.FLOAT.optionalFieldOf("min").forGetter(bounds -> Optional.ofNullable(bounds.getMin())),
-            Codec.FLOAT.optionalFieldOf("max").forGetter(bounds -> Optional.ofNullable(bounds.getMax()))
-    ).apply(builder, builder.stable((min, max) -> new MinMaxBounds.FloatBound(min.orElse(null), max.orElse(null)))));
     public static final Codec<RiftConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.optionalFieldOf("target").forGetter(config -> config.target),
-            INT_BOUNDS_CODEC.fieldOf("width").forGetter(config -> config.width),
-            INT_BOUNDS_CODEC.fieldOf("height").forGetter(config -> config.height),
-            FLOAT_BOUNDS_CODEC.fieldOf("yaw").forGetter(config -> config.yaw),
-            FLOAT_BOUNDS_CODEC.fieldOf("pitch").forGetter(config -> config.pitch),
-            FLOAT_BOUNDS_CODEC.fieldOf("roll").forGetter(config -> config.roll),
+            Codec.pair(Codec.INT, Codec.INT).fieldOf("width").forGetter(config -> config.width),
+            Codec.pair(Codec.INT, Codec.INT).fieldOf("height").forGetter(config -> config.height),
+            Codec.pair(Codec.FLOAT, Codec.FLOAT).fieldOf("xRot").forGetter(config -> config.xRot),
+            Codec.pair(Codec.FLOAT, Codec.FLOAT).fieldOf("yRot").forGetter(config -> config.yRot),
+            Codec.pair(Codec.FLOAT, Codec.FLOAT).fieldOf("zRot").forGetter(config -> config.zRot),
             Codec.BOOL.fieldOf("temporary").forGetter(config -> config.temporary),
             Codec.BOOL.fieldOf("natural").forGetter(config -> config.natural)
     ).apply(builder, builder.stable(RiftConfig::new)));
     private final Optional<Integer> target;
-    private final MinMaxBounds.IntBound width, height;
-    private final MinMaxBounds.FloatBound yaw, pitch, roll;
+    private final Pair<Integer, Integer> width, height;
+    private final Pair<Float, Float> xRot, yRot, zRot;
     private final boolean temporary, natural;
 
-    public RiftConfig(Optional<Integer> target, MinMaxBounds.IntBound width, MinMaxBounds.IntBound height, MinMaxBounds.FloatBound yaw, MinMaxBounds.FloatBound pitch, MinMaxBounds.FloatBound roll, boolean temporary, boolean natural) {
+    public RiftConfig(Optional<Integer> target, Pair<Integer, Integer> width, Pair<Integer, Integer> height, Pair<Float, Float> xRot, Pair<Float, Float> yRot, Pair<Float, Float> zRot, boolean temporary, boolean natural) {
         this.target = target;
         this.width = width;
         this.height = height;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.roll = roll;
+        this.xRot = xRot;
+        this.yRot = yRot;
+        this.zRot = zRot;
         this.temporary = temporary;
         this.natural = natural;
     }
 
     public static RiftConfig of(Optional<Integer> target, boolean temporary, boolean natural) {
-        return new RiftConfig(target, new MinMaxBounds.IntBound(1, 4), new MinMaxBounds.IntBound(6, 10), new MinMaxBounds.FloatBound(0f, 180f), new MinMaxBounds.FloatBound(0f, 180f), new MinMaxBounds.FloatBound(0f, 180f), temporary, natural);
+        return new RiftConfig(target, Pair.of(4, 4), Pair.of(10, 10), Pair.of(0f, 0f), Pair.of(45f, 45f), Pair.of(45f, 45f), temporary, natural);
+    }
+
+    public static RiftConfig fixed(Optional<Integer> target, int width, int height, float xRot, float yRot, float zRot, boolean temporary, boolean natural) {
+        return new RiftConfig(target, Pair.of(width, width), Pair.of(height, height), Pair.of(xRot, xRot), Pair.of(yRot, yRot), Pair.of(zRot, zRot), temporary, natural);
     }
 
     public Optional<Integer> getTarget() {
@@ -61,32 +57,62 @@ public class RiftConfig implements IFeatureConfig {
     }
 
     public int getWidth(Random random) {
-        int min = width.getMin() == null ? Integer.MIN_VALUE : width.getMin();
-        int max = width.getMax() == null ? Integer.MAX_VALUE : width.getMax();
+        Integer min = width.getFirst();
+        if (min == null) {
+            min = Integer.MIN_VALUE;
+        }
+        Integer max = width.getSecond();
+        if (max == null) {
+            max = Integer.MAX_VALUE;
+        }
         return random.nextInt(max - min + 1) + min;
     }
 
     public int getHeight(Random random) {
-        int min = height.getMin() == null ? Integer.MIN_VALUE : height.getMin();
-        int max = height.getMax() == null ? Integer.MAX_VALUE : height.getMax();
+        Integer min = height.getFirst();
+        if (min == null) {
+            min = Integer.MIN_VALUE;
+        }
+        Integer max = height.getSecond();
+        if (max == null) {
+            max = Integer.MAX_VALUE;
+        }
         return random.nextInt(max - min + 1) + min;
     }
 
-    public float getYaw(Random random) {
-        float min = yaw.getMin() == null ? Float.MIN_VALUE : yaw.getMin();
-        float max = yaw.getMax() == null ? Float.MAX_VALUE : yaw.getMax();
+    public float getRotX(Random random) {
+        Float min = xRot.getFirst();
+        if (min == null) {
+            min = Float.MIN_VALUE;
+        }
+        Float max = xRot.getSecond();
+        if (max == null) {
+            max = Float.MAX_VALUE;
+        }
         return min + random.nextFloat() * (max - min);
     }
 
-    public float getPitch(Random random) {
-        float min = pitch.getMin() == null ? Float.MIN_VALUE : pitch.getMin();
-        float max = pitch.getMax() == null ? Float.MAX_VALUE : pitch.getMax();
+    public float getRotY(Random random) {
+        Float min = yRot.getFirst();
+        if (min == null) {
+            min = Float.MIN_VALUE;
+        }
+        Float max = yRot.getSecond();
+        if (max == null) {
+            max = Float.MAX_VALUE;
+        }
         return min + random.nextFloat() * (max - min);
     }
 
-    public float getRoll(Random random) {
-        float min = roll.getMin() == null ? Float.MIN_VALUE : roll.getMin();
-        float max = roll.getMax() == null ? Float.MAX_VALUE : roll.getMax();
+    public float getRotZ(Random random) {
+        Float min = zRot.getFirst();
+        if (min == null) {
+            min = Float.MIN_VALUE;
+        }
+        Float max = zRot.getSecond();
+        if (max == null) {
+            max = Float.MAX_VALUE;
+        }
         return min + random.nextFloat() * (max - min);
     }
 
