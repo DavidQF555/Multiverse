@@ -3,7 +3,6 @@ package io.github.davidqf555.minecraft.multiverse.common.blocks;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -27,6 +26,7 @@ public class RiftBlock extends ContainerBlock {
     public RiftBlock() {
         super(Properties.of(Material.PORTAL, MaterialColor.COLOR_BLACK)
                 .noCollission()
+                .strength(-1, 3600000)
                 .noDrops()
                 .randomTicks()
         );
@@ -42,7 +42,7 @@ public class RiftBlock extends ContainerBlock {
     @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         if (state.getValue(TEMPORARY)) {
-            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+            world.destroyBlock(pos, true);
         }
     }
 

@@ -2,9 +2,13 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.entities.DimensionBossEntity;
 import io.github.davidqf555.minecraft.multiverse.common.items.DimensionSlasherItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.UniversalTreasureItem;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftFeature;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +30,8 @@ public final class RegistryHandler {
     public static final RegistryObject<PointOfInterestType> RIFT_POI_TYPE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.POI_TYPES);
     public static final RegistryObject<RiftFeature> RIFT_FEATURE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.FEATURES);
     public static final RegistryObject<DimensionSlasherItem> DIMENSION_SLASHER_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "dimension_slasher"), ForgeRegistries.ITEMS);
+    public static final RegistryObject<Item> UNIVERSAL_TREASURE_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "universal_treasure"), ForgeRegistries.ITEMS);
+    public static final RegistryObject<EntityType<DimensionBossEntity>> DIMENSION_BOSS_ENTITY = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "dimension_boss"), ForgeRegistries.ENTITIES);
 
     private RegistryHandler() {
     }
@@ -52,6 +58,14 @@ public final class RegistryHandler {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new DimensionSlasherItem(1, 1).setRegistryName(DIMENSION_SLASHER_ITEM.getId()));
+        event.getRegistry().registerAll(
+                new DimensionSlasherItem(1, 1).setRegistryName(DIMENSION_SLASHER_ITEM.getId()),
+                new UniversalTreasureItem().setRegistryName(UNIVERSAL_TREASURE_ITEM.getId())
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerEntityTypes(RegistryEvent.Register<EntityType<?>> event) {
+        event.getRegistry().register(EntityType.Builder.of(new DimensionBossEntity.Factory(), EntityClassification.MONSTER).sized(0.6f, 1.95f).build(DIMENSION_BOSS_ENTITY.getId().toString()).setRegistryName(DIMENSION_BOSS_ENTITY.getId()));
     }
 }

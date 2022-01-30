@@ -8,6 +8,7 @@ import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -30,8 +31,12 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
     private static final int RANGE = 64;
     private int target;
 
+    protected RiftTileEntity(TileEntityType<?> type) {
+        super(type);
+    }
+
     public RiftTileEntity() {
-        super(RegistryHandler.RIFT_TILE_ENTITY_TYPE.get());
+        this(RegistryHandler.RIFT_TILE_ENTITY_TYPE.get());
     }
 
     public int getTarget() {
@@ -83,7 +88,7 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
             TileEntity tile = dest.getBlockEntity(block);
             return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
         }).min(Comparator.comparingDouble(center::distSqr)).orElseGet(() -> {
-            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), temporary, false));
+            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), false));
             return center;
         });
     }

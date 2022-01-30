@@ -16,6 +16,7 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.Optional;
 import java.util.Random;
@@ -23,7 +24,7 @@ import java.util.Random;
 public class RiftFeature extends Feature<RiftConfig> {
 
     public static final RiftFeature INSTANCE = new RiftFeature();
-    public static final ConfiguredFeature<?, ?> CONFIG = new ConfiguredFeature<>(INSTANCE, RiftConfig.of(Optional.empty(), false, true)).decorated(RiftPlacement.CONFIG).chance(ServerConfigs.INSTANCE.riftChance.get());
+    public static final ConfiguredFeature<?, ?> CONFIG = new ConfiguredFeature<>(INSTANCE, RiftConfig.of(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)).decorated(RiftPlacement.CONFIG).chance(ServerConfigs.INSTANCE.riftChance.get());
 
     public RiftFeature() {
         super(RiftConfig.CODEC);
@@ -37,9 +38,12 @@ public class RiftFeature extends Feature<RiftConfig> {
             return world < current ? world : world + 1;
         });
         Block block = RegistryHandler.RIFT_BLOCK.get();
-        BlockState rift = block.defaultBlockState().setValue(RiftBlock.TEMPORARY, config.isTemporary());
+        BlockState rift = config.getBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
         boolean natural = config.isNatural();
+        if (!natural) {
+            reader.getLevel().levelEvent(Constants.WorldEvents.GATEWAY_SPAWN_EFFECTS, center, 0);
+        }
         int totalWidth = config.getWidth(rand);
         int totalHeight = config.getHeight(rand);
         float xRot = config.getRotX(rand) * (float) Math.PI / 180;

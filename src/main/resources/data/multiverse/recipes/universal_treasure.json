@@ -1,0 +1,32 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nether_star"
+    },
+    {
+      "item": "totem_of_undying"
+    },
+    {
+      "item": "netherite_ingot"
+    },
+    {
+      "item": "diamond"
+    },
+    {
+      "item": "emerald"
+    },
+    {
+      "item": "heart_of_the_sea"
+    },
+    {
+      "item": "shulker_shell"
+    },
+    {
+      "item": "dragon_breath"
+    }
+  ],
+  "result": {
+    "item": "multiverse:universal_treasure"
+  }
+}

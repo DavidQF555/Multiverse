@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "multiverse:item/dimension_slasher"
+    "layer0": "multiverse:item/universal_treasure"
   }
 }
