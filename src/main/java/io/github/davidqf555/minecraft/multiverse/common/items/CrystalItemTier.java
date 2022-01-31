@@ -8,7 +8,7 @@ public class CrystalItemTier implements IItemTier {
 
     public static final CrystalItemTier INSTANCE = new CrystalItemTier();
 
-    private CrystalItemTier() {
+    protected CrystalItemTier() {
     }
 
     @Override
