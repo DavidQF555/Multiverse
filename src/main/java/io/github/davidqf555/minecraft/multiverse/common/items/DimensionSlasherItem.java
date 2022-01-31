@@ -22,8 +22,8 @@ import java.util.Optional;
 
 public class DimensionSlasherItem extends SwordItem {
 
-    public DimensionSlasherItem(int attack, float speed) {
-        super(ItemTier.IRON, attack, speed, new Properties().rarity(Rarity.EPIC).tab(ItemGroup.TAB_COMBAT));
+    public DimensionSlasherItem() {
+        super(CrystalItemTier.INSTANCE, 2, -2.4f, new Properties().rarity(Rarity.EPIC).tab(ItemGroup.TAB_COMBAT));
     }
 
     @Override
@@ -78,5 +78,10 @@ public class DimensionSlasherItem extends SwordItem {
     @Override
     public boolean isFoil(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return false;
     }
 }

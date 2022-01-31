@@ -59,7 +59,7 @@ public final class RegistryHandler {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                new DimensionSlasherItem(1, 1).setRegistryName(DIMENSION_SLASHER_ITEM.getId()),
+                new DimensionSlasherItem().setRegistryName(DIMENSION_SLASHER_ITEM.getId()),
                 new UniversalTreasureItem().setRegistryName(UNIVERSAL_TREASURE_ITEM.getId())
         );
     }
