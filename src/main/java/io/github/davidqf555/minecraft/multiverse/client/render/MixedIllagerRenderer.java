@@ -16,7 +16,7 @@ public class MixedIllagerRenderer<T extends SpellcastingIllagerEntity> extends I
 
     public MixedIllagerRenderer(EntityRendererManager manager) {
         super(manager, new IllagerModel<>(0, 0, 64, 64), 0.5f);
-        this.addLayer(new HeldItemLayer<T, IllagerModel<T>>(this) {
+        addLayer(new HeldItemLayer<T, IllagerModel<T>>(this) {
             @Override
             public void render(MatrixStack matrix, IRenderTypeBuffer buffer, int p_225628_3_, T entity, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
                 if (entity.isCastingSpell() || entity.isAggressive()) {
@@ -24,6 +24,7 @@ public class MixedIllagerRenderer<T extends SpellcastingIllagerEntity> extends I
                 }
             }
         });
+        model.getHat().visible = true;
     }
 
     @Override

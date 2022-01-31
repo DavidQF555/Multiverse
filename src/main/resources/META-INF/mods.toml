@@ -7,7 +7,7 @@ modId = "multiverse"
 version = "${file.jarVersion}"
 displayName = "Multiverse"
 displayURL = "https://github.com/DavidQF555/Multiverse"
-#logoFile = "logo.png"
+logoFile = "logo.png"
 authors = "DavidQF555"
 description = 'This mod adds a multiverse.'
 [[dependencies.multiverse]]
