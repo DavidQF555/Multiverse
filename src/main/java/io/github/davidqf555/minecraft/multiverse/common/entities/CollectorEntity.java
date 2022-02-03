@@ -47,17 +47,16 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     public CollectorEntity(World world) {
         super(RegistryHandler.COLLECTOR_ENTITY.get(), world);
         moveControl = new FlyingMovementController(this, 90, true);
-        bar = (ServerBossInfo) new ServerBossInfo(getDisplayName(), BossInfo.Color.GREEN, BossInfo.Overlay.PROGRESS).setDarkenScreen(true);
+        bar = new ServerBossInfo(getDisplayName(), BossInfo.Color.GREEN, BossInfo.Overlay.PROGRESS);
         setItemInHand(Hand.MAIN_HAND, RegistryHandler.BOUNDLESS_BLADE_ITEM.get().getDefaultInstance());
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 150)
-                .add(Attributes.FLYING_SPEED, 1)
+                .add(Attributes.FLYING_SPEED, 2)
                 .add(Attributes.FOLLOW_RANGE, 40)
                 .add(Attributes.ATTACK_DAMAGE, 5);
-
     }
 
     @Override
@@ -72,9 +71,9 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
         goalSelector.addGoal(0, new SwimGoal(this));
         goalSelector.addGoal(1, new SpellcastingIllagerEntity.CastingASpellGoal());
         goalSelector.addGoal(2, new CreateRiftGoal());
-        goalSelector.addGoal(3, new MeleeAttackGoal(this, 1, true));
-        goalSelector.addGoal(4, new FollowOriginalGoal(12, 8, 1));
-        goalSelector.addGoal(5, new EnterRiftGoal(1, 16, 1));
+        goalSelector.addGoal(3, new FollowOriginalGoal(12, 8, 1));
+        goalSelector.addGoal(4, new EnterRiftGoal(1, 16, 1));
+        goalSelector.addGoal(5, new MeleeAttackGoal(this, 1, true));
         goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1));
         goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8));
         goalSelector.addGoal(8, new LookRandomlyGoal(this));
@@ -341,6 +340,10 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     }
 
     private class CreateRiftGoal extends UseSpellGoal {
+
+        private CreateRiftGoal() {
+            nextAttackTickCount = tickCount + getCastingInterval();
+        }
 
         @Override
         public boolean canUse() {
