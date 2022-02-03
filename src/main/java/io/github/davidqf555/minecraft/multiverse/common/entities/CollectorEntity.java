@@ -38,17 +38,17 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.UUID;
 
-public class DimensionBossEntity extends SpellcastingIllagerEntity {
+public class CollectorEntity extends SpellcastingIllagerEntity {
 
     private final ServerBossInfo bar;
     private UUID original;
     private int from;
 
-    public DimensionBossEntity(World world) {
-        super(RegistryHandler.DIMENSION_BOSS_ENTITY.get(), world);
+    public CollectorEntity(World world) {
+        super(RegistryHandler.COLLECTOR_ENTITY.get(), world);
         moveControl = new FlyingMovementController(this, 90, true);
         bar = (ServerBossInfo) new ServerBossInfo(getDisplayName(), BossInfo.Color.GREEN, BossInfo.Overlay.PROGRESS).setDarkenScreen(true);
-        setItemInHand(Hand.MAIN_HAND, RegistryHandler.DIMENSION_SLASHER_ITEM.get().getDefaultInstance());
+        setItemInHand(Hand.MAIN_HAND, RegistryHandler.BOUNDLESS_BLADE_ITEM.get().getDefaultInstance());
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -110,8 +110,8 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
     @Override
     public Entity changeDimension(ServerWorld world, ITeleporter teleporter) {
         Entity entity = super.changeDimension(world, teleporter);
-        if (entity instanceof DimensionBossEntity) {
-            ((DimensionBossEntity) entity).setFrom(DimensionHelper.getIndex(level.dimension()));
+        if (entity instanceof CollectorEntity) {
+            ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level.dimension()));
             entity.setPortalCooldown();
         }
         return entity;
@@ -123,12 +123,12 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
     }
 
     @Nullable
-    public DimensionBossEntity getOriginal() {
+    public CollectorEntity getOriginal() {
         UUID original = getOriginalId();
         if (level instanceof ServerWorld && original != null) {
             Entity entity = ((ServerWorld) level).getEntity(original);
-            if (entity instanceof DimensionBossEntity) {
-                return (DimensionBossEntity) entity;
+            if (entity instanceof CollectorEntity) {
+                return (CollectorEntity) entity;
             }
         }
         return null;
@@ -175,8 +175,8 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
             UUID original = getOriginalId();
             if (original == null) {
                 Entity clone = getType().create(level);
-                if (clone instanceof DimensionBossEntity) {
-                    ((DimensionBossEntity) clone).setOriginal(getUUID());
+                if (clone instanceof CollectorEntity) {
+                    ((CollectorEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     clone.setPos(getX(), getY(), getZ());
                     level.levelEvent(Constants.WorldEvents.ENDER_EYE_SHATTER, blockPosition(), 0);
@@ -250,10 +250,10 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
         }
     }
 
-    public static class Factory implements EntityType.IFactory<DimensionBossEntity> {
+    public static class Factory implements EntityType.IFactory<CollectorEntity> {
         @Override
-        public DimensionBossEntity create(EntityType<DimensionBossEntity> type, World world) {
-            return new DimensionBossEntity(world);
+        public CollectorEntity create(EntityType<CollectorEntity> type, World world) {
+            return new CollectorEntity(world);
         }
     }
 
@@ -263,13 +263,13 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
         private LivingEntity target;
 
         public CopyOriginalGoal(EntityPredicate condition) {
-            super(DimensionBossEntity.this, false);
+            super(CollectorEntity.this, false);
             this.condition = condition;
         }
 
         @Override
         public boolean canUse() {
-            DimensionBossEntity original = getOriginal();
+            CollectorEntity original = getOriginal();
             target = original == null ? null : original.getTarget();
             return target != null && canAttack(target, condition);
         }
@@ -286,7 +286,7 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
         private final double start, stop;
         private final float speed;
         private int recalculate;
-        private DimensionBossEntity original;
+        private CollectorEntity original;
 
         private FollowOriginalGoal(double start, double stop, float speed) {
             this.speed = speed;
@@ -297,7 +297,7 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
 
         @Override
         public boolean canUse() {
-            DimensionBossEntity original = getOriginal();
+            CollectorEntity original = getOriginal();
             if (original == null || original.isSpectator() || distanceToSqr(original) < start * start) {
                 return false;
             }
@@ -350,7 +350,7 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
         @Override
         protected void performSpellCasting() {
             ItemStack hand = getItemInHand(getUsedItemHand());
-            hand.releaseUsing(level, DimensionBossEntity.this, hand.getUseDuration() - getCastingTime());
+            hand.releaseUsing(level, CollectorEntity.this, hand.getUseDuration() - getCastingTime());
         }
 
         @Override
@@ -378,7 +378,7 @@ public class DimensionBossEntity extends SpellcastingIllagerEntity {
     private class EnterRiftGoal extends MoveToBlockGoal {
 
         public EnterRiftGoal(double speed, int range, int verticalRange) {
-            super(DimensionBossEntity.this, speed, range, verticalRange);
+            super(CollectorEntity.this, speed, range, verticalRange);
         }
 
         @Override

@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.items;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
-import io.github.davidqf555.minecraft.multiverse.common.entities.DimensionBossEntity;
+import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftConfig;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;
@@ -29,7 +29,7 @@ public class UniversalTreasureItem extends SimpleFoiledItem {
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (entity.level instanceof ServerWorld && entity.tickCount >= 100 && random.nextDouble() < entity.tickCount / 1000.0) {
-            DimensionBossEntity boss = RegistryHandler.DIMENSION_BOSS_ENTITY.get().create(entity.level);
+            CollectorEntity boss = RegistryHandler.COLLECTOR_ENTITY.get().create(entity.level);
             if (boss != null) {
                 boss.setPos(entity.getX(), entity.getY(), entity.getZ());
                 boss.setPortalCooldown();

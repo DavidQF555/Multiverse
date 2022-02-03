@@ -20,9 +20,9 @@ import net.minecraft.world.server.ServerWorld;
 
 import java.util.Optional;
 
-public class DimensionSlasherItem extends SwordItem {
+public class BoundlessBladeItem extends SwordItem {
 
-    public DimensionSlasherItem() {
+    public BoundlessBladeItem() {
         super(CrystalItemTier.INSTANCE, 2, -2.4f, new Properties().rarity(Rarity.EPIC).tab(ItemGroup.TAB_COMBAT));
     }
 

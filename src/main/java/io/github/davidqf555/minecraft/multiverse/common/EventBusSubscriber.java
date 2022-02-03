@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.common.entities.DimensionBossEntity;
+import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.MultiverseChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftFeature;
@@ -49,7 +49,7 @@ public final class EventBusSubscriber {
 
         @SubscribeEvent
         public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
-            event.put(RegistryHandler.DIMENSION_BOSS_ENTITY.get(), DimensionBossEntity.createAttributes().build());
+            event.put(RegistryHandler.COLLECTOR_ENTITY.get(), CollectorEntity.createAttributes().build());
         }
     }
 }

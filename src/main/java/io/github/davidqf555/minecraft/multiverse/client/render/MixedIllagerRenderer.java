@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class MixedIllagerRenderer<T extends SpellcastingIllagerEntity> extends IllagerRenderer<T> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/dimension_boss.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/collector.png");
 
     public MixedIllagerRenderer(EntityRendererManager manager) {
         super(manager, new IllagerModel<>(0, 0, 64, 64), 0.5f);
