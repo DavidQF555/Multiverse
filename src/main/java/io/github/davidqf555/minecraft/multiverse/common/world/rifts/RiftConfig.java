@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen;
+package io.github.davidqf555.minecraft.multiverse.common.world.rifts;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;

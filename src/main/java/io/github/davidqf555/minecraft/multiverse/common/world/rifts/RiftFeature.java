@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen;
+package io.github.davidqf555.minecraft.multiverse.common.world.rifts;
 
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;

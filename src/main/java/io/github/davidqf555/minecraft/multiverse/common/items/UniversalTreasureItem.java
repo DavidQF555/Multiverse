@@ -4,7 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
