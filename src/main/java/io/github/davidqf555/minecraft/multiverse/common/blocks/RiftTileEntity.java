@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.RiftConfig;
 import net.minecraft.block.BlockState;
@@ -14,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.village.PointOfInterest;
 import net.minecraft.village.PointOfInterestManager;
+import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.server.ServerWorld;
@@ -28,7 +30,6 @@ import java.util.function.Function;
 
 public class RiftTileEntity extends TileEntity implements ITeleporter {
 
-    private static final int RANGE = 64;
     private int target;
 
     protected RiftTileEntity(TileEntityType<?> type) {
@@ -77,18 +78,18 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = new BlockPos(MathHelper.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), MathHelper.clamp(scaled.getY(), 1, target.logicalHeight()), MathHelper.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
         int current = DimensionHelper.getIndex(entity.level.dimension());
-        boolean temporary = entity.level.getBlockState(rift).getValue(RiftBlock.TEMPORARY);
-        return new PortalInfo(Vector3d.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, RANGE, current, temporary)), entity.getDeltaMovement(), entity.yRot, entity.xRot);
+        return new PortalInfo(Vector3d.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift))), entity.getDeltaMovement(), entity.yRot, entity.xRot);
     }
 
-    private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range, int current, boolean temporary) {
+    private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range, int current, BlockState state) {
         PointOfInterestManager manager = dest.getPoiManager();
+        PointOfInterestType poi = RegistryHandler.RIFT_POI_TYPE.get();
         manager.ensureLoadedAndValid(dest, center, range);
-        return manager.getInSquare(type -> type == RegistryHandler.RIFT_POI_TYPE.get(), center, range, PointOfInterestManager.Status.ANY).map(PointOfInterest::getPos).filter(block -> {
+        return manager.getInSquare(poi::equals, center, range, PointOfInterestManager.Status.ANY).map(PointOfInterest::getPos).filter(block -> {
             TileEntity tile = dest.getBlockEntity(block);
             return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
         }).min(Comparator.comparingDouble(center::distSqr)).orElseGet(() -> {
-            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), false));
+            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), state, false));
             return center;
         });
     }

@@ -20,10 +20,11 @@ public class ServerConfigs {
     public final ForgeConfigSpec.ConfigValue<Boolean> inverse;
     public final ForgeConfigSpec.ConfigValue<Integer> riftChance;
     public final ForgeConfigSpec.ConfigValue<Integer> dimensionSlasherCooldown;
+    public final ForgeConfigSpec.ConfigValue<Integer> riftRange;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
-        maxDimensions = builder.comment("This is the max number of Multiverse dimensions")
+        maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
                 .defineInRange("maxDimensions", 25, 1, Integer.MAX_VALUE);
         additionalBiomeTypeChance = builder.comment("Each additional biome type has this chance to be in new Multiverse dimensions. ")
                 .defineInRange("biomeTypeChance", 0.1, 0, 1);
@@ -35,6 +36,8 @@ public class ServerConfigs {
                 .defineInRange("riftChance", 20, 1, Integer.MAX_VALUE);
         dimensionSlasherCooldown = builder.comment("This is the cooldown of the dimension slasher item in ticks. ")
                 .defineInRange("dimensionSlasherCooldown", 500, 0, Integer.MAX_VALUE);
+        riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
+                .defineInRange("riftRange", 1024, 0, Integer.MAX_VALUE);
         builder.pop();
     }
 }
