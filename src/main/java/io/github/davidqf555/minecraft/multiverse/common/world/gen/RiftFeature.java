@@ -63,7 +63,6 @@ public class RiftFeature extends Feature<RiftConfig> {
                     TileEntity tile = reader.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
-                        tile.setChanged();
                     }
                 }
                 for (int i = -1; i <= 1; i++) {

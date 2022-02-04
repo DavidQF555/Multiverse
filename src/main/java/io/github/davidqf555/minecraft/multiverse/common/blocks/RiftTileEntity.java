@@ -8,6 +8,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -49,11 +51,6 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return save(new CompoundNBT());
-    }
-
-    @Override
     public CompoundNBT save(CompoundNBT nbt) {
         super.save(nbt);
         nbt.putInt("Target", getTarget());
@@ -66,6 +63,21 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
         if (nbt.contains("Target", Constants.NBT.TAG_INT)) {
             setTarget(nbt.getInt("Target"));
         }
+    }
+
+    @Nullable
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return save(new CompoundNBT());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        deserializeNBT(pkt.getTag());
     }
 
     @Nullable
