@@ -47,7 +47,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     public CollectorEntity(World world) {
         super(RegistryHandler.COLLECTOR_ENTITY.get(), world);
         moveControl = new FlyingMovementController(this, 90, true);
-        bar = new ServerBossInfo(getDisplayName(), BossInfo.Color.GREEN, BossInfo.Overlay.PROGRESS);
+        bar = new ServerBossInfo(getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
         setItemInHand(Hand.MAIN_HAND, RegistryHandler.BOUNDLESS_BLADE_ITEM.get().getDefaultInstance());
     }
 
@@ -176,6 +176,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
                 Entity clone = getType().create(level);
                 if (clone instanceof CollectorEntity) {
                     ((CollectorEntity) clone).setOriginal(getUUID());
+                    ((CollectorEntity) clone).from = from;
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     clone.setPos(getX(), getY(), getZ());
                     level.levelEvent(Constants.WorldEvents.ENDER_EYE_SHATTER, blockPosition(), 0);
@@ -395,7 +396,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
 
         @Override
         public boolean canUse() {
-            return !isOnPortalCooldown() && super.canUse();
+            return !isOnPortalCooldown() && getOriginalId() == null && super.canUse();
         }
     }
 
