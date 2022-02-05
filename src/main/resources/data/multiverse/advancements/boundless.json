@@ -1,0 +1,27 @@
+{
+  "parent": "multiverse:collector_of_all",
+  "display": {
+    "icon": {
+      "item": "multiverse:boundless_blade"
+    },
+    "title": {
+      "translate": "advancements.multiverse.boundless.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.boundless.description"
+    },
+    "frame": "goal"
+  },
+  "criteria": {
+    "boundless_blade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "multiverse:boundless_blade"
+          }
+        ]
+      }
+    }
+  }
+}

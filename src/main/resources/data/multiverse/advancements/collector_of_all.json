@@ -1,0 +1,26 @@
+{
+  "parent": "nether/summon_wither",
+  "display": {
+    "icon": {
+      "item": "multiverse:universal_treasure"
+    },
+    "title": {
+      "translate": "advancements.multiverse.collector_of_all.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.collector_of_all.description"
+    }
+  },
+  "criteria": {
+    "universal_treasure": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "multiverse:universal_treasure"
+          }
+        ]
+      }
+    }
+  }
+}
