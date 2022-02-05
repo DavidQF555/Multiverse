@@ -30,7 +30,7 @@ public final class RegistryHandler {
     public static final RegistryObject<PointOfInterestType> RIFT_POI_TYPE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.POI_TYPES);
     public static final RegistryObject<RiftFeature> RIFT_FEATURE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.FEATURES);
     public static final RegistryObject<BoundlessBladeItem> BOUNDLESS_BLADE_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "boundless_blade"), ForgeRegistries.ITEMS);
-    public static final RegistryObject<Item> UNIVERSAL_TREASURE_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "universal_treasure"), ForgeRegistries.ITEMS);
+    public static final RegistryObject<UniversalTreasureItem> UNIVERSAL_TREASURE_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "universal_treasure"), ForgeRegistries.ITEMS);
     public static final RegistryObject<EntityType<CollectorEntity>> COLLECTOR_ENTITY = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "collector"), ForgeRegistries.ENTITIES);
 
     private RegistryHandler() {

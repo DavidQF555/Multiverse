@@ -1,6 +1,8 @@
 {
   "entity.multiverse.collector": "Collector",
   "item.multiverse.boundless_blade": "Boundless Blade",
+  "item.multiverse.universal_treasure": "Universal Treasure",
+  "item.multiverse.universal_treasure.lore": "A treasure so immense it attracts entities from other universes",
   "advancements.multiverse.boundless.title": "Boundless",
   "advancements.multiverse.boundless.description": "Obtain a boundless blade",
   "advancements.multiverse.collector_of_all.title": "Collector of All",
