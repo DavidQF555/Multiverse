@@ -89,10 +89,10 @@ public final class DimensionHelper {
 
     private static Dimension createDimension(MinecraftServer server, int index) {
         ServerWorld overworld = server.getLevel(World.OVERWORLD);
-        long seed = overworld.getSeed() + index;
+        long seed = overworld.getSeed() + index * 50000L;
         SharedSeedRandom random = new SharedSeedRandom(seed);
-        boolean ceiling = random.nextBoolean();
-        boolean floor = random.nextBoolean() || ceiling && !ServerConfigs.INSTANCE.inverse.get();
+        boolean floor = random.nextBoolean();
+        boolean ceiling = random.nextBoolean() && (floor || ServerConfigs.INSTANCE.inverse.get());
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
         BiomeProvider provider = new NetherBiomeProvider(seed, randomBiomes(random).stream().map(key -> (Supplier<Biome>) () -> lookup.getOrThrow(key)).map(sup -> {
