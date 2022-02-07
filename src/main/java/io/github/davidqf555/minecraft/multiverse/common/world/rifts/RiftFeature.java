@@ -5,7 +5,6 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -37,7 +36,6 @@ public class RiftFeature extends Feature<RiftConfig> {
             int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
             return world < current ? world : world + 1;
         });
-        Block block = RegistryHandler.RIFT_BLOCK.get();
         BlockState rift = config.getBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
         boolean natural = config.isNatural();
@@ -69,8 +67,7 @@ public class RiftFeature extends Feature<RiftConfig> {
                     for (int j = -1; j <= 1; j++) {
                         for (int k = -1; k <= 1; k++) {
                             BlockPos replace = pos.offset(i, j, k);
-                            BlockState state = reader.getBlockState(replace);
-                            if (canReplace(reader, replace) && !state.getBlock().equals(block)) {
+                            if (canReplace(reader, replace)) {
                                 if (natural) {
                                     setBlock(reader, replace, air);
                                 } else {

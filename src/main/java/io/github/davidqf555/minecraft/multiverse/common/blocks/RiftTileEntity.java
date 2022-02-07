@@ -97,13 +97,17 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
         PointOfInterestManager manager = dest.getPoiManager();
         PointOfInterestType poi = RegistryHandler.RIFT_POI_TYPE.get();
         manager.ensureLoadedAndValid(dest, center, range);
-        return manager.getInSquare(poi::equals, center, range, PointOfInterestManager.Status.ANY).map(PointOfInterest::getPos).filter(block -> {
-            TileEntity tile = dest.getBlockEntity(block);
-            return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
-        }).min(Comparator.comparingDouble(center::distSqr)).orElseGet(() -> {
-            RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), state, false));
-            return center;
-        });
+        return manager.getInSquare(poi::equals, center, range, PointOfInterestManager.Status.ANY)
+                .map(PointOfInterest::getPos)
+                .filter(block -> {
+                    TileEntity tile = dest.getBlockEntity(block);
+                    return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
+                })
+                .min(Comparator.comparingDouble(center::distSqr))
+                .orElseGet(() -> {
+                    RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), state, false));
+                    return center;
+                });
     }
 
 }

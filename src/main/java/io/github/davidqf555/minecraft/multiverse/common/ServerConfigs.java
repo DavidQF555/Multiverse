@@ -37,7 +37,7 @@ public class ServerConfigs {
         dimensionSlasherCooldown = builder.comment("This is the cooldown of the dimension slasher item in ticks. ")
                 .defineInRange("dimensionSlasherCooldown", 500, 0, Integer.MAX_VALUE);
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
-                .defineInRange("riftRange", 1024, 0, Integer.MAX_VALUE);
+                .defineInRange("riftRange", 128, 0, Integer.MAX_VALUE);
         builder.pop();
     }
 }
