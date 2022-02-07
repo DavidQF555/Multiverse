@@ -46,7 +46,7 @@ public class BoundlessBladeItem extends SwordItem {
 
     @Override
     public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int remaining) {
-        if (world instanceof ServerWorld && (!(entity instanceof PlayerEntity) || !((PlayerEntity) entity).getCooldowns().isOnCooldown(this))) {
+        if (world instanceof ServerWorld) {
             int count = Math.min(600, getUseDuration(stack) - remaining);
             int width = 6 + count / 30;
             int height = 3 + count / 40;
@@ -71,8 +71,12 @@ public class BoundlessBladeItem extends SwordItem {
 
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return ActionResult.pass(stack);
+        }
         player.startUsingItem(hand);
-        return ActionResult.consume(player.getItemInHand(hand));
+        return ActionResult.consume(stack);
     }
 
     @Override
