@@ -17,9 +17,11 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.Random;
 
+@ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
 
     public static final RiftFeature INSTANCE = new RiftFeature();

@@ -9,9 +9,12 @@ import net.minecraft.world.gen.placement.ConfiguredPlacement;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.stream.Stream;
 
+@ParametersAreNonnullByDefault
 public class RiftPlacement extends Placement<NoPlacementConfig> {
 
     public static final ConfiguredPlacement<NoPlacementConfig> CONFIG = new RiftPlacement().configured(NoPlacementConfig.INSTANCE);
@@ -20,6 +23,7 @@ public class RiftPlacement extends Placement<NoPlacementConfig> {
         super(NoPlacementConfig.CODEC);
     }
 
+    @Nonnull
     @Override
     public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random rand, NoPlacementConfig config, BlockPos pos) {
         RegistryKey<World> key = helper.level.getLevel().dimension();

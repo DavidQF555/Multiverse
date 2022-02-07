@@ -22,9 +22,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 
+@ParametersAreNonnullByDefault
 public class UniversalTreasureItem extends SimpleFoiledItem {
 
     private static final ITextComponent LORE = new TranslationTextComponent("item." + Multiverse.MOD_ID + ".universal_treasure.lore").withStyle(TextFormatting.GOLD);

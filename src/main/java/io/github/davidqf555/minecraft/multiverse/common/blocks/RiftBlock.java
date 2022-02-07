@@ -17,8 +17,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
+@ParametersAreNonnullByDefault
 public class RiftBlock extends ContainerBlock {
 
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");

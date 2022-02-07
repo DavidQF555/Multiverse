@@ -10,6 +10,10 @@ import net.minecraft.client.renderer.entity.model.IllagerModel;
 import net.minecraft.entity.monster.SpellcastingIllagerEntity;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class MixedIllagerRenderer<T extends SpellcastingIllagerEntity> extends IllagerRenderer<T> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/collector.png");
@@ -27,6 +31,7 @@ public class MixedIllagerRenderer<T extends SpellcastingIllagerEntity> extends I
         model.getHat().visible = true;
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getTextureLocation(T entity) {
         return TEXTURE;

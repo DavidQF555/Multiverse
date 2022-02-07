@@ -4,6 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
@@ -25,11 +26,14 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class RiftTileEntity extends TileEntity implements ITeleporter {
 
     private int target;

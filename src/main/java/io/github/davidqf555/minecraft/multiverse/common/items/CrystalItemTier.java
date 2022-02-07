@@ -4,6 +4,8 @@ import net.minecraft.item.IItemTier;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
+import javax.annotation.Nonnull;
+
 public class CrystalItemTier implements IItemTier {
 
     public static final CrystalItemTier INSTANCE = new CrystalItemTier();
@@ -36,6 +38,7 @@ public class CrystalItemTier implements IItemTier {
         return 22;
     }
 
+    @Nonnull
     @Override
     public Ingredient getRepairIngredient() {
         return Ingredient.of(Tags.Items.GLASS);

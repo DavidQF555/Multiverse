@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftFeature;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -18,8 +19,11 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BoundlessBladeItem extends SwordItem {
 
     public BoundlessBladeItem() {

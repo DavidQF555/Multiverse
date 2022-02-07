@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -35,9 +36,12 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CollectorEntity extends SpellcastingIllagerEntity {
 
     private final ServerBossInfo bar;

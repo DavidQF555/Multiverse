@@ -7,6 +7,7 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.RegistryKey;
@@ -30,11 +31,14 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class MultiverseChunkGenerator extends NoiseChunkGenerator {
 
     public static final Codec<MultiverseChunkGenerator> CODEC = RecordCodecBuilder.create(builder -> builder.group(
