@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.rifts;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.block.BlockState;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
@@ -39,7 +40,7 @@ public class RiftConfig implements IFeatureConfig {
     }
 
     public static RiftConfig of(Optional<Integer> target, BlockState block, boolean natural) {
-        return new RiftConfig(target, block, natural, Pair.of(2, 4), Pair.of(6, 10), Pair.of(0f, 180f), Pair.of(0f, 180f), Pair.of(0f, 180f));
+        return new RiftConfig(target, block, natural, Pair.of(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get()), Pair.of(ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()), Pair.of(0f, 180f), Pair.of(0f, 180f), Pair.of(0f, 180f));
     }
 
     public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, int width, int height, float xRot, float yRot, float zRot) {

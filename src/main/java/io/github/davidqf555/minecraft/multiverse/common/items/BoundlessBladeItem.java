@@ -58,7 +58,7 @@ public class BoundlessBladeItem extends SwordItem {
             BlockPos center = new BlockPos(entity.getEyePosition(1).add(look.scale(width + 1.5)));
             RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1)));
             if (entity instanceof PlayerEntity) {
-                ((PlayerEntity) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.dimensionSlasherCooldown.get());
+                ((PlayerEntity) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
             }
         }
     }
