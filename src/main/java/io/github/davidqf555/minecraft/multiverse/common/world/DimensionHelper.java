@@ -89,19 +89,20 @@ public final class DimensionHelper {
 
     private static Dimension createDimension(MinecraftServer server, int index) {
         ServerWorld overworld = server.getLevel(World.OVERWORLD);
-        long seed = overworld.getSeed() + index * 50000L;
+        long seed = overworld.getSeed() + index * 80000L;
         SharedSeedRandom random = new SharedSeedRandom(seed);
-        boolean floor = random.nextBoolean();
-        boolean ceiling = random.nextBoolean() && (floor || ServerConfigs.INSTANCE.inverse.get());
+        Pair<Boolean, Boolean> bounds = randomBounds(random);
+        boolean floor = bounds.getFirst();
+        boolean ceiling = bounds.getSecond();
+        DimensionSettings settings = createSettings(ceiling, floor);
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
+        OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
         BiomeProvider provider = new NetherBiomeProvider(seed, randomBiomes(random).stream().map(key -> (Supplier<Biome>) () -> lookup.getOrThrow(key)).map(sup -> {
             Biome biome = sup.get();
             return Pair.of(new Biome.Attributes(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0), sup);
         }).collect(Collectors.toList()), Optional.empty());
-        DimensionSettings settings = createSettings(ceiling, floor);
         ChunkGenerator generator = new MultiverseChunkGenerator(provider, seed, () -> settings);
-        OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         DimensionType type = createDimensionType(ceiling, time, effect, lighting);
         return new Dimension(() -> type, generator);
@@ -217,6 +218,17 @@ public final class DimensionHelper {
             }
         }
         return biomes;
+    }
+
+    private static Pair<Boolean, Boolean> randomBounds(Random random) {
+        List<Pair<Boolean, Boolean>> combo = new ArrayList<>();
+        combo.add(Pair.of(true, true));
+        combo.add(Pair.of(false, false));
+        combo.add(Pair.of(true, false));
+        if (ServerConfigs.INSTANCE.inverse.get()) {
+            combo.add(Pair.of(false, true));
+        }
+        return combo.get(random.nextInt(combo.size()));
     }
 
     private static OptionalLong randomTime(Random random) {
