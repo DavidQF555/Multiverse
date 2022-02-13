@@ -5,19 +5,20 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftFeature;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
@@ -27,7 +28,7 @@ import java.util.Optional;
 public class BoundlessBladeItem extends SwordItem {
 
     public BoundlessBladeItem() {
-        super(CrystalItemTier.INSTANCE, 2, -2.4f, new Properties().rarity(Rarity.EPIC).tab(ItemGroup.TAB_COMBAT));
+        super(CrystalItemTier.INSTANCE, 2, -2.4f, new Properties().rarity(Rarity.EPIC).tab(CreativeModeTab.TAB_COMBAT));
     }
 
     @Override
@@ -35,10 +36,10 @@ public class BoundlessBladeItem extends SwordItem {
         if (super.hurtEnemy(stack, target, user)) {
             for (int i = 0; i < 16; i++) {
                 double x = target.getX() + (target.getRandom().nextDouble() - 0.5) * 16;
-                double y = MathHelper.clamp(target.getY() + (double) (target.getRandom().nextInt(16) - 8), 0, target.level.getHeight() - 1);
+                double y = Mth.clamp(target.getY() + (double) (target.getRandom().nextInt(16) - 8), 0, target.level.getHeight() - 1);
                 double z = target.getZ() + (target.getRandom().nextDouble() - 0.5) * 16;
                 if (target.randomTeleport(x, y, z, true)) {
-                    target.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+                    target.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1, 1);
                     target.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1, 1);
                     break;
                 }
@@ -49,16 +50,16 @@ public class BoundlessBladeItem extends SwordItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int remaining) {
-        if (world instanceof ServerWorld) {
+    public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
+        if (world instanceof ServerLevel) {
             int count = Math.min(600, getUseDuration(stack) - remaining);
             int width = 6 + count / 30;
             int height = 3 + count / 40;
-            Vector3d look = entity.getLookAngle();
+            Vec3 look = entity.getLookAngle();
             BlockPos center = new BlockPos(entity.getEyePosition(1).add(look.scale(width + 1.5)));
-            RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1)));
-            if (entity instanceof PlayerEntity) {
-                ((PlayerEntity) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
+            RiftFeature.INSTANCE.place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) world, ((ServerLevel) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1))));
+            if (entity instanceof Player) {
+                ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
             }
         }
     }
@@ -69,18 +70,18 @@ public class BoundlessBladeItem extends SwordItem {
     }
 
     @Override
-    public UseAction getUseAnimation(ItemStack stack) {
-        return UseAction.BOW;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.BOW;
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.getCooldowns().isOnCooldown(this)) {
-            return ActionResult.pass(stack);
+            return InteractionResultHolder.pass(stack);
         }
         player.startUsingItem(hand);
-        return ActionResult.consume(stack);
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override

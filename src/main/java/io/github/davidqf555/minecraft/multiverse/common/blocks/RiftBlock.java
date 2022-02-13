@@ -1,27 +1,25 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class RiftBlock extends ContainerBlock {
+public class RiftBlock extends BaseEntityBlock {
 
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
 
@@ -34,22 +32,21 @@ public class RiftBlock extends ContainerBlock {
         );
     }
 
-    @Nullable
     @Override
-    public TileEntity newBlockEntity(IBlockReader reader) {
-        return new RiftTileEntity();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new RiftTileEntity(pos, state);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
         if (state.getValue(TEMPORARY)) {
             world.destroyBlock(pos, true);
         }
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TEMPORARY);
     }
 
@@ -61,11 +58,11 @@ public class RiftBlock extends ContainerBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
-        TileEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerWorld && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle()) {
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        BlockEntity tile = world.getBlockEntity(pos);
+        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle()) {
             if (!entity.isOnPortalCooldown()) {
-                ServerWorld target = DimensionHelper.getOrCreateWorld(((ServerWorld) world).getServer(), ((RiftTileEntity) tile).getTarget());
+                ServerLevel target = DimensionHelper.getOrCreateWorld(((ServerLevel) world).getServer(), ((RiftTileEntity) tile).getTarget());
                 entity.changeDimension(target, (RiftTileEntity) tile);
             }
             entity.setPortalCooldown();

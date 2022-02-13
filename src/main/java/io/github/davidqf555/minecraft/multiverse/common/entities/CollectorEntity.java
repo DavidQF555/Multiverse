@@ -3,36 +3,41 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.FlyingMovementController;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.SpellcastingIllagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.BossInfo;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerBossInfo;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.AbstractIllager;
+import net.minecraft.world.entity.monster.SpellcasterIllager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
@@ -42,20 +47,20 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CollectorEntity extends SpellcastingIllagerEntity {
+public class CollectorEntity extends SpellcasterIllager {
 
-    private final ServerBossInfo bar;
+    private final ServerBossEvent bar;
     private UUID original;
     private int from;
 
-    public CollectorEntity(World world) {
+    public CollectorEntity(Level world) {
         super(RegistryHandler.COLLECTOR_ENTITY.get(), world);
-        moveControl = new FlyingMovementController(this, 90, true);
-        bar = new ServerBossInfo(getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
-        setItemInHand(Hand.MAIN_HAND, RegistryHandler.BOUNDLESS_BLADE_ITEM.get().getDefaultInstance());
+        moveControl = new FlyingMoveControl(this, 90, true);
+        bar = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS);
+        setItemInHand(InteractionHand.MAIN_HAND, RegistryHandler.BOUNDLESS_BLADE_ITEM.get().getDefaultInstance());
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
+    public static AttributeSupplier.Builder createAttributes() {
         return createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 150)
                 .add(Attributes.FLYING_SPEED, 2)
@@ -64,26 +69,26 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     }
 
     @Override
-    protected PathNavigator createNavigation(World world) {
-        FlyingPathNavigator navigator = new FlyingPathNavigator(this, world);
+    protected PathNavigation createNavigation(Level world) {
+        FlyingPathNavigation navigator = new FlyingPathNavigation(this, world);
         navigator.setCanFloat(true);
         return navigator;
     }
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(0, new SwimGoal(this));
-        goalSelector.addGoal(1, new SpellcastingIllagerEntity.CastingASpellGoal());
+        goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(1, new SpellcasterCastingSpellGoal());
         goalSelector.addGoal(2, new CreateRiftGoal());
         goalSelector.addGoal(3, new FollowOriginalGoal(12, 8, 1));
         goalSelector.addGoal(4, new EnterRiftGoal(1, 16, 1));
         goalSelector.addGoal(5, new MeleeAttackGoal(this, 1, true));
-        goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1));
-        goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8));
-        goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
+        goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8));
+        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        targetSelector.addGoal(1, new CopyOriginalGoal(new EntityPredicate().allowUnseeable().ignoreInvisibilityTesting()));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false, true));
+        targetSelector.addGoal(1, new CopyOriginalGoal(TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting()));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, true));
     }
 
     @Override
@@ -101,7 +106,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     }
 
     @Override
-    public boolean causeFallDamage(float p_225503_1_, float p_225503_2_) {
+    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
         return false;
     }
 
@@ -111,7 +116,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
 
     @Nullable
     @Override
-    public Entity changeDimension(ServerWorld world, ITeleporter teleporter) {
+    public Entity changeDimension(ServerLevel world, ITeleporter teleporter) {
         Entity entity = super.changeDimension(world, teleporter);
         if (entity instanceof CollectorEntity) {
             ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level.dimension()));
@@ -128,8 +133,8 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     @Nullable
     public CollectorEntity getOriginal() {
         UUID original = getOriginalId();
-        if (level instanceof ServerWorld && original != null) {
-            Entity entity = ((ServerWorld) level).getEntity(original);
+        if (level instanceof ServerLevel && original != null) {
+            Entity entity = ((ServerLevel) level).getEntity(original);
             if (entity instanceof CollectorEntity) {
                 return (CollectorEntity) entity;
             }
@@ -145,7 +150,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     @Override
     public void checkDespawn() {
         if (level.getDifficulty() == Difficulty.PEACEFUL && shouldDespawnInPeaceful()) {
-            remove();
+            remove(RemovalReason.DISCARDED);
         } else {
             noActionTime = 0;
         }
@@ -183,7 +188,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
                     ((CollectorEntity) clone).from = from;
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     clone.setPos(getX(), getY(), getZ());
-                    level.levelEvent(Constants.WorldEvents.ENDER_EYE_SHATTER, blockPosition(), 0);
+                    level.levelEvent(LevelEvent.PARTICLES_EYE_OF_ENDER_DEATH, blockPosition(), 0);
                     level.addFreshEntity(clone);
                 }
             }
@@ -192,27 +197,27 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     }
 
     @Override
-    public ArmPose getArmPose() {
+    public AbstractIllager.IllagerArmPose getArmPose() {
         if (isAggressive() && !isCastingSpell()) {
-            return ArmPose.ATTACKING;
+            return IllagerArmPose.ATTACKING;
         }
         return super.getArmPose();
     }
 
     @Override
-    public void setCustomName(@Nullable ITextComponent name) {
+    public void setCustomName(@Nullable Component name) {
         super.setCustomName(name);
         bar.setName(getDisplayName());
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayerEntity player) {
+    public void startSeenByPlayer(ServerPlayer player) {
         super.startSeenByPlayer(player);
         bar.addPlayer(player);
     }
 
     @Override
-    public void stopSeenByPlayer(ServerPlayerEntity player) {
+    public void stopSeenByPlayer(ServerPlayer player) {
         super.stopSeenByPlayer(player);
         bar.removePlayer(player);
     }
@@ -220,9 +225,9 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        bar.setPercent(getHealthRatio());
+        bar.setProgress(getHealthRatio());
         if (getOriginalId() != null && getOriginal() == null) {
-            remove();
+            remove(RemovalReason.DISCARDED);
         }
     }
 
@@ -231,12 +236,12 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT nbt) {
+    public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if (nbt.contains("From", Constants.NBT.TAG_INT)) {
+        if (nbt.contains("From", Tag.TAG_INT)) {
             setFrom(nbt.getInt("From"));
         }
-        if (nbt.contains("Original", Constants.NBT.TAG_INT_ARRAY)) {
+        if (nbt.contains("Original", Tag.TAG_INT_ARRAY)) {
             setOriginal(nbt.getUUID("Original"));
         }
         if (hasCustomName()) {
@@ -245,7 +250,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT nbt) {
+    public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putInt("From", from);
         UUID original = getOriginalId();
@@ -254,19 +259,19 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
         }
     }
 
-    public static class Factory implements EntityType.IFactory<CollectorEntity> {
+    public static class Factory implements EntityType.EntityFactory<CollectorEntity> {
         @Override
-        public CollectorEntity create(EntityType<CollectorEntity> type, World world) {
+        public CollectorEntity create(EntityType<CollectorEntity> type, Level world) {
             return new CollectorEntity(world);
         }
     }
 
     private class CopyOriginalGoal extends TargetGoal {
 
-        private final EntityPredicate condition;
+        private final TargetingConditions condition;
         private LivingEntity target;
 
-        public CopyOriginalGoal(EntityPredicate condition) {
+        public CopyOriginalGoal(TargetingConditions condition) {
             super(CollectorEntity.this, false);
             this.condition = condition;
         }
@@ -334,7 +339,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
                 this.recalculate = 10;
                 if (!isPassenger()) {
                     if (distanceToSqr(original) >= 1024) {
-                        remove();
+                        remove(RemovalReason.DISCARDED);
                     } else {
                         getNavigation().moveTo(original, speed);
                     }
@@ -344,7 +349,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
         }
     }
 
-    private class CreateRiftGoal extends UseSpellGoal {
+    private class CreateRiftGoal extends SpellcasterUseSpellGoal {
 
         private CreateRiftGoal() {
             nextAttackTickCount = tickCount + getCastingInterval();
@@ -378,8 +383,8 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
         }
 
         @Override
-        protected SpellType getSpell() {
-            return SpellType.DISAPPEAR;
+        protected IllagerSpell getSpell() {
+            return IllagerSpell.DISAPPEAR;
         }
     }
 
@@ -390,9 +395,9 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
         }
 
         @Override
-        protected boolean isValidTarget(IWorldReader world, BlockPos pos) {
+        protected boolean isValidTarget(LevelReader world, BlockPos pos) {
             if (world.getBlockState(pos).getBlock().equals(RegistryHandler.RIFT_BLOCK.get())) {
-                TileEntity tile = world.getBlockEntity(pos);
+                BlockEntity tile = world.getBlockEntity(pos);
                 return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() != from;
             }
             return false;

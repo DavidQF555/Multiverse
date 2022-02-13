@@ -6,35 +6,30 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import net.minecraft.block.Blocks;
+import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.SurfaceRuleData;
+import net.minecraft.data.worldgen.TerrainProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.biome.ColumnFuzzedBiomeMagnifier;
-import net.minecraft.world.biome.FuzzedBiomeMagnifier;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.biome.provider.NetherBiomeProvider;
-import net.minecraft.world.border.IBorderListener;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.*;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.DerivedWorldInfo;
-import net.minecraft.world.storage.IServerConfiguration;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.border.BorderChangeListener;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraft.world.level.storage.DerivedLevelData;
+import net.minecraft.world.level.storage.WorldData;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -46,23 +41,23 @@ public final class DimensionHelper {
     }
 
     @SuppressWarnings("deprecation")
-    public static ServerWorld getOrCreateWorld(MinecraftServer server, int index) {
+    public static ServerLevel getOrCreateWorld(MinecraftServer server, int index) {
         if (index <= 0) {
-            return server.getLevel(World.OVERWORLD);
+            return server.getLevel(Level.OVERWORLD);
         }
-        RegistryKey<World> world = getRegistryKey(index);
-        Map<RegistryKey<World>, ServerWorld> map = server.forgeGetWorldMap();
+        ResourceKey<Level> world = getRegistryKey(index);
+        Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
         if (map.containsKey(world)) {
             return map.get(world);
         }
         return createAndRegisterWorldAndDimension(server, map, world, index);
     }
 
-    private static RegistryKey<World> getRegistryKey(int index) {
-        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, index + ""));
+    private static ResourceKey<Level> getRegistryKey(int index) {
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, index + ""));
     }
 
-    public static int getIndex(RegistryKey<World> world) {
+    public static int getIndex(ResourceKey<Level> world) {
         if (world.location().getNamespace().equals(Multiverse.MOD_ID)) {
             return Integer.parseInt(world.location().getPath());
         }
@@ -70,16 +65,16 @@ public final class DimensionHelper {
     }
 
     @SuppressWarnings("deprecation")
-    private static ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, Map<RegistryKey<World>, ServerWorld> map, RegistryKey<World> worldKey, int index) {
-        ServerWorld overworld = server.getLevel(World.OVERWORLD);
-        RegistryKey<Dimension> dimensionKey = RegistryKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
-        Dimension dimension = createDimension(server, index);
-        IServerConfiguration serverConfig = server.getWorldData();
-        DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
+    private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
+        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
+        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
+        LevelStem dimension = createDimension(server, index);
+        WorldData serverConfig = server.getWorldData();
+        WorldGenSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
         dimensionGeneratorSettings.dimensions().register(dimensionKey, dimension, Lifecycle.experimental());
-        DerivedWorldInfo derivedWorldInfo = new DerivedWorldInfo(serverConfig, serverConfig.overworldData());
-        ServerWorld newWorld = new ServerWorld(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.type(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
-        overworld.getWorldBorder().addListener(new IBorderListener.Impl(newWorld.getWorldBorder()));
+        DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
+        ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.type(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
+        overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
         map.put(worldKey, newWorld);
         server.markWorldsDirty();
         MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newWorld));
@@ -87,32 +82,34 @@ public final class DimensionHelper {
         return newWorld;
     }
 
-    private static Dimension createDimension(MinecraftServer server, int index) {
-        ServerWorld overworld = server.getLevel(World.OVERWORLD);
+    private static LevelStem createDimension(MinecraftServer server, int index) {
+        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = overworld.getSeed() + index * 80000L;
-        SharedSeedRandom random = new SharedSeedRandom(seed);
+        WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         Pair<Boolean, Boolean> bounds = randomBounds(random);
         boolean floor = bounds.getFirst();
         boolean ceiling = bounds.getSecond();
-        DimensionSettings settings = createSettings(ceiling, floor);
+        NoiseGeneratorSettings settings = createSettings(ceiling, floor);
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
-        Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-        BiomeProvider provider = new NetherBiomeProvider(seed, randomBiomes(random).stream().map(key -> (Supplier<Biome>) () -> lookup.getOrThrow(key)).map(sup -> {
-            Biome biome = sup.get();
-            return Pair.of(new Biome.Attributes(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0), sup);
-        }).collect(Collectors.toList()), Optional.empty());
-        ChunkGenerator generator = new MultiverseChunkGenerator(provider, seed, () -> settings);
+        Set<ResourceKey<Biome>> biomes = randomBiomes(random);
+        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(biomes.stream()
+                .map(key -> (Supplier<Biome>) () -> registry.getOrThrow(key))
+                .map(sup -> {
+                    Biome biome = sup.get();
+                    return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), sup);
+                }).collect(Collectors.toList()))).biomeSource(server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY));
+        ChunkGenerator generator = new MultiverseChunkGenerator(server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, () -> settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         DimensionType type = createDimensionType(ceiling, time, effect, lighting);
-        return new Dimension(() -> type, generator);
+        return new LevelStem(() -> type, generator);
     }
 
     private static DimensionType createDimensionType(boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return new DimensionType(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, ceiling ? 128 : 256, ceiling ? FuzzedBiomeMagnifier.INSTANCE : ColumnFuzzedBiomeMagnifier.INSTANCE, BlockTags.INFINIBURN_OVERWORLD.getName(), effect, light);
+        return DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, ceiling ? 128 : 256, 128, BlockTags.INFINIBURN_OVERWORLD.getName(), effect, light);
     }
 
-    private static DimensionSettings createSettings(boolean ceiling, boolean floor) {
+    private static NoiseGeneratorSettings createSettings(boolean ceiling, boolean floor) {
         int height = ceiling || !floor ? 128 : 256;
         int sizeHorizontal;
         int sizeVertical;
@@ -122,8 +119,7 @@ public final class DimensionHelper {
         int bottomTarget;
         int bottomSize;
         int bottomOffset;
-        double densityFactor;
-        double densityOffset;
+        TerrainShaper shaper;
         double xzScale;
         double yScale;
         double xzFactor = 80;
@@ -139,8 +135,7 @@ public final class DimensionHelper {
                 bottomTarget = 320;
                 bottomSize = 4;
                 bottomOffset = -1;
-                densityFactor = 0;
-                densityOffset = 0.02;
+                shaper = TerrainProvider.nether();
                 yFactor = 60;
                 seaLevel = 32;
                 xzScale = 1;
@@ -152,8 +147,7 @@ public final class DimensionHelper {
                 bottomTarget = -30;
                 bottomSize = 0;
                 bottomOffset = 0;
-                densityFactor = 1;
-                densityOffset = -0.5;
+                shaper = TerrainProvider.overworld(false);
                 yFactor = 160;
                 seaLevel = 63;
                 xzScale = 1;
@@ -169,8 +163,7 @@ public final class DimensionHelper {
                 bottomTarget = -30;
                 bottomSize = 7;
                 bottomOffset = 1;
-                densityFactor = 0;
-                densityOffset = 0;
+                shaper = TerrainProvider.nether();
                 yFactor = 30;
                 xzScale = 1;
             } else {
@@ -182,35 +175,33 @@ public final class DimensionHelper {
                 bottomTarget = -30;
                 bottomSize = 7;
                 bottomOffset = 1;
-                densityFactor = 0;
-                densityOffset = 0;
+                shaper = TerrainProvider.floatingIslands();
                 yFactor = 160;
                 xzScale = 2;
             }
             yScale = 1;
             seaLevel = 0;
         }
-        int ceilingOffset = ceiling ? 0 : -10;
-        int floorOffset = floor ? 0 : -10;
-        SlideSettings topSlide = new SlideSettings(topTarget, topSize, topOffset);
-        SlideSettings bottomSlide = new SlideSettings(bottomTarget, bottomSize, bottomOffset);
-        ScalingSettings sampling = new ScalingSettings(xzScale, yScale, xzFactor, yFactor);
-        NoiseSettings noise = new NoiseSettings(height, sampling, topSlide, bottomSlide, sizeHorizontal, sizeVertical, densityFactor, densityOffset, false, true, false, false);
-        Map<Structure<?>, StructureSeparationSettings> map = new HashMap<>(DimensionStructuresSettings.DEFAULTS);
+        NoiseSlider topSlide = new NoiseSlider(topTarget, topSize, topOffset);
+        NoiseSlider bottomSlide = new NoiseSlider(bottomTarget, bottomSize, bottomOffset);
+        NoiseSamplingSettings sampling = new NoiseSamplingSettings(xzScale, yScale, xzFactor, yFactor);
+        NoiseSettings noise = NoiseSettings.create(0, height, sampling, topSlide, bottomSlide, sizeHorizontal, sizeVertical, false, false, false, shaper);
+        Map<StructureFeature<?>, StructureFeatureConfiguration> map = new HashMap<>(StructureSettings.DEFAULTS);
         if (ceiling) {
-            for (Structure<?> structure : new HashSet<>(map.keySet())) {
-                if (structure.step() == GenerationStage.Decoration.SURFACE_STRUCTURES) {
+            for (StructureFeature<?> structure : new HashSet<>(map.keySet())) {
+                if (structure.step() == GenerationStep.Decoration.SURFACE_STRUCTURES) {
                     map.remove(structure);
                 }
             }
         }
-        DimensionStructuresSettings structures = new DimensionStructuresSettings(Optional.empty(), map);
-        return new DimensionSettings(structures, noise, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), ceilingOffset, floorOffset, seaLevel, false);
+        StructureSettings structures = new StructureSettings(Optional.empty(), map);
+        SurfaceRules.RuleSource rules = SurfaceRuleData.overworldLike(true, ceiling, floor);
+        return new NoiseGeneratorSettings(structures, noise, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), rules, seaLevel, false, true, true, true, true, false);
     }
 
-    private static Set<RegistryKey<Biome>> randomBiomes(Random random) {
+    private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
         List<BiomeDictionary.Type> types = new ArrayList<>(BiomeDictionary.Type.getAll());
-        Set<RegistryKey<Biome>> biomes = new HashSet<>(BiomeDictionary.getBiomes(types.get(random.nextInt(types.size()))));
+        Set<ResourceKey<Biome>> biomes = new HashSet<>(BiomeDictionary.getBiomes(types.get(random.nextInt(types.size()))));
         double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
         for (BiomeDictionary.Type type : types) {
             if (random.nextDouble() < chance) {

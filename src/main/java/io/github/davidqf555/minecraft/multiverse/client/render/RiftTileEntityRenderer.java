@@ -1,109 +1,64 @@
 package io.github.davidqf555.minecraft.multiverse.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
+public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_background.png");
     private static final ResourceLocation PARTICLES = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_particles.png");
-    private static final List<RenderType> LAYERS = IntStream.range(1, 16).mapToObj(RiftTileEntityRenderer::createRenderType).collect(Collectors.toList());
+    private static final RenderType TYPE = RenderType.create("end_portal", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(RenderType.RENDERTYPE_END_PORTAL_SHADER).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(BACKGROUND, false, false).add(PARTICLES, false, false).build()).createCompositeState(false));
     private static final Random RANDOM = new Random(0);
 
-    public RiftTileEntityRenderer(TileEntityRendererDispatcher dispatcher) {
-        super(dispatcher);
-    }
-
-    private static RenderType createRenderType(int layer) {
-        RenderState.TransparencyState transparency;
-        RenderState.TextureState texture;
-        if (layer == 1) {
-            transparency = RenderState.TRANSLUCENT_TRANSPARENCY;
-            texture = new RenderState.TextureState(BACKGROUND, false, false);
-        } else {
-            transparency = RenderState.ADDITIVE_TRANSPARENCY;
-            texture = new RenderState.TextureState(PARTICLES, false, false);
-        }
-        return RenderType.create("rift", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true, RenderType.State.builder().setTransparencyState(transparency).setTextureState(texture).setTexturingState(new RenderState.PortalTexturingState(layer + 8)).setFogState(RenderState.BLACK_FOG).createCompositeState(false));
-    }
-
     @Override
-    public void render(RiftTileEntity entity, float partial, MatrixStack matrixStack, IRenderTypeBuffer buffer, int overlay, int packedLight) {
+    public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
         int world = entity.getTarget();
         RANDOM.setSeed(entity.getLevel().getBiomeManager().biomeZoomSeed + world);
-        double distSq = entity.getBlockPos().distSqr(renderer.camera.getPosition(), true);
-        int layers = getLayers(distSq);
         float red = RANDOM.nextFloat();
         float green = RANDOM.nextFloat();
         float blue = RANDOM.nextFloat();
         Matrix4f pose = matrixStack.last().pose();
-        renderCube(pose, buffer.getBuffer(LAYERS.get(0)), red, green, blue);
+        renderCube(pose, buffer.getBuffer(TYPE), red, green, blue);
         float pRed = RANDOM.nextFloat();
         float pGreen = RANDOM.nextFloat();
         float pBlue = RANDOM.nextFloat();
-        for (int layer = 1; layer < layers; layer++) {
-            renderCubeOffsetColors(pose, buffer.getBuffer(LAYERS.get(layer)), pRed, pGreen, pBlue, 2f / (LAYERS.size() - layer + 1));
-        }
+        renderCubeOffsetColors(pose, buffer.getBuffer(TYPE), pRed, pGreen, pBlue, 0.25f);
     }
 
-    private void renderCubeOffsetColors(Matrix4f matrix, IVertexBuilder builder, float oRed, float oGreen, float oBlue, float factor) {
+    private void renderCubeOffsetColors(Matrix4f matrix, VertexConsumer builder, float oRed, float oGreen, float oBlue, float factor) {
         float red = RANDOM.nextFloat() * factor + oRed;
         float green = RANDOM.nextFloat() * factor + oGreen;
         float blue = RANDOM.nextFloat() * factor + oBlue;
         renderCube(matrix, builder, red, blue, green);
     }
 
-    private void renderCube(Matrix4f matrix, IVertexBuilder builder, float red, float green, float blue) {
-        renderFace(matrix, builder, 0, 1, 0, 1, 1, 1, 1, 1, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 1, 1, 0, 0, 0, 0, 0, red, green, blue, 1);
-        renderFace(matrix, builder, 1, 1, 1, 0, 0, 1, 1, 0, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 0, 0, 1, 0, 1, 1, 0, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 1, 0, 0, 0, 0, 1, 1, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 1, 1, 1, 1, 1, 0, 0, red, green, blue, 1);
+    private void renderCube(Matrix4f matrix, VertexConsumer buffer, float red, float green, float blue) {
+        this.renderFace(matrix, buffer, 0, 1, 0, 1, 1, 1, 1, 1, red, green, blue);
+        this.renderFace(matrix, buffer, 0, 1, 1, 0, 0, 0, 0, 0, red, green, blue);
+        this.renderFace(matrix, buffer, 1, 1, 1, 0, 0, 1, 1, 0, red, green, blue);
+        this.renderFace(matrix, buffer, 0, 0, 0, 1, 0, 1, 1, 0, red, green, blue);
+        this.renderFace(matrix, buffer, 0, 1, 0, 0, 0, 0, 1, 1, red, green, blue);
+        this.renderFace(matrix, buffer, 0, 1, 1, 1, 1, 1, 0, 0, red, green, blue);
     }
 
-    private void renderFace(Matrix4f matrix, IVertexBuilder builder, float startX, float endX, float startY, float endY, float z1, float z2, float z3, float z4, float red, float green, float blue, float alpha) {
-        builder.vertex(matrix, startX, startY, z1).color(red, green, blue, alpha).endVertex();
-        builder.vertex(matrix, endX, startY, z2).color(red, green, blue, alpha).endVertex();
-        builder.vertex(matrix, endX, endY, z3).color(red, green, blue, alpha).endVertex();
-        builder.vertex(matrix, startX, endY, z4).color(red, green, blue, alpha).endVertex();
+    private void renderFace(Matrix4f p_173696_, VertexConsumer p_173697_, float p_173698_, float p_173699_, float p_173700_, float p_173701_, float p_173702_, float p_173703_, float p_173704_, float p_173705_, float red, float green, float blue) {
+        p_173697_.vertex(p_173696_, p_173698_, p_173700_, p_173702_).color(red, green, blue, 1).endVertex();
+        p_173697_.vertex(p_173696_, p_173699_, p_173700_, p_173703_).color(red, green, blue, 1).endVertex();
+        p_173697_.vertex(p_173696_, p_173699_, p_173701_, p_173704_).color(red, green, blue, 1).endVertex();
+        p_173697_.vertex(p_173696_, p_173698_, p_173701_, p_173705_).color(red, green, blue, 1).endVertex();
     }
 
-    protected int getLayers(double distSq) {
-        if (distSq > 36864) {
-            return 1;
-        } else if (distSq > 25600) {
-            return 3;
-        } else if (distSq > 16384) {
-            return 5;
-        } else if (distSq > 9216) {
-            return 7;
-        } else if (distSq > 4096) {
-            return 9;
-        } else if (distSq > 1024) {
-            return 11;
-        } else if (distSq > 576) {
-            return 13;
-        } else if (distSq > 256) {
-            return 14;
-        } else {
-            return 15;
-        }
-    }
 
 }

@@ -4,9 +4,10 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.MultiverseChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftFeature;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.GenerationStage;
+import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftPlacement;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +27,7 @@ public final class EventBusSubscriber {
 
         @SubscribeEvent
         public static void onBiomeLoading(BiomeLoadingEvent event) {
-            event.getGeneration().addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, RiftFeature.CONFIG);
+            event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, RiftFeature.PLACED);
         }
 
     }
@@ -44,6 +45,7 @@ public final class EventBusSubscriber {
             event.enqueueWork(() -> {
                 UpdateClientDimensionsPacket.register(index++);
                 Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "multiverse_chunk_generator_codec"), MultiverseChunkGenerator.CODEC);
+                RiftPlacement.TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, RiftPlacement.LOCATION, () -> RiftPlacement.CODEC);
             });
         }
 
