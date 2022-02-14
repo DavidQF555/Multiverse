@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
@@ -13,6 +14,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ColorHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -20,6 +22,7 @@ import net.minecraft.village.PointOfInterest;
 import net.minecraft.village.PointOfInterestManager;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
@@ -52,6 +55,28 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
 
     public void setTarget(int target) {
         this.target = target;
+    }
+
+    public Pair<Integer, Integer> getColors(Random rand) {
+        int color = ColorHelper.PackedColor.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        int particles = ColorHelper.PackedColor.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        return Pair.of(color, particles);
+    }
+
+    public Random getColorsRandom() {
+        return new Random(getSeed());
+    }
+
+    public Pair<Integer, Integer> getColors() {
+        return getColors(getColorsRandom());
+    }
+
+    public long getSeed() {
+        World world = getLevel();
+        if (world != null) {
+            return DimensionHelper.getSeed(world.getBiomeManager().biomeZoomSeed, getTarget(), true);
+        }
+        return 0;
     }
 
     @Override

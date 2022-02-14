@@ -15,6 +15,7 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,10 +34,11 @@ public class RiftFeature extends Feature<RiftConfig> {
 
     @Override
     public boolean place(ISeedReader reader, ChunkGenerator gen, Random rand, BlockPos center, RiftConfig config) {
+        ServerWorld world = reader.getLevel();
         int target = config.getTarget().orElseGet(() -> {
-            int current = DimensionHelper.getIndex(reader.getLevel().dimension());
-            int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-            return world < current ? world : world + 1;
+            int current = DimensionHelper.getIndex(world.dimension());
+            int dim = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+            return dim < current ? dim : dim + 1;
         });
         BlockState rift = config.getBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
@@ -44,6 +46,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         if (!natural) {
             reader.getLevel().levelEvent(Constants.WorldEvents.GATEWAY_SPAWN_EFFECTS, center, 0);
         }
+        double fabric = ServerConfigs.INSTANCE.fabricOfReailtyChance.get();
         int totalWidth = config.getWidth(rand);
         int totalHeight = config.getHeight(rand);
         float xRot = config.getRotX(rand) * (float) Math.PI / 180;
@@ -58,6 +61,9 @@ public class RiftFeature extends Feature<RiftConfig> {
                 if (canReplace(reader, pos)) {
                     if (!natural) {
                         reader.destroyBlock(pos, true);
+                        if (rand.nextDouble() < fabric) {
+                            RiftBlock.popResource(world, pos, RegistryHandler.FABRIC_OF_REALITY_ITEM.get().getDefaultInstance());
+                        }
                     }
                     setBlock(reader, pos, rift);
                     TileEntity tile = reader.getBlockEntity(pos);

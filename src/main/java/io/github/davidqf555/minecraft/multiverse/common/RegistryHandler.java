@@ -4,6 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.items.BoundlessBladeItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.FabricOfRealityItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.UniversalTreasureItem;
 import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftFeature;
 import net.minecraft.block.Block;
@@ -31,6 +32,7 @@ public final class RegistryHandler {
     public static final RegistryObject<RiftFeature> RIFT_FEATURE = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "rift"), ForgeRegistries.FEATURES);
     public static final RegistryObject<BoundlessBladeItem> BOUNDLESS_BLADE_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "boundless_blade"), ForgeRegistries.ITEMS);
     public static final RegistryObject<UniversalTreasureItem> UNIVERSAL_TREASURE_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "universal_treasure"), ForgeRegistries.ITEMS);
+    public static final RegistryObject<FabricOfRealityItem> FABRIC_OF_REALITY_ITEM = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "fabric_of_reality"), ForgeRegistries.ITEMS);
     public static final RegistryObject<EntityType<CollectorEntity>> COLLECTOR_ENTITY = RegistryObject.of(new ResourceLocation(Multiverse.MOD_ID, "collector"), ForgeRegistries.ENTITIES);
 
     private RegistryHandler() {
@@ -60,7 +62,8 @@ public final class RegistryHandler {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
                 new BoundlessBladeItem().setRegistryName(BOUNDLESS_BLADE_ITEM.getId()),
-                new UniversalTreasureItem().setRegistryName(UNIVERSAL_TREASURE_ITEM.getId())
+                new UniversalTreasureItem().setRegistryName(UNIVERSAL_TREASURE_ITEM.getId()),
+                new FabricOfRealityItem().setRegistryName(FABRIC_OF_REALITY_ITEM.getId())
         );
     }
 

@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ColorHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 
@@ -23,7 +25,6 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_background.png");
     private static final ResourceLocation PARTICLES = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_particles.png");
     private static final List<RenderType> LAYERS = IntStream.range(1, 16).mapToObj(RiftTileEntityRenderer::createRenderType).collect(Collectors.toList());
-    private static final Random RANDOM = new Random(0);
 
     public RiftTileEntityRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -44,37 +45,37 @@ public class RiftTileEntityRenderer extends TileEntityRenderer<RiftTileEntity> {
 
     @Override
     public void render(RiftTileEntity entity, float partial, MatrixStack matrixStack, IRenderTypeBuffer buffer, int overlay, int packedLight) {
-        int world = entity.getTarget();
-        RANDOM.setSeed(entity.getLevel().getBiomeManager().biomeZoomSeed + world);
         double distSq = entity.getBlockPos().distSqr(renderer.camera.getPosition(), true);
+        Random rand = entity.getColorsRandom();
+        Pair<Integer, Integer> colors = entity.getColors(rand);
         int layers = getLayers(distSq);
-        float red = RANDOM.nextFloat();
-        float green = RANDOM.nextFloat();
-        float blue = RANDOM.nextFloat();
         Matrix4f pose = matrixStack.last().pose();
-        renderCube(pose, buffer.getBuffer(LAYERS.get(0)), red, green, blue);
-        float pRed = RANDOM.nextFloat();
-        float pGreen = RANDOM.nextFloat();
-        float pBlue = RANDOM.nextFloat();
+        int color = colors.getFirst();
+        renderCube(pose, buffer.getBuffer(LAYERS.get(0)), ColorHelper.PackedColor.red(color) / 255f, ColorHelper.PackedColor.green(color) / 255f, ColorHelper.PackedColor.blue(color) / 255f, ColorHelper.PackedColor.alpha(color) / 255f);
+        int particles = colors.getSecond();
+        float pRed = ColorHelper.PackedColor.red(particles) / 255f;
+        float pGreen = ColorHelper.PackedColor.green(particles) / 255f;
+        float pBlue = ColorHelper.PackedColor.blue(particles) / 255f;
+        float pAlpha = ColorHelper.PackedColor.alpha(particles) / 255f;
         for (int layer = 1; layer < layers; layer++) {
-            renderCubeOffsetColors(pose, buffer.getBuffer(LAYERS.get(layer)), pRed, pGreen, pBlue, 2f / (LAYERS.size() - layer + 1));
+            renderCubeOffsetColors(rand, pose, buffer.getBuffer(LAYERS.get(layer)), pRed, pGreen, pBlue, pAlpha, 2f / (LAYERS.size() - layer + 1));
         }
     }
 
-    private void renderCubeOffsetColors(Matrix4f matrix, IVertexBuilder builder, float oRed, float oGreen, float oBlue, float factor) {
-        float red = RANDOM.nextFloat() * factor + oRed;
-        float green = RANDOM.nextFloat() * factor + oGreen;
-        float blue = RANDOM.nextFloat() * factor + oBlue;
-        renderCube(matrix, builder, red, blue, green);
+    private void renderCubeOffsetColors(Random rand, Matrix4f matrix, IVertexBuilder builder, float oRed, float oGreen, float oBlue, float oAlpha, float factor) {
+        float red = rand.nextFloat() * factor + oRed;
+        float green = rand.nextFloat() * factor + oGreen;
+        float blue = rand.nextFloat() * factor + oBlue;
+        renderCube(matrix, builder, red, blue, green, oAlpha);
     }
 
-    private void renderCube(Matrix4f matrix, IVertexBuilder builder, float red, float green, float blue) {
-        renderFace(matrix, builder, 0, 1, 0, 1, 1, 1, 1, 1, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 1, 1, 0, 0, 0, 0, 0, red, green, blue, 1);
-        renderFace(matrix, builder, 1, 1, 1, 0, 0, 1, 1, 0, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 0, 0, 1, 0, 1, 1, 0, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 1, 0, 0, 0, 0, 1, 1, red, green, blue, 1);
-        renderFace(matrix, builder, 0, 1, 1, 1, 1, 1, 0, 0, red, green, blue, 1);
+    private void renderCube(Matrix4f matrix, IVertexBuilder builder, float red, float green, float blue, float alpha) {
+        renderFace(matrix, builder, 0, 1, 0, 1, 1, 1, 1, 1, red, green, blue, alpha);
+        renderFace(matrix, builder, 0, 1, 1, 0, 0, 0, 0, 0, red, green, blue, alpha);
+        renderFace(matrix, builder, 1, 1, 1, 0, 0, 1, 1, 0, red, green, blue, alpha);
+        renderFace(matrix, builder, 0, 0, 0, 1, 0, 1, 1, 0, red, green, blue, alpha);
+        renderFace(matrix, builder, 0, 1, 0, 0, 0, 0, 1, 1, red, green, blue, alpha);
+        renderFace(matrix, builder, 0, 1, 1, 1, 1, 1, 0, 0, red, green, blue, alpha);
     }
 
     private void renderFace(Matrix4f matrix, IVertexBuilder builder, float startX, float endX, float startY, float endY, float z1, float z2, float z3, float z4, float red, float green, float blue, float alpha) {

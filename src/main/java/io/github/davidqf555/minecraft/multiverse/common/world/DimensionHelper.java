@@ -58,6 +58,13 @@ public final class DimensionHelper {
         return createAndRegisterWorldAndDimension(server, map, world, index);
     }
 
+    public static long getSeed(long overworld, int index, boolean obfuscated) {
+        if (!obfuscated) {
+            overworld = BiomeManager.obfuscateSeed(overworld);
+        }
+        return overworld + 80000L * index;
+    }
+
     private static RegistryKey<World> getRegistryKey(int index) {
         return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, index + ""));
     }
@@ -89,7 +96,7 @@ public final class DimensionHelper {
 
     private static Dimension createDimension(MinecraftServer server, int index) {
         ServerWorld overworld = server.getLevel(World.OVERWORLD);
-        long seed = overworld.getSeed() + index * 80000L;
+        long seed = getSeed(overworld.getSeed(), index, false);
         SharedSeedRandom random = new SharedSeedRandom(seed);
         Pair<Boolean, Boolean> bounds = randomBounds(random);
         boolean floor = bounds.getFirst();
