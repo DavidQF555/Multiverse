@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;

@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world;
+package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -39,17 +39,17 @@ import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiverseChunkGenerator extends NoiseChunkGenerator {
+public class DynamicDefaultChunkGenerator extends NoiseChunkGenerator {
 
-    public static final Codec<MultiverseChunkGenerator> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final Codec<DynamicDefaultChunkGenerator> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             BiomeProvider.CODEC.fieldOf("biome_source").forGetter(gen -> gen.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(gen -> gen.seed),
             DimensionSettings.CODEC.fieldOf("settings").forGetter(gen -> gen.settings)
-    ).apply(builder, builder.stable(MultiverseChunkGenerator::new)));
+    ).apply(builder, builder.stable(DynamicDefaultChunkGenerator::new)));
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
     private static final Map<RegistryKey<Biome>, Pair<BlockState, BlockState>> DEFAULTS = new HashMap<>();
 
-    public MultiverseChunkGenerator(BiomeProvider provider, long seed, Supplier<DimensionSettings> settings) {
+    public DynamicDefaultChunkGenerator(BiomeProvider provider, long seed, Supplier<DimensionSettings> settings) {
         super(provider, seed, settings);
     }
 
@@ -60,7 +60,7 @@ public class MultiverseChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new MultiverseChunkGenerator(biomeSource, seed, settings);
+        return new DynamicDefaultChunkGenerator(biomeSource, seed, settings);
     }
 
     @Override

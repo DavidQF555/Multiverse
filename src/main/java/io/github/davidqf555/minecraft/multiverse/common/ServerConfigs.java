@@ -14,9 +14,9 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.ConfigValue<Double> additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
-    public final ForgeConfigSpec.ConfigValue<Boolean> inverse;
-    public final ForgeConfigSpec.ConfigValue<Integer> maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
+    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
+    public final ForgeConfigSpec.BooleanValue inverse;
+    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");

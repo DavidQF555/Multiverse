@@ -6,7 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity
 import io.github.davidqf555.minecraft.multiverse.common.items.BoundlessBladeItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.FabricOfRealityItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.UniversalTreasureItem;
-import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftFeature;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftFeature;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

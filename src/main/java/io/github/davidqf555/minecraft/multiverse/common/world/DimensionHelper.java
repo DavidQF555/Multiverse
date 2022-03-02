@@ -6,6 +6,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
@@ -109,7 +110,7 @@ public final class DimensionHelper {
             Biome biome = sup.get();
             return Pair.of(new Biome.Attributes(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0), sup);
         }).collect(Collectors.toList()), Optional.empty());
-        ChunkGenerator generator = new MultiverseChunkGenerator(provider, seed, () -> settings);
+        ChunkGenerator generator = new DynamicDefaultChunkGenerator(provider, seed, () -> settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         DimensionType type = createDimensionType(ceiling, time, effect, lighting);
         return new Dimension(() -> type, generator);

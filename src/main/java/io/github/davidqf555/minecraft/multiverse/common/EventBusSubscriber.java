@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.world.MultiverseChunkGenerator;
-import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftFeature;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftFeature;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.GenerationStage;
@@ -43,7 +43,7 @@ public final class EventBusSubscriber {
         public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
             event.enqueueWork(() -> {
                 UpdateClientDimensionsPacket.register(index++);
-                Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "multiverse_chunk_generator_codec"), MultiverseChunkGenerator.CODEC);
+                Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "dynamic_default"), DynamicDefaultChunkGenerator.CODEC);
             });
         }
 
