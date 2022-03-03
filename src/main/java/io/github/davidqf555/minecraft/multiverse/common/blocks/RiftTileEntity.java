@@ -1,20 +1,23 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
@@ -47,6 +50,28 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     public void setTarget(int target) {
         this.target = target;
+    }
+
+    public Pair<Integer, Integer> getColors(Random rand) {
+        int color = FastColor.ARGB32.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        int particles = FastColor.ARGB32.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        return Pair.of(color, particles);
+    }
+
+    public Random getColorsRandom() {
+        return new Random(getSeed());
+    }
+
+    public Pair<Integer, Integer> getColors() {
+        return getColors(getColorsRandom());
+    }
+
+    public long getSeed() {
+        Level world = getLevel();
+        if (world != null) {
+            return DimensionHelper.getSeed(world.getBiomeManager().biomeZoomSeed, getTarget(), true);
+        }
+        return 0;
     }
 
     @Override

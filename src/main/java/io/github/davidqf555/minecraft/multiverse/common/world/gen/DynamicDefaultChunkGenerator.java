@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world;
+package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,17 +26,17 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
-public class MultiverseChunkGenerator extends NoiseBasedChunkGenerator {
+public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
 
     private static final Map<ResourceKey<Biome>, Aquifer.FluidStatus> FLUIDS = new HashMap<>();
-    public static final Codec<MultiverseChunkGenerator> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final Codec<DynamicDefaultChunkGenerator> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                     RegistryLookupCodec.create(Registry.NOISE_REGISTRY).forGetter(gen -> gen.noises),
                     BiomeSource.CODEC.fieldOf("biome_source").forGetter(gen -> gen.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(gen -> gen.seed),
                     NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(gen -> gen.settings))
-            .apply(builder, builder.stable(MultiverseChunkGenerator::new)));
+            .apply(builder, builder.stable(DynamicDefaultChunkGenerator::new)));
 
-    public MultiverseChunkGenerator(Registry<NormalNoise.NoiseParameters> noise, BiomeSource source, long seed, Supplier<NoiseGeneratorSettings> settings) {
+    public DynamicDefaultChunkGenerator(Registry<NormalNoise.NoiseParameters> noise, BiomeSource source, long seed, Supplier<NoiseGeneratorSettings> settings) {
         super(noise, source, seed, settings);
         Aquifer.FluidStatus lava = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
         int sea = settings.get().seaLevel();

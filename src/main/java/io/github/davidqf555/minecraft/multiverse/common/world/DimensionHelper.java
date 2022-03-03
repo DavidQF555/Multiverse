@@ -6,6 +6,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.data.worldgen.TerrainProvider;
@@ -51,6 +52,13 @@ public final class DimensionHelper {
             return map.get(world);
         }
         return createAndRegisterWorldAndDimension(server, map, world, index);
+    }
+
+    public static long getSeed(long overworld, int index, boolean obfuscated) {
+        if (!obfuscated) {
+            overworld = BiomeManager.obfuscateSeed(overworld);
+        }
+        return overworld + 80000L * index;
     }
 
     private static ResourceKey<Level> getRegistryKey(int index) {
@@ -99,7 +107,7 @@ public final class DimensionHelper {
                     Biome biome = sup.get();
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), sup);
                 }).collect(Collectors.toList()))).biomeSource(server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY));
-        ChunkGenerator generator = new MultiverseChunkGenerator(server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, () -> settings);
+        ChunkGenerator generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, () -> settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         DimensionType type = createDimensionType(ceiling, time, effect, lighting);
         return new LevelStem(() -> type, generator);

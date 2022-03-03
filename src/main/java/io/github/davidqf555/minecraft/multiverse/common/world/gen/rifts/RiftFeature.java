@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.rifts;
+package io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts;
 
 import com.mojang.math.Constants;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
@@ -8,6 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
@@ -37,19 +38,21 @@ public class RiftFeature extends Feature<RiftConfig> {
     public boolean place(FeaturePlaceContext<RiftConfig> context) {
         RiftConfig config = context.config();
         WorldGenLevel reader = context.level();
+        Level world = reader.getLevel();
         Random rand = context.random();
         int target = config.getTarget().orElseGet(() -> {
-            int current = DimensionHelper.getIndex(reader.getLevel().dimension());
-            int world = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-            return world < current ? world : world + 1;
+            int current = DimensionHelper.getIndex(world.dimension());
+            int dim = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+            return dim < current ? dim : dim + 1;
         });
         BlockState rift = config.getBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
         BlockPos center = context.origin();
         boolean natural = config.isNatural();
         if (!natural) {
-            reader.getLevel().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
+            world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
         }
+        double fabric = ServerConfigs.INSTANCE.fabricOfReailtyChance.get();
         int totalWidth = config.getWidth(rand);
         int totalHeight = config.getHeight(rand);
         float xRot = config.getRotX(rand) * Constants.DEG_TO_RAD;
@@ -64,6 +67,9 @@ public class RiftFeature extends Feature<RiftConfig> {
                 if (canReplace(reader, pos)) {
                     if (!natural) {
                         reader.destroyBlock(pos, true);
+                        if (rand.nextDouble() < fabric) {
+                            RiftBlock.popResource(world, pos, RegistryHandler.FABRIC_OF_REALITY_ITEM.get().getDefaultInstance());
+                        }
                     }
                     setBlock(reader, pos, rift);
                     BlockEntity tile = reader.getBlockEntity(pos);

@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.rifts;
+package io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;

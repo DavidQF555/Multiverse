@@ -14,9 +14,9 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.ConfigValue<Double> additionalBiomeTypeChance, fixedTimeChance;
-    public final ForgeConfigSpec.ConfigValue<Boolean> inverse;
-    public final ForgeConfigSpec.ConfigValue<Integer> maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
+    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
+    public final ForgeConfigSpec.BooleanValue inverse;
+    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
@@ -33,6 +33,8 @@ public class ServerConfigs {
                 .define("inverse", false);
         builder.pop();
         builder.push("Rifts");
+        fabricOfReailtyChance = builder.comment("This is the chance of a Fabric of Reality dropping whenever a rift opens. ")
+                .defineInRange("fabricChance", 0.05, 0, 1);
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
                 .defineInRange("chance", 20, 1, Integer.MAX_VALUE);
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")

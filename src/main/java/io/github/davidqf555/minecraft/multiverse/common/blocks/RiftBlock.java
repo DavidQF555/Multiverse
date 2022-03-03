@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -24,11 +23,12 @@ public class RiftBlock extends BaseEntityBlock {
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
 
     public RiftBlock() {
-        super(Properties.of(Material.PORTAL, MaterialColor.COLOR_BLACK)
+        super(Properties.of(Material.PORTAL)
                 .noCollission()
                 .strength(-1, 3600000)
                 .noDrops()
                 .randomTicks()
+                .lightLevel(state -> 15)
         );
     }
 

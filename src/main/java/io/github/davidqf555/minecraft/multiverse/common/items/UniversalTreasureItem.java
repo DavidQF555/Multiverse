@@ -5,7 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.world.rifts.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
