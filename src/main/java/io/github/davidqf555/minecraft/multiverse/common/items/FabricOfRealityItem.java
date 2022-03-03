@@ -2,18 +2,18 @@ package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,31 +21,31 @@ import java.util.List;
 
 public class FabricOfRealityItem extends Item {
 
-    private static final ITextComponent LORE = new TranslationTextComponent("item." + Multiverse.MOD_ID + ".fabric_of_reality.lore").withStyle(TextFormatting.BLUE);
+    private static final Component LORE = new TranslatableComponent("item." + Multiverse.MOD_ID + ".fabric_of_reality.lore").withStyle(ChatFormatting.BLUE);
 
     public FabricOfRealityItem() {
         super(new Item.Properties()
-                .tab(ItemGroup.TAB_MATERIALS)
+                .tab(CreativeModeTab.TAB_MATERIALS)
                 .rarity(Rarity.UNCOMMON)
         );
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> text, ITooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, world, text, flag);
         text.add(LORE);
     }
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         BlockPos target = context.getClickedPos();
-        World world = context.getLevel();
-        if (world instanceof ServerWorld && world.getBlockState(target).getBlock().equals(RegistryHandler.RIFT_BLOCK.get()) && world.destroyBlock(target, true, player)) {
+        Level world = context.getLevel();
+        if (world instanceof ServerLevel && world.getBlockState(target).getBlock().equals(RegistryHandler.RIFT_BLOCK.get()) && world.destroyBlock(target, true, player)) {
             context.getItemInHand().shrink(1);
-            world.playSound(player, target, SoundEvents.GLASS_BREAK, SoundCategory.BLOCKS, 1, 1);
-            return ActionResultType.CONSUME;
+            world.playSound(player, target, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1, 1);
+            return InteractionResult.CONSUME;
         }
         return super.useOn(context);
     }
