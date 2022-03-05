@@ -1,18 +1,25 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftFeature;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftPlacement;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.features.FeatureUtils;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
+import java.util.Optional;
 
 public final class EventBusSubscriber {
 
@@ -46,6 +53,7 @@ public final class EventBusSubscriber {
                 UpdateClientDimensionsPacket.register(index++);
                 Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "dynamic_default"), DynamicDefaultChunkGenerator.CODEC);
                 RiftPlacement.TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, RiftPlacement.LOCATION, () -> RiftPlacement.CODEC);
+                RiftFeature.PLACED = PlacementUtils.register(RegistryHandler.RIFT_FEATURE.getId().toString(), FeatureUtils.register(RegistryHandler.RIFT_FEATURE.getId().toString(), RegistryHandler.RIFT_FEATURE.get(), RiftConfig.of(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)), RiftPlacement.INSTANCE, RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()));
             });
         }
 

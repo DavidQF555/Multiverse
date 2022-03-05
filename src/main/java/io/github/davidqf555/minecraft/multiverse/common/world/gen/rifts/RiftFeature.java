@@ -7,6 +7,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
@@ -17,18 +18,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
 
-    public static final RiftFeature INSTANCE = new RiftFeature();
-    public static final PlacedFeature PLACED = INSTANCE.configured(RiftConfig.of(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)).placed(RiftPlacement.INSTANCE, RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()));
+    public static final RiftFeature INSTANCE = (RiftFeature) new RiftFeature().setRegistryName(RegistryHandler.RIFT_FEATURE.getId());
+    public static Holder<PlacedFeature> PLACED = null;
 
     public RiftFeature() {
         super(RiftConfig.CODEC);

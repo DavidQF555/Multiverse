@@ -2,11 +2,11 @@ package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.data.worldgen.TerrainProvider;
@@ -23,8 +23,6 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.*;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraftforge.common.BiomeDictionary;
@@ -33,7 +31,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public final class DimensionHelper {
@@ -75,13 +72,12 @@ public final class DimensionHelper {
     @SuppressWarnings("deprecation")
     private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
         LevelStem dimension = createDimension(server, index);
         WorldData serverConfig = server.getWorldData();
         WorldGenSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
-        dimensionGeneratorSettings.dimensions().register(dimensionKey, dimension, Lifecycle.experimental());
+        Registry.register(dimensionGeneratorSettings.dimensions(), worldKey.location(), dimension);
         DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
-        ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.type(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
+        ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.typeHolder(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
         map.put(worldKey, newWorld);
         server.markWorldsDirty();
@@ -97,27 +93,44 @@ public final class DimensionHelper {
         Pair<Boolean, Boolean> bounds = randomBounds(random);
         boolean floor = bounds.getFirst();
         boolean ceiling = bounds.getSecond();
-        NoiseGeneratorSettings settings = createSettings(ceiling, floor);
+        NoiseSettings noise = createNoiseSettings(ceiling, floor);
+        NoiseRouterWithOnlyNoises router = randomRouter(random, noise, ceiling, floor);
+        Holder<NoiseGeneratorSettings> settings = createNoiseGeneratorSettings(noise, router, ceiling, floor);
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Set<ResourceKey<Biome>> biomes = randomBiomes(random);
         BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(biomes.stream()
-                .map(key -> (Supplier<Biome>) () -> registry.getOrThrow(key))
-                .map(sup -> {
-                    Biome biome = sup.get();
-                    return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), sup);
+                .map(registry::getOrThrow)
+                .map(Holder::direct)
+                .map(holder -> {
+                    Biome biome = holder.value();
+                    return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
                 }).collect(Collectors.toList()))).biomeSource(server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY));
-        ChunkGenerator generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, () -> settings);
+        ChunkGenerator generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        DimensionType type = createDimensionType(ceiling, time, effect, lighting);
-        return new LevelStem(() -> type, generator);
+        return new LevelStem(createDimensionType(ceiling, time, effect, lighting), generator);
     }
 
-    private static DimensionType createDimensionType(boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, ceiling ? 128 : 256, 128, BlockTags.INFINIBURN_OVERWORLD.getName(), effect, light);
+    private static Holder<DimensionType> createDimensionType(boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
+        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, ceiling ? 128 : 256, 128, BlockTags.INFINIBURN_OVERWORLD, effect, light));
     }
 
-    private static NoiseGeneratorSettings createSettings(boolean ceiling, boolean floor) {
+    private static Holder<NoiseGeneratorSettings> createNoiseGeneratorSettings(NoiseSettings settings, NoiseRouterWithOnlyNoises router, boolean ceiling, boolean floor) {
+        SurfaceRules.RuleSource rules = SurfaceRuleData.overworldLike(true, ceiling, floor);
+        int sea;
+        if (floor) {
+            if (ceiling) {
+                sea = 32;
+            } else {
+                sea = 63;
+            }
+        } else {
+            sea = 0;
+        }
+        return Holder.direct(new NoiseGeneratorSettings(settings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), router, rules, sea, false, true, true, false));
+    }
+
+    private static NoiseSettings createNoiseSettings(boolean ceiling, boolean floor) {
         int height = ceiling || !floor ? 128 : 256;
         int sizeHorizontal;
         int sizeVertical;
@@ -132,7 +145,6 @@ public final class DimensionHelper {
         double yScale;
         double xzFactor = 80;
         double yFactor;
-        int seaLevel;
         if (floor) {
             sizeHorizontal = 1;
             sizeVertical = 2;
@@ -145,7 +157,6 @@ public final class DimensionHelper {
                 bottomOffset = -1;
                 shaper = TerrainProvider.nether();
                 yFactor = 60;
-                seaLevel = 32;
                 xzScale = 1;
                 yScale = 3;
             } else {
@@ -157,7 +168,6 @@ public final class DimensionHelper {
                 bottomOffset = 0;
                 shaper = TerrainProvider.overworld(false);
                 yFactor = 160;
-                seaLevel = 63;
                 xzScale = 1;
                 yScale = 1;
             }
@@ -188,23 +198,20 @@ public final class DimensionHelper {
                 xzScale = 2;
             }
             yScale = 1;
-            seaLevel = 0;
         }
         NoiseSlider topSlide = new NoiseSlider(topTarget, topSize, topOffset);
         NoiseSlider bottomSlide = new NoiseSlider(bottomTarget, bottomSize, bottomOffset);
         NoiseSamplingSettings sampling = new NoiseSamplingSettings(xzScale, yScale, xzFactor, yFactor);
-        NoiseSettings noise = NoiseSettings.create(0, height, sampling, topSlide, bottomSlide, sizeHorizontal, sizeVertical, false, false, false, shaper);
-        Map<StructureFeature<?>, StructureFeatureConfiguration> map = new HashMap<>(StructureSettings.DEFAULTS);
-        if (ceiling) {
-            for (StructureFeature<?> structure : new HashSet<>(map.keySet())) {
-                if (structure.step() == GenerationStep.Decoration.SURFACE_STRUCTURES) {
-                    map.remove(structure);
-                }
-            }
+        return NoiseSettings.create(0, height, sampling, topSlide, bottomSlide, sizeHorizontal, sizeVertical, shaper);
+
+    }
+
+    private static NoiseRouterWithOnlyNoises randomRouter(Random random, NoiseSettings noise, boolean ceiling, boolean floor) {
+        if (ceiling || floor) {
+            return random.nextBoolean() ? NoiseRouterData.nether(noise) : NoiseRouterData.overworldWithNewCaves(noise, random.nextBoolean());
+        } else {
+            return NoiseRouterData.end(noise);
         }
-        StructureSettings structures = new StructureSettings(Optional.empty(), map);
-        SurfaceRules.RuleSource rules = SurfaceRuleData.overworldLike(true, ceiling, floor);
-        return new NoiseGeneratorSettings(structures, noise, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), rules, seaLevel, false, true, true, true, true, false);
     }
 
     private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
