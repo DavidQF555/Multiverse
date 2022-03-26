@@ -2,8 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.registration.EntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftFeature;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.GenerationStage;
@@ -26,7 +27,7 @@ public final class EventBusSubscriber {
 
         @SubscribeEvent
         public static void onBiomeLoading(BiomeLoadingEvent event) {
-            event.getGeneration().addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, RiftFeature.CONFIG);
+            event.getGeneration().addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.CONFIG_RIFT);
         }
 
     }
@@ -49,7 +50,7 @@ public final class EventBusSubscriber {
 
         @SubscribeEvent
         public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
-            event.put(RegistryHandler.COLLECTOR_ENTITY.get(), CollectorEntity.createAttributes().build());
+            event.put(EntityRegistry.COLLECTOR.get(), CollectorEntity.createAttributes().build());
         }
     }
 }

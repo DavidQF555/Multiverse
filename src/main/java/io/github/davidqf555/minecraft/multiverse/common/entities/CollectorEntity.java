@@ -1,7 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.EntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.ItemRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
@@ -49,10 +51,10 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
     private int from;
 
     public CollectorEntity(World world) {
-        super(RegistryHandler.COLLECTOR_ENTITY.get(), world);
+        super(EntityRegistry.COLLECTOR.get(), world);
         moveControl = new FlyingMovementController(this, 90, true);
         bar = new ServerBossInfo(getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
-        setItemInHand(Hand.MAIN_HAND, RegistryHandler.BOUNDLESS_BLADE_ITEM.get().getDefaultInstance());
+        setItemInHand(Hand.MAIN_HAND, ItemRegistry.BOUNDLESS_BLADE.get().getDefaultInstance());
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -391,7 +393,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
 
         @Override
         protected boolean isValidTarget(IWorldReader world, BlockPos pos) {
-            if (world.getBlockState(pos).getBlock().equals(RegistryHandler.RIFT_BLOCK.get())) {
+            if (world.getBlockState(pos).getBlock().equals(BlockRegistry.RIFT.get())) {
                 TileEntity tile = world.getBlockEntity(pos);
                 return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() != from;
             }

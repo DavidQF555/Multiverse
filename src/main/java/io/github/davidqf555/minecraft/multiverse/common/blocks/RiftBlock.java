@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
+import io.github.davidqf555.minecraft.multiverse.common.registration.ItemRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -91,7 +91,7 @@ public class RiftBlock extends ContainerBlock {
     @SuppressWarnings("deprecation")
     public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
         TileEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerWorld && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && (!(entity instanceof ItemEntity) || !((ItemEntity) entity).getItem().getItem().equals(RegistryHandler.FABRIC_OF_REALITY_ITEM.get()))) {
+        if (world instanceof ServerWorld && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && (!(entity instanceof ItemEntity) || !((ItemEntity) entity).getItem().getItem().equals(ItemRegistry.FABRIC_OF_REALITY.get()))) {
             if (!entity.isOnPortalCooldown()) {
                 ServerWorld target = DimensionHelper.getOrCreateWorld(((ServerWorld) world).getServer(), ((RiftTileEntity) tile).getTarget());
                 entity.changeDimension(target, (RiftTileEntity) tile);

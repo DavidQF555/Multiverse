@@ -1,10 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
+import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.EntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
@@ -50,12 +52,12 @@ public class UniversalTreasureItem extends SimpleFoiledItem {
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (entity.level instanceof ServerWorld) {
             if (entity.tickCount >= 200 && random.nextDouble() < entity.tickCount / 2000.0) {
-                CollectorEntity boss = RegistryHandler.COLLECTOR_ENTITY.get().create(entity.level);
+                CollectorEntity boss = EntityRegistry.COLLECTOR.get().create(entity.level);
                 if (boss != null) {
                     boss.setPos(entity.getX(), entity.getY(), entity.getZ());
                     boss.setPortalCooldown();
                     BlockPos center = entity.blockPosition();
-                    RegistryHandler.RIFT_FEATURE.get().place((ServerWorld) entity.level, ((ServerWorld) entity.level).getChunkSource().getGenerator(), random, center, RiftConfig.of(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false));
+                    FeatureRegistry.RIFT.get().place((ServerWorld) entity.level, ((ServerWorld) entity.level).getChunkSource().getGenerator(), random, center, RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false));
                     TileEntity tile = entity.level.getBlockEntity(center);
                     if (tile instanceof RiftTileEntity) {
                         boss.setFrom(((RiftTileEntity) tile).getTarget());

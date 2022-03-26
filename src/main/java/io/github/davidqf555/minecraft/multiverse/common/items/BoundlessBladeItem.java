@@ -1,10 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftFeature;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,7 +56,7 @@ public class BoundlessBladeItem extends SwordItem {
             int height = 3 + count / 40;
             Vector3d look = entity.getLookAngle();
             BlockPos center = new BlockPos(entity.getEyePosition(1).add(look.scale(width + 1.5)));
-            RiftFeature.INSTANCE.place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1)));
+            FeatureRegistry.RIFT.get().place((ServerWorld) world, ((ServerWorld) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1)));
             if (entity instanceof PlayerEntity) {
                 ((PlayerEntity) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
             }

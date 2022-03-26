@@ -1,9 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts;
 
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.registration.ItemRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,20 +13,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
-
-    public static final RiftFeature INSTANCE = new RiftFeature();
-    public static final ConfiguredFeature<?, ?> CONFIG = new ConfiguredFeature<>(INSTANCE, RiftConfig.of(Optional.empty(), RegistryHandler.RIFT_BLOCK.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)).decorated(RiftPlacement.CONFIG).chance(ServerConfigs.INSTANCE.riftChance.get());
 
     public RiftFeature() {
         super(RiftConfig.CODEC);
@@ -62,7 +57,7 @@ public class RiftFeature extends Feature<RiftConfig> {
                     if (!natural) {
                         reader.destroyBlock(pos, true);
                         if (rand.nextDouble() < fabric) {
-                            RiftBlock.popResource(world, pos, RegistryHandler.FABRIC_OF_REALITY_ITEM.get().getDefaultInstance());
+                            RiftBlock.popResource(world, pos, ItemRegistry.FABRIC_OF_REALITY.get().getDefaultInstance());
                         }
                     }
                     setBlock(reader, pos, rift);

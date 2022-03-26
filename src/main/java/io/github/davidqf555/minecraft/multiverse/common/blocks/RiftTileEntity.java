@@ -1,8 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.POIRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.TileEntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
 import mcp.MethodsReturnNonnullByDefault;
@@ -46,7 +48,7 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
     }
 
     public RiftTileEntity() {
-        this(RegistryHandler.RIFT_TILE_ENTITY_TYPE.get());
+        this(TileEntityRegistry.RIFT.get());
     }
 
     public int getTarget() {
@@ -124,7 +126,7 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
 
     private BlockPos getOrCreateRift(ServerWorld dest, Random rand, BlockPos center, int range, int current, BlockState state) {
         PointOfInterestManager manager = dest.getPoiManager();
-        PointOfInterestType poi = RegistryHandler.RIFT_POI_TYPE.get();
+        PointOfInterestType poi = POIRegistry.RIFT.get();
         manager.ensureLoadedAndValid(dest, center, range);
         return manager.getInSquare(poi::equals, center, range, PointOfInterestManager.Status.ANY)
                 .map(PointOfInterest::getPos)
@@ -134,7 +136,7 @@ public class RiftTileEntity extends TileEntity implements ITeleporter {
                 })
                 .min(Comparator.comparingDouble(center::distSqr))
                 .orElseGet(() -> {
-                    RegistryHandler.RIFT_FEATURE.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), state, false));
+                    FeatureRegistry.RIFT.get().place(dest, dest.getChunkSource().getGenerator(), rand, center, RiftConfig.of(Optional.of(current), state, false));
                     return center;
                 });
     }

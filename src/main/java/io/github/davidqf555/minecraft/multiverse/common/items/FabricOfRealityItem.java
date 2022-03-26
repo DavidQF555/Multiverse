@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.RegistryHandler;
+import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -42,7 +42,7 @@ public class FabricOfRealityItem extends Item {
         PlayerEntity player = context.getPlayer();
         BlockPos target = context.getClickedPos();
         World world = context.getLevel();
-        if (world instanceof ServerWorld && world.getBlockState(target).getBlock().equals(RegistryHandler.RIFT_BLOCK.get()) && world.destroyBlock(target, true, player)) {
+        if (world instanceof ServerWorld && world.getBlockState(target).getBlock().equals(BlockRegistry.RIFT.get()) && world.destroyBlock(target, true, player)) {
             context.getItemInHand().shrink(1);
             world.playSound(player, target, SoundEvents.GLASS_BREAK, SoundCategory.BLOCKS, 1, 1);
             return ActionResultType.CONSUME;
