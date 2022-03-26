@@ -18,9 +18,9 @@ public final class TileEntityRegistry {
 
     private static <T extends TileEntityType<?>> RegistryObject<T> register(String name, Supplier<T> type) {
         return TYPES.register(name, type);
-    }    public static final RegistryObject<TileEntityType<RiftTileEntity>> RIFT = register("rift", () -> TileEntityType.Builder.of(RiftTileEntity::new, BlockRegistry.RIFT.get()).build(null));
+    }
 
-
+    public static final RegistryObject<TileEntityType<RiftTileEntity>> RIFT = register("rift", () -> TileEntityType.Builder.of(RiftTileEntity::new, BlockRegistry.RIFT.get()).build(null));
 
 
 }

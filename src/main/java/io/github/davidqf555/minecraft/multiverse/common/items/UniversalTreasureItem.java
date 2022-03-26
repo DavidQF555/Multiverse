@@ -7,7 +7,7 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity
 import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;

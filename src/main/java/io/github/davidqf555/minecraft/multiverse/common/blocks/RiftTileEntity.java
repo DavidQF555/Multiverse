@@ -6,7 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegi
 import io.github.davidqf555.minecraft.multiverse.common.registration.POIRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.registration.TileEntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;

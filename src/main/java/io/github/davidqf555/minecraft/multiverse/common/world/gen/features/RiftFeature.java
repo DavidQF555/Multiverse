@@ -1,5 +1,6 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts;
+package io.github.davidqf555.minecraft.multiverse.common.world.gen.features;
 
+import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
@@ -23,8 +24,8 @@ import java.util.Random;
 @ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
 
-    public RiftFeature() {
-        super(RiftConfig.CODEC);
+    public RiftFeature(Codec<RiftConfig> codec) {
+        super(codec);
     }
 
     @Override

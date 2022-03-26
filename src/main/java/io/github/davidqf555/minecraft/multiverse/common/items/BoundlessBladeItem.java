@@ -4,7 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.rifts.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
