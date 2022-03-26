@@ -1,14 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,22 +31,14 @@ public final class EventBusSubscriber {
     @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static final class ModBus {
 
-        private static int index = 0;
-
         private ModBus() {
         }
 
         @SubscribeEvent
         public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
             event.enqueueWork(() -> {
-                UpdateClientDimensionsPacket.register(index++);
                 Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "dynamic_default"), DynamicDefaultChunkGenerator.CODEC);
             });
-        }
-
-        @SubscribeEvent
-        public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
-            event.put(EntityRegistry.COLLECTOR.get(), CollectorEntity.createAttributes().build());
         }
     }
 }

@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.packets;
 
+import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +36,7 @@ public class UpdateClientDimensionsPacket {
     private void handle(NetworkEvent.Context context) {
         NetworkDirection dir = context.getDirection();
         if (dir == NetworkDirection.PLAY_TO_CLIENT) {
-            context.enqueueWork(() -> Minecraft.getInstance().player.connection.levels().add(key));
+            context.enqueueWork(() -> ClientHelper.addDimension(key));
             context.setPacketHandled(true);
         }
     }
