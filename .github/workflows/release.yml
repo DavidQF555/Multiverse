@@ -2,7 +2,7 @@ name: Build and upload mod
 on:
   release:
     types: [ published ]
-    branches: [ forge-1.16 ]
+    branches: [ forge-1.18 ]
 
 jobs:
 
@@ -23,10 +23,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up JDK 8
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'adopt'
           cache: 'gradle'
       - name: Grant execute permission for gradlew
@@ -76,4 +76,4 @@ jobs:
           changelog: ${{github.event.release.body}}
           display_name: ${{github.event.release.name}}
           release_type: release
-          game_versions: minecraft-1-16:1.16.5,java:Java 8,Forge
+          game_versions: minecraft-1-18:1.18.2,java:Java 17,Forge
