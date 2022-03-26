@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.fluid.Fluid;
@@ -33,14 +32,8 @@ public class RiftBlock extends ContainerBlock {
 
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
 
-    public RiftBlock() {
-        super(Properties.of(Material.PORTAL)
-                .noCollission()
-                .strength(-1, 3600000)
-                .noDrops()
-                .randomTicks()
-                .lightLevel(state -> 15)
-        );
+    public RiftBlock(Properties properties) {
+        super(properties);
     }
 
     @Override

@@ -4,7 +4,9 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -23,11 +25,8 @@ public class FabricOfRealityItem extends Item {
 
     private static final ITextComponent LORE = new TranslationTextComponent("item." + Multiverse.MOD_ID + ".fabric_of_reality.lore").withStyle(TextFormatting.BLUE);
 
-    public FabricOfRealityItem() {
-        super(new Item.Properties()
-                .tab(ItemGroup.TAB_MATERIALS)
-                .rarity(Rarity.UNCOMMON)
-        );
+    public FabricOfRealityItem(Properties properties) {
+        super(properties);
     }
 
     @Override

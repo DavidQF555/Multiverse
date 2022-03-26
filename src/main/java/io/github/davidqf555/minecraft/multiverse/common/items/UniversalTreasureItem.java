@@ -10,9 +10,7 @@ import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegi
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
 import net.minecraft.item.SimpleFoiledItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
@@ -33,13 +31,8 @@ public class UniversalTreasureItem extends SimpleFoiledItem {
 
     private static final ITextComponent LORE = new TranslationTextComponent("item." + Multiverse.MOD_ID + ".universal_treasure.lore").withStyle(TextFormatting.GOLD);
 
-    public UniversalTreasureItem() {
-        super(new Properties()
-                .rarity(Rarity.RARE)
-                .tab(ItemGroup.TAB_MISC)
-                .stacksTo(1)
-                .fireResistant()
-        );
+    public UniversalTreasureItem(Properties properties) {
+        super(properties);
     }
 
     @Override

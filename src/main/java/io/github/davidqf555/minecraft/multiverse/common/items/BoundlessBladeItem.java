@@ -26,8 +26,8 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class BoundlessBladeItem extends SwordItem {
 
-    public BoundlessBladeItem() {
-        super(CrystalItemTier.INSTANCE, 2, -2.4f, new Properties().rarity(Rarity.EPIC).tab(ItemGroup.TAB_COMBAT));
+    public BoundlessBladeItem(IItemTier tier, int damage, float speed, Item.Properties properties) {
+        super(tier, damage, speed, properties);
     }
 
     @Override
