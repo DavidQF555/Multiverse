@@ -14,7 +14,7 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.18.2-1.0.2'
+version = '1.18.2-1.0.3'
 group = 'io.github.davidqf555.minecraft.multiverse'
 archivesBaseName = 'multiverse'
 
