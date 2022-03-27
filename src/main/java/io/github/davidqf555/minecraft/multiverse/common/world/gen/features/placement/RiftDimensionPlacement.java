@@ -2,25 +2,29 @@ package io.github.davidqf555.minecraft.multiverse.common.world.gen.features.plac
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldDecoratingHelper;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
+import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class RiftDimensionPlacement extends Placement<NoPlacementConfig> {
+public class RiftDimensionPlacement extends PlacementModifier {
 
-    public RiftDimensionPlacement(Codec<NoPlacementConfig> codec) {
-        super(codec);
+    public static final Codec<RiftDimensionPlacement> CODEC = Codec.unit(() -> FeatureRegistry.RIFT_DIMENSION);
+
+    @Override
+    public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
+        ResourceKey<Level> key = context.getLevel().getLevel().dimension();
+        return key.equals(Level.OVERWORLD) || key.location().getNamespace().equals(Multiverse.MOD_ID) ? Stream.of(pos) : Stream.empty();
     }
 
     @Override
-    public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random rand, NoPlacementConfig config, BlockPos pos) {
-        RegistryKey<World> key = helper.level.getLevel().dimension();
-        return key.equals(World.OVERWORLD) || key.location().getNamespace().equals(Multiverse.MOD_ID) ? Stream.of(pos) : Stream.empty();
+    public PlacementModifierType<?> type() {
+        return FeatureRegistry.RIFT_DIMENSION_PLACEMENT_TYPE;
     }
 }

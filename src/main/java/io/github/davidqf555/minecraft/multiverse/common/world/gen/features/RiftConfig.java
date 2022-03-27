@@ -4,13 +4,13 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 import java.util.Optional;
 import java.util.Random;
 
-public class RiftConfig implements IFeatureConfig {
+public class RiftConfig implements FeatureConfiguration {
 
     public static final Codec<RiftConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.optionalFieldOf("target").forGetter(config -> config.target),

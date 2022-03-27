@@ -1,33 +1,37 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.WorldDecoratingHelper;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
+import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public class AboveGroundPlacement extends Placement<NoPlacementConfig> {
+public class AboveGroundPlacement extends PlacementModifier {
 
-    public AboveGroundPlacement(Codec<NoPlacementConfig> codec) {
-        super(codec);
-    }
+    public static final Codec<AboveGroundPlacement> CODEC = Codec.unit(() -> FeatureRegistry.ABOVE_GROUND);
 
-    @Nonnull
     @Override
-    public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random rand, NoPlacementConfig config, BlockPos pos) {
-        int y = rand.nextInt(helper.getGenDepth());
+    public Stream<BlockPos> getPositions(PlacementContext context, Random rand, BlockPos pos) {
+        int y = rand.nextInt(context.getGenDepth());
         BlockPos rift = new BlockPos(pos.getX(), y, pos.getZ());
-        for (BlockPos.Mutable block = new BlockPos.Mutable().setWithOffset(rift, 0, -1, 0); block.getY() > 0; block.move(0, -1, 0)) {
-            if (!helper.level.isEmptyBlock(block)) {
+        WorldGenLevel level = context.getLevel();
+        for (BlockPos.MutableBlockPos block = new BlockPos.MutableBlockPos().setWithOffset(rift, 0, -1, 0); block.getY() > 0; block.move(0, -1, 0)) {
+            if (!level.isEmptyBlock(block)) {
                 return Stream.of(rift);
             }
         }
         return Stream.empty();
+    }
+
+    @Override
+    public PlacementModifierType<?> type() {
+        return FeatureRegistry.ABOVE_GROUND_PLACEMENT_TYPE;
     }
 }

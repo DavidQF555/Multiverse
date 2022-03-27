@@ -7,16 +7,21 @@ import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftC
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftFeature;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement.AboveGroundPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement.RiftDimensionPlacement;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.placement.ConfiguredPlacement;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -27,9 +32,11 @@ public final class FeatureRegistry {
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Multiverse.MOD_ID);
 
     public static final RegistryObject<RiftFeature> RIFT = register("rift", () -> new RiftFeature(RiftConfig.CODEC));
-    public static final ConfiguredPlacement<NoPlacementConfig> ABOVE_GROUND = new AboveGroundPlacement(NoPlacementConfig.CODEC).configured(NoPlacementConfig.INSTANCE);
-    public static final ConfiguredPlacement<NoPlacementConfig> RIFT_DIMENSION = new RiftDimensionPlacement(NoPlacementConfig.CODEC).configured(NoPlacementConfig.INSTANCE);
-    public static ConfiguredFeature<?, ?> CONFIG_RIFT = null;
+    public static final AboveGroundPlacement ABOVE_GROUND = new AboveGroundPlacement();
+    public static final RiftDimensionPlacement RIFT_DIMENSION = new RiftDimensionPlacement();
+    public static PlacementModifierType<AboveGroundPlacement> ABOVE_GROUND_PLACEMENT_TYPE;
+    public static PlacementModifierType<RiftDimensionPlacement> RIFT_DIMENSION_PLACEMENT_TYPE;
+    public static Holder<PlacedFeature> PLACED_RIFT;
 
     private FeatureRegistry() {
     }
@@ -41,7 +48,14 @@ public final class FeatureRegistry {
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            CONFIG_RIFT = new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)).chance(ServerConfigs.INSTANCE.riftChance.get()).decorated(ABOVE_GROUND).squared().decorated(RIFT_DIMENSION);
+            ABOVE_GROUND_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "above_ground"), () -> AboveGroundPlacement.CODEC);
+            RIFT_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "rift_dimension"), () -> RiftDimensionPlacement.CODEC);
+            PLACED_RIFT = register(new ResourceLocation(Multiverse.MOD_ID, "rift"), new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), ABOVE_GROUND, InSquarePlacement.spread(), RIFT_DIMENSION);
         });
+    }
+
+    private static <FC extends FeatureConfiguration, F extends Feature<FC>> Holder<PlacedFeature> register(ResourceLocation name, ConfiguredFeature<FC, F> feature, PlacementModifier... placement) {
+        Holder<ConfiguredFeature<?, ?>> placed = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, name, feature);
+        return PlacementUtils.register(name.getPath(), placed, placement);
     }
 }

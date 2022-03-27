@@ -6,17 +6,17 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.registration.ItemRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -29,8 +29,11 @@ public class RiftFeature extends Feature<RiftConfig> {
     }
 
     @Override
-    public boolean place(ISeedReader reader, ChunkGenerator gen, Random rand, BlockPos center, RiftConfig config) {
-        ServerWorld world = reader.getLevel();
+    public boolean place(FeaturePlaceContext<RiftConfig> context) {
+        WorldGenLevel reader = context.level();
+        ServerLevel world = reader.getLevel();
+        RiftConfig config = context.config();
+        Random rand = context.random();
         int target = config.getTarget().orElseGet(() -> {
             int current = DimensionHelper.getIndex(world.dimension());
             int dim = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
@@ -39,8 +42,9 @@ public class RiftFeature extends Feature<RiftConfig> {
         BlockState rift = config.getBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
         boolean natural = config.isNatural();
+        BlockPos center = context.origin();
         if (!natural) {
-            reader.getLevel().levelEvent(Constants.WorldEvents.GATEWAY_SPAWN_EFFECTS, center, 0);
+            reader.getLevel().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
         }
         double fabric = ServerConfigs.INSTANCE.fabricOfReailtyChance.get();
         int totalWidth = config.getWidth(rand);
@@ -48,11 +52,11 @@ public class RiftFeature extends Feature<RiftConfig> {
         float xRot = config.getRotX(rand) * (float) Math.PI / 180;
         float yRot = config.getRotY(rand) * (float) Math.PI / 180;
         float zRot = config.getRotZ(rand) * (float) Math.PI / 180;
-        Vector3d centerVec = Vector3d.atCenterOf(center);
+        Vec3 centerVec = Vec3.atCenterOf(center);
         for (int y = -totalHeight; y <= totalHeight; y++) {
-            int width = totalWidth * (totalHeight - MathHelper.abs(y)) / totalHeight;
+            int width = totalWidth * (totalHeight - Mth.abs(y)) / totalHeight;
             for (int x = -width; x <= width; x++) {
-                Vector3d vec = applyRotation(new Vector3d(x, y, 0), xRot, yRot, zRot);
+                Vec3 vec = new Vec3(x, y, 0).xRot(xRot).yRot(yRot).zRot(zRot);
                 BlockPos pos = new BlockPos(centerVec.add(vec));
                 if (canReplace(reader, pos)) {
                     if (!natural) {
@@ -62,7 +66,7 @@ public class RiftFeature extends Feature<RiftConfig> {
                         }
                     }
                     setBlock(reader, pos, rift);
-                    TileEntity tile = reader.getBlockEntity(pos);
+                    BlockEntity tile = reader.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
                     }
@@ -86,15 +90,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         return true;
     }
 
-    private Vector3d applyRotation(Vector3d vec, float xRot, float yRot, float zRot) {
-        double cos = MathHelper.cos(zRot);
-        double sin = MathHelper.sin(zRot);
-        double x = vec.x() * cos + vec.y() * sin;
-        double y = vec.y() * cos - vec.x() * sin;
-        return new Vector3d(x, y, vec.z()).xRot(xRot).yRot(yRot);
-    }
-
-    private boolean canReplace(ISeedReader reader, BlockPos pos) {
+    private boolean canReplace(WorldGenLevel reader, BlockPos pos) {
         int blockY = pos.getY();
         return blockY >= 0 && blockY < reader.getMaxBuildHeight() && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
     }

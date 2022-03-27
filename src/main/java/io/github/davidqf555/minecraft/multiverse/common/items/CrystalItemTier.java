@@ -1,12 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
 
-public class CrystalItemTier implements IItemTier {
+public class CrystalItemTier implements Tier {
 
     public static final CrystalItemTier INSTANCE = new CrystalItemTier();
 

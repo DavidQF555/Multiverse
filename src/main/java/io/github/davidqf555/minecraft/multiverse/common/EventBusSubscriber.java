@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,7 +23,7 @@ public final class EventBusSubscriber {
 
         @SubscribeEvent
         public static void onBiomeLoading(BiomeLoadingEvent event) {
-            event.getGeneration().addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.CONFIG_RIFT);
+            event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.PLACED_RIFT);
         }
 
     }
