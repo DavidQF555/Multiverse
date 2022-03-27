@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -30,15 +31,12 @@ public class UpdateClientDimensionsPacket {
     }
 
     public static void register(int index) {
-        Multiverse.CHANNEL.registerMessage(index, UpdateClientDimensionsPacket.class, ENCODER, DECODER, CONSUMER);
+        Multiverse.CHANNEL.registerMessage(index, UpdateClientDimensionsPacket.class, ENCODER, DECODER, CONSUMER, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     private void handle(NetworkEvent.Context context) {
-        NetworkDirection dir = context.getDirection();
-        if (dir == NetworkDirection.PLAY_TO_CLIENT) {
-            context.enqueueWork(() -> ClientHelper.addDimension(key));
-            context.setPacketHandled(true);
-        }
+        context.enqueueWork(() -> ClientHelper.addDimension(key));
+        context.setPacketHandled(true);
     }
 
 }
