@@ -80,7 +80,7 @@ public class CollectorEntity extends SpellcastingIllagerEntity {
         goalSelector.addGoal(3, new FollowOriginalGoal(12, 8, 1));
         goalSelector.addGoal(4, new EnterRiftGoal(1, 16, 1));
         goalSelector.addGoal(5, new MeleeAttackGoal(this, 1, true));
-        goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1));
+        goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
         goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8));
         goalSelector.addGoal(8, new LookRandomlyGoal(this));
         targetSelector.addGoal(0, new HurtByTargetGoal(this));
