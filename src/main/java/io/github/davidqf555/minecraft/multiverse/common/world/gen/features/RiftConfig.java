@@ -1,9 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen.features;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
@@ -13,38 +13,32 @@ import java.util.Random;
 public class RiftConfig implements FeatureConfiguration {
 
     public static final Codec<RiftConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.optionalFieldOf("target").forGetter(config -> config.target),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("target").forGetter(config -> config.target),
             BlockState.CODEC.fieldOf("block").forGetter(config -> config.block),
             Codec.BOOL.fieldOf("natural").forGetter(config -> config.natural),
-            Codec.pair(Codec.INT, Codec.INT).fieldOf("width").forGetter(config -> config.width),
-            Codec.pair(Codec.INT, Codec.INT).fieldOf("height").forGetter(config -> config.height),
-            Codec.pair(Codec.FLOAT, Codec.FLOAT).fieldOf("xRot").forGetter(config -> config.xRot),
-            Codec.pair(Codec.FLOAT, Codec.FLOAT).fieldOf("yRot").forGetter(config -> config.yRot),
-            Codec.pair(Codec.FLOAT, Codec.FLOAT).fieldOf("zRot").forGetter(config -> config.zRot)
-    ).apply(builder, builder.stable(RiftConfig::new)));
+            Size.CODEC.fieldOf("size").forGetter(config -> config.size),
+            Rotation.CODEC.fieldOf("rotation").forGetter(config -> config.rotation)
+    ).apply(builder, RiftConfig::new));
     private final Optional<Integer> target;
     private final BlockState block;
     private final boolean natural;
-    private final Pair<Integer, Integer> width, height;
-    private final Pair<Float, Float> xRot, yRot, zRot;
+    private final Size size;
+    private final Rotation rotation;
 
-    public RiftConfig(Optional<Integer> target, BlockState block, boolean natural, Pair<Integer, Integer> width, Pair<Integer, Integer> height, Pair<Float, Float> xRot, Pair<Float, Float> yRot, Pair<Float, Float> zRot) {
+    public RiftConfig(Optional<Integer> target, BlockState block, boolean natural, Size size, Rotation rotation) {
         this.target = target;
         this.block = block;
         this.natural = natural;
-        this.width = width;
-        this.height = height;
-        this.xRot = xRot;
-        this.yRot = yRot;
-        this.zRot = zRot;
+        this.size = size;
+        this.rotation = rotation;
     }
 
     public static RiftConfig of(Optional<Integer> target, BlockState block, boolean natural) {
-        return new RiftConfig(target, block, natural, Pair.of(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get()), Pair.of(ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()), Pair.of(0f, 180f), Pair.of(0f, 180f), Pair.of(0f, 180f));
+        return new RiftConfig(target, block, natural, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()), new Rotation(0, 180, 0, 180, 0, 180));
     }
 
     public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, int width, int height, float xRot, float yRot, float zRot) {
-        return new RiftConfig(target, block, natural, Pair.of(width, width), Pair.of(height, height), Pair.of(xRot, xRot), Pair.of(yRot, yRot), Pair.of(zRot, zRot));
+        return new RiftConfig(target, block, natural, new Size(width, width, height, height), new Rotation(xRot, xRot, yRot, yRot, zRot, zRot));
     }
 
     public Optional<Integer> getTarget() {
@@ -59,64 +53,76 @@ public class RiftConfig implements FeatureConfiguration {
         return natural;
     }
 
-    public int getWidth(Random random) {
-        Integer min = width.getFirst();
-        if (min == null) {
-            min = Integer.MIN_VALUE;
-        }
-        Integer max = width.getSecond();
-        if (max == null) {
-            max = Integer.MAX_VALUE;
-        }
-        return random.nextInt(max - min + 1) + min;
+    public Size getSize() {
+        return size;
     }
 
-    public int getHeight(Random random) {
-        Integer min = height.getFirst();
-        if (min == null) {
-            min = Integer.MIN_VALUE;
-        }
-        Integer max = height.getSecond();
-        if (max == null) {
-            max = Integer.MAX_VALUE;
-        }
-        return random.nextInt(max - min + 1) + min;
+    public Rotation getRotation() {
+        return rotation;
     }
 
-    public float getRotX(Random random) {
-        Float min = xRot.getFirst();
-        if (min == null) {
-            min = Float.MIN_VALUE;
+    public static class Size {
+
+        public static final Codec<Size> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                ExtraCodecs.POSITIVE_INT.fieldOf("minWidth").forGetter(size -> size.minWidth),
+                ExtraCodecs.POSITIVE_INT.fieldOf("maxWidth").forGetter(size -> size.maxWidth),
+                ExtraCodecs.POSITIVE_INT.fieldOf("minHeight").forGetter(size -> size.minHeight),
+                ExtraCodecs.POSITIVE_INT.fieldOf("maxHeight").forGetter(size -> size.maxHeight)
+        ).apply(builder, Size::new));
+
+        private final int minWidth, maxWidth, minHeight, maxHeight;
+
+        public Size(int minWidth, int maxWidth, int minHeight, int maxHeight) {
+            this.minWidth = minWidth;
+            this.maxWidth = maxWidth;
+            this.minHeight = minHeight;
+            this.maxHeight = maxHeight;
         }
-        Float max = xRot.getSecond();
-        if (max == null) {
-            max = Float.MAX_VALUE;
+
+        public int getWidth(Random random) {
+            return random.nextInt(maxWidth - minWidth + 1) + minWidth;
         }
-        return min + random.nextFloat() * (max - min);
+
+        public int getHeight(Random random) {
+            return random.nextInt(maxHeight - minHeight + 1) + minHeight;
+        }
+
     }
 
-    public float getRotY(Random random) {
-        Float min = yRot.getFirst();
-        if (min == null) {
-            min = Float.MIN_VALUE;
-        }
-        Float max = yRot.getSecond();
-        if (max == null) {
-            max = Float.MAX_VALUE;
-        }
-        return min + random.nextFloat() * (max - min);
-    }
+    public static class Rotation {
 
-    public float getRotZ(Random random) {
-        Float min = zRot.getFirst();
-        if (min == null) {
-            min = Float.MIN_VALUE;
+        public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                Codec.FLOAT.fieldOf("minX").forGetter(rot -> rot.minX),
+                Codec.FLOAT.fieldOf("maxX").forGetter(rot -> rot.maxX),
+                Codec.FLOAT.fieldOf("minY").forGetter(rot -> rot.minY),
+                Codec.FLOAT.fieldOf("maxY").forGetter(rot -> rot.maxY),
+                Codec.FLOAT.fieldOf("minZ").forGetter(rot -> rot.minZ),
+                Codec.FLOAT.fieldOf("maxZ").forGetter(rot -> rot.maxZ)
+        ).apply(builder, Rotation::new));
+
+        private final float minX, maxX, minY, maxY, minZ, maxZ;
+
+        public Rotation(float minX, float maxX, float minY, float maxY, float minZ, float maxZ) {
+            this.minX = minX;
+            this.maxX = maxX;
+            this.minY = minY;
+            this.maxY = maxY;
+            this.minZ = minZ;
+            this.maxZ = maxZ;
         }
-        Float max = zRot.getSecond();
-        if (max == null) {
-            max = Float.MAX_VALUE;
+
+
+        public float getRotX(Random random) {
+            return minX + random.nextFloat() * (maxX - minX);
         }
-        return min + random.nextFloat() * (max - min);
+
+        public float getRotY(Random random) {
+            return minY + random.nextFloat() * (maxY - minY);
+        }
+
+        public float getRotZ(Random random) {
+            return minZ + random.nextFloat() * (maxZ - minZ);
+        }
     }
 
 }

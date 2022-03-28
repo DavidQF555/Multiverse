@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen.features;
 
+import com.mojang.math.Constants;
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
@@ -47,11 +48,13 @@ public class RiftFeature extends Feature<RiftConfig> {
             reader.getLevel().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
         }
         double fabric = ServerConfigs.INSTANCE.fabricOfReailtyChance.get();
-        int totalWidth = config.getWidth(rand);
-        int totalHeight = config.getHeight(rand);
-        float xRot = config.getRotX(rand) * (float) Math.PI / 180;
-        float yRot = config.getRotY(rand) * (float) Math.PI / 180;
-        float zRot = config.getRotZ(rand) * (float) Math.PI / 180;
+        RiftConfig.Size size = config.getSize();
+        int totalWidth = size.getWidth(rand);
+        int totalHeight = size.getHeight(rand);
+        RiftConfig.Rotation rotation = config.getRotation();
+        float xRot = rotation.getRotX(rand) * Constants.DEG_TO_RAD;
+        float yRot = rotation.getRotY(rand) * Constants.DEG_TO_RAD;
+        float zRot = rotation.getRotZ(rand) * Constants.DEG_TO_RAD;
         Vec3 centerVec = Vec3.atCenterOf(center);
         for (int y = -totalHeight; y <= totalHeight; y++) {
             int width = totalWidth * (totalHeight - Mth.abs(y)) / totalHeight;
