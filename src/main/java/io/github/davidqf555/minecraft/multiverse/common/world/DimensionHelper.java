@@ -101,7 +101,7 @@ public final class DimensionHelper {
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
         BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(randomBiomes(random).stream()
-                .map(key -> (Holder<Biome>) Holder.Reference.createStandAlone(lookup, key))
+                .map(lookup::getOrCreateHolder)
                 .map(holder -> {
                     Biome biome = holder.value();
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
