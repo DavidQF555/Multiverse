@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
@@ -216,7 +217,10 @@ public final class DimensionHelper {
     }
 
     private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
-        List<BiomeDictionary.Type> types = new ArrayList<>(BiomeDictionary.Type.getAll());
+        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).toList();
+        if (types.isEmpty()) {
+            return ImmutableSet.of(Biomes.PLAINS);
+        }
         Set<ResourceKey<Biome>> biomes = new HashSet<>(BiomeDictionary.getBiomes(types.get(random.nextInt(types.size()))));
         double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
         for (BiomeDictionary.Type type : types) {
