@@ -1,8 +1,9 @@
-package io.github.davidqf555.minecraft.multiverse.common.registration;
+package io.github.davidqf555.minecraft.multiverse.common.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftFeature;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement.AboveGroundPlacement;

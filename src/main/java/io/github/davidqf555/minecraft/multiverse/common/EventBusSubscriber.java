@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.worldgen.FeatureRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;

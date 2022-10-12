@@ -6,11 +6,10 @@ import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.registration.worldgen.NoiseSettingsRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.SurfaceRuleData;
-import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -18,12 +17,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraftforge.common.BiomeDictionary;
@@ -88,6 +89,20 @@ public final class DimensionHelper {
         return newWorld;
     }
 
+    private static ResourceKey<NoiseGeneratorSettings> getNoiseGeneratorSettings(boolean floor, boolean ceiling) {
+        if (floor) {
+            if (ceiling) {
+                return NoiseSettingsRegistry.BOTH;
+            } else {
+                return NoiseSettingsRegistry.BOTTOM;
+            }
+        } else if (ceiling) {
+            return NoiseSettingsRegistry.TOP;
+        } else {
+            return NoiseSettingsRegistry.NONE;
+        }
+    }
+
     private static LevelStem createDimension(MinecraftServer server, int index) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
@@ -95,9 +110,7 @@ public final class DimensionHelper {
         Pair<Boolean, Boolean> bounds = randomBounds(random);
         boolean floor = bounds.getFirst();
         boolean ceiling = bounds.getSecond();
-        NoiseSettings noise = createNoiseSettings(ceiling, floor);
-        NoiseRouterWithOnlyNoises router = randomRouter(random, noise, ceiling, floor);
-        Holder<NoiseGeneratorSettings> settings = createNoiseGeneratorSettings(noise, router, ceiling, floor);
+        Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(getNoiseGeneratorSettings(floor, ceiling));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
@@ -115,105 +128,6 @@ public final class DimensionHelper {
 
     private static Holder<DimensionType> createDimensionType(boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
         return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, ceiling ? 128 : 256, 128, BlockTags.INFINIBURN_OVERWORLD, effect, light));
-    }
-
-    private static Holder<NoiseGeneratorSettings> createNoiseGeneratorSettings(NoiseSettings settings, NoiseRouterWithOnlyNoises router, boolean ceiling, boolean floor) {
-        SurfaceRules.RuleSource rules = SurfaceRuleData.overworldLike(true, ceiling, floor);
-        int sea;
-        if (floor) {
-            if (ceiling) {
-                sea = 32;
-            } else {
-                sea = 63;
-            }
-        } else {
-            sea = 0;
-        }
-        return Holder.direct(new NoiseGeneratorSettings(settings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), router, rules, sea, false, true, true, false));
-    }
-
-    private static NoiseSettings createNoiseSettings(boolean ceiling, boolean floor) {
-        int height = ceiling || !floor ? 128 : 256;
-        int sizeHorizontal;
-        int sizeVertical;
-        int topTarget;
-        int topSize;
-        int topOffset;
-        int bottomTarget;
-        int bottomSize;
-        int bottomOffset;
-        TerrainShaper shaper;
-        double xzScale;
-        double yScale;
-        double xzFactor = 80;
-        double yFactor;
-        if (floor) {
-            sizeHorizontal = 1;
-            sizeVertical = 2;
-            if (ceiling) {
-                topTarget = 120;
-                topSize = 3;
-                topOffset = 0;
-                bottomTarget = 320;
-                bottomSize = 4;
-                bottomOffset = -1;
-                shaper = TerrainProvider.nether();
-                yFactor = 60;
-                xzScale = 1;
-                yScale = 3;
-            } else {
-                topTarget = -10;
-                topSize = 3;
-                topOffset = 0;
-                bottomTarget = -30;
-                bottomSize = 0;
-                bottomOffset = 0;
-                shaper = TerrainProvider.overworld(false);
-                yFactor = 160;
-                xzScale = 1;
-                yScale = 1;
-            }
-        } else {
-            if (ceiling) {
-                sizeHorizontal = 1;
-                sizeVertical = 2;
-                topTarget = 120;
-                topSize = 3;
-                topOffset = 0;
-                bottomTarget = -30;
-                bottomSize = 7;
-                bottomOffset = 1;
-                shaper = TerrainProvider.nether();
-                yFactor = 30;
-                xzScale = 1;
-            } else {
-                sizeHorizontal = 2;
-                sizeVertical = 1;
-                topTarget = -3000;
-                topSize = 64;
-                topOffset = -46;
-                bottomTarget = -30;
-                bottomSize = 7;
-                bottomOffset = 1;
-                shaper = TerrainProvider.floatingIslands();
-                yFactor = 160;
-                xzScale = 2;
-            }
-            yScale = 1;
-        }
-        NoiseSlider topSlide = new NoiseSlider(topTarget, topSize, topOffset);
-        NoiseSlider bottomSlide = new NoiseSlider(bottomTarget, bottomSize, bottomOffset);
-        NoiseSamplingSettings sampling = new NoiseSamplingSettings(xzScale, yScale, xzFactor, yFactor);
-        return NoiseSettings.create(0, height, sampling, topSlide, bottomSlide, sizeHorizontal, sizeVertical, shaper);
-
-    }
-
-    private static NoiseRouterWithOnlyNoises randomRouter(Random random, NoiseSettings noise, boolean ceiling, boolean floor) {
-        if (ceiling || floor) {
-            return random.nextBoolean() ? NoiseRouterData.nether(noise) : NoiseRouterData.overworldWithNewCaves(noise, random.nextBoolean());
-        } else {
-            return NoiseRouterData.end(noise);
-        }
     }
 
     private static Set<ResourceKey<Biome>> randomBiomes(Random random) {

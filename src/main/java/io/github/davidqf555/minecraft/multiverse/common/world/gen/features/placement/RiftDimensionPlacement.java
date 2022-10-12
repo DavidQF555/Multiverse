@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.gen.features.plac
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.registration.worldgen.FeatureRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
