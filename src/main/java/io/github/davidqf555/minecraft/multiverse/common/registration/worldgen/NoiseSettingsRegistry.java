@@ -3,15 +3,20 @@ package io.github.davidqf555.minecraft.multiverse.common.registration.worldgen;
 import com.google.common.collect.ImmutableMap;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.*;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.Map;
 
+@Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class NoiseSettingsRegistry {
 
     public static final Map<ResourceKey<NoiseGeneratorSettings>, NoiseGeneratorSettings> ALL;
@@ -38,6 +43,15 @@ public final class NoiseSettingsRegistry {
 
     private static SurfaceRules.RuleSource getDefaultSurfaceRule(boolean floor, boolean ceiling) {
         return SurfaceRuleData.overworldLike(true, ceiling, floor);
+    }
+
+    @SubscribeEvent
+    public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            ALL.forEach((key, settings) -> {
+                Registry.register(BuiltinRegistries.NOISE_GENERATOR_SETTINGS, key.location(), settings);
+            });
+        });
     }
 
 }
