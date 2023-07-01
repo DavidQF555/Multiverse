@@ -126,7 +126,7 @@ public final class DimensionHelper {
     }
 
     private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
-        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).toList();
+        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> type != BiomeDictionary.Type.NETHER && type != BiomeDictionary.Type.END).toList();
         if (types.isEmpty()) {
             return ImmutableSet.of(Biomes.PLAINS);
         }
@@ -136,6 +136,10 @@ public final class DimensionHelper {
             if (random.nextDouble() < chance) {
                 biomes.addAll(BiomeDictionary.getBiomes(type));
             }
+        }
+        biomes.removeIf(key -> !BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD));
+        if (biomes.isEmpty()) {
+            return ImmutableSet.of(Biomes.PLAINS);
         }
         return biomes;
     }
