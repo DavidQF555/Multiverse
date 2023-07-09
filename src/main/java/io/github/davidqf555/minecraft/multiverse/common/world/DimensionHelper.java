@@ -6,7 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.registration.worldgen.NoiseSettingsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -84,32 +84,17 @@ public final class DimensionHelper {
         return newWorld;
     }
 
-    private static ResourceKey<NoiseGeneratorSettings> getNoiseGeneratorSettings(boolean floor, boolean ceiling) {
-        if (floor) {
-            if (ceiling) {
-                return NoiseSettingsRegistry.BOTH;
-            } else {
-                return NoiseSettingsRegistry.BOTTOM;
-            }
-        } else if (ceiling) {
-            return NoiseSettingsRegistry.TOP;
-        } else {
-            return NoiseSettingsRegistry.NONE;
-        }
-    }
-
     private static LevelStem createDimension(MinecraftServer server, int index) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
-        Pair<Boolean, Boolean> bounds = randomBounds(random);
-        boolean floor = bounds.getFirst();
-        boolean ceiling = bounds.getSecond();
-        Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(getNoiseGeneratorSettings(floor, ceiling));
+        MultiverseType type = randomType(random);
+        boolean ceiling = type.hasCeiling();
+        Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey());
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(randomBiomes(random).stream()
+        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(randomBiomes(type, random).stream()
                 .map(lookup::getOrCreateHolder)
                 .map(holder -> {
                     Biome biome = holder.value();
@@ -117,18 +102,23 @@ public final class DimensionHelper {
                 }).collect(Collectors.toList()))).biomeSource(lookup);
         NoiseBasedChunkGenerator generator = new NoiseBasedChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> type = createDimensionType(ceiling, time, effect, lighting);
-        return new LevelStem(type, generator);
+        Holder<DimensionType> dimType = createDimensionType(type.getHeight(), ceiling, time, effect, lighting);
+        return new LevelStem(dimType, generator);
     }
 
-    private static Holder<DimensionType> createDimensionType(boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, ceiling ? 128 : 256, 128, BlockTags.INFINIBURN_OVERWORLD, effect, light));
+    private static Holder<DimensionType> createDimensionType(int height, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
+        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, height, 128, BlockTags.INFINIBURN_OVERWORLD, effect, light));
     }
 
-    private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
-        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> type != BiomeDictionary.Type.NETHER && type != BiomeDictionary.Type.END).toList();
+    private static MultiverseType randomType(Random random) {
+        MultiverseType[] values = MultiverseType.values();
+        return values[random.nextInt(values.length)];
+    }
+
+    private static Set<ResourceKey<Biome>> randomBiomes(MultiverseType mType, Random random) {
+        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(mType::isValidType).toList();
         if (types.isEmpty()) {
-            return ImmutableSet.of(Biomes.PLAINS);
+            return ImmutableSet.of(mType.getDefaultBiome());
         }
         Set<ResourceKey<Biome>> biomes = new HashSet<>(BiomeDictionary.getBiomes(types.get(random.nextInt(types.size()))));
         double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
@@ -137,22 +127,11 @@ public final class DimensionHelper {
                 biomes.addAll(BiomeDictionary.getBiomes(type));
             }
         }
-        biomes.removeIf(key -> !BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD));
+        biomes.removeIf(key -> !mType.isValidBiome(key));
         if (biomes.isEmpty()) {
-            return ImmutableSet.of(Biomes.PLAINS);
+            return ImmutableSet.of(mType.getDefaultBiome());
         }
         return biomes;
-    }
-
-    private static Pair<Boolean, Boolean> randomBounds(Random random) {
-        List<Pair<Boolean, Boolean>> combo = new ArrayList<>();
-        combo.add(Pair.of(true, true));
-        combo.add(Pair.of(false, false));
-        combo.add(Pair.of(true, false));
-        if (ServerConfigs.INSTANCE.inverse.get()) {
-            combo.add(Pair.of(false, true));
-        }
-        return combo.get(random.nextInt(combo.size()));
     }
 
     private static OptionalLong randomTime(Random random) {

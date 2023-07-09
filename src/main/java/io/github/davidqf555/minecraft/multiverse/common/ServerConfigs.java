@@ -15,7 +15,6 @@ public class ServerConfigs {
     }
 
     public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
-    public final ForgeConfigSpec.BooleanValue inverse;
     public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
@@ -29,8 +28,6 @@ public class ServerConfigs {
                 .defineInRange("biomeTypeChance", 0.025, 0, 1);
         fixedTimeChance = builder.comment("This is the chance that a Multiverse dimension has a random, fixed time. ")
                 .defineInRange("fixedTimeChance", 0.25, 0, 1);
-        inverse = builder.comment("This is whether Multiverse dimensions can generate worlds with a ceiling but no floor. Defaulted to false because it is extremely difficult and painful to navigate in these worlds. ")
-                .define("inverse", false);
         builder.pop();
         builder.push("Rifts");
         fabricOfReailtyChance = builder.comment("This is the chance of a Fabric of Reality dropping whenever a rift opens. ")
