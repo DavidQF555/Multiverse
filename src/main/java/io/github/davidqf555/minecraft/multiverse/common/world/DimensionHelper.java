@@ -32,6 +32,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public final class DimensionHelper {
@@ -98,7 +99,7 @@ public final class DimensionHelper {
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(randomBiomes(type, random).stream()
+        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(randomBiomes(random).stream()
                 .map(lookup::getOrCreateHolder)
                 .map(holder -> {
                     Biome biome = holder.value();
@@ -128,10 +129,11 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Set<ResourceKey<Biome>> randomBiomes(MultiverseType mType, Random random) {
-        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).toList();
+    private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
+        Predicate<ResourceKey<Biome>> valid = key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD) || BiomeDictionary.hasType(key, BiomeDictionary.Type.NETHER) || BiomeDictionary.hasType(key, BiomeDictionary.Type.END);
+        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> BiomeDictionary.getBiomes(type).stream().anyMatch(valid)).toList();
         if (types.isEmpty()) {
-            return ImmutableSet.of(mType.getDefaultBiome());
+            return ImmutableSet.of(Biomes.PLAINS);
         }
         Set<ResourceKey<Biome>> biomes = new HashSet<>(BiomeDictionary.getBiomes(types.get(random.nextInt(types.size()))));
         double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
@@ -140,6 +142,7 @@ public final class DimensionHelper {
                 biomes.addAll(BiomeDictionary.getBiomes(type));
             }
         }
+        biomes.removeIf(valid.negate());
         return biomes;
     }
 
