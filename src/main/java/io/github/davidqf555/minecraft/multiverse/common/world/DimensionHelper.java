@@ -112,7 +112,16 @@ public final class DimensionHelper {
 
     private static MultiverseType randomType(Random random) {
         MultiverseType[] values = MultiverseType.values();
-        return values[random.nextInt(values.length)];
+        int totalWeight = Arrays.stream(values).mapToInt(MultiverseType::getWeight).sum();
+        int selected = random.nextInt(totalWeight);
+        int current = 0;
+        for (MultiverseType type : values) {
+            current += type.getWeight();
+            if (selected < current) {
+                return type;
+            }
+        }
+        throw new RuntimeException();
     }
 
     private static Set<ResourceKey<Biome>> randomBiomes(MultiverseType mType, Random random) {
