@@ -102,12 +102,12 @@ public final class DimensionHelper {
                 }).collect(Collectors.toList()))).biomeSource(lookup);
         NoiseBasedChunkGenerator generator = new NoiseBasedChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(type.getHeight(), ceiling, time, effect, lighting);
+        Holder<DimensionType> dimType = createDimensionType(type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
         return new LevelStem(dimType, generator);
     }
 
-    private static Holder<DimensionType> createDimensionType(int height, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, 0, height, 128, BlockTags.INFINIBURN_OVERWORLD, effect, light));
+    private static Holder<DimensionType> createDimensionType(int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
+        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, BlockTags.INFINIBURN_OVERWORLD, effect, light));
     }
 
     private static MultiverseType randomType(Random random) {
