@@ -2,7 +2,6 @@ package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryOps;
@@ -11,19 +10,14 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.minecraftforge.registries.ForgeRegistryEntry;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
@@ -51,15 +45,14 @@ public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
     private class FluidPicker implements Aquifer.FluidPicker {
 
         private static final Aquifer.FluidStatus LAVA = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
-        private final Map<ResourceKey<Biome>, Aquifer.FluidPicker> fluids;
-        private final Aquifer.FluidPicker def;
+        private final Aquifer.FluidStatus water, lava, air;
         private final int sea;
 
         private FluidPicker(int sea) {
-            fluids = new HashMap<>();
             this.sea = sea;
-            Aquifer.FluidStatus water = new Aquifer.FluidStatus(sea, Blocks.WATER.defaultBlockState());
-            def = (x, y, z) -> water;
+            water = new Aquifer.FluidStatus(sea, Blocks.WATER.defaultBlockState());
+            lava = new Aquifer.FluidStatus(sea, Blocks.LAVA.defaultBlockState());
+            air = new Aquifer.FluidStatus(sea, Blocks.WATER.defaultBlockState());
         }
 
         @Override
@@ -68,17 +61,13 @@ public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
                 return LAVA;
             }
             ResourceKey<Biome> biome = ResourceKey.create(Registry.BIOME_REGISTRY, getNoiseBiome(x, y, z).value().getRegistryName());
-            return fluids.computeIfAbsent(biome, key -> {
-                for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().dimensions().entrySet()) {
-                    if (!entry.getKey().location().getNamespace().equals(Multiverse.MOD_ID)) {
-                        ChunkGenerator gen = entry.getValue().generator();
-                        if (gen instanceof NoiseBasedChunkGenerator && gen.getBiomeSource().possibleBiomes().stream().map(Holder::value).map(ForgeRegistryEntry::getRegistryName).filter(Objects::nonNull).map(name -> ResourceKey.create(Registry.BIOME_REGISTRY, name)).anyMatch(key::equals)) {
-                            return ((NoiseBasedChunkGenerator) gen).globalFluidPicker;
-                        }
-                    }
-                }
-                return def;
-            }).computeFluid(x, y, z);
+            if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER)) {
+                return lava;
+            } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.END)) {
+                return air;
+            } else {
+                return water;
+            }
         }
     }
 

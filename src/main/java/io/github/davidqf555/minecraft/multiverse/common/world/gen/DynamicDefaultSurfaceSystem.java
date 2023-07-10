@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -13,27 +12,21 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BlockColumn;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.minecraftforge.registries.ForgeRegistryEntry;
-import net.minecraftforge.server.ServerLifecycleHooks;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import net.minecraftforge.common.BiomeDictionary;
 
 public class DynamicDefaultSurfaceSystem extends SurfaceSystem {
 
-    private final Map<ResourceKey<Biome>, BlockState> defaults;
+    private static final BlockState STONE = Blocks.STONE.defaultBlockState();
+    private static final BlockState NETHERRACK = Blocks.NETHERRACK.defaultBlockState();
+    private static final BlockState END_STONE = Blocks.END_STONE.defaultBlockState();
     private final BiomeResolver source;
     private final Climate.Sampler climate;
 
     public DynamicDefaultSurfaceSystem(Climate.Sampler climate, BiomeResolver source, Registry<NormalNoise.NoiseParameters> noise, int sea, long seed, WorldgenRandom.Algorithm algorithm) {
         super(noise, Blocks.STONE.defaultBlockState(), sea, seed, algorithm);
-        defaults = new HashMap<>();
         this.source = source;
         this.climate = climate;
     }
@@ -161,16 +154,12 @@ public class DynamicDefaultSurfaceSystem extends SurfaceSystem {
     }
 
     private BlockState getDefault(ResourceKey<Biome> biome) {
-        return defaults.computeIfAbsent(biome, key -> {
-            for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().dimensions().entrySet()) {
-                if (!entry.getKey().location().getNamespace().equals(Multiverse.MOD_ID)) {
-                    ChunkGenerator gen = entry.getValue().generator();
-                    if (gen instanceof NoiseBasedChunkGenerator && gen.getBiomeSource().possibleBiomes().stream().map(Holder::value).map(ForgeRegistryEntry::getRegistryName).filter(Objects::nonNull).map(name -> ResourceKey.create(Registry.BIOME_REGISTRY, name)).anyMatch(key::equals)) {
-                        return ((NoiseBasedChunkGenerator) gen).defaultBlock;
-                    }
-                }
-            }
-            return Blocks.STONE.defaultBlockState();
-        });
+        if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER)) {
+            return NETHERRACK;
+        } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.END)) {
+            return END_STONE;
+        } else {
+            return STONE;
+        }
     }
 }
