@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseType;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -27,6 +28,7 @@ public final class NoiseSettingsRegistry {
             for (MultiverseType type : MultiverseType.values()) {
                 Registry.register(BuiltinRegistries.NOISE_GENERATOR_SETTINGS, type.getNoiseSettingsKey(), type.getNoiseSettings());
             }
+            Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "dynamic_default"), DynamicDefaultChunkGenerator.CODEC);
         });
     }
 
