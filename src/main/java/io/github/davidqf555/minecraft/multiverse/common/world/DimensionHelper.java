@@ -6,8 +6,9 @@ import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseBiomesType;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseType;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.dynamic.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -18,12 +19,10 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.border.BorderChangeListener;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.WorldGenSettings;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraftforge.common.BiomeDictionary;
@@ -31,6 +30,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -95,24 +95,46 @@ public final class DimensionHelper {
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         MultiverseType type = randomType(random);
         boolean ceiling = type.hasCeiling();
-        Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey());
+        Set<ResourceKey<Biome>> biomes = randomBiomes(random);
+        MultiverseBiomesType biomeType = getBiomeType(biomes);
+        Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         Registry<Biome> lookup = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(randomBiomes(random).stream()
+        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(biomes.stream()
                 .map(lookup::getOrCreateHolder)
                 .map(holder -> {
                     Biome biome = holder.value();
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
                 }).collect(Collectors.toList()))).biomeSource(lookup);
-        DynamicDefaultChunkGenerator generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
+
+        ChunkGenerator generator;
+        if (biomeType == null) {
+            generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
+        } else {
+            generator = new NoiseBasedChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
+        }
         return new LevelStem(dimType, generator);
     }
 
     private static Holder<DimensionType> createDimensionType(int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
         return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, BlockTags.INFINIBURN_OVERWORLD, effect, light));
+    }
+
+    @Nullable
+    private static MultiverseBiomesType getBiomeType(Set<ResourceKey<Biome>> biomes) {
+        if (biomes.stream().allMatch(key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD))) {
+            return MultiverseBiomesType.OVERWORLD;
+        }
+        if (biomes.stream().allMatch(key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.NETHER))) {
+            return MultiverseBiomesType.NETHER;
+        }
+        if (biomes.stream().allMatch(key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.END))) {
+            return MultiverseBiomesType.END;
+        }
+        return null;
     }
 
     private static MultiverseType randomType(Random random) {
