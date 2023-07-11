@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
@@ -30,7 +29,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -95,8 +93,9 @@ public final class DimensionHelper {
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         MultiverseType type = randomType(random);
         boolean ceiling = type.hasCeiling();
-        Set<ResourceKey<Biome>> biomes = randomBiomes(random);
-        MultiverseBiomesType biomeType = getBiomeType(biomes);
+        Pair<MultiverseBiomesType, Set<ResourceKey<Biome>>> pair = randomBiomes(random);
+        Set<ResourceKey<Biome>> biomes = pair.getSecond();
+        MultiverseBiomesType biomeType = pair.getFirst();
         Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
@@ -109,7 +108,6 @@ public final class DimensionHelper {
                 }).collect(Collectors.toList()))).biomeSource(lookup);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
-
         ChunkGenerator generator;
         if (biomeType == null) {
             generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
@@ -121,20 +119,6 @@ public final class DimensionHelper {
 
     private static Holder<DimensionType> createDimensionType(int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
         return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, BlockTags.INFINIBURN_OVERWORLD, effect, light));
-    }
-
-    @Nullable
-    private static MultiverseBiomesType getBiomeType(Set<ResourceKey<Biome>> biomes) {
-        if (biomes.stream().allMatch(key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD))) {
-            return MultiverseBiomesType.OVERWORLD;
-        }
-        if (biomes.stream().allMatch(key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.NETHER))) {
-            return MultiverseBiomesType.NETHER;
-        }
-        if (biomes.stream().allMatch(key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.END))) {
-            return MultiverseBiomesType.END;
-        }
-        return null;
     }
 
     private static MultiverseType randomType(Random random) {
@@ -151,13 +135,16 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Set<ResourceKey<Biome>> randomBiomes(Random random) {
-        Predicate<ResourceKey<Biome>> valid = key -> BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD) || BiomeDictionary.hasType(key, BiomeDictionary.Type.NETHER) || BiomeDictionary.hasType(key, BiomeDictionary.Type.END);
-        List<BiomeDictionary.Type> types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> BiomeDictionary.getBiomes(type).stream().anyMatch(valid)).toList();
-        if (types.isEmpty()) {
-            return ImmutableSet.of(Biomes.PLAINS);
+    private static Pair<MultiverseBiomesType, Set<ResourceKey<Biome>>> randomBiomes(Random random) {
+        MultiverseBiomesType[] biomesTypes = MultiverseBiomesType.values();
+        Predicate<ResourceKey<Biome>> valid = key -> Arrays.stream(biomesTypes).anyMatch(type -> type.is(key));
+        BiomeDictionary.Type[] types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> BiomeDictionary.getBiomes(type).stream().anyMatch(valid)).toArray(BiomeDictionary.Type[]::new);
+        Set<ResourceKey<Biome>> biomes = new HashSet<>();
+        if (types.length == 0) {
+            biomes.add(Biomes.PLAINS);
+        } else {
+            biomes.addAll(BiomeDictionary.getBiomes(types[random.nextInt(types.length)]));
         }
-        Set<ResourceKey<Biome>> biomes = new HashSet<>(BiomeDictionary.getBiomes(types.get(random.nextInt(types.size()))));
         double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
         for (BiomeDictionary.Type type : types) {
             if (random.nextDouble() < chance) {
@@ -165,7 +152,22 @@ public final class DimensionHelper {
             }
         }
         biomes.removeIf(valid.negate());
-        return biomes;
+        Map<MultiverseBiomesType, Integer> counts = new EnumMap<>(MultiverseBiomesType.class);
+        for (ResourceKey<Biome> biome : biomes) {
+            for (MultiverseBiomesType type : biomesTypes) {
+                if (type.is(biome)) {
+                    counts.compute(type, (t, current) -> current == null ? 1 : current + 1);
+                }
+            }
+        }
+        if (ServerConfigs.INSTANCE.mixedBiomes.get()) {
+            if (counts.size() > 1) {
+                return Pair.of(null, biomes);
+            }
+        }
+        MultiverseBiomesType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
+        biomes.removeIf(key -> !type.is(key));
+        return Pair.of(type, biomes);
     }
 
     private static OptionalLong randomTime(Random random) {
