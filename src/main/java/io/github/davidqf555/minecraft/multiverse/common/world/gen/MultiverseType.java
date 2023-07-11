@@ -1,68 +1,62 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.gen;
 
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.TerrainProvider;
+import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.TerrainShaper;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraftforge.common.BiomeDictionary;
 
-import javax.annotation.Nullable;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public enum MultiverseType {
 
-    NORMAL(1, "normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), 63),
-    ISLANDS(1, "islands", false, false, 0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands(), -64),
-    ROOFED(1, "roofed", true, true, 0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether(), 32);
+    OVERWORLD("overworld", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), (ceiling, floor) -> SurfaceRuleData.overworldLike(false, ceiling, floor), biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD), BlockTags.INFINIBURN_OVERWORLD),
+    NETHER("nether", Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), MultiverseSurfaceRuleData::nether, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER), BlockTags.INFINIBURN_NETHER),
+    END("end", Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), MultiverseSurfaceRuleData::end, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.END), BlockTags.INFINIBURN_END);
 
     private final String name;
-    private final NoiseSettings noise;
-    private final boolean floor, ceiling;
-    private final int height, weight, minY, sea;
+    private final BlockState block, fluid;
+    private final BiFunction<Boolean, Boolean, SurfaceRules.RuleSource> surface;
+    private final Predicate<ResourceKey<Biome>> is;
+    private final TagKey<Block> infiniburn;
 
-    MultiverseType(int weight, String name, boolean ceiling, boolean floor, int minY, int height, NoiseSamplingSettings sampling, NoiseSlider top, NoiseSlider bottom, int sizeHorizontal, int sizeVertical, TerrainShaper terrain, int sea) {
-        this.weight = weight;
-        this.minY = minY;
+    MultiverseType(String name, BlockState block, BlockState fluid, BiFunction<Boolean, Boolean, SurfaceRules.RuleSource> surface, Predicate<ResourceKey<Biome>> is, TagKey<Block> infiniburn) {
         this.name = name;
-        this.floor = floor;
-        this.ceiling = ceiling;
-        this.height = height;
-        this.sea = sea;
-        noise = NoiseSettings.create(this.minY, this.height, sampling, top, bottom, sizeHorizontal, sizeVertical, terrain);
+        this.block = block;
+        this.fluid = fluid;
+        this.surface = surface;
+        this.is = is;
+        this.infiniburn = infiniburn;
     }
 
-    public int getMinY() {
-        return minY;
+    public String getName() {
+        return name;
     }
 
-    public ResourceKey<NoiseGeneratorSettings> getNoiseSettingsKey(@Nullable MultiverseBiomesType type) {
-        if (type == null) {
-            type = MultiverseBiomesType.OVERWORLD;
-        }
-        return ResourceKey.create(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name));
+    public BlockState getDefaultBlock() {
+        return block;
     }
 
-    public NoiseGeneratorSettings createNoiseSettings(@Nullable MultiverseBiomesType type) {
-        SurfaceRules.RuleSource surface = type == null ? MultiverseSurfaceRuleData.combined(hasCeiling(), hasFloor()) : type.createRuleSource(ceiling, floor);
-        type = MultiverseBiomesType.OVERWORLD;
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), surface, sea, false, true, true, false);
+    public BlockState getDefaultFluid() {
+        return fluid;
     }
 
-    public boolean hasFloor() {
-        return floor;
+    public SurfaceRules.RuleSource createRuleSource(boolean ceiling, boolean floor) {
+        return surface.apply(ceiling, floor);
     }
 
-    public boolean hasCeiling() {
-        return ceiling;
+    public boolean is(ResourceKey<Biome> biome) {
+        return is.test(biome);
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWeight() {
-        return weight;
+    public TagKey<Block> getInfiniburn() {
+        return infiniburn;
     }
 
 }

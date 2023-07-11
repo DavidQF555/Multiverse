@@ -5,8 +5,8 @@ import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseBiomesType;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseType;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.dynamic.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -92,11 +92,11 @@ public final class DimensionHelper {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
-        MultiverseType type = randomType(random);
+        MultiverseShape type = randomType(random);
         boolean ceiling = type.hasCeiling();
-        Pair<MultiverseBiomesType, Set<ResourceKey<Biome>>> pair = randomBiomes(random);
+        Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(random);
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
-        MultiverseBiomesType biomeType = pair.getFirst();
+        MultiverseType biomeType = pair.getFirst();
         Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
@@ -108,7 +108,7 @@ public final class DimensionHelper {
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
                 }).collect(Collectors.toList()))).biomeSource(lookup);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(biomeType == null ? MultiverseBiomesType.OVERWORLD.getInfiniburn() : biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
+        Holder<DimensionType> dimType = createDimensionType(biomeType == null ? MultiverseType.OVERWORLD.getInfiniburn() : biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
         ChunkGenerator generator;
         if (biomeType == null) {
             generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
@@ -122,12 +122,12 @@ public final class DimensionHelper {
         return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, infiniburn, effect, light));
     }
 
-    private static MultiverseType randomType(Random random) {
-        MultiverseType[] values = MultiverseType.values();
-        int totalWeight = Arrays.stream(values).mapToInt(MultiverseType::getWeight).sum();
+    private static MultiverseShape randomType(Random random) {
+        MultiverseShape[] values = MultiverseShape.values();
+        int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
         int selected = random.nextInt(totalWeight);
         int current = 0;
-        for (MultiverseType type : values) {
+        for (MultiverseShape type : values) {
             current += type.getWeight();
             if (selected < current) {
                 return type;
@@ -136,8 +136,8 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Pair<MultiverseBiomesType, Set<ResourceKey<Biome>>> randomBiomes(Random random) {
-        MultiverseBiomesType[] biomesTypes = MultiverseBiomesType.values();
+    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Random random) {
+        MultiverseType[] biomesTypes = MultiverseType.values();
         Predicate<ResourceKey<Biome>> valid = key -> Arrays.stream(biomesTypes).anyMatch(type -> type.is(key));
         BiomeDictionary.Type[] types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> BiomeDictionary.getBiomes(type).stream().anyMatch(valid)).toArray(BiomeDictionary.Type[]::new);
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
@@ -153,9 +153,9 @@ public final class DimensionHelper {
             }
         }
         biomes.removeIf(valid.negate());
-        Map<MultiverseBiomesType, Integer> counts = new EnumMap<>(MultiverseBiomesType.class);
+        Map<MultiverseType, Integer> counts = new EnumMap<>(MultiverseType.class);
         for (ResourceKey<Biome> biome : biomes) {
-            for (MultiverseBiomesType type : biomesTypes) {
+            for (MultiverseType type : biomesTypes) {
                 if (type.is(biome)) {
                     counts.compute(type, (t, current) -> current == null ? 1 : current + 1);
                 }
@@ -166,7 +166,7 @@ public final class DimensionHelper {
                 return Pair.of(null, biomes);
             }
         }
-        MultiverseBiomesType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
+        MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));
         return Pair.of(type, biomes);
     }

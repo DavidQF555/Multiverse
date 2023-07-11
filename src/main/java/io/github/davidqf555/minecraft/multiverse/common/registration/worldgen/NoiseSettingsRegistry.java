@@ -1,8 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseBiomesType;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseType;
+import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.world.gen.dynamic.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -20,8 +20,8 @@ public final class NoiseSettingsRegistry {
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            for (MultiverseType type : MultiverseType.values()) {
-                for (MultiverseBiomesType biome : MultiverseBiomesType.values()) {
+            for (MultiverseShape type : MultiverseShape.values()) {
+                for (MultiverseType biome : MultiverseType.values()) {
                     Registry.register(BuiltinRegistries.NOISE_GENERATOR_SETTINGS, type.getNoiseSettingsKey(biome), type.createNoiseSettings(biome));
                 }
             }
