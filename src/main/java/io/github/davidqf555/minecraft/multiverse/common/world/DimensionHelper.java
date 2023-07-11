@@ -14,9 +14,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -107,7 +108,7 @@ public final class DimensionHelper {
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
                 }).collect(Collectors.toList()))).biomeSource(lookup);
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
+        Holder<DimensionType> dimType = createDimensionType(biomeType == null ? MultiverseBiomesType.OVERWORLD.getInfiniburn() : biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
         ChunkGenerator generator;
         if (biomeType == null) {
             generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
@@ -117,8 +118,8 @@ public final class DimensionHelper {
         return new LevelStem(dimType, generator);
     }
 
-    private static Holder<DimensionType> createDimensionType(int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, BlockTags.INFINIBURN_OVERWORLD, effect, light));
+    private static Holder<DimensionType> createDimensionType(TagKey<Block> infiniburn, int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
+        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, infiniburn, effect, light));
     }
 
     private static MultiverseType randomType(Random random) {
