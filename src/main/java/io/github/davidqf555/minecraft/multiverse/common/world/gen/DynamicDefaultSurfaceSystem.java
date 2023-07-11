@@ -15,13 +15,9 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.minecraftforge.common.BiomeDictionary;
 
 public class DynamicDefaultSurfaceSystem extends SurfaceSystem {
 
-    private static final BlockState STONE = Blocks.STONE.defaultBlockState();
-    private static final BlockState NETHERRACK = Blocks.NETHERRACK.defaultBlockState();
-    private static final BlockState END_STONE = Blocks.END_STONE.defaultBlockState();
     private final BiomeResolver source;
     private final Climate.Sampler climate;
 
@@ -82,7 +78,7 @@ public class DynamicDefaultSurfaceSystem extends SurfaceSystem {
                 int j2 = Integer.MIN_VALUE;
                 int k2 = Integer.MAX_VALUE;
                 int l2 = p_189949_.getMinBuildHeight();
-                BlockState def = getDefault(ResourceKey.create(Registry.BIOME_REGISTRY, holder.value().getRegistryName()));
+                BlockState def = DynamicDefaultChunkGenerator.getDefault(ResourceKey.create(Registry.BIOME_REGISTRY, holder.value().getRegistryName()));
                 for (int i3 = l1; i3 >= l2; --i3) {
                     BlockState blockstate = blockcolumn.getBlock(i3);
                     if (blockstate.isAir()) {
@@ -133,7 +129,7 @@ public class DynamicDefaultSurfaceSystem extends SurfaceSystem {
             double d5 = 64.0D + Math.min(d1 * d1 * 2.5D, Math.ceil(d4 * 50.0D) + 24.0D);
             int i = Mth.floor(d5);
             if (p_189958_ <= i) {
-                BlockState def = getDefault(ResourceKey.create(Registry.BIOME_REGISTRY, source.getNoiseBiome(p_189956_, p_189958_, p_189957_, climate).value().getRegistryName()));
+                BlockState def = DynamicDefaultChunkGenerator.getDefault(ResourceKey.create(Registry.BIOME_REGISTRY, source.getNoiseBiome(p_189956_, p_189958_, p_189957_, climate).value().getRegistryName()));
                 for (int j = i; j >= p_189959_.getMinBuildHeight(); --j) {
                     BlockState blockstate = p_189955_.getBlock(j);
                     if (blockstate.is(def.getBlock())) {
@@ -153,13 +149,4 @@ public class DynamicDefaultSurfaceSystem extends SurfaceSystem {
         }
     }
 
-    private BlockState getDefault(ResourceKey<Biome> biome) {
-        if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER)) {
-            return NETHERRACK;
-        } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.END)) {
-            return END_STONE;
-        } else {
-            return STONE;
-        }
-    }
 }
