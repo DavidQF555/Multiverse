@@ -4,8 +4,8 @@ import io.github.davidqf555.minecraft.multiverse.client.render.MixedIllagerRende
 import io.github.davidqf555.minecraft.multiverse.client.render.RiftTileEntityRenderer;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.registration.EntityRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.registration.TileEntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.Registry;

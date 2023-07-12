@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen.dynamic;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;

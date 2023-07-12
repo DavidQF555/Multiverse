@@ -1,8 +1,8 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;

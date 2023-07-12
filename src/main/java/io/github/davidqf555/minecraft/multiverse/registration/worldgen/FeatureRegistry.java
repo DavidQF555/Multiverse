@@ -1,13 +1,13 @@
-package io.github.davidqf555.minecraft.multiverse.common.registration.worldgen;
+package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftFeature;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement.AboveGroundPlacement;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement.RiftDimensionPlacement;
+import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftFeature;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.AboveGroundPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.RiftDimensionPlacement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;

@@ -1,13 +1,11 @@
-package io.github.davidqf555.minecraft.multiverse.common.world;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.MultiverseShape;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.dynamic.DynamicDefaultChunkGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

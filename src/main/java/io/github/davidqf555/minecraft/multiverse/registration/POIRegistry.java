@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.registration;
+package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
