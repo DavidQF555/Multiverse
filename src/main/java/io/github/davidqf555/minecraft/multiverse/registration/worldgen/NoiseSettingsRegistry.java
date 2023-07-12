@@ -1,8 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
