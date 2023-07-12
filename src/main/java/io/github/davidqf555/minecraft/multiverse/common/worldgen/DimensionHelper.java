@@ -57,7 +57,7 @@ public final class DimensionHelper {
         return overworld + 80000L * index;
     }
 
-    private static ResourceKey<Level> getRegistryKey(int index) {
+    public static ResourceKey<Level> getRegistryKey(int index) {
         return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, index + ""));
     }
 
@@ -70,11 +70,14 @@ public final class DimensionHelper {
 
     @SuppressWarnings("deprecation")
     private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
+        MultiverseExistingData saved = MultiverseExistingData.getOrCreate(server);
+        saved.add(index);
+        saved.setDirty();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
         LevelStem dimension = createDimension(server, index);
         WorldData serverConfig = server.getWorldData();
         WorldGenSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
+        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
         Registry.register(dimensionGeneratorSettings.dimensions(), dimensionKey.location(), dimension);
         DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
         ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.typeHolder(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
@@ -86,7 +89,7 @@ public final class DimensionHelper {
         return newWorld;
     }
 
-    private static LevelStem createDimension(MinecraftServer server, int index) {
+    public static LevelStem createDimension(MinecraftServer server, int index) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
