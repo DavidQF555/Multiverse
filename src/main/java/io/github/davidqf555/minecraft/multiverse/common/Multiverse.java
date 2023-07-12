@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.common.registration.*;
-import io.github.davidqf555.minecraft.registration.*;
+import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
