@@ -8,8 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.TerrainShaper;
 import net.minecraft.world.level.levelgen.*;
 
-import javax.annotation.Nullable;
-
 public enum MultiverseShape {
 
     NORMAL(1, "normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), 63),
@@ -36,17 +34,12 @@ public enum MultiverseShape {
         return minY;
     }
 
-    public ResourceKey<NoiseGeneratorSettings> getNoiseSettingsKey(@Nullable MultiverseType type) {
-        if (type == null) {
-            type = MultiverseType.OVERWORLD;
-        }
+    public ResourceKey<NoiseGeneratorSettings> getNoiseSettingsKey(MultiverseType type) {
         return ResourceKey.create(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name));
     }
 
-    public NoiseGeneratorSettings createNoiseSettings(@Nullable MultiverseType type) {
-        SurfaceRules.RuleSource surface = type == null ? MultiverseSurfaceRuleData.combined(hasCeiling(), hasFloor()) : type.createRuleSource(ceiling, floor);
-        type = MultiverseType.OVERWORLD;
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), surface, sea, false, true, true, false);
+    public NoiseGeneratorSettings createNoiseSettings(MultiverseType type) {
+        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), type.createRuleSource(hasCeiling(), hasFloor()), sea, false, true, true, false);
     }
 
     public boolean hasFloor() {

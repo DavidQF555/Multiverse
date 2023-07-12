@@ -108,9 +108,9 @@ public final class DimensionHelper {
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
                 }).collect(Collectors.toList()))).biomeSource(server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(biomeType == null ? MultiverseType.OVERWORLD.getInfiniburn() : biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
+        Holder<DimensionType> dimType = createDimensionType(biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
         ChunkGenerator generator;
-        if (biomeType == null) {
+        if (biomeType == MultiverseType.MIXED) {
             generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         } else {
             generator = new NoiseBasedChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
@@ -137,8 +137,8 @@ public final class DimensionHelper {
     }
 
     private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Random random) {
-        MultiverseType[] biomesTypes = MultiverseType.values();
-        Predicate<ResourceKey<Biome>> valid = key -> Arrays.stream(biomesTypes).anyMatch(type -> type.is(key));
+        Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
+        Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
         BiomeDictionary.Type[] types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> BiomeDictionary.getBiomes(type).stream().anyMatch(valid)).toArray(BiomeDictionary.Type[]::new);
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
         if (types.length == 0) {
@@ -161,10 +161,8 @@ public final class DimensionHelper {
                 }
             }
         }
-        if (ServerConfigs.INSTANCE.mixedBiomes.get()) {
-            if (counts.size() > 1) {
-                return Pair.of(null, biomes);
-            }
+        if (!ServerConfigs.INSTANCE.mixedBiomes.get() || counts.size() <= 2) {
+            counts.remove(MultiverseType.MIXED);
         }
         MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));

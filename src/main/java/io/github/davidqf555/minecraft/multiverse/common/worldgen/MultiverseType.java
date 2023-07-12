@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 
 public enum MultiverseType {
 
+    MIXED("mixed", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), MultiverseSurfaceRuleData::combined, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD) || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER) || BiomeDictionary.hasType(biome, BiomeDictionary.Type.END), BlockTags.INFINIBURN_OVERWORLD),
     OVERWORLD("overworld", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), (ceiling, floor) -> SurfaceRuleData.overworldLike(false, ceiling, floor), biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD), BlockTags.INFINIBURN_OVERWORLD),
     NETHER("nether", Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), MultiverseSurfaceRuleData::nether, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER), BlockTags.INFINIBURN_NETHER),
     END("end", Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), MultiverseSurfaceRuleData::end, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.END), BlockTags.INFINIBURN_END);
