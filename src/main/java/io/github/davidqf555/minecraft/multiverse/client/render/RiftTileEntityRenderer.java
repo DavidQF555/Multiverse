@@ -10,6 +10,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,8 +20,9 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_background.png");
     private static final ResourceLocation PARTICLES = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_particles.png");
-    private static final RenderType TYPE = RenderType.create("end_portal", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(RenderType.RENDERTYPE_END_PORTAL_SHADER).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(BACKGROUND, false, false).add(PARTICLES, false, false).build()).createCompositeState(false));
     private static final Random RANDOM = new Random(0);
+    public static ShaderInstance SHADER = null;
+    private static final RenderType TYPE = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(() -> SHADER)).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(BACKGROUND, false, false).add(PARTICLES, false, false).build()).createCompositeState(false));
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
@@ -31,17 +33,6 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         float blue = RANDOM.nextFloat();
         Matrix4f pose = matrixStack.last().pose();
         renderCube(pose, buffer.getBuffer(TYPE), red, green, blue);
-        float pRed = RANDOM.nextFloat();
-        float pGreen = RANDOM.nextFloat();
-        float pBlue = RANDOM.nextFloat();
-        renderCubeOffsetColors(pose, buffer.getBuffer(TYPE), pRed, pGreen, pBlue, 0.25f);
-    }
-
-    private void renderCubeOffsetColors(Matrix4f matrix, VertexConsumer builder, float oRed, float oGreen, float oBlue, float factor) {
-        float red = RANDOM.nextFloat() * factor + oRed;
-        float green = RANDOM.nextFloat() * factor + oGreen;
-        float blue = RANDOM.nextFloat() * factor + oBlue;
-        renderCube(matrix, builder, red, blue, green);
     }
 
     private void renderCube(Matrix4f matrix, VertexConsumer buffer, float red, float green, float blue) {
