@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-##############################################################################
-
 app_path=$0
 
 while
@@ -34,7 +32,6 @@ done
 
 APP_HOME=$( cd "${APP_HOME:-./}" && pwd -P ) || exit
 
-APP_NAME="Gradle"
 APP_BASE_NAME=${0##*/}
 
 DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
@@ -117,7 +114,6 @@ if "$cygwin" || "$msys" ; then
         then
             arg=$( cygpath --path --ignore --mixed "$arg" )
         fi
-
         shift
         set -- "$@" "$arg"
     done
@@ -128,6 +124,11 @@ set -- \
         -classpath "$CLASSPATH" \
         org.gradle.wrapper.GradleWrapperMain \
         "$@"
+
+if ! command -v xargs >/dev/null 2>&1
+then
+    die "xargs is not available"
+fi
 
 eval "set -- $(
         printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
