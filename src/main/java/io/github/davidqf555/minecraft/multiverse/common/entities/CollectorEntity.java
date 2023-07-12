@@ -1,9 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
-import io.github.davidqf555.minecraft.registration.BlockRegistry;
-import io.github.davidqf555.minecraft.registration.EntityRegistry;
-import io.github.davidqf555.minecraft.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;

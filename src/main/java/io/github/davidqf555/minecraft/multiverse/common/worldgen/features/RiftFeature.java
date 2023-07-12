@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
-import io.github.davidqf555.minecraft.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
