@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
-import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
@@ -43,6 +42,7 @@ import java.util.function.Function;
 @MethodsReturnNonnullByDefault
 public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
+    private static final Random RANDOM = new Random(0);
     private int target;
 
     protected RiftTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -61,18 +61,13 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         this.target = target;
     }
 
-    public Pair<Integer, Integer> getColors(Random rand) {
-        int color = FastColor.ARGB32.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
-        int particles = FastColor.ARGB32.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
-        return Pair.of(color, particles);
+    public int getColor(Random rand) {
+        return FastColor.ARGB32.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
     }
 
-    public Random getColorsRandom() {
-        return new Random(getSeed());
-    }
-
-    public Pair<Integer, Integer> getColors() {
-        return getColors(getColorsRandom());
+    public int getColor() {
+        RANDOM.setSeed(getSeed());
+        return getColor(RANDOM);
     }
 
     public long getSeed() {
