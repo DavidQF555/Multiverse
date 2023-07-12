@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.DynamicDefaultChunkGenerator;
+import io.github.davidqf555.minecraft.registration.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DynamicDefaultChunkGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.GenerationStage;

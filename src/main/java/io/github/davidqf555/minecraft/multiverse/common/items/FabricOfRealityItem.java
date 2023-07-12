@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.registration.BlockRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

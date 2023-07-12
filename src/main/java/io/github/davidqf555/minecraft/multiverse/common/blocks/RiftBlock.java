@@ -1,8 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.davidqf555.minecraft.multiverse.common.registration.ItemRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

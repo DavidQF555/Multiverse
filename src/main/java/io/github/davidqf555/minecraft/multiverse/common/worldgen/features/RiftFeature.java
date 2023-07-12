@@ -1,11 +1,11 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen.features;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
-import io.github.davidqf555.minecraft.multiverse.common.registration.ItemRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntity;

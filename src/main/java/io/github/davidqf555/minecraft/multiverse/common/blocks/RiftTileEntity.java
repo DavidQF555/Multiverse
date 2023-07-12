@@ -2,11 +2,11 @@ package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.registration.POIRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.registration.TileEntityRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
+import io.github.davidqf555.minecraft.registration.FeatureRegistry;
+import io.github.davidqf555.minecraft.registration.POIRegistry;
+import io.github.davidqf555.minecraft.registration.TileEntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;

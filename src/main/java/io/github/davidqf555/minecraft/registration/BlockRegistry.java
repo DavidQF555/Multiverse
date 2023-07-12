@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.registration;
+package io.github.davidqf555.minecraft.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;

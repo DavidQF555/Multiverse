@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.gen.features.placement;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;

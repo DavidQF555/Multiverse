@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.registration.BlockRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.registration.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.common.world.gen.features.RiftConfig;
+import io.github.davidqf555.minecraft.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.registration.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
