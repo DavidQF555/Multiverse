@@ -17,7 +17,9 @@
       "conditions": {
         "items": [
           {
-            "item": "multiverse:universal_treasure"
+            "items": [
+              "multiverse:universal_treasure"
+            ]
           }
         ]
       }
