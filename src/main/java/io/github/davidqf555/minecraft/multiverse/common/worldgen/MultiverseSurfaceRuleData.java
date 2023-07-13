@@ -1,8 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -35,11 +35,11 @@ public final class MultiverseSurfaceRuleData {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    public static SurfaceRules.RuleSource combined(boolean ceiling, boolean floor) {
+    public static SurfaceRules.RuleSource combined(boolean ceiling, boolean floor, ResourceKey<Biome>[] overworld, ResourceKey<Biome>[] nether, ResourceKey<Biome>[] end) {
         return addBedrock(ceiling, floor, SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(MultiverseBiomesRegistry.getMultiverseOverworldBiomes().toArray(ResourceKey[]::new)), SurfaceRuleData.overworldLike(false, false, false)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(MultiverseBiomesRegistry.getMultiverseNetherBiomes().toArray(ResourceKey[]::new)), nether(false, false)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(MultiverseBiomesRegistry.getMultiverseEndBiomes().toArray(ResourceKey[]::new)), end(false, false))
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(overworld), SurfaceRuleData.overworldLike(false, false, false)),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(nether), nether(false, false)),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(end), end(false, false))
         ));
     }
 

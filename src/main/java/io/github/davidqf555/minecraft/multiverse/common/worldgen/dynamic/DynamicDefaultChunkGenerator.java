@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
@@ -43,6 +44,7 @@ public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
     private static final BlockState STONE = Blocks.STONE.defaultBlockState();
     private static final BlockState NETHERRACK = Blocks.NETHERRACK.defaultBlockState();
     private static final BlockState END_STONE = Blocks.END_STONE.defaultBlockState();
+    private static Set<ResourceKey<Biome>> nether, end;
 
     public DynamicDefaultChunkGenerator(Registry<StructureSet> p_209106_, Registry<NormalNoise.NoiseParameters> p_209107_, BiomeSource p_209108_, long p_209109_, Holder<NoiseGeneratorSettings> p_209110_) {
         super(p_209106_, p_209107_, p_209108_, p_209109_, p_209110_);
@@ -53,9 +55,15 @@ public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     public static BlockState getDefault(ResourceKey<Biome> biome) {
-        if (MultiverseBiomesRegistry.getMultiverseNetherBiomes().contains(biome)) {
+        if (nether == null) {
+            nether = MultiverseBiomesRegistry.getMultiverseBiomes().getNetherBiomes();
+        }
+        if (end == null) {
+            end = MultiverseBiomesRegistry.getMultiverseBiomes().getEndBiomes();
+        }
+        if (nether.contains(biome)) {
             return NETHERRACK;
-        } else if (MultiverseBiomesRegistry.getMultiverseEndBiomes().contains(biome)) {
+        } else if (end.contains(biome)) {
             return END_STONE;
         } else {
             return STONE;

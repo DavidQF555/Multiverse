@@ -39,7 +39,7 @@ public enum MultiverseShape {
     }
 
     public NoiseGeneratorSettings createNoiseSettings(MultiverseType type) {
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), type.createRuleSource(hasCeiling(), hasFloor()), sea, false, true, true, false);
+        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), VanillaMultiverseBiomes.INSTANCE.createSurface(this, type), sea, false, true, true, false);
     }
 
     public boolean hasFloor() {

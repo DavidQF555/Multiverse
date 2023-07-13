@@ -10,12 +10,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 
+import java.util.Set;
+
 public class DynamicDefaultFluidPicker implements Aquifer.FluidPicker {
 
     private static final Aquifer.FluidStatus LAVA = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
     private final Aquifer.FluidStatus water, lava, air;
     private final int sea;
     private final NoiseBasedChunkGenerator gen;
+    private Set<ResourceKey<Biome>> nether, end;
 
     public DynamicDefaultFluidPicker(int sea, NoiseBasedChunkGenerator gen) {
         this.sea = sea;
@@ -30,10 +33,16 @@ public class DynamicDefaultFluidPicker implements Aquifer.FluidPicker {
         if (y < Math.min(-54, sea)) {
             return LAVA;
         }
+        if (nether == null) {
+            nether = MultiverseBiomesRegistry.getMultiverseBiomes().getNetherBiomes();
+        }
+        if (end == null) {
+            end = MultiverseBiomesRegistry.getMultiverseBiomes().getEndBiomes();
+        }
         ResourceKey<Biome> biome = ResourceKey.create(Registry.BIOME_REGISTRY, gen.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z)).value().getRegistryName());
-        if (MultiverseBiomesRegistry.getMultiverseNetherBiomes().contains(biome)) {
+        if (nether.contains(biome)) {
             return lava;
-        } else if (MultiverseBiomesRegistry.getMultiverseEndBiomes().contains(biome)) {
+        } else if (end.contains(biome)) {
             return air;
         } else {
             return water;
