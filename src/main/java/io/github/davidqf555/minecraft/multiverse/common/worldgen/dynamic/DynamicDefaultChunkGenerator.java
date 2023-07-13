@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,9 +53,9 @@ public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     public static BlockState getDefault(ResourceKey<Biome> biome) {
-        if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER)) {
+        if (MultiverseBiomesRegistry.getMultiverseNetherBiomes().contains(biome)) {
             return NETHERRACK;
-        } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.END)) {
+        } else if (MultiverseBiomesRegistry.getMultiverseEndBiomes().contains(biome)) {
             return END_STONE;
         } else {
             return STONE;

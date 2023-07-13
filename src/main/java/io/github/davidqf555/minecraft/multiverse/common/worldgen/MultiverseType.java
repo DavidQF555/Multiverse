@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -9,17 +10,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public enum MultiverseType {
 
-    MIXED("mixed", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), MultiverseSurfaceRuleData::combined, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD) || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER) || BiomeDictionary.hasType(biome, BiomeDictionary.Type.END), BlockTags.INFINIBURN_OVERWORLD),
-    OVERWORLD("overworld", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), (ceiling, floor) -> SurfaceRuleData.overworldLike(false, ceiling, floor), biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD), BlockTags.INFINIBURN_OVERWORLD),
-    NETHER("nether", Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), MultiverseSurfaceRuleData::nether, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER), BlockTags.INFINIBURN_NETHER),
-    END("end", Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), MultiverseSurfaceRuleData::end, biome -> BiomeDictionary.hasType(biome, BiomeDictionary.Type.END), BlockTags.INFINIBURN_END);
+    MIXED("mixed", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), MultiverseSurfaceRuleData::combined, biome -> MultiverseBiomesRegistry.getMultiverseOverworldBiomes().contains(biome) || MultiverseBiomesRegistry.getMultiverseNetherBiomes().contains(biome) || MultiverseBiomesRegistry.getMultiverseEndBiomes().contains(biome), BlockTags.INFINIBURN_OVERWORLD),
+    OVERWORLD("overworld", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), (ceiling, floor) -> SurfaceRuleData.overworldLike(false, ceiling, floor), biome -> MultiverseBiomesRegistry.getMultiverseOverworldBiomes().contains(biome), BlockTags.INFINIBURN_OVERWORLD),
+    NETHER("nether", Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), MultiverseSurfaceRuleData::nether, biome -> MultiverseBiomesRegistry.getMultiverseNetherBiomes().contains(biome), BlockTags.INFINIBURN_NETHER),
+    END("end", Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), MultiverseSurfaceRuleData::end, biome -> MultiverseBiomesRegistry.getMultiverseEndBiomes().contains(biome), BlockTags.INFINIBURN_END);
 
     private final String name;
     private final BlockState block, fluid;

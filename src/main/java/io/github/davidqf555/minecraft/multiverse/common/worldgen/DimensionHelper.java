@@ -6,8 +6,10 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -23,7 +25,6 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -95,10 +96,12 @@ public final class DimensionHelper {
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         MultiverseShape type = randomType(random);
         boolean ceiling = type.hasCeiling();
-        Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(random);
+        RegistryAccess access = server.registryAccess();
+        Registry<Biome> biomeRegistry = access.registryOrThrow(Registry.BIOME_REGISTRY);
+        Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
         MultiverseType biomeType = pair.getFirst();
-        Holder<NoiseGeneratorSettings> settings = server.registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
+        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(biomes.stream()
@@ -106,14 +109,14 @@ public final class DimensionHelper {
                 .map(holder -> {
                     Biome biome = holder.value();
                     return Pair.of(Climate.parameters(biome.getBaseTemperature(), biome.getDownfall(), 0, 0, 0, 0, 0), holder);
-                }).collect(Collectors.toList()))).biomeSource(server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY));
+                }).collect(Collectors.toList()))).biomeSource(access.registryOrThrow(Registry.BIOME_REGISTRY));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
         ChunkGenerator generator;
         if (biomeType == MultiverseType.MIXED) {
-            generator = new DynamicDefaultChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
+            generator = new DynamicDefaultChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         } else {
-            generator = new NoiseBasedChunkGenerator(server.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
+            generator = new NoiseBasedChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
         }
         return new LevelStem(dimType, generator);
     }
@@ -136,20 +139,31 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Random random) {
+    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, Random random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        BiomeDictionary.Type[] types = BiomeDictionary.Type.getAll().stream().filter(type -> !BiomeDictionary.getBiomes(type).isEmpty()).filter(type -> BiomeDictionary.getBiomes(type).stream().anyMatch(valid)).toArray(BiomeDictionary.Type[]::new);
+        List<Set<ResourceKey<Biome>>> sets = MultiverseBiomesRegistry.getMultiverseBiomeTags().stream()
+                .map(registry::getTag)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(named -> named.stream()
+                        .map(Holder::value)
+                        .map(biome -> ResourceKey.create(Registry.BIOME_REGISTRY, biome.getRegistryName()))
+                        .filter(valid)
+                        .collect(Collectors.toSet())
+                )
+                .filter(set -> !set.isEmpty())
+                .toList();
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
-        if (types.length == 0) {
+        if (sets.isEmpty()) {
             biomes.add(Biomes.PLAINS);
         } else {
-            biomes.addAll(BiomeDictionary.getBiomes(types[random.nextInt(types.length)]));
+            biomes.addAll(sets.get(random.nextInt(sets.size())));
         }
         double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
-        for (BiomeDictionary.Type type : types) {
+        for (Set<ResourceKey<Biome>> set : sets) {
             if (random.nextDouble() < chance) {
-                biomes.addAll(BiomeDictionary.getBiomes(type));
+                biomes.addAll(set);
             }
         }
         biomes.removeIf(valid.negate());

@@ -1,15 +1,14 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +35,11 @@ public final class MultiverseSurfaceRuleData {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    private static ResourceKey<Biome>[] getBiomes(BiomeDictionary.Type type) {
-        return (ResourceKey<Biome>[]) BiomeDictionary.getBiomes(type).toArray(new ResourceKey[0]);
-    }
-
     public static SurfaceRules.RuleSource combined(boolean ceiling, boolean floor) {
         return addBedrock(ceiling, floor, SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(getBiomes(BiomeDictionary.Type.OVERWORLD)), SurfaceRuleData.overworldLike(false, false, false)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(getBiomes(BiomeDictionary.Type.NETHER)), nether(false, false)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(getBiomes(BiomeDictionary.Type.END)), end(false, false))
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(MultiverseBiomesRegistry.getMultiverseOverworldBiomes().toArray(ResourceKey[]::new)), SurfaceRuleData.overworldLike(false, false, false)),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(MultiverseBiomesRegistry.getMultiverseNetherBiomes().toArray(ResourceKey[]::new)), nether(false, false)),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(MultiverseBiomesRegistry.getMultiverseEndBiomes().toArray(ResourceKey[]::new)), end(false, false))
         ));
     }
 

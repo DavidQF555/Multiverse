@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic;
 
 
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraftforge.common.BiomeDictionary;
 
 public class DynamicDefaultFluidPicker implements Aquifer.FluidPicker {
 
@@ -31,9 +31,9 @@ public class DynamicDefaultFluidPicker implements Aquifer.FluidPicker {
             return LAVA;
         }
         ResourceKey<Biome> biome = ResourceKey.create(Registry.BIOME_REGISTRY, gen.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z)).value().getRegistryName());
-        if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER)) {
+        if (MultiverseBiomesRegistry.getMultiverseNetherBiomes().contains(biome)) {
             return lava;
-        } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.END)) {
+        } else if (MultiverseBiomesRegistry.getMultiverseEndBiomes().contains(biome)) {
             return air;
         } else {
             return water;
