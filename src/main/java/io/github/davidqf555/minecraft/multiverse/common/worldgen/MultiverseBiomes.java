@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 
 import java.util.Set;
@@ -15,6 +16,8 @@ public interface MultiverseBiomes {
     Set<ResourceKey<Biome>> getEndBiomes();
 
     Set<ResourceKey<Biome>> getMixedBiomes();
+
+    Climate.ParameterPoint getParameters(ResourceKey<Biome> biome);
 
     default boolean overrideVanillaSurface() {
         return true;
