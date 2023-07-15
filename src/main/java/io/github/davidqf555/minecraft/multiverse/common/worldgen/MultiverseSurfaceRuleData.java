@@ -11,6 +11,8 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public final class MultiverseSurfaceRuleData {
@@ -35,15 +37,25 @@ public final class MultiverseSurfaceRuleData {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    public static SurfaceRules.RuleSource combined(boolean ceiling, boolean floor, ResourceKey<Biome>[] overworld, ResourceKey<Biome>[] nether, ResourceKey<Biome>[] end) {
+    public static SurfaceRules.RuleSource combined(boolean ceiling, boolean floor, ResourceKey<Biome>[] overworld, ResourceKey<Biome>[] nether, ResourceKey<Biome>[] end, Collection<SurfaceRules.RuleSource> overworldAdditions, Collection<SurfaceRules.RuleSource> netherAdditions, Collection<SurfaceRules.RuleSource> endAdditions) {
         return addBedrock(ceiling, floor, SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(overworld), SurfaceRuleData.overworldLike(false, false, false)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(nether), nether(false, false)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(end), end(false, false))
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(overworld), overworld(false, false, overworldAdditions)),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(nether), nether(false, false, netherAdditions)),
+                SurfaceRules.ifTrue(SurfaceRules.isBiome(end), end(false, false, endAdditions))
         ));
     }
 
-    public static SurfaceRules.RuleSource nether(boolean ceiling, boolean floor) {
+    public static SurfaceRules.RuleSource overworld(boolean ceiling, boolean floor, Collection<SurfaceRules.RuleSource> additions) {
+        SurfaceRules.RuleSource surface = SurfaceRuleData.overworldLike(false, false, false);
+        if (!additions.isEmpty()) {
+            List<SurfaceRules.RuleSource> list = new LinkedList<>(additions);
+            list.add(0, surface);
+            surface = SurfaceRules.sequence(list.toArray(SurfaceRules.RuleSource[]::new));
+        }
+        return addBedrock(ceiling, floor, surface);
+    }
+
+    public static SurfaceRules.RuleSource nether(boolean ceiling, boolean floor, Collection<SurfaceRules.RuleSource> additions) {
         SurfaceRules.ConditionSource surfacerules$conditionsource = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(31), 0);
         SurfaceRules.ConditionSource surfacerules$conditionsource1 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(32), 0);
         SurfaceRules.ConditionSource surfacerules$conditionsource2 = SurfaceRules.yStartCheck(VerticalAnchor.absolute(30), 0);
@@ -57,11 +69,23 @@ public final class MultiverseSurfaceRuleData {
         SurfaceRules.ConditionSource surfacerules$conditionsource10 = SurfaceRules.noiseCondition(Noises.NETHER_WART, 1.17D);
         SurfaceRules.ConditionSource surfacerules$conditionsource11 = SurfaceRules.noiseCondition(Noises.NETHER_STATE_SELECTOR, 0.0D);
         SurfaceRules.RuleSource surfacerules$rulesource = SurfaceRules.ifTrue(surfacerules$conditionsource8, SurfaceRules.ifTrue(surfacerules$conditionsource2, SurfaceRules.ifTrue(surfacerules$conditionsource3, GRAVEL)));
-        return addBedrock(ceiling, floor, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource4, NETHERRACK), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.BASALT_DELTAS), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.UNDER_CEILING, BASALT), SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(surfacerules$rulesource, SurfaceRules.ifTrue(surfacerules$conditionsource11, BASALT), BLACKSTONE)))), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.SOUL_SAND_VALLEY), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.UNDER_CEILING, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource11, SOUL_SAND), SOUL_SOIL)), SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(surfacerules$rulesource, SurfaceRules.ifTrue(surfacerules$conditionsource11, SOUL_SAND), SOUL_SOIL)))), SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource1), SurfaceRules.ifTrue(surfacerules$conditionsource5, LAVA)), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.WARPED_FOREST), SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource9), SurfaceRules.ifTrue(surfacerules$conditionsource, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource10, WARPED_WART_BLOCK), WARPED_NYLIUM)))), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.CRIMSON_FOREST), SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource9), SurfaceRules.ifTrue(surfacerules$conditionsource, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource10, NETHER_WART_BLOCK), CRIMSON_NYLIUM)))))), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.NETHER_WASTES), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.ifTrue(surfacerules$conditionsource6, SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource5), SurfaceRules.ifTrue(surfacerules$conditionsource2, SurfaceRules.ifTrue(surfacerules$conditionsource3, SOUL_SAND))), NETHERRACK))), SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.ifTrue(surfacerules$conditionsource, SurfaceRules.ifTrue(surfacerules$conditionsource3, SurfaceRules.ifTrue(surfacerules$conditionsource7, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource1, GRAVEL), SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource5), GRAVEL)))))))), NETHERRACK));
+        SurfaceRules.RuleSource surface = SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource4, NETHERRACK), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.BASALT_DELTAS), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.UNDER_CEILING, BASALT), SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(surfacerules$rulesource, SurfaceRules.ifTrue(surfacerules$conditionsource11, BASALT), BLACKSTONE)))), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.SOUL_SAND_VALLEY), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.UNDER_CEILING, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource11, SOUL_SAND), SOUL_SOIL)), SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(surfacerules$rulesource, SurfaceRules.ifTrue(surfacerules$conditionsource11, SOUL_SAND), SOUL_SOIL)))), SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource1), SurfaceRules.ifTrue(surfacerules$conditionsource5, LAVA)), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.WARPED_FOREST), SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource9), SurfaceRules.ifTrue(surfacerules$conditionsource, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource10, WARPED_WART_BLOCK), WARPED_NYLIUM)))), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.CRIMSON_FOREST), SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource9), SurfaceRules.ifTrue(surfacerules$conditionsource, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource10, NETHER_WART_BLOCK), CRIMSON_NYLIUM)))))), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.NETHER_WASTES), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.ifTrue(surfacerules$conditionsource6, SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource5), SurfaceRules.ifTrue(surfacerules$conditionsource2, SurfaceRules.ifTrue(surfacerules$conditionsource3, SOUL_SAND))), NETHERRACK))), SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.ifTrue(surfacerules$conditionsource, SurfaceRules.ifTrue(surfacerules$conditionsource3, SurfaceRules.ifTrue(surfacerules$conditionsource7, SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource1, GRAVEL), SurfaceRules.ifTrue(SurfaceRules.not(surfacerules$conditionsource5), GRAVEL)))))))), NETHERRACK);
+        if (!additions.isEmpty()) {
+            List<SurfaceRules.RuleSource> list = new LinkedList<>(additions);
+            list.add(0, surface);
+            surface = SurfaceRules.sequence(list.toArray(SurfaceRules.RuleSource[]::new));
+        }
+        return addBedrock(ceiling, floor, surface);
     }
 
-    public static SurfaceRules.RuleSource end(boolean ceiling, boolean floor) {
-        return addBedrock(ceiling, floor, SurfaceRuleData.end());
+    public static SurfaceRules.RuleSource end(boolean ceiling, boolean floor, Collection<SurfaceRules.RuleSource> additions) {
+        SurfaceRules.RuleSource surface = SurfaceRuleData.end();
+        if (!additions.isEmpty()) {
+            List<SurfaceRules.RuleSource> list = new LinkedList<>(additions);
+            list.add(0, surface);
+            surface = SurfaceRules.sequence(list.toArray(SurfaceRules.RuleSource[]::new));
+        }
+        return addBedrock(ceiling, floor, surface);
     }
 
     private static SurfaceRules.RuleSource addBedrock(boolean ceiling, boolean floor, SurfaceRules.RuleSource source) {

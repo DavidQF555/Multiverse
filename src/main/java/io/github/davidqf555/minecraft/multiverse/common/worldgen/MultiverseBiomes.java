@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface MultiverseBiomes {
@@ -15,12 +14,10 @@ public interface MultiverseBiomes {
 
     Set<ResourceKey<Biome>> getEndBiomes();
 
-    default Set<ResourceKey<Biome>> getMixedBiomes() {
-        Set<ResourceKey<Biome>> set = new HashSet<>();
-        set.addAll(getOverworldBiomes());
-        set.addAll(getNetherBiomes());
-        set.addAll(getEndBiomes());
-        return set;
+    Set<ResourceKey<Biome>> getMixedBiomes();
+
+    default boolean overrideVanillaSurface() {
+        return true;
     }
 
     default Set<ResourceKey<Biome>> getBiomes(MultiverseType type) {

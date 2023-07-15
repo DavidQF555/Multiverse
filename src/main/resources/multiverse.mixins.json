@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "io.github.davidqf555.minecraft.multiverse.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "multiverse.refmap.json",
+  "mixins": [
+    "MixinNoiseGeneratorSettings"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8.5"
+}
