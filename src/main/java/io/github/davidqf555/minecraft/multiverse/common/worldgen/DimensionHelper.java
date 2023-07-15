@@ -60,7 +60,7 @@ public final class DimensionHelper {
     }
 
     public static ResourceKey<Level> getRegistryKey(int index) {
-        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, index + ""));
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
     }
 
     public static int getIndex(ResourceKey<Level> world) {
