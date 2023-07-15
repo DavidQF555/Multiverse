@@ -6,12 +6,10 @@ import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRe
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -27,16 +25,13 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onWorldLoad(WorldEvent.Load event) {
-        LevelAccessor accessor = event.getWorld();
-        if (!accessor.isClientSide() && accessor instanceof Level && ((Level) accessor).dimension().equals(Level.OVERWORLD)) {
-            MinecraftServer server = accessor.getServer();
-            Registry<LevelStem> registry = server.getWorldData().worldGenSettings().dimensions();
-            for (int index : MultiverseExistingData.getOrCreate(server).getExisting()) {
-                ResourceLocation loc = DimensionHelper.getRegistryKey(index).location();
-                if (!registry.containsKey(loc)) {
-                    Registry.register(registry, loc, DimensionHelper.createDimension(server, index));
-                }
+    public static void onServerStarting(ServerStartingEvent event) {
+        MinecraftServer server = event.getServer();
+        Registry<LevelStem> registry = server.getWorldData().worldGenSettings().dimensions();
+        for (int index : MultiverseExistingData.getOrCreate(server).getExisting()) {
+            ResourceLocation loc = DimensionHelper.getRegistryKey(index).location();
+            if (!registry.containsKey(loc)) {
+                Registry.register(registry, loc, DimensionHelper.createDimension(server, index));
             }
         }
     }
