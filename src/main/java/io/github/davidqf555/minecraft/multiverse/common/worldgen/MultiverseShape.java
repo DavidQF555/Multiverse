@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;

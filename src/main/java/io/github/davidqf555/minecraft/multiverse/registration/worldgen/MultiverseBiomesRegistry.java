@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseBiomes;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.VanillaMultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;

@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.core.Holder;

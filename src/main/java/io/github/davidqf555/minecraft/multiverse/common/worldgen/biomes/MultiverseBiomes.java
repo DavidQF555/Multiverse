@@ -1,5 +1,7 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;

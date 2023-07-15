@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 
 import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
