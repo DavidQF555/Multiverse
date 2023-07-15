@@ -16,8 +16,6 @@ public final class PacketRegistry {
 
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            UpdateClientDimensionsPacket.register(index++);
-        });
+        event.enqueueWork(() -> UpdateClientDimensionsPacket.register(index++));
     }
 }

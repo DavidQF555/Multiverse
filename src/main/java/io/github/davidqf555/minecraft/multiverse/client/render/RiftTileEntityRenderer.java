@@ -23,7 +23,6 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
-        int world = entity.getTarget();
         int color = entity.getColor();
         Matrix4f pose = matrixStack.last().pose();
         renderCube(pose, buffer.getBuffer(TYPE), color);

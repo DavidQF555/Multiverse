@@ -124,9 +124,7 @@ public class DynamicDefaultChunkGenerator extends NoiseBasedChunkGenerator {
     @Override
     protected ChunkAccess doFill(Blender p_188663_, StructureFeatureManager p_188664_, ChunkAccess p_188665_, int p_188666_, int p_188667_) {
         NoiseGeneratorSettings noisegeneratorsettings = this.settings.value();
-        NoiseChunk noisechunk = p_188665_.getOrCreateNoiseChunk(this.router, () -> {
-            return new Beardifier(p_188664_, p_188665_);
-        }, noisegeneratorsettings, this.globalFluidPicker, p_188663_);
+        NoiseChunk noisechunk = p_188665_.getOrCreateNoiseChunk(this.router, () -> new Beardifier(p_188664_, p_188665_), noisegeneratorsettings, this.globalFluidPicker, p_188663_);
         Heightmap heightmap = p_188665_.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
         Heightmap heightmap1 = p_188665_.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
         ChunkPos chunkpos = p_188665_.getPos();
