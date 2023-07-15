@@ -104,7 +104,7 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
-        BiomeSource provider = new MultiNoiseBiomeSource.Preset(getRegistryKey(index).location(), registry -> new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), registry.getOrCreateHolder(key))).collect(Collectors.toList()))).biomeSource(access.registryOrThrow(Registry.BIOME_REGISTRY));
+        BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
         ChunkGenerator generator;

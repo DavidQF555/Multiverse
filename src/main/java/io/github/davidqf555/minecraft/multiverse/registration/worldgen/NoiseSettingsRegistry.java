@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseBiomeSource;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
@@ -30,6 +31,7 @@ public final class NoiseSettingsRegistry {
                 }
             }
             Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "dynamic_default"), DynamicDefaultChunkGenerator.CODEC);
+            Registry.register(Registry.BIOME_SOURCE, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), MultiverseBiomeSource.CODEC);
         });
     }
 
