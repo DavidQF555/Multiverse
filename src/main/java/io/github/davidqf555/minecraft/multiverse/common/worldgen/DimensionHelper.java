@@ -214,22 +214,4 @@ public final class DimensionHelper {
         return Pair.of(type, biomes);
     }
 
-    private static OptionalLong randomTime(RandomSource random) {
-        if (random.nextDouble() < ServerConfigs.INSTANCE.fixedTimeChance.get()) {
-            return OptionalLong.of(random.nextInt(24000));
-        }
-        return OptionalLong.empty();
-    }
-
-    private static ResourceLocation randomEffect(boolean night, RandomSource random) {
-        int rand = random.nextInt(night ? 3 : 2);
-        if (rand == 0) {
-            return BuiltinDimensionTypes.OVERWORLD_EFFECTS;
-        } else if (rand == 1) {
-            return BuiltinDimensionTypes.NETHER_EFFECTS;
-        } else {
-            return BuiltinDimensionTypes.END_EFFECTS;
-        }
-    }
-
 }
