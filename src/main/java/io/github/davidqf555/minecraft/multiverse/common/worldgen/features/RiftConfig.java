@@ -2,13 +2,12 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 import java.util.Optional;
-import java.util.Random;
 
 public class RiftConfig implements FeatureConfiguration {
 
@@ -34,7 +33,7 @@ public class RiftConfig implements FeatureConfiguration {
     }
 
     public static RiftConfig of(Optional<Integer> target, BlockState block, boolean natural) {
-        return new RiftConfig(target, block, natural, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()), new Rotation(0, 180, 0, 180, 0, 180));
+        return new RiftConfig(target, block, natural, new Size(1, 3, 6, 10), new Rotation(0, 180, 0, 180, 0, 180));
     }
 
     public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, int width, int height, float xRot, float yRot, float zRot) {
@@ -79,11 +78,11 @@ public class RiftConfig implements FeatureConfiguration {
             this.maxHeight = maxHeight;
         }
 
-        public int getWidth(Random random) {
+        public int getWidth(RandomSource random) {
             return random.nextInt(maxWidth - minWidth + 1) + minWidth;
         }
 
-        public int getHeight(Random random) {
+        public int getHeight(RandomSource random) {
             return random.nextInt(maxHeight - minHeight + 1) + minHeight;
         }
 
@@ -112,15 +111,15 @@ public class RiftConfig implements FeatureConfiguration {
         }
 
 
-        public float getRotX(Random random) {
+        public float getRotX(RandomSource random) {
             return minX + random.nextFloat() * (maxX - minX);
         }
 
-        public float getRotY(Random random) {
+        public float getRotY(RandomSource random) {
             return minY + random.nextFloat() * (maxY - minY);
         }
 
-        public float getRotZ(Random random) {
+        public float getRotZ(RandomSource random) {
             return minZ + random.nextFloat() * (maxZ - minZ);
         }
     }

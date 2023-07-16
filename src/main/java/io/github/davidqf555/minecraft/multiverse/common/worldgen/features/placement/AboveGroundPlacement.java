@@ -3,22 +3,26 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.place
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 public class AboveGroundPlacement extends PlacementModifier {
 
-    public static final Codec<AboveGroundPlacement> CODEC = Codec.unit(() -> FeatureRegistry.ABOVE_GROUND);
+    private static final AboveGroundPlacement INSTANCE = new AboveGroundPlacement();
+    public static final Codec<AboveGroundPlacement> CODEC = Codec.unit(() -> INSTANCE);
+
+    protected AboveGroundPlacement() {
+    }
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext context, Random rand, BlockPos pos) {
+    public Stream<BlockPos> getPositions(PlacementContext context, RandomSource rand, BlockPos pos) {
         int y = rand.nextInt(context.getGenDepth());
         BlockPos rift = new BlockPos(pos.getX(), y, pos.getZ());
         WorldGenLevel level = context.getLevel();
@@ -32,6 +36,7 @@ public class AboveGroundPlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return FeatureRegistry.ABOVE_GROUND_PLACEMENT_TYPE;
+        return FeatureRegistry.ABOVE_GROUND;
     }
+
 }

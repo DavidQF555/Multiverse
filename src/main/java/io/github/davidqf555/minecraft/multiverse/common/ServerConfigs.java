@@ -15,7 +15,7 @@ public class ServerConfigs {
     }
 
     public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
-    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
+    public final ForgeConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange;
     public final ForgeConfigSpec.BooleanValue mixedBiomes;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
@@ -35,18 +35,8 @@ public class ServerConfigs {
         builder.push("Rifts");
         fabricOfReailtyChance = builder.comment("This is the chance of a Fabric of Reality dropping whenever a rift opens. ")
                 .defineInRange("fabricChance", 0.05, 0, 1);
-        riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
-                .defineInRange("chance", 20, 1, Integer.MAX_VALUE);
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
-        minRiftWidth = builder.comment("This is the minimum width radius of naturally generated rifts. ")
-                .defineInRange("minWidth", 1, 0, Integer.MAX_VALUE);
-        maxRiftWidth = builder.comment("This is the maximum width radius of naturally generated rifts. This should be greater or equal to minWidth. ")
-                .defineInRange("maxWidth", 3, 0, Integer.MAX_VALUE);
-        minRiftHeight = builder.comment("This is the minimum height radius of naturally generated rifts. ")
-                .defineInRange("minHeight", 6, 0, Integer.MAX_VALUE);
-        maxRiftHeight = builder.comment("This is the maximum height radius of naturally generated rifts. This should be greater or equal to minHeight. ")
-                .defineInRange("maxHeight", 10, 0, Integer.MAX_VALUE);
         builder.pop(2);
     }
 }

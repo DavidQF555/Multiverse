@@ -14,12 +14,12 @@ public final class POIRegistry {
 
     public static final DeferredRegister<PoiType> TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, Multiverse.MOD_ID);
 
-    public static final RegistryObject<PoiType> RIFT = register("rift", () -> PoiType.getBlockStates(BlockRegistry.RIFT.get()), 0, 1);
+    public static final RegistryObject<PoiType> RIFT = register("rift", () -> Set.copyOf(BlockRegistry.RIFT.get().getStateDefinition().getPossibleStates()), 0, 1);
 
     private POIRegistry() {
     }
 
     private static RegistryObject<PoiType> register(String name, Supplier<Set<BlockState>> blocks, int tickets, int range) {
-        return TYPES.register(name, () -> new PoiType(name, blocks.get(), tickets, range));
+        return TYPES.register(name, () -> new PoiType(blocks.get(), tickets, range));
     }
 }

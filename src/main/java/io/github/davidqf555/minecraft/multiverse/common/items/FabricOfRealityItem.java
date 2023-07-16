@@ -5,7 +5,6 @@ import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class FabricOfRealityItem extends Item {
 
-    private static final Component LORE = new TranslatableComponent("item." + Multiverse.MOD_ID + ".fabric_of_reality.lore").withStyle(ChatFormatting.BLUE);
+    private static final Component LORE = Component.translatable("item." + Multiverse.MOD_ID + ".fabric_of_reality.lore").withStyle(ChatFormatting.BLUE);
 
     public FabricOfRealityItem(Properties properties) {
         super(properties);

@@ -1,0 +1,18 @@
+{
+  "feature": "multiverse:rift",
+  "placement": [
+    {
+      "type": "rarity_filter",
+      "chance": 20
+    },
+    {
+      "type": "multiverse:above_ground"
+    },
+    {
+      "type": "in_square"
+    },
+    {
+      "type": "multiverse:rift_dimension"
+    }
+  ]
+}

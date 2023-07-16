@@ -12,8 +12,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -27,12 +27,11 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class UniversalTreasureItem extends SimpleFoiledItem {
 
-    private static final Component LORE = new TranslatableComponent("item." + Multiverse.MOD_ID + ".universal_treasure.lore").withStyle(ChatFormatting.GOLD);
+    private static final Component LORE = Component.translatable("item." + Multiverse.MOD_ID + ".universal_treasure.lore").withStyle(ChatFormatting.GOLD);
 
     public UniversalTreasureItem(Properties properties) {
         super(properties);
@@ -46,7 +45,7 @@ public class UniversalTreasureItem extends SimpleFoiledItem {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        Random random = entity.level.getRandom();
+        RandomSource random = entity.level.getRandom();
         if (entity.level instanceof ServerLevel) {
             if (entity.tickCount >= 200 && random.nextDouble() < entity.tickCount / 2000.0) {
                 CollectorEntity boss = EntityRegistry.COLLECTOR.get().create(entity.level);

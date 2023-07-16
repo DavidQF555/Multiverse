@@ -16,6 +16,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
@@ -114,15 +115,15 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         DimensionType target = destWorld.dimensionType();
         double scale = DimensionType.getTeleportationScale(entity.level.dimensionType(), target);
         BlockPos rift = getBlockPos();
-        BlockPos scaled = new BlockPos(rift.getX() * scale, rift.getY(), rift.getZ() * scale);
+        BlockPos scaled = BlockPos.containing(rift.getX() * scale, rift.getY(), rift.getZ() * scale);
         WorldBorder border = destWorld.getWorldBorder();
-        BlockPos clamped = new BlockPos(Mth.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), Mth.clamp(scaled.getY(), 1, target.logicalHeight()), Mth.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
+        BlockPos clamped = BlockPos.containing(Mth.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), Mth.clamp(scaled.getY(), 1, target.logicalHeight()), Mth.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
         int current = DimensionHelper.getIndex(entity.level.dimension());
         return new PortalInfo(Vec3.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift))), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
 
     }
 
-    private BlockPos getOrCreateRift(ServerLevel dest, Random rand, BlockPos center, int range, int current, BlockState state) {
+    private BlockPos getOrCreateRift(ServerLevel dest, RandomSource rand, BlockPos center, int range, int current, BlockState state) {
         PoiManager manager = dest.getPoiManager();
         PoiType poi = POIRegistry.RIFT.get();
         manager.ensureLoadedAndValid(dest, center, range);

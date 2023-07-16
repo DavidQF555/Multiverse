@@ -59,7 +59,7 @@ public class BoundlessBladeItem extends SwordItem {
             int width = 6 + count / 30;
             int height = 3 + count / 40;
             Vec3 look = entity.getLookAngle();
-            BlockPos center = new BlockPos(entity.getEyePosition(1).add(look.scale(width + 1.5)));
+            BlockPos center = BlockPos.containing(entity.getEyePosition(1).add(look.scale(width + 1.5)));
             FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) world, ((ServerLevel) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1))));
             if (entity instanceof Player) {
                 ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());

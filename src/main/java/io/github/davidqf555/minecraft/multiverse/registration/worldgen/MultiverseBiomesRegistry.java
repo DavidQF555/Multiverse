@@ -27,7 +27,6 @@ public final class MultiverseBiomesRegistry {
         add(BiomeTags.IS_OCEAN);
         add(BiomeTags.IS_RIVER);
         add(BiomeTags.IS_TAIGA);
-        add(Tags.Biomes.IS_BEACH);
         add(Tags.Biomes.IS_HOT);
         add(Tags.Biomes.IS_HOT_OVERWORLD);
         add(Tags.Biomes.IS_HOT_NETHER);
@@ -52,7 +51,6 @@ public final class MultiverseBiomesRegistry {
         add(Tags.Biomes.IS_DRY_OVERWORLD);
         add(Tags.Biomes.IS_DRY_NETHER);
         add(Tags.Biomes.IS_DRY_END);
-        add(Tags.Biomes.IS_SAVANNA);
         add(Tags.Biomes.IS_CONIFEROUS);
         add(Tags.Biomes.IS_SPOOKY);
         add(Tags.Biomes.IS_DEAD);
@@ -68,13 +66,10 @@ public final class MultiverseBiomesRegistry {
         add(Tags.Biomes.IS_SANDY);
         add(Tags.Biomes.IS_SNOWY);
         add(Tags.Biomes.IS_WASTELAND);
-        add(Tags.Biomes.IS_BEACH);
         add(Tags.Biomes.IS_VOID);
         add(Tags.Biomes.IS_UNDERGROUND);
         add(Tags.Biomes.IS_PEAK);
         add(Tags.Biomes.IS_SLOPE);
-        add(Tags.Biomes.IS_OVERWORLD);
-        add(Tags.Biomes.IS_END);
     }
 
     private MultiverseBiomesRegistry() {

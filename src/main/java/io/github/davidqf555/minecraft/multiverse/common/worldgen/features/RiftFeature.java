@@ -10,6 +10,7 @@ import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
@@ -34,7 +34,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         WorldGenLevel reader = context.level();
         ServerLevel world = reader.getLevel();
         RiftConfig config = context.config();
-        Random rand = context.random();
+        RandomSource rand = context.random();
         int target = config.getTarget().orElseGet(() -> {
             int current = DimensionHelper.getIndex(world.dimension());
             int dim = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
@@ -60,7 +60,7 @@ public class RiftFeature extends Feature<RiftConfig> {
             int width = totalWidth * (totalHeight - Mth.abs(y)) / totalHeight;
             for (int x = -width; x <= width; x++) {
                 Vec3 vec = new Vec3(x, y, 0).xRot(xRot).yRot(yRot).zRot(zRot);
-                BlockPos pos = new BlockPos(centerVec.add(vec));
+                BlockPos pos = BlockPos.containing(centerVec.add(vec));
                 if (canReplace(reader, pos)) {
                     if (!natural) {
                         reader.destroyBlock(pos, true);

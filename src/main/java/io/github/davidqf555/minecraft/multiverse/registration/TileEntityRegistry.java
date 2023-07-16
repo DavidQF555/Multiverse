@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public final class TileEntityRegistry {
 
-    public static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Multiverse.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Multiverse.MOD_ID);
 
     private TileEntityRegistry() {
     }

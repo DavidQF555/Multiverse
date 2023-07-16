@@ -2,32 +2,31 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
@@ -60,7 +59,7 @@ public final class DimensionHelper {
     }
 
     public static ResourceKey<Level> getRegistryKey(int index) {
-        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
+        return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
     }
 
     public static int getIndex(ResourceKey<Level> world) {
@@ -72,21 +71,49 @@ public final class DimensionHelper {
 
     @SuppressWarnings("deprecation")
     private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
-        MultiverseExistingData saved = MultiverseExistingData.getOrCreate(server);
-        saved.add(index);
-        saved.setDirty();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
+        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, worldKey.location());
         LevelStem dimension = createDimension(server, index);
-        WorldData serverConfig = server.getWorldData();
-        WorldGenSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
-        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
-        Registry.register(dimensionGeneratorSettings.dimensions(), dimensionKey.location(), dimension);
-        DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
-        ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.typeHolder(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
+        WorldData worldData = server.getWorldData();
+        WorldOptions worldGenSettings = worldData.worldGenOptions();
+        DerivedLevelData derivedLevelData = new DerivedLevelData(worldData, worldData.overworldData());
+
+        LayeredRegistryAccess<RegistryLayer> registries = server.registries();
+        RegistryAccess.ImmutableRegistryAccess composite = (RegistryAccess.ImmutableRegistryAccess) registries.compositeAccess();
+        Map<ResourceKey<? extends Registry<?>>, Registry<?>> regmap = new HashMap<>(composite.registries);
+        ResourceKey<? extends Registry<?>> key = ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("root")), new ResourceLocation("dimension"));
+        MappedRegistry<LevelStem> oldRegistry = (MappedRegistry<LevelStem>) regmap.get(key);
+        Lifecycle oldLifecycle = oldRegistry.registryLifecycle();
+        MappedRegistry<LevelStem> newRegistry = new MappedRegistry<>(Registries.LEVEL_STEM, oldLifecycle, false);
+        for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : oldRegistry.entrySet()) {
+            ResourceKey<LevelStem> oldKey = entry.getKey();
+            ResourceKey<Level> oldLevelKey = ResourceKey.create(Registries.DIMENSION, oldKey.location());
+            LevelStem dim = entry.getValue();
+            if (dim != null && oldLevelKey != worldKey) {
+                Registry.register(newRegistry, oldKey, dim);
+            }
+        }
+        Registry.register(newRegistry, dimensionKey, dimension);
+        regmap.replace(key, newRegistry);
+        composite.registries = regmap;
+
+        ServerLevel newWorld = new ServerLevel(
+                server,
+                server.executor,
+                server.storageSource,
+                derivedLevelData,
+                worldKey,
+                dimension,
+                server.progressListenerFactory.create(11),
+                worldData.isDebugWorld(),
+                BiomeManager.obfuscateSeed(worldGenSettings.seed()),
+                ImmutableList.of(),
+                false
+        );
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
         map.put(worldKey, newWorld);
         server.markWorldsDirty();
-        MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newWorld));
+        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(newWorld));
         Multiverse.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateClientDimensionsPacket(worldKey));
         return newWorld;
     }
@@ -96,32 +123,40 @@ public final class DimensionHelper {
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         MultiverseShape type = randomType(random);
-        boolean ceiling = type.hasCeiling();
         RegistryAccess access = server.registryAccess();
-        Registry<Biome> biomeRegistry = access.registryOrThrow(Registry.BIOME_REGISTRY);
+        Registry<Biome> biomeRegistry = access.registryOrThrow(Registries.BIOME);
         Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
         MultiverseType biomeType = pair.getFirst();
-        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
-        float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
-        OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
-        BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
-        ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
+        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
+        BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
+        Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(type, biomeType, random));
         ChunkGenerator generator;
-        if (biomeType == MultiverseType.MIXED) {
-            generator = new DynamicDefaultChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
-        } else {
-            generator = new NoiseBasedChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
-        }
+//        if (biomeType == MultiverseType.MIXED) {
+//            generator = new DynamicDefaultChunkGenerator(access.registryOrThrow(Registries.STRUCTURE_SET), server.registryAccess().registryOrThrow(Registries.NOISE), provider, seed, settings);
+//        } else {
+        generator = new NoiseBasedChunkGenerator(provider, settings);
+        //}
         return new LevelStem(dimType, generator);
     }
 
-    private static Holder<DimensionType> createDimensionType(TagKey<Block> infiniburn, int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, infiniburn, effect, light));
+    private static ResourceKey<DimensionType> getRandomType(MultiverseShape shape, MultiverseType type, RandomSource rand) {
+        boolean ceiling = shape.hasCeiling();
+        List<ResourceKey<DimensionType>> types = new ArrayList<>();
+        for (MultiverseTimeType time : MultiverseTimeType.values()) {
+            for (MultiverseEffectType effect : MultiverseEffectType.values()) {
+                if (!ceiling || time.isNight()) {
+                    types.add(shape.getTypeKey(type, time, effect));
+                }
+            }
+        }
+        if (types.isEmpty()) {
+            return BuiltinDimensionTypes.OVERWORLD;
+        }
+        return types.get(rand.nextInt(types.size()));
     }
 
-    private static MultiverseShape randomType(Random random) {
+    private static MultiverseShape randomType(RandomSource random) {
         MultiverseShape[] values = MultiverseShape.values();
         int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
         int selected = random.nextInt(totalWeight);
@@ -135,7 +170,7 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, Random random) {
+    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, RandomSource random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
         List<Set<ResourceKey<Biome>>> sets = MultiverseBiomesRegistry.getMultiverseBiomeTags().stream()
@@ -144,7 +179,7 @@ public final class DimensionHelper {
                 .map(Optional::get)
                 .map(named -> named.stream()
                         .map(Holder::value)
-                        .map(biome -> ResourceKey.create(Registry.BIOME_REGISTRY, biome.getRegistryName()))
+                        .map(biome -> ResourceKey.create(Registries.BIOME, registry.getKey(biome)))
                         .filter(valid)
                         .collect(Collectors.toSet())
                 )
@@ -171,29 +206,29 @@ public final class DimensionHelper {
                 }
             }
         }
-        if (!ServerConfigs.INSTANCE.mixedBiomes.get() || counts.size() <= 2) {
-            counts.remove(MultiverseType.MIXED);
-        }
+        //if (!ServerConfigs.INSTANCE.mixedBiomes.get() || counts.size() <= 2) {
+        counts.remove(MultiverseType.MIXED);
+        //}
         MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));
         return Pair.of(type, biomes);
     }
 
-    private static OptionalLong randomTime(Random random) {
+    private static OptionalLong randomTime(RandomSource random) {
         if (random.nextDouble() < ServerConfigs.INSTANCE.fixedTimeChance.get()) {
             return OptionalLong.of(random.nextInt(24000));
         }
         return OptionalLong.empty();
     }
 
-    private static ResourceLocation randomEffect(boolean night, Random random) {
+    private static ResourceLocation randomEffect(boolean night, RandomSource random) {
         int rand = random.nextInt(night ? 3 : 2);
         if (rand == 0) {
-            return DimensionType.OVERWORLD_EFFECTS;
+            return BuiltinDimensionTypes.OVERWORLD_EFFECTS;
         } else if (rand == 1) {
-            return DimensionType.NETHER_EFFECTS;
+            return BuiltinDimensionTypes.NETHER_EFFECTS;
         } else {
-            return DimensionType.END_EFFECTS;
+            return BuiltinDimensionTypes.END_EFFECTS;
         }
     }
 

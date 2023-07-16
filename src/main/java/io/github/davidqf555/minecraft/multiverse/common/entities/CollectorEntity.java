@@ -157,7 +157,7 @@ public class CollectorEntity extends SpellcasterIllager {
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         return getOriginalId() == null;
     }
 
