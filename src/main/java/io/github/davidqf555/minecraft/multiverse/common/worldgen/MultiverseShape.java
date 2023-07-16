@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -44,8 +44,8 @@ public enum MultiverseShape {
         return ResourceKey.create(Registries.NOISE_SETTINGS, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name));
     }
 
-    public NoiseGeneratorSettings createNoiseSettings(HolderLookup.Provider provider, MultiverseType type) {
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworld(provider.lookupOrThrow(Registries.DENSITY_FUNCTION), provider.lookupOrThrow(Registries.NOISE), false, false) : NoiseRouterData.nether(provider.lookupOrThrow(Registries.DENSITY_FUNCTION), provider.lookupOrThrow(Registries.NOISE)), VanillaMultiverseBiomes.INSTANCE.createSurface(this, type), List.of(), sea, false, true, true, false);
+    public NoiseGeneratorSettings createNoiseSettings(BootstapContext<NoiseGeneratorSettings> provider, MultiverseType type) {
+        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false) : NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), VanillaMultiverseBiomes.INSTANCE.createSurface(this, type), List.of(), sea, false, true, true, false);
     }
 
     public ResourceKey<DimensionType> getTypeKey(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
