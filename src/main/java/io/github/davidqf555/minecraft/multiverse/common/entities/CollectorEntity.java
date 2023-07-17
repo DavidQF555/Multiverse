@@ -119,7 +119,7 @@ public class CollectorEntity extends SpellcasterIllager {
     public Entity changeDimension(ServerLevel world, ITeleporter teleporter) {
         Entity entity = super.changeDimension(world, teleporter);
         if (entity instanceof CollectorEntity) {
-            ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level.dimension()));
+            ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level().dimension()));
             entity.setPortalCooldown();
         }
         return entity;
@@ -133,8 +133,8 @@ public class CollectorEntity extends SpellcasterIllager {
     @Nullable
     public CollectorEntity getOriginal() {
         UUID original = getOriginalId();
-        if (level instanceof ServerLevel && original != null) {
-            Entity entity = ((ServerLevel) level).getEntity(original);
+        if (level() instanceof ServerLevel && original != null) {
+            Entity entity = ((ServerLevel) level()).getEntity(original);
             if (entity instanceof CollectorEntity) {
                 return (CollectorEntity) entity;
             }
@@ -149,7 +149,7 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Override
     public void checkDespawn() {
-        if (level.getDifficulty() == Difficulty.PEACEFUL && shouldDespawnInPeaceful()) {
+        if (level().getDifficulty() == Difficulty.PEACEFUL && shouldDespawnInPeaceful()) {
             remove(RemovalReason.DISCARDED);
         } else {
             noActionTime = 0;
@@ -182,14 +182,14 @@ public class CollectorEntity extends SpellcasterIllager {
         if (hurt) {
             UUID original = getOriginalId();
             if (original == null) {
-                Entity clone = getType().create(level);
+                Entity clone = getType().create(level());
                 if (clone instanceof CollectorEntity) {
                     ((CollectorEntity) clone).setOriginal(getUUID());
                     ((CollectorEntity) clone).from = from;
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     clone.setPos(getX(), getY(), getZ());
-                    level.levelEvent(LevelEvent.PARTICLES_EYE_OF_ENDER_DEATH, blockPosition(), 0);
-                    level.addFreshEntity(clone);
+                    level().levelEvent(LevelEvent.PARTICLES_EYE_OF_ENDER_DEATH, blockPosition(), 0);
+                    level().addFreshEntity(clone);
                 }
             }
         }
@@ -363,7 +363,7 @@ public class CollectorEntity extends SpellcasterIllager {
         @Override
         protected void performSpellCasting() {
             ItemStack hand = getItemInHand(getUsedItemHand());
-            hand.releaseUsing(level, CollectorEntity.this, hand.getUseDuration() - getCastingTime());
+            hand.releaseUsing(level(), CollectorEntity.this, hand.getUseDuration() - getCastingTime());
         }
 
         @Override

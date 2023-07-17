@@ -39,10 +39,10 @@ public class BoundlessBladeItem extends SwordItem {
         if (super.hurtEnemy(stack, target, user)) {
             for (int i = 0; i < 16; i++) {
                 double x = target.getX() + (target.getRandom().nextDouble() - 0.5) * 16;
-                double y = Mth.clamp(target.getY() + (double) (target.getRandom().nextInt(16) - 8), 0, target.level.getHeight() - 1);
+                double y = Mth.clamp(target.getY() + (double) (target.getRandom().nextInt(16) - 8), 0, target.level().getHeight() - 1);
                 double z = target.getZ() + (target.getRandom().nextDouble() - 0.5) * 16;
                 if (target.randomTeleport(x, y, z, true)) {
-                    target.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1, 1);
+                    target.level().playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1, 1);
                     target.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1, 1);
                     break;
                 }

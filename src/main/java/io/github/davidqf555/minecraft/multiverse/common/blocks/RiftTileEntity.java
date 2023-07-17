@@ -113,12 +113,12 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     @Override
     public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
         DimensionType target = destWorld.dimensionType();
-        double scale = DimensionType.getTeleportationScale(entity.level.dimensionType(), target);
+        double scale = DimensionType.getTeleportationScale(entity.level().dimensionType(), target);
         BlockPos rift = getBlockPos();
         BlockPos scaled = BlockPos.containing(rift.getX() * scale, rift.getY(), rift.getZ() * scale);
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = BlockPos.containing(Mth.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), Mth.clamp(scaled.getY(), 1, target.logicalHeight()), Mth.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
-        int current = DimensionHelper.getIndex(entity.level.dimension());
+        int current = DimensionHelper.getIndex(entity.level().dimension());
         return new PortalInfo(Vec3.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift))), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
 
     }

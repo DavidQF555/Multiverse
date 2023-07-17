@@ -45,28 +45,28 @@ public class UniversalTreasureItem extends SimpleFoiledItem {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        RandomSource random = entity.level.getRandom();
-        if (entity.level instanceof ServerLevel) {
+        RandomSource random = entity.level().getRandom();
+        if (entity.level() instanceof ServerLevel) {
             if (entity.tickCount >= 200 && random.nextDouble() < entity.tickCount / 2000.0) {
-                CollectorEntity boss = EntityRegistry.COLLECTOR.get().create(entity.level);
+                CollectorEntity boss = EntityRegistry.COLLECTOR.get().create(entity.level());
                 if (boss != null) {
                     boss.setPos(entity.getX(), entity.getY(), entity.getZ());
                     boss.setPortalCooldown();
                     BlockPos center = entity.blockPosition();
-                    FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level, ((ServerLevel) entity.level).getChunkSource().getGenerator(), random, center, RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false)));
-                    BlockEntity tile = entity.level.getBlockEntity(center);
+                    FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level(), ((ServerLevel) entity.level()).getChunkSource().getGenerator(), random, center, RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false)));
+                    BlockEntity tile = entity.level().getBlockEntity(center);
                     if (tile instanceof RiftTileEntity) {
                         boss.setFrom(((RiftTileEntity) tile).getTarget());
                     }
-                    entity.level.addFreshEntity(boss);
+                    entity.level().addFreshEntity(boss);
                     entity.remove(Entity.RemovalReason.KILLED);
                     return true;
                 }
             }
         } else {
             int period = 1 + 100 / (1 + entity.tickCount);
-            if (entity.level.getGameTime() % period == 0) {
-                entity.level.addParticle(ParticleTypes.END_ROD, entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), random.nextGaussian() * 0.005, random.nextGaussian() * 0.005, random.nextGaussian() * 0.005);
+            if (entity.level().getGameTime() % period == 0) {
+                entity.level().addParticle(ParticleTypes.END_ROD, entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), random.nextGaussian() * 0.005, random.nextGaussian() * 0.005, random.nextGaussian() * 0.005);
             }
         }
         return false;

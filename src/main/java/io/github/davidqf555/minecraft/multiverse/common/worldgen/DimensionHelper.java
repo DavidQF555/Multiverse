@@ -108,7 +108,8 @@ public final class DimensionHelper {
                 worldData.isDebugWorld(),
                 BiomeManager.obfuscateSeed(worldGenSettings.seed()),
                 ImmutableList.of(),
-                false
+                false,
+                null
         );
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
         map.put(worldKey, newWorld);
