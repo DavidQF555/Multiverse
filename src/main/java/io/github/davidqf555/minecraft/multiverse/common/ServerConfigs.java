@@ -16,15 +16,12 @@ public class ServerConfigs {
 
     public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
     public final ForgeConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange;
-    public final ForgeConfigSpec.BooleanValue mixedBiomes;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
         boundlessBladeCooldown = builder.comment("This is the cooldown of the Boundless Blade item in ticks. ")
                 .defineInRange("boundlessBladeCooldown", 500, 0, Integer.MAX_VALUE);
         builder.push("Multiverse dimensions");
-        mixedBiomes = builder.comment("When set to true, multiverse dimensions with biomes from different dimensions may appear. However, they load much slower and cause more lag. ")
-                .define("mixedBiomes", false);
         maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
                 .defineInRange("max", 25, 1, Integer.MAX_VALUE);
         additionalBiomeTypeChance = builder.comment("Each additional biome type has this chance to be in new Multiverse dimensions. ")

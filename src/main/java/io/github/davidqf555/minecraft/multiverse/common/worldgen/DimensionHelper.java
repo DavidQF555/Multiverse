@@ -131,12 +131,7 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
         Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(type, biomeType, random));
-        ChunkGenerator generator;
-//        if (biomeType == MultiverseType.MIXED) {
-//            generator = new DynamicDefaultChunkGenerator(access.registryOrThrow(Registries.STRUCTURE_SET), server.registryAccess().registryOrThrow(Registries.NOISE), provider, seed, settings);
-//        } else {
-        generator = new NoiseBasedChunkGenerator(provider, settings);
-        //}
+        ChunkGenerator generator = new NoiseBasedChunkGenerator(provider, settings);
         return new LevelStem(dimType, generator);
     }
 
@@ -206,9 +201,6 @@ public final class DimensionHelper {
                 }
             }
         }
-        //if (!ServerConfigs.INSTANCE.mixedBiomes.get() || counts.size() <= 2) {
-        counts.remove(MultiverseType.MIXED);
-        //}
         MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));
         return Pair.of(type, biomes);

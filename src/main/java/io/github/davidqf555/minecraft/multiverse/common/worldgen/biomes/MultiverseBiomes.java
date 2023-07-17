@@ -17,8 +17,6 @@ public interface MultiverseBiomes {
 
     Set<ResourceKey<Biome>> getEndBiomes();
 
-    Set<ResourceKey<Biome>> getMixedBiomes();
-
     Climate.ParameterPoint getParameters(ResourceKey<Biome> biome);
 
     default boolean overrideVanillaSurface() {
@@ -27,7 +25,6 @@ public interface MultiverseBiomes {
 
     default Set<ResourceKey<Biome>> getBiomes(MultiverseType type) {
         return switch (type) {
-            case MIXED -> getMixedBiomes();
             case NETHER -> getNetherBiomes();
             case END -> getEndBiomes();
             default -> getOverworldBiomes();

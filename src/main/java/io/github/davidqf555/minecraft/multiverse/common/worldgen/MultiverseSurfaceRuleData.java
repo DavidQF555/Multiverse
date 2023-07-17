@@ -1,8 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import net.minecraft.data.worldgen.SurfaceRuleData;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -35,14 +33,6 @@ public final class MultiverseSurfaceRuleData {
 
     private static SurfaceRules.RuleSource makeStateRule(Block block) {
         return SurfaceRules.state(block.defaultBlockState());
-    }
-
-    public static SurfaceRules.RuleSource combined(boolean ceiling, boolean floor, ResourceKey<Biome>[] overworld, ResourceKey<Biome>[] nether, ResourceKey<Biome>[] end, Collection<SurfaceRules.RuleSource> overworldAdditions, Collection<SurfaceRules.RuleSource> netherAdditions, Collection<SurfaceRules.RuleSource> endAdditions) {
-        return addBedrock(ceiling, floor, SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(overworld), overworld(false, false, overworldAdditions)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(nether), nether(false, false, netherAdditions)),
-                SurfaceRules.ifTrue(SurfaceRules.isBiome(end), end(false, false, endAdditions))
-        ));
     }
 
     public static SurfaceRules.RuleSource overworld(boolean ceiling, boolean floor, Collection<SurfaceRules.RuleSource> additions) {
