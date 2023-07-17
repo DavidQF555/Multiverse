@@ -2,7 +2,7 @@ name: Build and upload mod
 on:
   release:
     types: [ published ]
-    branches: [ forge-1.19 ]
+    branches: [ forge-1.20 ]
 
 jobs:
 
@@ -75,4 +75,4 @@ jobs:
           changelog: ${{github.event.release.body}}
           display_name: ${{github.event.release.name}}
           release_type: release
-          game_versions: minecraft-1-19:1.19.4,java:Java 17,Forge
+          game_versions: minecraft-1-20:1.20.1,java:Java 17,Forge
