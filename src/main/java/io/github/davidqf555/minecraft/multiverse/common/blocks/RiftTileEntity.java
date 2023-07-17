@@ -13,6 +13,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -20,7 +21,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
-import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -125,9 +125,9 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     private BlockPos getOrCreateRift(ServerLevel dest, RandomSource rand, BlockPos center, int range, int current, BlockState state) {
         PoiManager manager = dest.getPoiManager();
-        PoiType poi = POIRegistry.RIFT.get();
+        ResourceLocation rift = POIRegistry.RIFT.getId();
         manager.ensureLoadedAndValid(dest, center, range);
-        return manager.getInSquare(poi::equals, center, range, PoiManager.Occupancy.ANY)
+        return manager.getInSquare(holder -> holder.is(rift), center, range, PoiManager.Occupancy.ANY)
                 .map(PoiRecord::getPos)
                 .filter(block -> {
                     BlockEntity tile = dest.getBlockEntity(block);
