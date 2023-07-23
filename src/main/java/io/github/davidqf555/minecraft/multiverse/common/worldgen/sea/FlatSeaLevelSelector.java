@@ -8,22 +8,20 @@ import java.util.Random;
 public class FlatSeaLevelSelector implements SeaLevelSelector {
 
     private static final Random RANDOM = new Random(0);
-    private final int min, max;
+    private final IntRange range;
 
-    protected FlatSeaLevelSelector(int min, int max) {
-        this.min = min;
-        this.max = max;
+    protected FlatSeaLevelSelector(IntRange range) {
+        this.range = range;
     }
 
     public static FlatSeaLevelSelector of(int min, int max) {
-        return new FlatSeaLevelSelector(min, max);
+        return new FlatSeaLevelSelector(IntRange.of(min, max));
     }
 
     @Override
     public Aquifer.FluidPicker getSeaLevel(BlockState fluid, long seed, int index) {
         RANDOM.setSeed(seed + 1000000L * index);
-        int level = min + RANDOM.nextInt(max - min + 1);
-        return new FlatFluidPicker(level, fluid);
+        return new FlatFluidPicker(range.getRandom(RANDOM), fluid);
     }
 
     private static class FlatFluidPicker implements Aquifer.FluidPicker {
