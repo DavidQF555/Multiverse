@@ -15,7 +15,10 @@ import terrablender.api.Regions;
 import terrablender.api.SurfaceRuleManager;
 import terrablender.worldgen.surface.NamespacedSurfaceRuleSource;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TerraBlenderBiomes implements MultiverseBiomes {
@@ -25,7 +28,6 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     private final List<SurfaceRules.RuleSource> nether;
     private final Set<ResourceKey<Biome>> overworldBiomes;
     private final Set<ResourceKey<Biome>> netherBiomes;
-    private final Set<ResourceKey<Biome>> mixed = new HashSet<>();
     private final Map<ResourceKey<Biome>, Climate.ParameterPoint> parameters = new HashMap<>();
 
     public TerraBlenderBiomes(Registry<Biome> registry) {
@@ -38,9 +40,6 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         this.nether = getSurface(SurfaceRuleManager.RuleCategory.NETHER);
         parameters.putAll(overworld);
         parameters.putAll(nether);
-        mixed.addAll(overworldBiomes);
-        mixed.addAll(netherBiomes);
-        mixed.addAll(VanillaMultiverseBiomes.INSTANCE.getEndBiomes());
     }
 
     private static Map<ResourceKey<Biome>, Climate.ParameterPoint> getBiomes(Registry<Biome> registry, RegionType type) {
@@ -72,11 +71,6 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public Set<ResourceKey<Biome>> getMixedBiomes() {
-        return mixed;
-    }
-
-    @Override
     public Climate.ParameterPoint getParameters(ResourceKey<Biome> biome) {
         return parameters.getOrDefault(biome, ZERO);
     }
@@ -86,8 +80,6 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         boolean ceiling = shape.hasCeiling();
         boolean floor = shape.hasFloor();
         return switch (type) {
-            case MIXED ->
-                    MultiverseSurfaceRuleData.combined(ceiling, floor, getOverworldBiomes().toArray(ResourceKey[]::new), getNetherBiomes().toArray(ResourceKey[]::new), getEndBiomes().toArray(ResourceKey[]::new), overworld, nether, Collections.emptyList());
             case END -> VanillaMultiverseBiomes.INSTANCE.createSurface(shape, type);
             case NETHER -> MultiverseSurfaceRuleData.nether(ceiling, floor, nether);
             default -> MultiverseSurfaceRuleData.overworld(ceiling, floor, overworld);

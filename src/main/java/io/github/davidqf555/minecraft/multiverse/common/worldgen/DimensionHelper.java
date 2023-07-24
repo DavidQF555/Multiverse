@@ -6,7 +6,6 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dynamic.DynamicDefaultChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -111,12 +110,7 @@ public final class DimensionHelper {
         BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
-        ChunkGenerator generator;
-        if (biomeType == MultiverseType.MIXED) {
-            generator = new DynamicDefaultChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings);
-        } else {
-            generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, type, index);
-        }
+        ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, type, index);
         return new LevelStem(dimType, generator);
     }
 
@@ -173,9 +167,6 @@ public final class DimensionHelper {
                     counts.compute(type, (t, current) -> current == null ? 1 : current + 1);
                 }
             }
-        }
-        if (!ServerConfigs.INSTANCE.mixedBiomes.get() || counts.size() <= 2) {
-            counts.remove(MultiverseType.MIXED);
         }
         MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));
