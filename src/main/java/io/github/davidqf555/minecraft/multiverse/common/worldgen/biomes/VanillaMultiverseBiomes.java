@@ -74,7 +74,7 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
         return switch (type) {
             case NETHER -> MultiverseSurfaceRuleData.nether(ceiling, floor, Collections.emptySet());
             case END -> MultiverseSurfaceRuleData.end(ceiling, floor, Collections.emptySet());
-            default -> MultiverseSurfaceRuleData.overworld(ceiling, floor, Collections.emptySet());
+            default -> MultiverseSurfaceRuleData.overworld(floor && !ceiling, ceiling, floor, Collections.emptySet());
         };
     }
 
