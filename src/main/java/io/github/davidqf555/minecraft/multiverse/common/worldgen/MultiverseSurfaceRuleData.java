@@ -35,8 +35,8 @@ public final class MultiverseSurfaceRuleData {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    public static SurfaceRules.RuleSource overworld(boolean ceiling, boolean floor, Collection<SurfaceRules.RuleSource> additions) {
-        SurfaceRules.RuleSource surface = SurfaceRuleData.overworldLike(false, false, false);
+    public static SurfaceRules.RuleSource overworld(boolean restrictedSurface, boolean ceiling, boolean floor, Collection<SurfaceRules.RuleSource> additions) {
+        SurfaceRules.RuleSource surface = SurfaceRuleData.overworldLike(restrictedSurface, false, false);
         if (!additions.isEmpty()) {
             List<SurfaceRules.RuleSource> list = new LinkedList<>(additions);
             list.add(0, surface);

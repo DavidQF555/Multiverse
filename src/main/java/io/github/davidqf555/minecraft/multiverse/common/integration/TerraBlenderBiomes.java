@@ -82,7 +82,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         return switch (type) {
             case END -> VanillaMultiverseBiomes.INSTANCE.createSurface(shape, type);
             case NETHER -> MultiverseSurfaceRuleData.nether(ceiling, floor, nether);
-            default -> MultiverseSurfaceRuleData.overworld(ceiling, floor, overworld);
+            default -> MultiverseSurfaceRuleData.overworld(floor && !ceiling, ceiling, floor, overworld);
         };
     }
 
