@@ -18,12 +18,12 @@ import java.util.function.Function;
 
 public enum MultiverseShape {
 
-    NORMAL(1, "normal", false, true, -64, 384, 1, 2, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false), new WeightedSeaLevelSelector(Map.of(
+    NORMAL(1, "normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false), new WeightedSeaLevelSelector(Map.of(
             FlatSeaLevelSelector.of(26, 100), 3,
             new WaveSeaLevelSelector(IntRange.of(45, 53), IntRange.of(10, 16), IntRange.of(48, 64)), 1
     ))),
-    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), FlatSeaLevelSelector.of(-64, -64)),
-    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), new WeightedSeaLevelSelector(Map.of(
+    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), FlatSeaLevelSelector.of(-64, -64)),
+    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), new WeightedSeaLevelSelector(Map.of(
             FlatSeaLevelSelector.of(24, 40), 3,
             new WaveSeaLevelSelector(IntRange.of(20, 30), IntRange.of(4, 8), IntRange.of(48, 64)), 1
     )));
@@ -32,16 +32,18 @@ public enum MultiverseShape {
     private final NoiseSettings noise;
     private final SeaLevelSelector sea;
     private final Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router;
+    private final float light;
     private final boolean floor, ceiling;
     private final int height, weight, minY;
 
-    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, SeaLevelSelector sea) {
+    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, SeaLevelSelector sea) {
         this.weight = weight;
         this.minY = minY;
         this.name = name;
         this.floor = floor;
         this.ceiling = ceiling;
         this.height = height;
+        this.light = light;
         this.sea = sea;
         this.router = router;
         noise = NoiseSettings.create(this.minY, this.height, sizeHorizontal, sizeVertical);
@@ -65,7 +67,7 @@ public enum MultiverseShape {
 
     public DimensionType createDimensionType(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
         boolean ceiling = hasCeiling();
-        return new DimensionType(time.getTime(), !ceiling, ceiling, false, true, 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), 0.1f, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0));
+        return new DimensionType(time.getTime(), !ceiling, ceiling, false, true, 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), light, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0));
     }
 
     public boolean hasFloor() {
