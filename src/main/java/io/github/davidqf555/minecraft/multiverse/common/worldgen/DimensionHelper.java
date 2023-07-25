@@ -95,20 +95,20 @@ public final class DimensionHelper {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
-        MultiverseShape type = randomType(random);
-        boolean ceiling = type.hasCeiling();
+        MultiverseShape shape = randomShape(random);
+        boolean ceiling = shape.hasCeiling();
         RegistryAccess access = server.registryAccess();
         Registry<Biome> biomeRegistry = access.registryOrThrow(Registry.BIOME_REGISTRY);
         Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
-        MultiverseType biomeType = pair.getFirst();
-        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
+        MultiverseType type = pair.getFirst();
+        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(shape.getNoiseSettingsKey(type));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(type, biomeType, time, effect, lighting);
-        ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, type, index);
+        Holder<DimensionType> dimType = createDimensionType(shape, type, time, effect, lighting);
+        ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, shape, index);
         return new LevelStem(dimType, generator);
     }
 
@@ -116,7 +116,7 @@ public final class DimensionHelper {
         return Holder.direct(DimensionType.create(time, !shape.hasCeiling(), shape.hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, false, type.isPiglinSafe(), true, true, type.hasRaids(), shape.getMinY(), shape.getHeight(), shape.getHeight(), type.getInfiniburn(), effect, light));
     }
 
-    private static MultiverseShape randomType(Random random) {
+    private static MultiverseShape randomShape(Random random) {
         MultiverseShape[] values = MultiverseShape.values();
         int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
         int selected = random.nextInt(totalWeight);
