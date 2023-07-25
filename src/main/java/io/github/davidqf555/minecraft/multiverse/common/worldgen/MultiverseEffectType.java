@@ -1,27 +1,29 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 
-public enum MultiverseEffectType {
+public class MultiverseEffectType {
 
-    NONE("none", BuiltinDimensionTypes.OVERWORLD_EFFECTS),
-    FOG("fog", BuiltinDimensionTypes.NETHER_EFFECTS);
+    private final int weight;
+    private final boolean night;
+    private final ResourceLocation location;
 
-    private final String name;
-    private final ResourceLocation effect;
-
-    MultiverseEffectType(String name, ResourceLocation effect) {
-        this.name = name;
-        this.effect = effect;
+    public MultiverseEffectType(int weight, boolean night, ResourceLocation location) {
+        this.weight = weight;
+        this.night = night;
+        this.location = location;
     }
 
-    public String getName() {
-        return name;
+    public int getWeight() {
+        return weight;
     }
 
-    public ResourceLocation getEffect() {
-        return effect;
+    public boolean isNightOnly() {
+        return night;
+    }
+
+    public ResourceLocation getLocation() {
+        return location;
     }
 
 }

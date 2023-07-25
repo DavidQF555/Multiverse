@@ -6,6 +6,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.DimensionTypeEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -19,10 +20,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraftforge.common.MinecraftForge;
@@ -131,24 +134,31 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
         BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
         Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(type, biomeType, random));
-        ChunkGenerator generator = new NoiseBasedChunkGenerator(provider, settings);
+        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, seed, type, index);
         return new LevelStem(dimType, generator);
     }
 
     private static ResourceKey<DimensionType> getRandomType(MultiverseShape shape, MultiverseType type, RandomSource rand) {
         boolean ceiling = shape.hasCeiling();
-        List<ResourceKey<DimensionType>> types = new ArrayList<>();
+        Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
         for (MultiverseTimeType time : MultiverseTimeType.values()) {
-            for (MultiverseEffectType effect : MultiverseEffectType.values()) {
-                if (!ceiling || time.isNight()) {
-                    types.add(shape.getTypeKey(type, time, effect));
+            if (!ceiling || time.isNight()) {
+                for (MultiverseEffectType effect : DimensionTypeEffectsRegistry.getEffects()) {
+                    if (!effect.isNightOnly() || time.isNight()) {
+                        types.put(shape.getTypeKey(type, time, effect), effect.getWeight() * time.getWeight());
+                    }
                 }
             }
         }
-        if (types.isEmpty()) {
-            return BuiltinDimensionTypes.OVERWORLD;
+        int total = types.values().stream().reduce(Integer::sum).orElseThrow();
+        int random = rand.nextInt(total);
+        for (ResourceKey<DimensionType> key : types.keySet()) {
+            total -= types.get(key);
+            if (random >= total) {
+                return key;
+            }
         }
-        return types.get(rand.nextInt(types.size()));
+        throw new RuntimeException();
     }
 
     private static MultiverseShape randomType(RandomSource random) {

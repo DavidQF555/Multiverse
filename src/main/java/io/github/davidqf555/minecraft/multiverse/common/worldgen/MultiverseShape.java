@@ -2,30 +2,41 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouterData;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 
 import java.util.List;
+import java.util.Map;
 
 public enum MultiverseShape {
 
-    NORMAL(1, "normal", false, true, -64, 384, 1, 2, 63),
-    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, -64),
-    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, 32);
+    NORMAL(1, "normal", false, true, -64, 384, 1, 2, new WeightedSeaLevelSelector(Map.of(
+            FlatSeaLevelSelector.of(26, 100), 3,
+            new WaveSeaLevelSelector(IntRange.of(45, 53), IntRange.of(10, 16), IntRange.of(48, 64)), 1
+    ))),
+    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, FlatSeaLevelSelector.of(-64, -64)),
+    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, new WeightedSeaLevelSelector(Map.of(
+            FlatSeaLevelSelector.of(24, 40), 3,
+            new WaveSeaLevelSelector(IntRange.of(20, 30), IntRange.of(4, 8), IntRange.of(48, 64)), 1
+    )));
 
     private final String name;
     private final NoiseSettings noise;
+    private final SeaLevelSelector sea;
     private final boolean floor, ceiling;
-    private final int height, weight, minY, sea;
+    private final int height, weight, minY;
 
-    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, int sea) {
+    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, SeaLevelSelector sea) {
         this.weight = weight;
         this.minY = minY;
         this.name = name;
@@ -45,18 +56,17 @@ public enum MultiverseShape {
     }
 
     public NoiseGeneratorSettings createNoiseSettings(BootstapContext<NoiseGeneratorSettings> provider, MultiverseType type) {
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false) : NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), VanillaMultiverseBiomes.INSTANCE.createSurface(this, type), List.of(), sea, false, true, true, false);
+        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false) : NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), VanillaMultiverseBiomes.INSTANCE.createSurface(this, type), List.of(), 0, false, true, true, false);
     }
 
     public ResourceKey<DimensionType> getTypeKey(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
-        return ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name + "/" + time.getName() + "/" + effect.getName()));
+        return ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name + "/" + time.getName() + "/" + effect.getLocation().getPath()));
     }
 
     public DimensionType createDimensionType(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
         boolean ceiling = hasCeiling();
-        return new DimensionType(time.getTime(), !ceiling, ceiling, false, true, 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getEffect(), 0.1f, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0));
+        return new DimensionType(time.getTime(), !ceiling, ceiling, false, true, 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), 0.1f, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0));
     }
-
 
     public boolean hasFloor() {
         return floor;
@@ -72,6 +82,10 @@ public enum MultiverseShape {
 
     public int getWeight() {
         return weight;
+    }
+
+    public Aquifer.FluidPicker getSea(BlockState block, long seed, int index) {
+        return sea.getSeaLevel(block, seed, index);
     }
 
 }

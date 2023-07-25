@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseChunkGenerator;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftFeature;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.AboveGroundPlacement;
@@ -38,6 +39,7 @@ public final class FeatureRegistry {
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            Registry.register(BuiltInRegistries.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), MultiverseChunkGenerator.CODEC);
             ABOVE_GROUND = Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, new ResourceLocation(Multiverse.MOD_ID, "above_ground"), () -> AboveGroundPlacement.CODEC);
             RIFT_DIMENSION = Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, new ResourceLocation(Multiverse.MOD_ID, "rift_dimension"), () -> RiftDimensionPlacement.CODEC);
         });
