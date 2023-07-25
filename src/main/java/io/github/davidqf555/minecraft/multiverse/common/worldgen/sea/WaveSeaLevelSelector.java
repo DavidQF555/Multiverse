@@ -25,19 +25,22 @@ public class WaveSeaLevelSelector implements SeaLevelSelector {
 
     private static class WaveFluidPicker implements Aquifer.FluidPicker {
 
-        private final Aquifer.FluidStatus[] states;
+        private final Aquifer.FluidStatus[][] states;
 
         private WaveFluidPicker(BlockState fluid, int center, int amplitude, int period) {
-            states = new Aquifer.FluidStatus[period];
+            states = new Aquifer.FluidStatus[period][period];
             for (int i = 0; i < period; i++) {
-                int level = center + (int) (Mth.sin(Mth.TWO_PI * i / period) * amplitude);
-                states[i] = new Aquifer.FluidStatus(level, fluid);
+                float x = Mth.cos(Mth.TWO_PI * i / period) * amplitude / 2f;
+                for (int j = 0; j < period; j++) {
+                    float z = Mth.cos(Mth.TWO_PI * j / period) * amplitude / 2f;
+                    states[i][j] = new Aquifer.FluidStatus(center + (int) (x + z + 0.5f), fluid);
+                }
             }
         }
 
         @Override
         public Aquifer.FluidStatus computeFluid(int x, int y, int z) {
-            return states[Math.floorMod(x + z, states.length)];
+            return states[Math.floorMod(x, states.length)][Math.floorMod(z, states.length)];
         }
 
     }
