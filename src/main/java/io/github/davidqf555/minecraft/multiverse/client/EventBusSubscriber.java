@@ -9,15 +9,14 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.DimensionTypeEffectsRegistry;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.io.IOException;
 
@@ -39,10 +38,8 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onFMLClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            DimensionTypeEffectsRegistry.FOG.forEach((key, color) -> DimensionSpecialEffects.EFFECTS.put(key, new ColoredFogEffect(color)));
-        });
+    public static void onRegisterDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
+        DimensionTypeEffectsRegistry.FOG.forEach((key, color) -> event.register(key, new ColoredFogEffect(color)));
     }
 
 }
