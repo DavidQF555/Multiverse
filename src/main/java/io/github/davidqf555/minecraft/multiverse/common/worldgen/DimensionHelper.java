@@ -181,14 +181,16 @@ public final class DimensionHelper {
     }
 
     private static ResourceLocation randomEffect(boolean night, Random random) {
-        int rand = random.nextInt(night ? 3 : 2);
-        if (rand == 0) {
-            return DimensionType.OVERWORLD_EFFECTS;
-        } else if (rand == 1) {
-            return DimensionType.NETHER_EFFECTS;
-        } else {
-            return DimensionType.END_EFFECTS;
+        MultiverseEffectType[] types = MultiverseEffectType.getTypes().stream().filter(type -> !type.isNightOnly() || night).toArray(MultiverseEffectType[]::new);
+        int total = Arrays.stream(types).mapToInt(MultiverseEffectType::getWeight).sum();
+        int rand = random.nextInt(total);
+        for (MultiverseEffectType type : types) {
+            total -= type.getWeight();
+            if (rand >= total) {
+                return type.getLocation();
+            }
         }
+        throw new RuntimeException();
     }
 
 }
