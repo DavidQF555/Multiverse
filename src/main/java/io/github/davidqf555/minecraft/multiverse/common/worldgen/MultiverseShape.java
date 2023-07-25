@@ -11,17 +11,19 @@ import net.minecraft.world.level.biome.TerrainShaper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.*;
 
+import java.util.Map;
+
 public enum MultiverseShape {
 
-    NORMAL(1, "normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), new WeightedSeaLevelSelector(new SeaLevelSelector[]{
-            FlatSeaLevelSelector.of(26, 100),
-            new WaveSeaLevelSelector(IntRange.of(56, 70), IntRange.of(1, 3), IntRange.of(48, 64))
-    }, new int[]{3, 1})),
+    NORMAL(1, "normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), new WeightedSeaLevelSelector(Map.of(
+            FlatSeaLevelSelector.of(26, 100), 3,
+            new WaveSeaLevelSelector(IntRange.of(45, 53), IntRange.of(10, 16), IntRange.of(48, 64)), 1
+    ))),
     ISLANDS(1, "islands", false, false, 0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands(), FlatSeaLevelSelector.of(-64, -64)),
-    ROOFED(1, "roofed", true, true, 0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether(), new WeightedSeaLevelSelector(new SeaLevelSelector[]{
-            FlatSeaLevelSelector.of(24, 40),
-            new WaveSeaLevelSelector(IntRange.of(24, 40), IntRange.of(1, 3), IntRange.of(48, 64))
-    }, new int[]{3, 1}));
+    ROOFED(1, "roofed", true, true, 0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether(), new WeightedSeaLevelSelector(Map.of(
+            FlatSeaLevelSelector.of(24, 40), 3,
+            new WaveSeaLevelSelector(IntRange.of(20, 30), IntRange.of(4, 8), IntRange.of(48, 64)), 1
+    )));
 
     private final String name;
     private final NoiseSettings noise;
