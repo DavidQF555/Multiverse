@@ -14,10 +14,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -109,13 +107,13 @@ public final class DimensionHelper {
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
-        Holder<DimensionType> dimType = createDimensionType(biomeType.getInfiniburn(), type.getHeight(), type.getMinY(), ceiling, time, effect, lighting);
+        Holder<DimensionType> dimType = createDimensionType(type, biomeType, time, effect, lighting);
         ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, type, index);
         return new LevelStem(dimType, generator);
     }
 
-    private static Holder<DimensionType> createDimensionType(TagKey<Block> infiniburn, int height, int minY, boolean ceiling, OptionalLong time, ResourceLocation effect, float light) {
-        return Holder.direct(DimensionType.create(time, !ceiling, ceiling, false, true, 1, false, false, true, true, true, minY, height, height, infiniburn, effect, light));
+    private static Holder<DimensionType> createDimensionType(MultiverseShape shape, MultiverseType type, OptionalLong time, ResourceLocation effect, float light) {
+        return Holder.direct(DimensionType.create(time, !shape.hasCeiling(), shape.hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, false, type.isPiglinSafe(), true, true, type.hasRaids(), shape.getMinY(), shape.getHeight(), shape.getHeight(), type.getInfiniburn(), effect, light));
     }
 
     private static MultiverseShape randomType(Random random) {
