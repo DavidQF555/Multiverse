@@ -11,19 +11,24 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public enum MultiverseType {
 
-    OVERWORLD("overworld", Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD),
-    NETHER("nether", Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER),
-    END("end", Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END);
+    OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD),
+    NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER),
+    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END);
 
     private final String name;
     private final BlockState block, fluid;
     private final TagKey<Block> infiniburn;
+    private final boolean natural, ultrawarm, hasRaids, piglinSafe;
 
-    MultiverseType(String name, BlockState block, BlockState fluid, TagKey<Block> infiniburn) {
+    MultiverseType(String name, boolean natural, boolean ultrawarm, boolean hasRaids, boolean piglinSafe, BlockState block, BlockState fluid, TagKey<Block> infiniburn) {
         this.name = name;
         this.block = block;
         this.fluid = fluid;
         this.infiniburn = infiniburn;
+        this.natural = natural;
+        this.ultrawarm = ultrawarm;
+        this.hasRaids = hasRaids;
+        this.piglinSafe = piglinSafe;
     }
 
     public String getName() {
@@ -36,6 +41,22 @@ public enum MultiverseType {
 
     public BlockState getDefaultFluid() {
         return fluid;
+    }
+
+    public boolean isNatural() {
+        return natural;
+    }
+
+    public boolean isUltrawarm() {
+        return ultrawarm;
+    }
+
+    public boolean hasRaids() {
+        return hasRaids;
+    }
+
+    public boolean isPiglinSafe() {
+        return piglinSafe;
     }
 
     public boolean is(ResourceKey<Biome> biome) {

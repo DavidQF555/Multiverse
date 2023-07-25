@@ -125,16 +125,16 @@ public final class DimensionHelper {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
-        MultiverseShape type = randomType(random);
+        MultiverseShape shape = randomShape(random);
         RegistryAccess access = server.registryAccess();
         Registry<Biome> biomeRegistry = access.registryOrThrow(Registries.BIOME);
         Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
-        MultiverseType biomeType = pair.getFirst();
-        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(type.getNoiseSettingsKey(biomeType));
+        MultiverseType type = pair.getFirst();
+        Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(shape.getNoiseSettingsKey(type));
         BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
-        Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(type, biomeType, random));
-        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, seed, type, index);
+        Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(shape, type, random));
+        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, seed, shape, index);
         return new LevelStem(dimType, generator);
     }
 
@@ -161,7 +161,7 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static MultiverseShape randomType(RandomSource random) {
+    private static MultiverseShape randomShape(RandomSource random) {
         MultiverseShape[] values = MultiverseShape.values();
         int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
         int selected = random.nextInt(totalWeight);

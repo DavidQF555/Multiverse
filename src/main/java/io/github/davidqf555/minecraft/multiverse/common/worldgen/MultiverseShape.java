@@ -66,8 +66,7 @@ public enum MultiverseShape {
     }
 
     public DimensionType createDimensionType(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
-        boolean ceiling = hasCeiling();
-        return new DimensionType(time.getTime(), !ceiling, ceiling, false, true, 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), light, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0));
+        return new DimensionType(time.getTime(), !hasCeiling(), hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), light, new DimensionType.MonsterSettings(type.isPiglinSafe(), type.hasRaids(), UniformInt.of(0, 7), 0));
     }
 
     public boolean hasFloor() {
