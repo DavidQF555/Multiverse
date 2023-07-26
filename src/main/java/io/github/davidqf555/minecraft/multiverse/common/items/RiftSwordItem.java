@@ -28,9 +28,9 @@ import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BoundlessBladeItem extends SwordItem {
+public class RiftSwordItem extends SwordItem {
 
-    public BoundlessBladeItem(Tier tier, int damage, float speed, Properties properties) {
+    public RiftSwordItem(Tier tier, int damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
     }
 
