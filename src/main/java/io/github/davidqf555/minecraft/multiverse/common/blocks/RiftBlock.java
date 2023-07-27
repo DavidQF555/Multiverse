@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -81,7 +80,7 @@ public class RiftBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && (!(entity instanceof ItemEntity) || !((ItemEntity) entity).getItem().getItem().equals(ItemRegistry.FABRIC_OF_REALITY.get()))) {
+        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity)) {
             if (!entity.isOnPortalCooldown()) {
                 ServerLevel target = DimensionHelper.getOrCreateWorld(((ServerLevel) world).getServer(), ((RiftTileEntity) tile).getTarget());
                 entity.changeDimension(target, (RiftTileEntity) tile);

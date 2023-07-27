@@ -3,10 +3,8 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 import com.mojang.math.Constants;
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -47,7 +45,6 @@ public class RiftFeature extends Feature<RiftConfig> {
         if (!natural) {
             reader.getLevel().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
         }
-        double fabric = ServerConfigs.INSTANCE.fabricOfReailtyChance.get();
         RiftConfig.Size size = config.getSize();
         int totalWidth = size.getWidth(rand);
         int totalHeight = size.getHeight(rand);
@@ -64,9 +61,6 @@ public class RiftFeature extends Feature<RiftConfig> {
                 if (canReplace(reader, pos)) {
                     if (!natural) {
                         reader.destroyBlock(pos, true);
-                        if (rand.nextDouble() < fabric) {
-                            RiftBlock.popResource(world, pos, ItemRegistry.FABRIC_OF_REALITY.get().getDefaultInstance());
-                        }
                     }
                     setBlock(reader, pos, rift);
                     BlockEntity tile = reader.getBlockEntity(pos);

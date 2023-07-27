@@ -14,7 +14,7 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
+    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance;
     public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
@@ -30,8 +30,6 @@ public class ServerConfigs {
                 .defineInRange("fixedTimeChance", 0.25, 0, 1);
         builder.pop();
         builder.push("Rifts");
-        fabricOfReailtyChance = builder.comment("This is the chance of a Fabric of Reality dropping whenever a rift opens. ")
-                .defineInRange("fabricChance", 0.05, 0, 1);
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
                 .defineInRange("chance", 20, 1, Integer.MAX_VALUE);
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")

@@ -18,9 +18,9 @@ public final class ItemRegistry {
 
     public static final RegistryObject<RiftSwordItem> BOUNDLESS_BLADE = register("boundless_blade", () -> new RiftSwordItem(KaleidiumItemTier.INSTANCE, 2, -2.4f, new Item.Properties().rarity(Rarity.EPIC).tab(CreativeModeTab.TAB_COMBAT)));
     public static final RegistryObject<SpawnCollectorItem> UNIVERSAL_TREASURE = register("universal_treasure", () -> new SpawnCollectorItem(new Item.Properties().rarity(Rarity.RARE).tab(CreativeModeTab.TAB_MISC).stacksTo(1).fireResistant(), 300));
-    public static final RegistryObject<FabricOfRealityItem> FABRIC_OF_REALITY = register("fabric_of_reality", () -> new FabricOfRealityItem(new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<SpawnRiftItem> UNSTABLE_CATALYST = register("unstable_catalyst", () -> new SpawnRiftItem(new Item.Properties().rarity(Rarity.UNCOMMON).tab(CreativeModeTab.TAB_MISC), 200));
     public static final RegistryObject<RiftDeathItem> TOTEM_OF_ESCAPE = register("totem_of_escape", () -> new RiftDeathItem(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC), 5));
+    public static final RegistryObject<RiftRemovalItem> KALEIDIUM_NEUTRALIZER = register("kaleidium_neutralizer", () -> new RiftRemovalItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDIUM = register("kaleidium", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS)));
 
     public static final RegistryObject<BlockItem> KALEIDIUM_ORE = register("kaleidium_ore", () -> new BlockItem(BlockRegistry.KALEIDIUM_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
