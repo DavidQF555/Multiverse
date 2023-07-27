@@ -26,6 +26,7 @@ public class RiftDeathItem extends Item implements IDeathEffect {
 
     @Override
     public boolean onDeath(LivingEntity entity, ItemStack stack) {
+        entity.setHealth(2);
         entity.addEffect(effect);
         int min = entity.level.getMinBuildHeight();
         if (entity.getY() < min) {
