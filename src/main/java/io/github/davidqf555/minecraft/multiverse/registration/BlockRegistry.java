@@ -20,7 +20,7 @@ public final class BlockRegistry {
     public static final RegistryObject<RiftBlock> RIFT = register("rift", () -> new RiftBlock(BlockBehaviour.Properties.of(Material.PORTAL).noCollission().strength(-1, 3600000).noDrops().randomTicks().lightLevel(state -> 15)));
     public static final RegistryObject<OreBlock> KALEIDIUM_ORE = register("kaleidium_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3, 3)));
     public static final RegistryObject<OreBlock> NETHERRACK_KALEIDIUM_ORE = register("netherrack_kaleidium_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.NETHER).requiresCorrectToolForDrops().strength(3, 3)));
-    public static final RegistryObject<OreBlock> ENDSTONE_KALEIDIUM_ORE = register("endstone_kaleidium_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3, 3)));
+    public static final RegistryObject<OreBlock> END_STONE_KALEIDIUM_ORE = register("end_stone_kaleidium_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).requiresCorrectToolForDrops().strength(3, 3)));
 
     private BlockRegistry() {
     }

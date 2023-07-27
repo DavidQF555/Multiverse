@@ -25,7 +25,7 @@ public final class ItemRegistry {
 
     public static final RegistryObject<BlockItem> KALEIDIUM_ORE = register("kaleidium_ore", () -> new BlockItem(BlockRegistry.KALEIDIUM_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
     public static final RegistryObject<BlockItem> NETHERRACK_KALEIDIUM_ORE = register("netherrack_kaleidium_ore", () -> new BlockItem(BlockRegistry.NETHERRACK_KALEIDIUM_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
-    public static final RegistryObject<BlockItem> ENDSTONE_KALEIDIUM_ORE = register("endstone_kaleidium_ore", () -> new BlockItem(BlockRegistry.ENDSTONE_KALEIDIUM_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
+    public static final RegistryObject<BlockItem> END_STONE_KALEIDIUM_ORE = register("end_stone_kaleidium_ore", () -> new BlockItem(BlockRegistry.END_STONE_KALEIDIUM_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
 
     private ItemRegistry() {
     }
