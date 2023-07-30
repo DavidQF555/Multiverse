@@ -15,7 +15,8 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 public class AboveGroundPlacement extends PlacementModifier {
 
-    public static final Codec<AboveGroundPlacement> CODEC = Codec.unit(() -> FeatureRegistry.ABOVE_GROUND);
+    public static final AboveGroundPlacement INSTANCE = new AboveGroundPlacement();
+    public static final Codec<AboveGroundPlacement> CODEC = Codec.unit(INSTANCE);
 
     @Override
     public Stream<BlockPos> getPositions(PlacementContext context, Random rand, BlockPos pos) {
