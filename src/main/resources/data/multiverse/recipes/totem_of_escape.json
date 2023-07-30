@@ -1,0 +1,19 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    " G ",
+    "GXG",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "gold_ingot"
+    },
+    "X": {
+      "item": "multiverse:unstable_catalyst"
+    }
+  },
+  "result": {
+    "item": "multiverse:totem_of_escape"
+  }
+}
