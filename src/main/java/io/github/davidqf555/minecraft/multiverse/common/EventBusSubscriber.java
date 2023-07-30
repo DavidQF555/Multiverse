@@ -27,9 +27,9 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onBiomeLoading(BiomeLoadingEvent event) {
         event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.PLACED_RIFT);
-        event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, FeatureRegistry.KALEIDIUM_ORE);
-        event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, FeatureRegistry.NETHERRACK_KALEIDIUM_ORE);
-        event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, FeatureRegistry.END_STONE_KALEIDIUM_ORE);
+        event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, FeatureRegistry.KALEIDITE_ORE);
+        event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, FeatureRegistry.NETHERRACK_KALEIDITE_ORE);
+        event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, FeatureRegistry.END_STONE_KALEIDITE_ORE);
     }
 
     @SubscribeEvent

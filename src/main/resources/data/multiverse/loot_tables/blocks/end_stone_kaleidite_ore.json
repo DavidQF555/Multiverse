@@ -25,7 +25,7 @@
                   }
                 }
               ],
-              "name": "multiverse:end_stone_kaleidium_ore"
+              "name": "multiverse:end_stone_kaleidite_ore"
             },
             {
               "type": "item",
@@ -39,7 +39,7 @@
                   "function": "explosion_decay"
                 }
               ],
-              "name": "multiverse:kaleidium"
+              "name": "multiverse:kaleidite"
             }
           ]
         }

@@ -6,11 +6,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 
-public class KaleidiumItemTier implements Tier {
+public class KaleiditeItemTier implements Tier {
 
-    public static final KaleidiumItemTier INSTANCE = new KaleidiumItemTier();
+    public static final KaleiditeItemTier INSTANCE = new KaleiditeItemTier();
 
-    protected KaleidiumItemTier() {
+    protected KaleiditeItemTier() {
     }
 
     @Override
@@ -41,6 +41,6 @@ public class KaleidiumItemTier implements Tier {
     @Nonnull
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(ItemRegistry.KALEIDIUM.get());
+        return Ingredient.of(ItemRegistry.KALEIDITE.get());
     }
 }

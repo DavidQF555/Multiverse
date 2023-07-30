@@ -42,7 +42,7 @@ public final class FeatureRegistry {
     public static PlacementModifierType<AboveGroundPlacement> ABOVE_GROUND_PLACEMENT_TYPE;
     public static PlacementModifierType<RiftDimensionPlacement> RIFT_DIMENSION_PLACEMENT_TYPE;
     public static PlacementModifierType<MultiverseDimensionPlacement> MULTIVERSE_DIMENSION_PLACEMENT_TYPE;
-    public static Holder<PlacedFeature> PLACED_RIFT, KALEIDIUM_ORE, NETHERRACK_KALEIDIUM_ORE, END_STONE_KALEIDIUM_ORE;
+    public static Holder<PlacedFeature> PLACED_RIFT, KALEIDITE_ORE, NETHERRACK_KALEIDITE_ORE, END_STONE_KALEIDITE_ORE;
 
     private FeatureRegistry() {
     }
@@ -58,9 +58,9 @@ public final class FeatureRegistry {
             RIFT_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "rift_dimension"), () -> RiftDimensionPlacement.CODEC);
             MULTIVERSE_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), () -> MultiverseDimensionPlacement.CODEC);
             PLACED_RIFT = register(new ResourceLocation(Multiverse.MOD_ID, "rift"), new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), AboveGroundPlacement.INSTANCE, InSquarePlacement.spread(), RiftDimensionPlacement.INSTANCE);
-            KALEIDIUM_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidium_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, BlockRegistry.KALEIDIUM_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
-            NETHERRACK_KALEIDIUM_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "netherrack_kaleidium_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OreFeatures.NETHER_ORE_REPLACEABLES, BlockRegistry.NETHERRACK_KALEIDIUM_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
-            END_STONE_KALEIDIUM_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "end_stone_kaleidium_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new BlockMatchTest(Blocks.END_STONE), BlockRegistry.END_STONE_KALEIDIUM_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
+            KALEIDITE_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, BlockRegistry.KALEIDITE_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
+            NETHERRACK_KALEIDITE_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "netherrack_kaleidite_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OreFeatures.NETHER_ORE_REPLACEABLES, BlockRegistry.NETHERRACK_KALEIDITE_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
+            END_STONE_KALEIDITE_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "end_stone_kaleidite_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new BlockMatchTest(Blocks.END_STONE), BlockRegistry.END_STONE_KALEIDITE_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
         });
     }
 
