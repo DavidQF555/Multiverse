@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "multiverse:block/end_stone_kaleidite_ore"
+  }
+}
