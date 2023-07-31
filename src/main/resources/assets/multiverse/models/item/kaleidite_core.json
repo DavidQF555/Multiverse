@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "multiverse:item/unstable_catalyst"
+    "layer0": "multiverse:item/kaleidite_core"
   }
 }

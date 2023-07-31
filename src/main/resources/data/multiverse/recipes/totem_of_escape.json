@@ -7,10 +7,10 @@
   ],
   "key": {
     "G": {
-      "item": "gold_ingot"
+      "item": "multiverse:kaleidite"
     },
     "X": {
-      "item": "multiverse:unstable_catalyst"
+      "item": "multiverse:kaleidite_core"
     }
   },
   "result": {
