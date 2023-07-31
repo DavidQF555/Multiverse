@@ -8,21 +8,23 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftFe
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.AboveGroundPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.MultiverseDimensionPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.RiftDimensionPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.SolidPlacement;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleRandomFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -42,7 +44,8 @@ public final class FeatureRegistry {
     public static PlacementModifierType<AboveGroundPlacement> ABOVE_GROUND_PLACEMENT_TYPE;
     public static PlacementModifierType<RiftDimensionPlacement> RIFT_DIMENSION_PLACEMENT_TYPE;
     public static PlacementModifierType<MultiverseDimensionPlacement> MULTIVERSE_DIMENSION_PLACEMENT_TYPE;
-    public static Holder<PlacedFeature> PLACED_RIFT, KALEIDITE_ORE, NETHERRACK_KALEIDITE_ORE, END_STONE_KALEIDITE_ORE;
+    public static PlacementModifierType<SolidPlacement> SOLID;
+    public static Holder<PlacedFeature> PLACED_RIFT, KALEIDITE_CLUSTER;
 
     private FeatureRegistry() {
     }
@@ -57,11 +60,14 @@ public final class FeatureRegistry {
             ABOVE_GROUND_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "above_ground"), () -> AboveGroundPlacement.CODEC);
             RIFT_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "rift_dimension"), () -> RiftDimensionPlacement.CODEC);
             MULTIVERSE_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), () -> MultiverseDimensionPlacement.CODEC);
+            SOLID = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "solid"), () -> SolidPlacement.CODEC);
             PLACED_RIFT = register(new ResourceLocation(Multiverse.MOD_ID, "rift"), new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), AboveGroundPlacement.INSTANCE, InSquarePlacement.spread(), RiftDimensionPlacement.INSTANCE);
-            KALEIDITE_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, BlockRegistry.KALEIDITE_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
-            NETHERRACK_KALEIDITE_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "netherrack_kaleidite_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OreFeatures.NETHER_ORE_REPLACEABLES, BlockRegistry.NETHERRACK_KALEIDITE_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
-            END_STONE_KALEIDITE_ORE = register(new ResourceLocation(Multiverse.MOD_ID, "end_stone_kaleidite_ore"), new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new BlockMatchTest(Blocks.END_STONE), BlockRegistry.END_STONE_KALEIDITE_ORE.get().defaultBlockState(), 9)), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), BiomeFilter.biome());
+            KALEIDITE_CLUSTER = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_cluster"), new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values()))), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(8), BiomeFilter.biome());
         });
+    }
+
+    private static Holder<PlacedFeature> getDirectional(Direction direction) {
+        return PlacementUtils.inlinePlaced(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockRegistry.KALEIDITE_CLUSTER.get().defaultBlockState().setValue(AmethystClusterBlock.FACING, direction))), SolidPlacement.of(direction, 8));
     }
 
     private static <FC extends FeatureConfiguration, F extends Feature<FC>> Holder<PlacedFeature> register(ResourceLocation name, ConfiguredFeature<FC, F> feature, PlacementModifier... placement) {

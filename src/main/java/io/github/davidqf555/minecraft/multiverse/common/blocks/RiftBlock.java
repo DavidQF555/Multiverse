@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseColorHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -41,7 +42,7 @@ public class RiftBlock extends BaseEntityBlock {
         double x = pos.getX() + rand.nextDouble();
         double y = pos.getY() + rand.nextDouble();
         double z = pos.getZ() + rand.nextDouble();
-        int color = ((RiftTileEntity) world.getBlockEntity(pos)).getColor();
+        int color = MultiverseColorHelper.getColor(world, ((RiftTileEntity) world.getBlockEntity(pos)).getTarget());
         world.addParticle(ParticleTypes.ENTITY_EFFECT, x, y, z, FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
     }
 

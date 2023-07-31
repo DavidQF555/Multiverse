@@ -22,9 +22,7 @@ public final class ItemRegistry {
     public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> new RiftCoreItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDITE = register("kaleidite", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS)));
 
-    public static final RegistryObject<BlockItem> KALEIDIUM_ORE = register("kaleidite_ore", () -> new BlockItem(BlockRegistry.KALEIDITE_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
-    public static final RegistryObject<BlockItem> NETHERRACK_KALEIDITE_ORE = register("netherrack_kaleidite_ore", () -> new BlockItem(BlockRegistry.NETHERRACK_KALEIDITE_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
-    public static final RegistryObject<BlockItem> END_STONE_KALEIDITE_ORE = register("end_stone_kaleidite_ore", () -> new BlockItem(BlockRegistry.END_STONE_KALEIDITE_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
+    public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
 
     private ItemRegistry() {
     }
