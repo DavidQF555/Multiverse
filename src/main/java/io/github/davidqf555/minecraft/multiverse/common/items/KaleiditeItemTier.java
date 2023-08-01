@@ -41,6 +41,6 @@ public class KaleiditeItemTier implements Tier {
     @Nonnull
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(ItemRegistry.KALEIDITE.get());
+        return Ingredient.of(ItemRegistry.KALEIDITE_SHARD.get());
     }
 }

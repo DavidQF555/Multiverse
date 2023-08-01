@@ -52,7 +52,7 @@
                       "formula": "ore_drops"
                     }
                   ],
-                  "name": "multiverse:kaleidite"
+                  "name": "multiverse:kaleidite_shard"
                 },
                 {
                   "type": "item",
@@ -66,7 +66,7 @@
                       "function": "explosion_decay"
                     }
                   ],
-                  "name": "multiverse:kaleidite"
+                  "name": "multiverse:kaleidite_shard"
                 }
               ]
             }
