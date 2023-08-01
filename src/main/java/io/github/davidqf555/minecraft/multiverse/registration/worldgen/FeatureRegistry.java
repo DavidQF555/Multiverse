@@ -62,7 +62,7 @@ public final class FeatureRegistry {
             MULTIVERSE_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), () -> MultiverseDimensionPlacement.CODEC);
             SOLID = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "solid"), () -> SolidPlacement.CODEC);
             PLACED_RIFT = register(new ResourceLocation(Multiverse.MOD_ID, "rift"), new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), AboveGroundPlacement.INSTANCE, InSquarePlacement.spread(), RiftDimensionPlacement.INSTANCE);
-            KALEIDITE_CLUSTER = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_cluster"), new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values()))), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(7), InSquarePlacement.spread(), PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(8), BiomeFilter.biome());
+            KALEIDITE_CLUSTER = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_cluster"), new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values()))), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(32), InSquarePlacement.spread(), PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(16), BiomeFilter.biome());
         });
     }
 

@@ -27,7 +27,7 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onBiomeLoading(BiomeLoadingEvent event) {
         event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.PLACED_RIFT);
-        event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.KALEIDITE_CLUSTER);
+        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FeatureRegistry.KALEIDITE_CLUSTER);
     }
 
     @SubscribeEvent
