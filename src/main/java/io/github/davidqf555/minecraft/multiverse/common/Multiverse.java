@@ -37,5 +37,6 @@ public class Multiverse {
         ItemRegistry.ITEMS.register(bus);
         POIRegistry.TYPES.register(bus);
         TileEntityRegistry.TYPES.register(bus);
+        ParticleTypeRegistry.TYPES.register(bus);
     }
 }
