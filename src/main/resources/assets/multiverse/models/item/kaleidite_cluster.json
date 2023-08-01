@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "multiverse:item/kaleidite_cluster"
+    "layer0": "multiverse:block/kaleidite_cluster_inner",
+    "layer1": "multiverse:block/kaleidite_cluster_outer"
   }
 }

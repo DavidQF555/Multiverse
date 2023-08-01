@@ -1,8 +1,9 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "cross": "multiverse:block/kaleidite_cluster",
-    "particle": "#cross"
+    "inner": "multiverse:block/kaleidite_cluster_inner",
+    "outer": "multiverse:block/kaleidite_cluster_outer",
+    "particle": "#outer"
   },
   "elements": [
     {
@@ -35,7 +36,7 @@
             16,
             16
           ],
-          "texture": "#cross",
+          "texture": "#inner",
           "tintindex": 0
         },
         "south": {
@@ -45,7 +46,7 @@
             16,
             16
           ],
-          "texture": "#cross",
+          "texture": "#inner",
           "tintindex": 0
         }
       }
@@ -80,7 +81,7 @@
             16,
             16
           ],
-          "texture": "#cross",
+          "texture": "#inner",
           "tintindex": 0
         },
         "east": {
@@ -90,8 +91,94 @@
             16,
             16
           ],
-          "texture": "#cross",
+          "texture": "#inner",
           "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        0.8,
+        0,
+        8
+      ],
+      "to": [
+        15.2,
+        16,
+        8
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#outer"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#outer"
+        }
+      }
+    },
+    {
+      "from": [
+        8,
+        0,
+        0.8
+      ],
+      "to": [
+        8,
+        16,
+        15.2
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "shade": false,
+      "faces": {
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#outer"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#outer"
         }
       }
     }

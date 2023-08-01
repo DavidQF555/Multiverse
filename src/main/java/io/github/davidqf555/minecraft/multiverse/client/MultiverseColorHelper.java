@@ -1,5 +1,6 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen;
+package io.github.davidqf555.minecraft.multiverse.client;
 
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 
@@ -18,6 +19,10 @@ public final class MultiverseColorHelper {
 
     public static int getColor(Level world, int index) {
         return getColor(DimensionHelper.getSeed(world.getBiomeManager().biomeZoomSeed, index, true));
+    }
+
+    public static int getColor(Level level) {
+        return getColor(level, DimensionHelper.getIndex(level.dimension()));
     }
 
     private static int getColor(long seed) {

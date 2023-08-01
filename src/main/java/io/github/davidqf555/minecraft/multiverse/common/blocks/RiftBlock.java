@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseColorHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
