@@ -88,8 +88,7 @@ public class RiftFeature extends Feature<RiftConfig> {
     }
 
     private boolean canReplace(WorldGenLevel reader, BlockPos pos) {
-        int blockY = pos.getY();
-        return blockY >= 0 && blockY < reader.getMaxBuildHeight() && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
+        return !reader.isOutsideBuildHeight(pos) && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
     }
 
 }
