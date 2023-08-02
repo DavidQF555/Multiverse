@@ -27,7 +27,7 @@ public class SolidPlacement extends PlacementModifier {
     protected SolidPlacement(Direction dir, int steps) {
         this.dir = dir;
         this.steps = steps;
-        solid = BlockPredicate.solid(dir.getOpposite().getNormal());
+        solid = BlockPredicate.solid(dir.getNormal());
     }
 
     public static SolidPlacement of(Direction dir, int steps) {
@@ -43,10 +43,10 @@ public class SolidPlacement extends PlacementModifier {
             if (level.isOutsideBuildHeight(mutable) || !BlockPredicate.ONLY_IN_AIR_OR_WATER_PREDICATE.test(level, mutable)) {
                 break;
             }
-            mutable.relative(dir);
             if (solid.test(level, mutable)) {
-                return Stream.of(mutable.relative(dir.getOpposite()));
+                return Stream.of(mutable);
             }
+            mutable.move(dir);
             step++;
         } while (step < steps);
         return Stream.empty();

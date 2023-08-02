@@ -62,12 +62,12 @@ public final class FeatureRegistry {
             MULTIVERSE_DIMENSION_PLACEMENT_TYPE = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), () -> MultiverseDimensionPlacement.CODEC);
             SOLID = Registry.register(Registry.PLACEMENT_MODIFIERS, new ResourceLocation(Multiverse.MOD_ID, "solid"), () -> SolidPlacement.CODEC);
             PLACED_RIFT = register(new ResourceLocation(Multiverse.MOD_ID, "rift"), new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), true)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), AboveGroundPlacement.INSTANCE, InSquarePlacement.spread(), RiftDimensionPlacement.INSTANCE);
-            KALEIDITE_CLUSTER = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_cluster"), new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values()))), MultiverseDimensionPlacement.INSTANCE, CountPlacement.of(32), InSquarePlacement.spread(), PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(16), BiomeFilter.biome());
+            KALEIDITE_CLUSTER = register(new ResourceLocation(Multiverse.MOD_ID, "kaleidite_cluster"), new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values()))), MultiverseDimensionPlacement.INSTANCE, PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(16), InSquarePlacement.spread(), BiomeFilter.biome());
         });
     }
 
     private static Holder<PlacedFeature> getDirectional(Direction direction) {
-        return PlacementUtils.inlinePlaced(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockRegistry.KALEIDITE_CLUSTER.get().defaultBlockState().setValue(AmethystClusterBlock.FACING, direction))), SolidPlacement.of(direction, 8));
+        return PlacementUtils.inlinePlaced(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockRegistry.KALEIDITE_CLUSTER.get().defaultBlockState().setValue(AmethystClusterBlock.FACING, direction))), SolidPlacement.of(direction.getOpposite(), 4));
     }
 
     private static <FC extends FeatureConfiguration, F extends Feature<FC>> Holder<PlacedFeature> register(ResourceLocation name, ConfiguredFeature<FC, F> feature, PlacementModifier... placement) {
