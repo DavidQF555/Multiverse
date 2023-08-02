@@ -3,13 +3,16 @@ package io.github.davidqf555.minecraft.multiverse.common;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseExistingData;
+import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -28,6 +31,7 @@ public final class EventBusSubscriber {
     public static void onBiomeLoading(BiomeLoadingEvent event) {
         event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, FeatureRegistry.PLACED_RIFT);
         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FeatureRegistry.KALEIDITE_CLUSTER);
+        event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityRegistry.TRAVELER.get(), 1, 1, 1));
     }
 
     @SubscribeEvent

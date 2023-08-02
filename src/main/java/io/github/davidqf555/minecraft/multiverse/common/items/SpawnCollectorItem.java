@@ -14,6 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -49,9 +50,8 @@ public class SpawnCollectorItem extends TimerItem {
 
     @Override
     protected void doTimerEffect(ItemStack stack, ItemEntity entity) {
-        CollectorEntity boss = EntityRegistry.COLLECTOR.get().create(entity.level);
+        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, entity.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
         if (boss != null) {
-            boss.setPos(entity.getX(), entity.getY(), entity.getZ());
             boss.setPortalCooldown();
             BlockPos center = entity.blockPosition();
             FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level, ((ServerLevel) entity.level).getChunkSource().getGenerator(), entity.level.getRandom(), center, RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false)));
@@ -59,7 +59,6 @@ public class SpawnCollectorItem extends TimerItem {
             if (tile instanceof RiftTileEntity) {
                 boss.setFrom(((RiftTileEntity) tile).getTarget());
             }
-            entity.level.addFreshEntity(boss);
         }
     }
 

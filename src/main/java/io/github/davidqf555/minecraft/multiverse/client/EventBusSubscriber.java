@@ -2,10 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.effects.ColoredFogEffect;
-import io.github.davidqf555.minecraft.multiverse.client.render.KaleiditeColor;
-import io.github.davidqf555.minecraft.multiverse.client.render.MixedIllagerRenderer;
-import io.github.davidqf555.minecraft.multiverse.client.render.RiftParticle;
-import io.github.davidqf555.minecraft.multiverse.client.render.RiftTileEntityRenderer;
+import io.github.davidqf555.minecraft.multiverse.client.render.*;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
@@ -36,7 +33,8 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(TileEntityRegistry.RIFT.get(), dispatcher -> new RiftTileEntityRenderer());
-        event.registerEntityRenderer(EntityRegistry.COLLECTOR.get(), MixedIllagerRenderer<CollectorEntity>::new);
+        event.registerEntityRenderer(EntityRegistry.COLLECTOR.get(), CollectorRenderer<CollectorEntity>::new);
+        event.registerEntityRenderer(EntityRegistry.TRAVELER.get(), TravelerRenderer::new);
     }
 
     @SubscribeEvent
