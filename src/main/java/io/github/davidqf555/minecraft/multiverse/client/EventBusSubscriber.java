@@ -35,6 +35,7 @@ public final class EventBusSubscriber {
         event.registerBlockEntityRenderer(TileEntityRegistry.RIFT.get(), dispatcher -> new RiftTileEntityRenderer());
         event.registerEntityRenderer(EntityRegistry.COLLECTOR.get(), CollectorRenderer<CollectorEntity>::new);
         event.registerEntityRenderer(EntityRegistry.TRAVELER.get(), TravelerRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DOPPELGANGER.get(), DoppelgangerRenderer::new);
     }
 
     @SubscribeEvent

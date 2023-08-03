@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.core.BlockPos;
@@ -45,7 +46,10 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
 
@@ -81,11 +85,11 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     protected void tickDeath() {
-        if (getOriginalId() == null) {
+        if (level.isClientSide() || getOriginalId() == null) {
             super.tickDeath();
         } else {
             doRiftEffect();
-            remove(RemovalReason.DISCARDED);
+            discard();
         }
     }
 
@@ -118,7 +122,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new RangedCrossbowAttackGoal<>(this, 1, 16));
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 1, true));
-        goalSelector.addGoal(3, new FollowOriginalGoal(12, 8, 1));
+        goalSelector.addGoal(3, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));
         goalSelector.addGoal(4, new WaterAvoidingRandomFlyingGoal(this, 1));
         goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8));
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -226,7 +230,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 }
             }
         } else if (getOriginal() == null) {
-            remove(RemovalReason.DISCARDED);
+            kill();
         }
     }
 
@@ -391,65 +395,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         public void start() {
             setTarget(target);
             super.start();
-        }
-    }
-
-    private class FollowOriginalGoal extends Goal {
-
-        private final double start, stop;
-        private final float speed;
-        private int recalculate;
-        private TravelerEntity original;
-
-        private FollowOriginalGoal(double start, double stop, float speed) {
-            this.speed = speed;
-            this.start = start;
-            this.stop = stop;
-            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
-        }
-
-        @Override
-        public boolean canUse() {
-            TravelerEntity original = getOriginal();
-            if (original == null || original.isSpectator() || distanceToSqr(original) < start * start) {
-                return false;
-            }
-            this.original = original;
-            return true;
-        }
-
-        @Override
-        public boolean canContinueToUse() {
-            if (getNavigation().isDone()) {
-                return false;
-            }
-            return distanceToSqr(original) > stop * stop;
-        }
-
-        @Override
-        public void start() {
-            recalculate = 0;
-        }
-
-        @Override
-        public void stop() {
-            original = null;
-            getNavigation().stop();
-        }
-
-        public void tick() {
-            getLookControl().setLookAt(original, 10, getMaxHeadXRot());
-            if (--recalculate <= 0) {
-                this.recalculate = 10;
-                if (!isPassenger()) {
-                    if (distanceToSqr(original) >= 1024) {
-                        remove(RemovalReason.DISCARDED);
-                    } else {
-                        getNavigation().moveTo(original, speed);
-                    }
-
-                }
-            }
         }
     }
 

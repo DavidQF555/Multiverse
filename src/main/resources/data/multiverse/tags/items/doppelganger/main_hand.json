@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "trident",
+    "wooden_sword",
+    "iron_sword",
+    "golden_sword",
+    "diamond_sword",
+    "netherite_sword",
+    "wooden_axe",
+    "iron_axe",
+    "golden_axe",
+    "diamond_axe",
+    "netherite_axe",
+    "multiverse:boundless_blade"
+  ]
+}
