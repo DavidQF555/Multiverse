@@ -14,12 +14,12 @@ public class TravelerRenderer extends IllagerRenderer<TravelerEntity> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/traveler.png");
 
     public TravelerRenderer(EntityRendererProvider.Context manager) {
-        super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.VINDICATOR)), 0.5f);
+        super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.PILLAGER)), 0.5f);
         addLayer(new ItemInHandLayer<>(this));
     }
 
     @Override
-    public ResourceLocation getTextureLocation(TravelerEntity p_114482_) {
+    public ResourceLocation getTextureLocation(TravelerEntity traveler) {
         return TEXTURE;
     }
 
