@@ -14,8 +14,8 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor;
-    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight;
+    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor, minRiftWidth, maxRiftWidth;
+    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftHeight, maxRiftHeight;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
@@ -37,9 +37,9 @@ public class ServerConfigs {
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
         minRiftWidth = builder.comment("This is the minimum width radius of naturally generated rifts. ")
-                .defineInRange("minWidth", 1, 0, Integer.MAX_VALUE);
+                .defineInRange("minWidth", 1, 0, Double.MAX_VALUE);
         maxRiftWidth = builder.comment("This is the maximum width radius of naturally generated rifts. This should be greater or equal to minWidth. ")
-                .defineInRange("maxWidth", 3, 0, Integer.MAX_VALUE);
+                .defineInRange("maxWidth", 3, 0, Double.MAX_VALUE);
         minRiftHeight = builder.comment("This is the minimum height radius of naturally generated rifts. ")
                 .defineInRange("minHeight", 6, 0, Integer.MAX_VALUE);
         maxRiftHeight = builder.comment("This is the maximum height radius of naturally generated rifts. This should be greater or equal to minHeight. ")

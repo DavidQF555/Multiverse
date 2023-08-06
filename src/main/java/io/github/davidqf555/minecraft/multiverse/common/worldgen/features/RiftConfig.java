@@ -38,7 +38,7 @@ public class RiftConfig implements FeatureConfiguration {
         return new RiftConfig(target, block, natural, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()), Optional.empty());
     }
 
-    public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, int width, int height, Optional<Rotation> rotation) {
+    public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, double width, double height, Optional<Rotation> rotation) {
         return new RiftConfig(target, block, natural, new Size(width, width, height, height), rotation);
     }
 
@@ -71,52 +71,42 @@ public class RiftConfig implements FeatureConfiguration {
     public static class Size {
 
         public static final Codec<Size> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("minWidth").forGetter(size -> size.minWidth),
-                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("maxWidth").forGetter(size -> size.maxWidth),
-                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("minHeight").forGetter(size -> size.minHeight),
-                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("maxHeight").forGetter(size -> size.maxHeight)
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("minWidth").forGetter(size -> size.minWidth),
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("maxWidth").forGetter(size -> size.maxWidth),
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("minHeight").forGetter(size -> size.minHeight),
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("maxHeight").forGetter(size -> size.maxHeight)
         ).apply(builder, Size::new));
 
-        private final int minWidth, maxWidth, minHeight, maxHeight;
+        private final double minWidth, maxWidth, minHeight, maxHeight;
 
-        public Size(int minWidth, int maxWidth, int minHeight, int maxHeight) {
+        public Size(double minWidth, double maxWidth, double minHeight, double maxHeight) {
             this.minWidth = minWidth;
             this.maxWidth = maxWidth;
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
         }
 
-        public int getWidth(Random random) {
-            return random.nextInt(maxWidth - minWidth + 1) + minWidth;
+        public double getWidth(Random random) {
+            return random.nextDouble() * (maxWidth - minWidth) + minWidth;
         }
 
-        public int getHeight(Random random) {
-            return random.nextInt(maxHeight - minHeight + 1) + minHeight;
+        public double getHeight(Random random) {
+            return random.nextDouble() * (maxHeight - minHeight) + minHeight;
         }
 
     }
 
-    public static class Rotation {
+    public record Rotation(Vector3f axis, float angle) {
 
         public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Vector3f.CODEC.fieldOf("axis").forGetter(Rotation::getAxis),
-                Codec.FLOAT.fieldOf("angle").forGetter(Rotation::getAngle)
+                Vector3f.CODEC.fieldOf("axis").forGetter(Rotation::axis),
+                Codec.FLOAT.fieldOf("angle").forGetter(Rotation::angle)
         ).apply(builder, Rotation::new));
-        private final Vector3f axis;
-        private final float angle;
 
         public Rotation(Vector3f axis, float angle) {
             this.axis = axis;
             this.axis.normalize();
             this.angle = angle;
-        }
-
-        public Vector3f getAxis() {
-            return axis;
-        }
-
-        public float getAngle() {
-            return angle;
         }
 
     }

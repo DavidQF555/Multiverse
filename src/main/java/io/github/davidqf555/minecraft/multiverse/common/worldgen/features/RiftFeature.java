@@ -56,11 +56,11 @@ public class RiftFeature extends Feature<RiftConfig> {
             reader.getLevel().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
         }
         RiftConfig.Size size = config.getSize();
-        int width = size.getWidth(rand);
-        int height = size.getHeight(rand);
+        double width = size.getWidth(rand);
+        double height = size.getHeight(rand);
         double depth = 0.5;
         RiftConfig.Rotation rotation = config.getRotation(rand);
-        int maxLength = Math.max(Math.max(width, height), Mth.ceil(depth));
+        int maxLength = Mth.ceil(Math.max(Math.max(width, height), depth));
         for (int dY = -maxLength; dY <= maxLength; dY++) {
             for (int dX = -maxLength; dX <= maxLength; dX++) {
                 for (int dZ = -maxLength; dZ <= maxLength; dZ++) {
@@ -105,7 +105,7 @@ public class RiftFeature extends Feature<RiftConfig> {
     }
 
     protected boolean isColliding(Vec3 center, RiftConfig.Rotation rotation, double width, double height, double depth, Vec3 pos) {
-        Vec3 normal = new Vec3(rotation.getAxis());
+        Vec3 normal = new Vec3(rotation.axis());
         Vec3 line = pos.subtract(center);
         Vec3 proj = normal.scale(normal.dot(line));
         if (proj.lengthSqr() > depth * depth) {
@@ -115,7 +115,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         if (cross.lengthSqr() == 0) {
             cross = new Vec3(1, 0, 0);
         }
-        Vec3 vertical = rotate(cross, normal, rotation.getAngle());
+        Vec3 vertical = rotate(cross, normal, rotation.angle());
         Vec3 comp = line.subtract(proj);
         Vec3 projHeight = vertical.scale(vertical.dot(comp) / vertical.lengthSqr());
         double compHeight = projHeight.length();
