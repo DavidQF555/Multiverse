@@ -4,9 +4,6 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,24 +24,6 @@ public class RiftSwordItem extends SwordItem {
 
     public RiftSwordItem(Tier tier, int damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
-    }
-
-    @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity user) {
-        if (super.hurtEnemy(stack, target, user)) {
-            for (int i = 0; i < 16; i++) {
-                double x = target.getX() + (target.getRandom().nextDouble() - 0.5) * 16;
-                double y = Mth.clamp(target.getY() + (double) (target.getRandom().nextInt(16) - 8), 0, target.level.getHeight() - 1);
-                double z = target.getZ() + (target.getRandom().nextDouble() - 0.5) * 16;
-                if (target.randomTeleport(x, y, z, true)) {
-                    target.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1, 1);
-                    target.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1, 1);
-                    break;
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

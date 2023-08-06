@@ -4,6 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -28,15 +29,17 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.SpellcasterIllager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
+import java.util.Random;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -95,6 +98,11 @@ public class CollectorEntity extends SpellcasterIllager {
     }
 
     @Override
+    public boolean hurt(DamageSource p_37849_, float p_37850_) {
+        return super.hurt(p_37849_, p_37850_);
+    }
+
+    @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new SpellcasterCastingSpellGoal());
@@ -146,8 +154,11 @@ public class CollectorEntity extends SpellcasterIllager {
     public boolean doHurtTarget(Entity target) {
         boolean ret = super.doHurtTarget(target);
         if (ret && target instanceof LivingEntity) {
-            ItemStack hand = getItemInHand(getUsedItemHand());
-            hand.getItem().hurtEnemy(hand, (LivingEntity) target, this);
+            Random rand = getRandom();
+            double x = target.getX() + (rand.nextDouble() - 0.5) * 16;
+            double y = target.getY() + (rand.nextDouble() - 0.5) * 16;
+            double z = target.getZ() + (rand.nextDouble() - 0.5) * 16;
+            ((LivingEntity) target).randomTeleport(x, y, z, true);
         }
         return ret;
     }
@@ -207,14 +218,16 @@ public class CollectorEntity extends SpellcasterIllager {
 
     private class CreateRiftGoal extends SpellcasterUseSpellGoal {
 
-        private CreateRiftGoal() {
-            nextAttackTickCount = tickCount + getCastingInterval();
+        @Override
+        public boolean canUse() {
+            return super.canUse() && getTarget() != null;
         }
 
         @Override
         protected void performSpellCasting() {
-            ItemStack hand = getItemInHand(getUsedItemHand());
-            hand.releaseUsing(level, CollectorEntity.this, hand.getUseDuration() - getCastingTime());
+            Vec3 look = getLookAngle();
+            Vec3 start = getEyePosition().add(look);
+            FeatureRegistry.RIFT.get().placeVertical((ServerLevel) level, start, 12, 8, look, true, false, Optional.empty());
         }
 
         @Override
@@ -224,7 +237,7 @@ public class CollectorEntity extends SpellcasterIllager {
 
         @Override
         protected int getCastingInterval() {
-            return 1000;
+            return 1200;
         }
 
         @Nullable
