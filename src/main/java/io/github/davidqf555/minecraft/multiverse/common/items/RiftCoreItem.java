@@ -4,25 +4,39 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class RiftCoreItem extends Item {
 
     private static final int MAX_RANGE = 50;
+    private Component lore;
 
     public RiftCoreItem(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        super.appendHoverText(stack, level, lines, flag);
+        lines.add(getLore());
     }
 
     @Override
@@ -53,6 +67,13 @@ public class RiftCoreItem extends Item {
                 }
             }
         }
+    }
+
+    protected Component getLore() {
+        if (lore == null) {
+            lore = new TranslatableComponent(getDescriptionId() + ".lore").withStyle(ChatFormatting.LIGHT_PURPLE);
+        }
+        return lore;
     }
 
 }

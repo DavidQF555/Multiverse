@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
@@ -31,7 +30,7 @@ import java.util.Random;
 @ParametersAreNonnullByDefault
 public class SpawnCollectorItem extends TimerItem {
 
-    private static final Component LORE = new TranslatableComponent("item." + Multiverse.MOD_ID + ".universal_treasure.lore").withStyle(ChatFormatting.GOLD);
+    private Component lore;
 
     public SpawnCollectorItem(Properties properties, int timer) {
         super(properties, timer);
@@ -40,7 +39,14 @@ public class SpawnCollectorItem extends TimerItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, world, text, flag);
-        text.add(LORE);
+        text.add(getLore());
+    }
+
+    protected Component getLore() {
+        if (lore == null) {
+            lore = new TranslatableComponent(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD);
+        }
+        return lore;
     }
 
     @Override
