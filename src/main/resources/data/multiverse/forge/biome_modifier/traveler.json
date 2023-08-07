@@ -1,6 +1,6 @@
 {
   "type": "forge:add_spawns",
-  "biomes": "#is_overworld",
+  "biomes": "#multiverse:multiverse",
   "spawners": {
     "type": "multiverse:traveler",
     "weight": 1,

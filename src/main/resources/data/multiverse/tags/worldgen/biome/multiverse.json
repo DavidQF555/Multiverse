@@ -1,0 +1,7 @@
+{
+  "values": [
+    "#is_overworld",
+    "#is_nether",
+    "#is_end"
+  ]
+}

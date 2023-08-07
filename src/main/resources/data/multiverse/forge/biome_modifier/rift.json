@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
-  "biomes": "#is_end",
+  "biomes": "#multiverse:multiverse",
   "features": "multiverse:rift",
   "step": "local_modifications"
 }

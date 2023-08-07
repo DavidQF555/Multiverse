@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
-  "biomes": "#is_nether",
+  "biomes": "#multiverse:multiverse",
   "features": "multiverse:kaleidite_cluster",
   "step": "local_modifications"
 }
