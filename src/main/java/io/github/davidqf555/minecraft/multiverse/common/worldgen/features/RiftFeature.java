@@ -1,14 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -20,7 +16,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
@@ -28,14 +23,6 @@ public class RiftFeature extends Feature<RiftConfig> {
 
     public RiftFeature(Codec<RiftConfig> codec) {
         super(codec);
-    }
-
-    public boolean placeVertical(ServerLevel level, Vec3 start, int width, int height, Vec3 direction, boolean temporary, boolean natural, Optional<Integer> target) {
-        direction = direction.normalize();
-        BlockPos center = new BlockPos(start.add(direction.scale(width)));
-        float angle = (float) Math.asin(direction.y()) * Mth.RAD_TO_DEG;
-        RiftConfig.Rotation rotation = new RiftConfig.Rotation(new Vector3f(direction.cross(new Vec3(0, 1, 0))), angle);
-        return place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(target, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), natural, width, height, Optional.of(rotation))));
     }
 
     @Override
@@ -111,19 +98,19 @@ public class RiftFeature extends Feature<RiftConfig> {
         if (proj.lengthSqr() > depth * depth) {
             return false;
         }
-        Vec3 cross = normal.cross(new Vec3(0, 0, 1));
+        Vec3 cross = normal.cross(new Vec3(0, 1, 0));
         if (cross.lengthSqr() == 0) {
             cross = new Vec3(1, 0, 0);
         }
-        Vec3 vertical = rotate(cross, normal, rotation.angle());
+        Vec3 horizontal = rotate(cross, normal, rotation.angle());
         Vec3 comp = line.subtract(proj);
-        Vec3 projHeight = vertical.scale(vertical.dot(comp) / vertical.lengthSqr());
-        double compHeight = projHeight.length();
-        if (compHeight > height) {
+        Vec3 projWidth = horizontal.scale(horizontal.dot(comp) / horizontal.lengthSqr());
+        double compWidth = projWidth.length();
+        if (compWidth > width) {
             return false;
         }
-        double widthBound = width - Math.abs(compHeight) * width / height;
-        return comp.subtract(projHeight).lengthSqr() <= widthBound * widthBound;
+        double heightBound = height - Math.abs(compWidth) * height / width;
+        return comp.subtract(projWidth).lengthSqr() <= heightBound * heightBound;
     }
 
     private Vec3 rotate(Vec3 original, Vec3 axis, float angle) {

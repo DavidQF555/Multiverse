@@ -1,10 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.items.RiftSwordItem;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +38,6 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
@@ -218,6 +217,10 @@ public class CollectorEntity extends SpellcasterIllager {
 
     private class CreateRiftGoal extends SpellcasterUseSpellGoal {
 
+        private CreateRiftGoal() {
+            nextAttackTickCount = tickCount + getCastingInterval();
+        }
+
         @Override
         public boolean canUse() {
             return super.canUse() && getTarget() != null;
@@ -225,9 +228,10 @@ public class CollectorEntity extends SpellcasterIllager {
 
         @Override
         protected void performSpellCasting() {
+            float angle = getMainArm() == HumanoidArm.RIGHT ? 45 : -45;
             Vec3 look = getLookAngle();
             Vec3 start = getEyePosition().add(look);
-            FeatureRegistry.RIFT.get().placeVertical((ServerLevel) level, start, 12, 8, look, true, false, Optional.empty());
+            RiftSwordItem.slash((ServerLevel) level, start, look, 4, 3, 15, angle);
         }
 
         @Override
