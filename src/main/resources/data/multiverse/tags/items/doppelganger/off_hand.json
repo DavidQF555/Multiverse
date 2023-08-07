@@ -1,7 +1,6 @@
 {
-  "replace": false,
   "values": [
     "#multiverse:doppelganger/main_hand",
-    "shield"
+    "#forge:tools/shields"
   ]
 }
