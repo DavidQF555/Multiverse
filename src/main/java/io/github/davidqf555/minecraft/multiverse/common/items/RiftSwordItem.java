@@ -8,11 +8,9 @@ import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRe
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,40 +26,33 @@ import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BoundlessBladeItem extends SwordItem {
+public class RiftSwordItem extends SwordItem {
 
-    public BoundlessBladeItem(Tier tier, int damage, float speed, Properties properties) {
+    public RiftSwordItem(Tier tier, int damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
     }
 
-    @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity user) {
-        if (super.hurtEnemy(stack, target, user)) {
-            for (int i = 0; i < 16; i++) {
-                double x = target.getX() + (target.getRandom().nextDouble() - 0.5) * 16;
-                double y = Mth.clamp(target.getY() + (double) (target.getRandom().nextInt(16) - 8), 0, target.level.getHeight() - 1);
-                double z = target.getZ() + (target.getRandom().nextDouble() - 0.5) * 16;
-                if (target.randomTeleport(x, y, z, true)) {
-                    target.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1, 1);
-                    target.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1, 1);
-                    break;
-                }
-            }
-            return true;
-        }
-        return false;
+    public static boolean slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle) {
+        look = look.normalize();
+        BlockPos center = BlockPos.containing(start.add(look.scale(dist)));
+        RiftConfig.Rotation rotation = new RiftConfig.Rotation(look, angle);
+        return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
         if (world instanceof ServerLevel) {
             int count = Math.min(600, getUseDuration(stack) - remaining);
-            int width = 6 + count / 30;
-            int height = 3 + count / 40;
+            int width = 1 + count / 200;
+            int height = 5 + count / 20;
+            HumanoidArm used = entity.getMainArm();
+            if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
+                used = used.getOpposite();
+            }
+            float angle = used == HumanoidArm.RIGHT ? 45 : -45;
             Vec3 look = entity.getLookAngle();
-            BlockPos center = BlockPos.containing(entity.getEyePosition(1).add(look.scale(width + 1.5)));
-            FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) world, ((ServerLevel) world).getChunkSource().getGenerator(), entity.getRandom(), center, RiftConfig.fixed(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, 0, 90 - entity.getYHeadRot(), -entity.getViewXRot(1))));
-            if (entity instanceof Player) {
+            Vec3 start = entity.getEyePosition();
+            if (slash((ServerLevel) world, start, look, 4, width, height, angle) && entity instanceof Player) {
                 ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
             }
         }

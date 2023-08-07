@@ -1,0 +1,19 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "###",
+    "#X#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "multiverse:kaleidite_shard"
+    },
+    "X": {
+      "item": "iron_ingot"
+    }
+  },
+  "result": {
+    "item": "multiverse:kaleidite_core"
+  }
+}

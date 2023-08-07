@@ -1,16 +1,16 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
+import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
 
-public class CrystalItemTier implements Tier {
+public class KaleiditeItemTier implements Tier {
 
-    public static final CrystalItemTier INSTANCE = new CrystalItemTier();
+    public static final KaleiditeItemTier INSTANCE = new KaleiditeItemTier();
 
-    protected CrystalItemTier() {
+    protected KaleiditeItemTier() {
     }
 
     @Override
@@ -41,6 +41,6 @@ public class CrystalItemTier implements Tier {
     @Nonnull
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(Tags.Items.GLASS);
+        return Ingredient.of(ItemRegistry.KALEIDITE_SHARD.get());
     }
 }

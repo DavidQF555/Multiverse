@@ -1,0 +1,30 @@
+{
+  "feature": "multiverse:kaleidite_cluster",
+  "placement": [
+    {
+      "type": "multiverse:multiverse"
+    },
+    {
+      "type": "height_range",
+      "height": {
+        "type": "uniform",
+        "min_inclusive": {
+          "above_bottom": 0
+        },
+        "max_inclusive": {
+          "absolute": 256
+        }
+      }
+    },
+    {
+      "type": "count",
+      "count": 16
+    },
+    {
+      "type": "in_square"
+    },
+    {
+      "type": "biome"
+    }
+  ]
+}

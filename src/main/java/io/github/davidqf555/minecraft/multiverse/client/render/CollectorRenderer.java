@@ -15,11 +15,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class MixedIllagerRenderer<T extends SpellcasterIllager> extends IllagerRenderer<T> {
+public class CollectorRenderer<T extends SpellcasterIllager> extends IllagerRenderer<T> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/collector.png");
 
-    public MixedIllagerRenderer(EntityRendererProvider.Context manager) {
+    public CollectorRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.ILLUSIONER)), 0.5f);
         addLayer(new ItemInHandLayer<>(this, manager.getItemInHandRenderer()) {
             @Override

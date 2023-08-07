@@ -15,13 +15,11 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,14 +34,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
-    private static final Random RANDOM = new Random(0);
     private int target;
 
     protected RiftTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -60,23 +56,6 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     public void setTarget(int target) {
         this.target = target;
-    }
-
-    public int getColor(Random rand) {
-        return FastColor.ARGB32.color(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
-    }
-
-    public int getColor() {
-        RANDOM.setSeed(getSeed());
-        return getColor(RANDOM);
-    }
-
-    public long getSeed() {
-        Level world = getLevel();
-        if (world != null) {
-            return DimensionHelper.getSeed(world.getBiomeManager().biomeZoomSeed, getTarget(), true);
-        }
-        return 0;
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -16,15 +17,15 @@ public class RiftConfig implements FeatureConfiguration {
             BlockState.CODEC.fieldOf("block").forGetter(config -> config.block),
             Codec.BOOL.fieldOf("natural").forGetter(config -> config.natural),
             Size.CODEC.fieldOf("size").forGetter(config -> config.size),
-            Rotation.CODEC.fieldOf("rotation").forGetter(config -> config.rotation)
+            Rotation.CODEC.optionalFieldOf("rotation").forGetter(config -> config.rotation)
     ).apply(builder, RiftConfig::new));
     private final Optional<Integer> target;
     private final BlockState block;
     private final boolean natural;
     private final Size size;
-    private final Rotation rotation;
+    private final Optional<Rotation> rotation;
 
-    public RiftConfig(Optional<Integer> target, BlockState block, boolean natural, Size size, Rotation rotation) {
+    public RiftConfig(Optional<Integer> target, BlockState block, boolean natural, Size size, Optional<Rotation> rotation) {
         this.target = target;
         this.block = block;
         this.natural = natural;
@@ -33,11 +34,11 @@ public class RiftConfig implements FeatureConfiguration {
     }
 
     public static RiftConfig of(Optional<Integer> target, BlockState block, boolean natural) {
-        return new RiftConfig(target, block, natural, new Size(1, 3, 6, 10), new Rotation(0, 180, 0, 180, 0, 180));
+        return new RiftConfig(target, block, natural, new Size(1, 3, 6, 10), Optional.empty());
     }
 
-    public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, int width, int height, float xRot, float yRot, float zRot) {
-        return new RiftConfig(target, block, natural, new Size(width, width, height, height), new Rotation(xRot, xRot, yRot, yRot, zRot, zRot));
+    public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, double width, double height, Optional<Rotation> rotation) {
+        return new RiftConfig(target, block, natural, new Size(width, width, height, height), rotation);
     }
 
     public Optional<Integer> getTarget() {
@@ -56,72 +57,57 @@ public class RiftConfig implements FeatureConfiguration {
         return size;
     }
 
-    public Rotation getRotation() {
-        return rotation;
+    public Rotation getRotation(RandomSource rand) {
+        return rotation.orElseGet(() -> {
+            Vec3 axis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()).normalize();
+            if (axis.lengthSqr() == 0) {
+                axis = new Vec3(0, 1, 0);
+            }
+            return new Rotation(axis, rand.nextFloat() * 180);
+        });
     }
 
     public static class Size {
 
         public static final Codec<Size> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                ExtraCodecs.POSITIVE_INT.fieldOf("minWidth").forGetter(size -> size.minWidth),
-                ExtraCodecs.POSITIVE_INT.fieldOf("maxWidth").forGetter(size -> size.maxWidth),
-                ExtraCodecs.POSITIVE_INT.fieldOf("minHeight").forGetter(size -> size.minHeight),
-                ExtraCodecs.POSITIVE_INT.fieldOf("maxHeight").forGetter(size -> size.maxHeight)
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("minWidth").forGetter(size -> size.minWidth),
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("maxWidth").forGetter(size -> size.maxWidth),
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("minHeight").forGetter(size -> size.minHeight),
+                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("maxHeight").forGetter(size -> size.maxHeight)
         ).apply(builder, Size::new));
 
-        private final int minWidth, maxWidth, minHeight, maxHeight;
+        private final double minWidth, maxWidth, minHeight, maxHeight;
 
-        public Size(int minWidth, int maxWidth, int minHeight, int maxHeight) {
+        public Size(double minWidth, double maxWidth, double minHeight, double maxHeight) {
             this.minWidth = minWidth;
             this.maxWidth = maxWidth;
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
         }
 
-        public int getWidth(RandomSource random) {
-            return random.nextInt(maxWidth - minWidth + 1) + minWidth;
+        public double getWidth(RandomSource random) {
+            return random.nextDouble() * (maxWidth - minWidth) + minWidth;
         }
 
-        public int getHeight(RandomSource random) {
-            return random.nextInt(maxHeight - minHeight + 1) + minHeight;
+        public double getHeight(RandomSource random) {
+            return random.nextDouble() * (maxHeight - minHeight) + minHeight;
         }
 
     }
 
-    public static class Rotation {
+    public record Rotation(Vec3 axis, float angle) {
 
         public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Codec.FLOAT.fieldOf("minX").forGetter(rot -> rot.minX),
-                Codec.FLOAT.fieldOf("maxX").forGetter(rot -> rot.maxX),
-                Codec.FLOAT.fieldOf("minY").forGetter(rot -> rot.minY),
-                Codec.FLOAT.fieldOf("maxY").forGetter(rot -> rot.maxY),
-                Codec.FLOAT.fieldOf("minZ").forGetter(rot -> rot.minZ),
-                Codec.FLOAT.fieldOf("maxZ").forGetter(rot -> rot.maxZ)
+                Vec3.CODEC.fieldOf("axis").forGetter(Rotation::axis),
+                Codec.FLOAT.fieldOf("angle").forGetter(Rotation::angle)
         ).apply(builder, Rotation::new));
 
-        private final float minX, maxX, minY, maxY, minZ, maxZ;
-
-        public Rotation(float minX, float maxX, float minY, float maxY, float minZ, float maxZ) {
-            this.minX = minX;
-            this.maxX = maxX;
-            this.minY = minY;
-            this.maxY = maxY;
-            this.minZ = minZ;
-            this.maxZ = maxZ;
+        public Rotation(Vec3 axis, float angle) {
+            this.axis = axis;
+            this.axis.normalize();
+            this.angle = angle;
         }
 
-
-        public float getRotX(RandomSource random) {
-            return minX + random.nextFloat() * (maxX - minX);
-        }
-
-        public float getRotY(RandomSource random) {
-            return minY + random.nextFloat() * (maxY - minY);
-        }
-
-        public float getRotZ(RandomSource random) {
-            return minZ + random.nextFloat() * (maxZ - minZ);
-        }
     }
 
 }

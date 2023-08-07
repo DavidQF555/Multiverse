@@ -5,7 +5,9 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseChunk
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftFeature;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.AboveGroundPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.MultiverseDimensionPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.RiftDimensionPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.SolidPlacement;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +30,8 @@ public final class FeatureRegistry {
     public static final RegistryObject<RiftFeature> RIFT = register("rift", () -> new RiftFeature(RiftConfig.CODEC));
     public static PlacementModifierType<AboveGroundPlacement> ABOVE_GROUND;
     public static PlacementModifierType<RiftDimensionPlacement> RIFT_DIMENSION;
+    public static PlacementModifierType<MultiverseDimensionPlacement> MULTIVERSE_DIMENSION;
+    public static PlacementModifierType<SolidPlacement> SOLID;
 
     private FeatureRegistry() {
     }
@@ -42,6 +46,8 @@ public final class FeatureRegistry {
             Registry.register(BuiltInRegistries.CHUNK_GENERATOR, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), MultiverseChunkGenerator.CODEC);
             ABOVE_GROUND = Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, new ResourceLocation(Multiverse.MOD_ID, "above_ground"), () -> AboveGroundPlacement.CODEC);
             RIFT_DIMENSION = Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, new ResourceLocation(Multiverse.MOD_ID, "rift_dimension"), () -> RiftDimensionPlacement.CODEC);
+            MULTIVERSE_DIMENSION = Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, new ResourceLocation(Multiverse.MOD_ID, "multiverse"), () -> MultiverseDimensionPlacement.CODEC);
+            SOLID = Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, new ResourceLocation(Multiverse.MOD_ID, "solid"), () -> SolidPlacement.CODEC);
         });
     }
 

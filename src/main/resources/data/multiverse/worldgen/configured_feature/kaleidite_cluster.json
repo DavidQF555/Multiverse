@@ -1,0 +1,151 @@
+{
+  "type": "simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": {
+          "type": "simple_block",
+          "config": {
+            "to_place": {
+              "type": "simple",
+              "state": {
+                "Name": "multiverse:kaleidite_cluster",
+                "Properties": {
+                  "facing": "up",
+                  "waterlogged": "false"
+                }
+              }
+            }
+          }
+        },
+        "placement": [
+          {
+            "type": "multiverse:solid",
+            "direction": "down",
+            "steps": 4
+          }
+        ]
+      },
+      {
+        "feature": {
+          "type": "simple_block",
+          "config": {
+            "to_place": {
+              "type": "simple",
+              "state": {
+                "Name": "multiverse:kaleidite_cluster",
+                "Properties": {
+                  "facing": "down",
+                  "waterlogged": "false"
+                }
+              }
+            }
+          }
+        },
+        "placement": [
+          {
+            "type": "multiverse:solid",
+            "direction": "up",
+            "steps": 4
+          }
+        ]
+      },
+      {
+        "feature": {
+          "type": "simple_block",
+          "config": {
+            "to_place": {
+              "type": "simple",
+              "state": {
+                "Name": "multiverse:kaleidite_cluster",
+                "Properties": {
+                  "facing": "north",
+                  "waterlogged": "false"
+                }
+              }
+            }
+          }
+        },
+        "placement": [
+          {
+            "type": "multiverse:solid",
+            "direction": "south",
+            "steps": 4
+          }
+        ]
+      },
+      {
+        "feature": {
+          "type": "simple_block",
+          "config": {
+            "to_place": {
+              "type": "simple",
+              "state": {
+                "Name": "multiverse:kaleidite_cluster",
+                "Properties": {
+                  "facing": "east",
+                  "waterlogged": "false"
+                }
+              }
+            }
+          }
+        },
+        "placement": [
+          {
+            "type": "multiverse:solid",
+            "direction": "west",
+            "steps": 4
+          }
+        ]
+      },
+      {
+        "feature": {
+          "type": "simple_block",
+          "config": {
+            "to_place": {
+              "type": "simple",
+              "state": {
+                "Name": "multiverse:kaleidite_cluster",
+                "Properties": {
+                  "facing": "south",
+                  "waterlogged": "false"
+                }
+              }
+            }
+          }
+        },
+        "placement": [
+          {
+            "type": "multiverse:solid",
+            "direction": "north",
+            "steps": 4
+          }
+        ]
+      },
+      {
+        "feature": {
+          "type": "simple_block",
+          "config": {
+            "to_place": {
+              "type": "simple",
+              "state": {
+                "Name": "multiverse:kaleidite_cluster",
+                "Properties": {
+                  "facing": "west",
+                  "waterlogged": "false"
+                }
+              }
+            }
+          }
+        },
+        "placement": [
+          {
+            "type": "multiverse:solid",
+            "direction": "east",
+            "steps": 4
+          }
+        ]
+      }
+    ]
+  }
+}
