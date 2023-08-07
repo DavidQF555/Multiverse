@@ -2,7 +2,6 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.AboveGroundPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.MultiverseDimensionPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.RiftDimensionPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.SolidPlacement;
@@ -19,7 +18,6 @@ public final class PlacementRegistry {
     public static final RegistryObject<PlacementModifierType<RiftDimensionPlacement>> RIFT_DIMENSION = register("rift_dimension", RiftDimensionPlacement.CODEC);
     public static final RegistryObject<PlacementModifierType<MultiverseDimensionPlacement>> MULTIVERSE = register("multiverse", MultiverseDimensionPlacement.CODEC);
     public static final RegistryObject<PlacementModifierType<SolidPlacement>> SOLID = register("solid", SolidPlacement.CODEC);
-    public static final RegistryObject<PlacementModifierType<AboveGroundPlacement>> ABOVE_GROUND = register("above_ground", AboveGroundPlacement.CODEC);
 
     private PlacementRegistry() {
     }
