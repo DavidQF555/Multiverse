@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.place
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
@@ -23,7 +23,7 @@ public class MultiverseDimensionPlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return FeatureRegistry.MULTIVERSE_DIMENSION_PLACEMENT_TYPE;
+        return PlacementRegistry.MULTIVERSE.get();
     }
 
 }

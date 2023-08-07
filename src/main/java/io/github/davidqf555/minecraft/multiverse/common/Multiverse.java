@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,5 +39,6 @@ public class Multiverse {
         POIRegistry.TYPES.register(bus);
         TileEntityRegistry.TYPES.register(bus);
         ParticleTypeRegistry.TYPES.register(bus);
+        PlacementRegistry.TYPES.register(bus);
     }
 }

@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.place
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.WorldGenLevel;
@@ -54,7 +54,7 @@ public class SolidPlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return FeatureRegistry.SOLID;
+        return PlacementRegistry.SOLID.get();
     }
 
 }

@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.place
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -26,6 +26,6 @@ public class RiftDimensionPlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return FeatureRegistry.RIFT_DIMENSION_PLACEMENT_TYPE;
+        return PlacementRegistry.RIFT_DIMENSION.get();
     }
 }
