@@ -2,17 +2,29 @@
   "feature": "multiverse:rift",
   "placement": [
     {
-      "type": "rarity_filter",
-      "chance": 50
+      "type": "multiverse:rift_dimension"
     },
     {
-      "type": "multiverse:above_ground"
+      "type": "height_range",
+      "height": {
+        "type": "uniform",
+        "min_inclusive": {
+          "above_bottom": 0
+        },
+        "max_inclusive": {
+          "below_top": 0
+        }
+      }
+    },
+    {
+      "type": "rarity_filter",
+      "chance": 50
     },
     {
       "type": "in_square"
     },
     {
-      "type": "multiverse:rift_dimension"
+      "type": "biome"
     }
   ]
 }
