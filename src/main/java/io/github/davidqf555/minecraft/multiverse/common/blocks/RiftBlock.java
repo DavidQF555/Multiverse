@@ -87,7 +87,7 @@ public class RiftBlock extends BaseEntityBlock {
             if (!entity.isOnPortalCooldown()) {
                 MinecraftServer server = world.getServer();
                 int target = ((RiftTileEntity) tile).getTarget();
-                if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(TagRegistry.ALWAYS_GENERATE_MULTIVERSE)) {
+                if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(TagRegistry.GENERATE_MULTIVERSE)) {
                     ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
                     entity.changeDimension(dim, (RiftTileEntity) tile);
                 }

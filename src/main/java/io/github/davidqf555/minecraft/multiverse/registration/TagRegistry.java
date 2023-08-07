@@ -16,7 +16,7 @@ public final class TagRegistry {
     public static final TagKey<Item> DOPPELGANGER_MAIN_HAND = TagKey.create(Registries.ITEM, new ResourceLocation(Multiverse.MOD_ID, "doppelganger/main_hand"));
     public static final TagKey<Item> DOPPELGANGER_OFF_HAND = TagKey.create(Registries.ITEM, new ResourceLocation(Multiverse.MOD_ID, "doppelganger/off_hand"));
 
-    public static final TagKey<EntityType<?>> ALWAYS_GENERATE_MULTIVERSE = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(Multiverse.MOD_ID, "always_generate_multiverse"));
+    public static final TagKey<EntityType<?>> GENERATE_MULTIVERSE = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(Multiverse.MOD_ID, "generate_multiverse"));
 
     private TagRegistry() {
     }
