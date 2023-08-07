@@ -14,13 +14,15 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, fabricOfReailtyChance;
+    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor;
     public final ForgeConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.push("Server config for Multiverse mod");
         boundlessBladeCooldown = builder.comment("This is the cooldown of the Boundless Blade item in ticks. ")
                 .defineInRange("boundlessBladeCooldown", 500, 0, Integer.MAX_VALUE);
+        travelerSpawnFactor = builder.comment("This is the factor from the base that Travelers spawn")
+                .defineInRange("travelerSpawnFactor", 0.01, 0, 1);
         builder.push("Multiverse dimensions");
         maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
                 .defineInRange("max", 25, 1, Integer.MAX_VALUE);
@@ -30,8 +32,6 @@ public class ServerConfigs {
                 .defineInRange("fixedTimeChance", 0.25, 0, 1);
         builder.pop();
         builder.push("Rifts");
-        fabricOfReailtyChance = builder.comment("This is the chance of a Fabric of Reality dropping whenever a rift opens. ")
-                .defineInRange("fabricChance", 0.05, 0, 1);
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
         builder.pop(2);

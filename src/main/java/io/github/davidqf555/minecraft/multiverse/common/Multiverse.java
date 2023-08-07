@@ -1,7 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.registration.*;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.BiomeModifierRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -37,5 +40,10 @@ public class Multiverse {
         ItemRegistry.ITEMS.register(bus);
         POIRegistry.TYPES.register(bus);
         TileEntityRegistry.TYPES.register(bus);
+        ParticleTypeRegistry.TYPES.register(bus);
+        PlacementRegistry.TYPES.register(bus);
+        ChunkGeneratorRegistry.GENERATORS.register(bus);
+        BiomeModifierRegistry.SERIALIZERS.register(bus);
+        CreativeModeTabRegistry.TABS.register(bus);
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,7 +24,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
-        int color = entity.getColor();
+        int color = entity.hasLevel() ? MultiverseColorHelper.getColor(entity.getLevel(), entity.getTarget()) : 0xFFFFFF;
         Matrix4f pose = matrixStack.last().pose();
         renderCube(pose, buffer.getBuffer(TYPE), color);
     }

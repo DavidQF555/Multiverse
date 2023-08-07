@@ -1,14 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
-import com.mojang.math.Constants;
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -32,11 +28,10 @@ public class RiftFeature extends Feature<RiftConfig> {
     @Override
     public boolean place(FeaturePlaceContext<RiftConfig> context) {
         WorldGenLevel reader = context.level();
-        ServerLevel world = reader.getLevel();
         RiftConfig config = context.config();
         RandomSource rand = context.random();
         int target = config.getTarget().orElseGet(() -> {
-            int current = DimensionHelper.getIndex(world.dimension());
+            int current = DimensionHelper.getIndex(reader.getLevel().dimension());
             int dim = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
             return dim < current ? dim : dim + 1;
         });
@@ -47,44 +42,35 @@ public class RiftFeature extends Feature<RiftConfig> {
         if (!natural) {
             reader.getLevel().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, center, 0);
         }
-        double fabric = ServerConfigs.INSTANCE.fabricOfReailtyChance.get();
         RiftConfig.Size size = config.getSize();
-        int totalWidth = size.getWidth(rand);
-        int totalHeight = size.getHeight(rand);
-        RiftConfig.Rotation rotation = config.getRotation();
-        float xRot = rotation.getRotX(rand) * Constants.DEG_TO_RAD;
-        float yRot = rotation.getRotY(rand) * Constants.DEG_TO_RAD;
-        float zRot = rotation.getRotZ(rand) * Constants.DEG_TO_RAD;
-        Vec3 centerVec = Vec3.atCenterOf(center);
-        for (int y = -totalHeight; y <= totalHeight; y++) {
-            int width = totalWidth * (totalHeight - Mth.abs(y)) / totalHeight;
-            for (int x = -width; x <= width; x++) {
-                Vec3 vec = new Vec3(x, y, 0).xRot(xRot).yRot(yRot).zRot(zRot);
-                BlockPos pos = BlockPos.containing(centerVec.add(vec));
-                if (canReplace(reader, pos)) {
-                    if (!natural) {
-                        reader.destroyBlock(pos, true);
-                        if (rand.nextDouble() < fabric) {
-                            RiftBlock.popResource(world, pos, ItemRegistry.FABRIC_OF_REALITY.get().getDefaultInstance());
-                        }
-                    }
-                    setBlock(reader, pos, rift);
-                    BlockEntity tile = reader.getBlockEntity(pos);
-                    if (tile instanceof RiftTileEntity) {
-                        ((RiftTileEntity) tile).setTarget(target);
-                    }
-                }
-                for (int i = -1; i <= 1; i++) {
-                    for (int j = -1; j <= 1; j++) {
-                        for (int k = -1; k <= 1; k++) {
-                            BlockPos replace = pos.offset(i, j, k);
-                            if (canReplace(reader, replace)) {
-                                if (natural) {
-                                    setBlock(reader, replace, air);
-                                } else {
-                                    reader.destroyBlock(replace, true);
+        double width = size.getWidth(rand);
+        double height = size.getHeight(rand);
+        double depth = 0.5;
+        RiftConfig.Rotation rotation = config.getRotation(rand);
+        int maxLength = Mth.ceil(Math.max(Math.max(width, height), depth));
+        for (int dY = -maxLength; dY <= maxLength; dY++) {
+            for (int dX = -maxLength; dX <= maxLength; dX++) {
+                for (int dZ = -maxLength; dZ <= maxLength; dZ++) {
+                    BlockPos pos = center.offset(dX, dY, dZ);
+                    if (canReplace(reader, pos) && isRift(center, pos, rotation, width, height, depth)) {
+                        for (int i = -1; i <= 1; i++) {
+                            for (int j = -1; j <= 1; j++) {
+                                for (int k = -1; k <= 1; k++) {
+                                    BlockPos destroy = pos.offset(i, j, k);
+                                    if (canDestroy(reader, destroy)) {
+                                        if (natural) {
+                                            setBlock(reader, destroy, air);
+                                        } else {
+                                            reader.destroyBlock(destroy, true);
+                                        }
+                                    }
                                 }
                             }
+                        }
+                        setBlock(reader, pos, rift);
+                        BlockEntity tile = reader.getBlockEntity(pos);
+                        if (tile instanceof RiftTileEntity) {
+                            ((RiftTileEntity) tile).setTarget(target);
                         }
                     }
                 }
@@ -93,9 +79,46 @@ public class RiftFeature extends Feature<RiftConfig> {
         return true;
     }
 
-    private boolean canReplace(WorldGenLevel reader, BlockPos pos) {
-        int blockY = pos.getY();
-        return blockY >= 0 && blockY < reader.getMaxBuildHeight() && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
+    protected boolean canReplace(WorldGenLevel reader, BlockPos pos) {
+        return !reader.isOutsideBuildHeight(pos) && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
+    }
+
+    protected boolean canDestroy(WorldGenLevel reader, BlockPos pos) {
+        return canReplace(reader, pos) && reader.getBlockState(pos).getFluidState().isEmpty();
+    }
+
+    protected boolean isRift(BlockPos center, BlockPos pos, RiftConfig.Rotation rotation, double width, double height, double depth) {
+        return isColliding(Vec3.atCenterOf(center), rotation, width, height, depth, Vec3.atCenterOf(pos));
+    }
+
+    protected boolean isColliding(Vec3 center, RiftConfig.Rotation rotation, double width, double height, double depth, Vec3 pos) {
+        Vec3 normal = rotation.axis();
+        Vec3 line = pos.subtract(center);
+        Vec3 proj = normal.scale(normal.dot(line));
+        if (proj.lengthSqr() > depth * depth) {
+            return false;
+        }
+        Vec3 cross = normal.cross(new Vec3(0, 1, 0));
+        if (cross.lengthSqr() == 0) {
+            cross = new Vec3(1, 0, 0);
+        }
+        Vec3 horizontal = rotate(cross, normal, rotation.angle());
+        Vec3 comp = line.subtract(proj);
+        Vec3 projWidth = horizontal.scale(horizontal.dot(comp) / horizontal.lengthSqr());
+        double compWidth = projWidth.length();
+        if (compWidth > width) {
+            return false;
+        }
+        double heightBound = height - Math.abs(compWidth) * height / width;
+        return comp.subtract(projWidth).lengthSqr() <= heightBound * heightBound;
+    }
+
+    private Vec3 rotate(Vec3 original, Vec3 axis, float angle) {
+        Vec3 parallel = axis.scale(axis.dot(original) / axis.lengthSqr());
+        Vec3 perp = original.subtract(parallel);
+        Vec3 cross = axis.cross(perp).normalize();
+        Vec3 rotate = perp.scale(Mth.cos(angle * Mth.DEG_TO_RAD)).add(cross.scale(Mth.sin(angle * Mth.DEG_TO_RAD) * perp.length()));
+        return rotate.add(parallel);
     }
 
 }

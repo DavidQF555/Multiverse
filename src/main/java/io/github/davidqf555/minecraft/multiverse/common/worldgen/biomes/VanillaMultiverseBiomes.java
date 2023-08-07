@@ -63,11 +63,6 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public boolean overrideVanillaSurface() {
-        return false;
-    }
-
-    @Override
     public SurfaceRules.RuleSource createSurface(MultiverseShape shape, MultiverseType type) {
         boolean ceiling = shape.hasCeiling();
         boolean floor = shape.hasFloor();

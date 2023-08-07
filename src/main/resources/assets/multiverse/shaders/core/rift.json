@@ -73,11 +73,11 @@
       ]
     },
     {
-      "name": "EndPortalLayers",
+      "name": "RiftLayers",
       "type": "int",
       "count": 1,
       "values": [
-        15
+        8
       ]
     },
     {
