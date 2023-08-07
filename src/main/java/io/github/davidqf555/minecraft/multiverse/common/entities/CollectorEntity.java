@@ -153,11 +153,7 @@ public class CollectorEntity extends SpellcasterIllager {
     public boolean doHurtTarget(Entity target) {
         boolean ret = super.doHurtTarget(target);
         if (ret && target instanceof LivingEntity) {
-            RandomSource rand = getRandom();
-            double x = target.getX() + (rand.nextDouble() - 0.5) * 16;
-            double y = target.getY() + (rand.nextDouble() - 0.5) * 16;
-            double z = target.getZ() + (rand.nextDouble() - 0.5) * 16;
-            ((LivingEntity) target).randomTeleport(x, y, z, true);
+            EntityUtil.randomTeleport((LivingEntity) target, target.position(), 2, 8, true);
         }
         return ret;
     }

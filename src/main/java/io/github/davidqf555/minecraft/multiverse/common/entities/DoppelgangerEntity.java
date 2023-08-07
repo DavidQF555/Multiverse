@@ -57,23 +57,9 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
-        RandomSource rand = player.getRandom();
-        int dX = rand.nextInt(maxOffset - minOffset + 1) + minOffset;
-        if (rand.nextBoolean()) {
-            dX *= -1;
-        }
-        int dY = rand.nextInt(maxOffset - minOffset + 1) + minOffset;
-        if (rand.nextBoolean()) {
-            dY *= -1;
-        }
-        int dZ = rand.nextInt(maxOffset - minOffset + 1) + minOffset;
-        if (rand.nextBoolean()) {
-            dZ *= -1;
-        }
-        BlockPos pos = center.offset(dX, dY, dZ);
-        T entity = type.spawn(player.getLevel(), null, player, pos, MobSpawnType.MOB_SUMMONED, false, false);
+        T entity = type.spawn(player.getLevel(), null, player, center, MobSpawnType.MOB_SUMMONED, false, false);
         if (entity != null) {
-            entity.randomTeleport(entity.getX(), entity.getY(), entity.getZ(), false);
+            EntityUtil.randomTeleport(entity, entity.position(), minOffset, maxOffset, false);
             entity.doRiftEffect();
             entity.setOriginal(player);
         }
