@@ -43,7 +43,6 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final int MAX_DOPPELGANGERS = 10, SPAWN_PERIOD = 20, PARTICLES_COUNT = 50;
     private static final float CROSSBOW_POWER = 1.6f;
-    private static final double MIN_TP = 4, MAX_TP = 8;
+    private static final double MIN_TP = 8, MAX_TP = 16;
     private final ServerBossEvent bar;
     private UUID original;
 
@@ -176,8 +175,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public boolean hurt(DamageSource source, float damage) {
         if (super.hurt(source, damage)) {
-            Vec3 target = getRandomTeleport(source.getEntity());
-            randomTeleport(target.x(), target.y(), target.z(), true);
+            EntityUtil.randomTeleport(this, position(), MIN_TP, MAX_TP, true);
             return true;
         }
         return false;
@@ -221,9 +219,9 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         if (getOriginalId() == null) {
             LivingEntity target = getTarget();
             if (level.getGameTime() % SPAWN_PERIOD == 0 && target != null && getDoppelgangers().size() < MAX_DOPPELGANGERS) {
-                Vec3 teleport = getRandomTeleport(target);
-                Entity clone = getType().spawn((ServerLevel) level, null, null, null, new BlockPos(teleport), MobSpawnType.MOB_SUMMONED, false, false);
+                Entity clone = getType().spawn((ServerLevel) level, null, null, null, target.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
                 if (clone instanceof TravelerEntity) {
+                    EntityUtil.randomTeleport((LivingEntity) clone, target.position(), MIN_TP, MAX_TP, false);
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     ((TravelerEntity) clone).doRiftEffect();
@@ -232,23 +230,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         } else if (getOriginal() == null) {
             kill();
         }
-    }
-
-    protected Vec3 getRandomTeleport(@Nullable Entity target) {
-        Vec3 center = target == null ? position() : target.position();
-        double randX = random.nextDouble(MIN_TP, MAX_TP);
-        if (random.nextBoolean()) {
-            randX *= -1;
-        }
-        double randY = random.nextDouble(MIN_TP, MAX_TP);
-        if (random.nextBoolean()) {
-            randY *= -1;
-        }
-        double randZ = random.nextDouble(MIN_TP, MAX_TP);
-        if (random.nextBoolean()) {
-            randZ *= -1;
-        }
-        return center.add(randX, randY, randZ);
     }
 
     private float getHealthRatio() {
