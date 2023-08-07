@@ -33,7 +33,7 @@ public class ServerConfigs {
         builder.pop();
         builder.push("Rifts");
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
-                .defineInRange("chance", 20, 1, Integer.MAX_VALUE);
+                .defineInRange("chance", 50, 1, Integer.MAX_VALUE);
         riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
         minRiftWidth = builder.comment("This is the minimum width radius of naturally generated rifts. ")
