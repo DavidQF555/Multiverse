@@ -47,7 +47,11 @@ public enum MultiverseShape {
     }
 
     public ResourceKey<NoiseGeneratorSettings> getNoiseSettingsKey(MultiverseType type) {
-        return ResourceKey.create(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name));
+        return ResourceKey.create(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, getLocation(type)));
+    }
+
+    public String getLocation(MultiverseType type) {
+        return type.getName() + "/" + name;
     }
 
     public NoiseGeneratorSettings createNoiseSettings(MultiverseType type) {

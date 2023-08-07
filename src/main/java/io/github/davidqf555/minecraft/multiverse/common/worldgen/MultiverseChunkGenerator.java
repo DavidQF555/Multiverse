@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryOps;
@@ -35,7 +36,7 @@ public class MultiverseChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     protected Codec<? extends ChunkGenerator> codec() {
-        return CODEC;
+        return ChunkGeneratorRegistry.MULTIVERSE.get();
     }
 
 }

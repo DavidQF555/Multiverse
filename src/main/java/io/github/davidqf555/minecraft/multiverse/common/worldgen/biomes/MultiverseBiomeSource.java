@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.BiomeSourceRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
@@ -33,7 +34,7 @@ public class MultiverseBiomeSource extends MultiNoiseBiomeSource {
 
     @Override
     protected Codec<? extends BiomeSource> codec() {
-        return CODEC;
+        return BiomeSourceRegistry.MULTIVERSE.get();
     }
 
 }
