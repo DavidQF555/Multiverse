@@ -3,7 +3,9 @@ package io.github.davidqf555.minecraft.multiverse.common.blocks;
 import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.TagRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -83,8 +85,12 @@ public class RiftBlock extends BaseEntityBlock {
         BlockEntity tile = world.getBlockEntity(pos);
         if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity)) {
             if (!entity.isOnPortalCooldown()) {
-                ServerLevel target = DimensionHelper.getOrCreateWorld(((ServerLevel) world).getServer(), ((RiftTileEntity) tile).getTarget());
-                entity.changeDimension(target, (RiftTileEntity) tile);
+                MinecraftServer server = world.getServer();
+                int target = ((RiftTileEntity) tile).getTarget();
+                if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(TagRegistry.ALWAYS_GENERATE_MULTIVERSE)) {
+                    ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
+                    entity.changeDimension(dim, (RiftTileEntity) tile);
+                }
             }
             entity.setPortalCooldown();
         }

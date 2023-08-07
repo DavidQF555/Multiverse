@@ -40,16 +40,21 @@ public final class DimensionHelper {
     }
 
     @SuppressWarnings("deprecation")
-    public static ServerLevel getOrCreateWorld(MinecraftServer server, int index) {
+    public static Optional<ServerLevel> getWorld(MinecraftServer server, int index) {
         if (index <= 0) {
-            return server.getLevel(Level.OVERWORLD);
+            return Optional.of(server.overworld());
         }
         ResourceKey<Level> world = getRegistryKey(index);
-        Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
-        if (map.containsKey(world)) {
-            return map.get(world);
-        }
-        return createAndRegisterWorldAndDimension(server, map, world, index);
+        return Optional.ofNullable(server.forgeGetWorldMap().get(world));
+    }
+
+    @SuppressWarnings("deprecation")
+    public static ServerLevel getOrCreateWorld(MinecraftServer server, int index) {
+        return getWorld(server, index).orElseGet(() -> {
+            Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
+            ResourceKey<Level> world = getRegistryKey(index);
+            return createAndRegisterWorldAndDimension(server, map, world, index);
+        });
     }
 
     public static long getSeed(long overworld, int index, boolean obfuscated) {
