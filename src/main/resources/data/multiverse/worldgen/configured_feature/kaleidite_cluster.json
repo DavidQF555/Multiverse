@@ -7,7 +7,7 @@
           "type": "simple_block",
           "config": {
             "to_place": {
-              "type": "simple",
+              "type": "simple_state_provider",
               "state": {
                 "Name": "multiverse:kaleidite_cluster",
                 "Properties": {
@@ -31,7 +31,7 @@
           "type": "simple_block",
           "config": {
             "to_place": {
-              "type": "simple",
+              "type": "simple_state_provider",
               "state": {
                 "Name": "multiverse:kaleidite_cluster",
                 "Properties": {
@@ -55,7 +55,7 @@
           "type": "simple_block",
           "config": {
             "to_place": {
-              "type": "simple",
+              "type": "simple_state_provider",
               "state": {
                 "Name": "multiverse:kaleidite_cluster",
                 "Properties": {
@@ -79,7 +79,7 @@
           "type": "simple_block",
           "config": {
             "to_place": {
-              "type": "simple",
+              "type": "simple_state_provider",
               "state": {
                 "Name": "multiverse:kaleidite_cluster",
                 "Properties": {
@@ -103,7 +103,7 @@
           "type": "simple_block",
           "config": {
             "to_place": {
-              "type": "simple",
+              "type": "simple_state_provider",
               "state": {
                 "Name": "multiverse:kaleidite_cluster",
                 "Properties": {
@@ -127,7 +127,7 @@
           "type": "simple_block",
           "config": {
             "to_place": {
-              "type": "simple",
+              "type": "simple_state_provider",
               "state": {
                 "Name": "multiverse:kaleidite_cluster",
                 "Properties": {
