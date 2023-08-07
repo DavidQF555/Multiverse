@@ -1,13 +1,13 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.*;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.TerrainShaper;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.*;
 
@@ -51,7 +51,7 @@ public enum MultiverseShape {
     }
 
     public NoiseGeneratorSettings createNoiseSettings(MultiverseType type) {
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), VanillaMultiverseBiomes.INSTANCE.createSurface(this, type), 0, false, true, true, false);
+        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), SurfaceRules.state(Blocks.AIR.defaultBlockState()), 0, false, true, true, false);
     }
 
     public boolean hasFloor() {

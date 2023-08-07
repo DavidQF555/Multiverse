@@ -19,10 +19,6 @@ public interface MultiverseBiomes {
 
     Climate.ParameterPoint getParameters(ResourceKey<Biome> biome);
 
-    default boolean overrideVanillaSurface() {
-        return true;
-    }
-
     default Set<ResourceKey<Biome>> getBiomes(MultiverseType type) {
         return switch (type) {
             case NETHER -> getNetherBiomes();

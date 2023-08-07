@@ -20,7 +20,7 @@ public class MixinNoiseGeneratorSettings implements IMultiverseNoiseGeneratorSet
 
     @Inject(method = {"surfaceRule"}, at = {@At("HEAD")}, cancellable = true)
     private void surfaceRule(CallbackInfoReturnable<SurfaceRules.RuleSource> callback) {
-        if (shape != null && type != null && MultiverseBiomesRegistry.getMultiverseBiomes().overrideVanillaSurface()) {
+        if (shape != null && type != null) {
             if (surface == null) {
                 surface = MultiverseBiomesRegistry.getMultiverseBiomes().createSurface(shape, type);
             }
