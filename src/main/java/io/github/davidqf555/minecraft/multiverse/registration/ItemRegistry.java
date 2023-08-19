@@ -30,6 +30,7 @@ public final class ItemRegistry {
     public static final RegistryObject<BeaconArmorItem> KALEIDITE_CHESTPLATE = register("kaleidite_chestplate", () -> new BeaconArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.CHEST, new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.LEGS, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.FEET, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> new SummonCrossbowItem(new Item.Properties().tab(TAB), 20));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 

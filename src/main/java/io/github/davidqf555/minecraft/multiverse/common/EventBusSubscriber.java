@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
+import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IArmorHitEffect;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
@@ -10,6 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -47,6 +50,13 @@ public final class EventBusSubscriber {
             if (!registry.containsKey(loc)) {
                 Registry.register(registry, loc, DimensionHelper.createDimension(server, index));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onWorldTick(TickEvent.WorldTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && !event.world.isClientSide()) {
+            ArrowSummonsData.get((ServerLevel) event.world).ifPresent(data -> data.tick((ServerLevel) event.world));
         }
     }
 
