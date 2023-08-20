@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.data;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -29,7 +31,7 @@ public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummonsData";
     private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, TIPPED_RATE = 0.3, SPECTRAL_RATE = 0.1, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2;
-    private static final int PERIOD = 5;
+    private static final int PERIOD = 5, PARTICLES = 50;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
     protected ArrowSummonsData(CompoundTag tag) {
@@ -74,6 +76,10 @@ public class ArrowSummonsData extends SavedData {
                 this.data.put(data, count - 1);
             }
         }
+    }
+
+    protected void addParticles(ServerLevel world, Vec3 start) {
+        Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(start, 0.25, PARTICLES));
     }
 
     protected ItemStack randomFirework(Random random) {
@@ -172,6 +178,7 @@ public class ArrowSummonsData extends SavedData {
             float variation = rand.nextFloat() * 0.4f + 0.8f;
             projectile.shoot(direction.x(), direction.y(), direction.z(), multiplier, variation);
             world.addFreshEntity(projectile);
+            addParticles(world, start);
             world.playSound(null, start.x(), start.y(), start.z(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1, rand.nextFloat() * 0.3f + 0.85f);
         }
     }

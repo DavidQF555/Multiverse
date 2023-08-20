@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +17,9 @@ public final class PacketRegistry {
 
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> UpdateClientDimensionsPacket.register(index++));
+        event.enqueueWork(() -> {
+            UpdateClientDimensionsPacket.register(index++);
+            RiftParticlesPacket.register(index++);
+        });
     }
 }
