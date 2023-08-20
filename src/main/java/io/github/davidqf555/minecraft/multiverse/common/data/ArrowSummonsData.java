@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.data;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -30,8 +31,8 @@ import java.util.*;
 public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummonsData";
-    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, TIPPED_RATE = 0.3, SPECTRAL_RATE = 0.1, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2;
-    private static final int PERIOD = 5, PARTICLES = 50;
+    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, TIPPED_RATE = 0.3, SPECTRAL_RATE = 0.1, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2, PARTICLES_OFFSET = 0.35;
+    private static final int PERIOD = 5, PARTICLES = 100, TRIES = 16;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
     protected ArrowSummonsData(CompoundTag tag) {
@@ -79,7 +80,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(start, 0.25, PARTICLES));
+        Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(start, PARTICLES_OFFSET, PARTICLES));
     }
 
     protected ItemStack randomFirework(Random random) {
@@ -145,41 +146,52 @@ public class ArrowSummonsData extends SavedData {
         return tag;
     }
 
-    protected Vec3 getStartPosition(Random random, Vec3 center, Vec3 direction) {
-        double dist = random.nextDouble(MIN_RAD, MAX_RAD);
-        float angle = random.nextFloat() * Mth.PI * 2;
-        Vec3 start = direction.cross(new Vec3(0, 1, 0));
-        if (start.lengthSqr() == 0) {
-            start = new Vec3(1, 0, 0);
-        } else {
-            start = start.normalize();
+    @Nullable
+    protected Vec3 getStartPosition(ServerLevel world, Vec3 center, Vec3 direction) {
+        Random random = world.getRandom();
+        for (int i = 0; i < TRIES; i++) {
+            double dist = random.nextDouble(MIN_RAD, MAX_RAD);
+            float angle = random.nextFloat() * Mth.PI * 2;
+            Vec3 start = direction.cross(new Vec3(0, 1, 0));
+            if (start.lengthSqr() == 0) {
+                start = new Vec3(1, 0, 0);
+            } else {
+                start = start.normalize();
+            }
+            Vec3 parallel = direction.scale(direction.dot(start));
+            Vec3 perp = start.subtract(parallel);
+            Vec3 cross = direction.cross(perp).normalize();
+            Vec3 rotate = perp.scale(Mth.cos(angle)).add(cross.scale(Mth.sin(angle) * perp.length()));
+            Vec3 pos = center.add(rotate.add(parallel).scale(dist)).add(direction.reverse().scale(OFFSET));
+            BlockPos block = new BlockPos(pos);
+            if (!world.getBlockState(block).isSolidRender(world, block)) {
+                return pos;
+            }
         }
-        Vec3 parallel = direction.scale(direction.dot(start));
-        Vec3 perp = start.subtract(parallel);
-        Vec3 cross = direction.cross(perp).normalize();
-        Vec3 rotate = perp.scale(Mth.cos(angle)).add(cross.scale(Mth.sin(angle) * perp.length()));
-        return center.add(rotate.add(parallel).scale(dist)).add(direction.reverse().scale(OFFSET));
+        return null;
     }
 
     private void shoot(ServerLevel world, @Nullable LivingEntity shooter, Vec3 center, Vec3 direction, boolean fireworksOnly) {
         if (!world.isClientSide()) {
             direction = direction.normalize();
             Random rand = world.getRandom();
-            Vec3 start = getStartPosition(rand, center, direction);
-            Projectile projectile;
-            if (fireworksOnly || rand.nextDouble() < FIREWORK_RATE) {
-                projectile = new FireworkRocketEntity(world, randomFirework(rand), shooter, start.x(), start.y(), start.z(), true);
-            } else {
-                projectile = randomArrow(world, shooter);
-                projectile.setPos(start);
-                ((AbstractArrow) projectile).pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+            Vec3 start = getStartPosition(world, center, direction);
+            if (start != null) {
+                Projectile projectile;
+                if (fireworksOnly || rand.nextDouble() < FIREWORK_RATE) {
+                    projectile = new FireworkRocketEntity(world, randomFirework(rand), shooter, start.x(), start.y(), start.z(), true);
+                } else {
+                    projectile = randomArrow(world, shooter);
+                    projectile.setPos(start);
+                    ((AbstractArrow) projectile).pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                }
+                float multiplier = rand.nextFloat() * 2 + 1.5f;
+                float variation = rand.nextFloat() * 0.4f + 0.8f;
+                projectile.shoot(direction.x(), direction.y(), direction.z(), multiplier, variation);
+                world.addFreshEntity(projectile);
+                addParticles(world, start);
+                world.playSound(null, start.x(), start.y(), start.z(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1, rand.nextFloat() * 0.3f + 0.85f);
             }
-            float multiplier = rand.nextFloat() * 2 + 1.5f;
-            float variation = rand.nextFloat() * 0.4f + 0.8f;
-            projectile.shoot(direction.x(), direction.y(), direction.z(), multiplier, variation);
-            world.addFreshEntity(projectile);
-            addParticles(world, start);
-            world.playSound(null, start.x(), start.y(), start.z(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1, rand.nextFloat() * 0.3f + 0.85f);
         }
     }
 
