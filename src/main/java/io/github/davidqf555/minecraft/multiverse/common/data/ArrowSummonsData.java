@@ -38,7 +38,7 @@ public class ArrowSummonsData extends SavedData {
         if (tag.contains("Data", Tag.TAG_LIST)) {
             for (Tag t : tag.getList("Data", Tag.TAG_COMPOUND)) {
                 if (((CompoundTag) t).contains("Data", Tag.TAG_COMPOUND) && ((CompoundTag) t).contains("Count", Tag.TAG_INT)) {
-                    ShotData shot = new ShotData(Vec3.ZERO, Vec3.ZERO, null);
+                    ShotData shot = new ShotData(Vec3.ZERO, Vec3.ZERO, null, false);
                     shot.deserializeNBT(((CompoundTag) t).getCompound("Data"));
                     data.put(shot, ((CompoundTag) t).getInt("Count"));
                 }
@@ -72,7 +72,7 @@ public class ArrowSummonsData extends SavedData {
                         shooter = (LivingEntity) e;
                     }
                 }
-                shoot(level, shooter, data.start, data.direction);
+                shoot(level, shooter, data.start, data.direction, data.fireworksOnly);
                 this.data.put(data, count - 1);
             }
         }
@@ -128,8 +128,8 @@ public class ArrowSummonsData extends SavedData {
         return arrow;
     }
 
-    public void add(Vec3 start, Vec3 direction, @Nullable UUID shooter, int count) {
-        data.put(new ShotData(start, direction, shooter), count);
+    public void add(Vec3 start, Vec3 direction, @Nullable UUID shooter, int count, boolean fireworksOnly) {
+        data.put(new ShotData(start, direction, shooter, fireworksOnly), count);
     }
 
     @Override
@@ -161,13 +161,13 @@ public class ArrowSummonsData extends SavedData {
         return center.add(rotate.add(parallel).scale(dist)).add(direction.reverse().scale(OFFSET));
     }
 
-    private void shoot(ServerLevel world, @Nullable LivingEntity shooter, Vec3 center, Vec3 direction) {
+    private void shoot(ServerLevel world, @Nullable LivingEntity shooter, Vec3 center, Vec3 direction, boolean fireworksOnly) {
         if (!world.isClientSide()) {
             direction = direction.normalize();
             Random rand = world.getRandom();
             Vec3 start = getStartPosition(rand, center, direction);
             Projectile projectile;
-            if (rand.nextDouble() < FIREWORK_RATE) {
+            if (fireworksOnly || rand.nextDouble() < FIREWORK_RATE) {
                 projectile = new FireworkRocketEntity(world, randomFirework(rand), shooter, start.x(), start.y(), start.z(), true);
             } else {
                 projectile = randomArrow(world, shooter);
@@ -187,11 +187,13 @@ public class ArrowSummonsData extends SavedData {
 
         protected Vec3 start, direction;
         protected UUID shooter;
+        protected boolean fireworksOnly;
 
-        protected ShotData(Vec3 start, Vec3 direction, @Nullable UUID shooter) {
+        protected ShotData(Vec3 start, Vec3 direction, @Nullable UUID shooter, boolean fireworksOnly) {
             this.start = start;
             this.direction = direction.normalize();
             this.shooter = shooter;
+            this.fireworksOnly = fireworksOnly;
         }
 
         @Override
@@ -203,6 +205,7 @@ public class ArrowSummonsData extends SavedData {
             tag.putDouble("DirectionX", direction.x());
             tag.putDouble("DirectionY", direction.y());
             tag.putDouble("DirectionZ", direction.z());
+            tag.putBoolean("FireworksOnly", fireworksOnly);
             if (shooter != null) {
                 tag.putUUID("Shooter", shooter);
             }
@@ -219,6 +222,9 @@ public class ArrowSummonsData extends SavedData {
             }
             if (nbt.contains("Shooter", Tag.TAG_INT_ARRAY)) {
                 shooter = nbt.getUUID("Shooter");
+            }
+            if (nbt.contains("FireworksOnly", Tag.TAG_BYTE)) {
+                fireworksOnly = nbt.getBoolean("FireworksOnly");
             }
         }
 

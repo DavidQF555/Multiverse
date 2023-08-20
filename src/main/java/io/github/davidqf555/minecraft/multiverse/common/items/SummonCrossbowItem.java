@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class SummonCrossbowItem extends CrossbowItem {
@@ -22,7 +23,7 @@ public class SummonCrossbowItem extends CrossbowItem {
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack bow = player.getItemInHand(hand);
         if (world instanceof ServerLevel && isCharged(bow)) {
-            ArrowSummonsData.getOrCreate((ServerLevel) world).add(player.getEyePosition(), player.getLookAngle(), player.getUUID(), count);
+            ArrowSummonsData.getOrCreate((ServerLevel) world).add(player.getEyePosition(), player.getLookAngle(), player.getUUID(), count, containsChargedProjectile(bow, Items.FIREWORK_ROCKET));
         }
         return super.use(world, player, hand);
     }
