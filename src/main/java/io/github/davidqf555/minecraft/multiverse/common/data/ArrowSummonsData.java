@@ -13,13 +13,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ArrowItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -27,7 +28,7 @@ import java.util.*;
 public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummonsData";
-    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2;
+    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, TIPPED_RATE = 0.3, SPECTRAL_RATE = 0.1, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2;
     private static final int PERIOD = 5;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
@@ -75,6 +76,52 @@ public class ArrowSummonsData extends SavedData {
         }
     }
 
+    protected ItemStack randomFirework(Random random) {
+        ItemStack stack = Items.FIREWORK_ROCKET.getDefaultInstance();
+        CompoundTag tag = stack.getOrCreateTagElement(FireworkRocketItem.TAG_FIREWORKS);
+        tag.putByte(FireworkRocketItem.TAG_FLIGHT, (byte) random.nextInt(1, 9));
+        ListTag explosions = new ListTag();
+        DyeColor[] options = DyeColor.values();
+        int count = random.nextInt(1, 5);
+        for (int i = 0; i < count; i++) {
+            CompoundTag explosion = new CompoundTag();
+            explosion.putByte(FireworkRocketItem.TAG_EXPLOSION_TYPE, (byte) random.nextInt(FireworkRocketItem.Shape.values().length));
+            explosion.putBoolean(FireworkRocketItem.TAG_EXPLOSION_FLICKER, random.nextBoolean());
+            explosion.putBoolean(FireworkRocketItem.TAG_EXPLOSION_TRAIL, random.nextBoolean());
+            int[] colors = new int[random.nextInt(1, 9)];
+            for (int j = 0; j < colors.length; j++) {
+                colors[j] = options[random.nextInt(options.length)].getFireworkColor();
+            }
+            explosion.putIntArray(FireworkRocketItem.TAG_EXPLOSION_COLORS, colors);
+            explosions.add(explosion);
+        }
+        tag.put(FireworkRocketItem.TAG_EXPLOSIONS, explosions);
+        return stack;
+    }
+
+    protected AbstractArrow randomArrow(ServerLevel world, @Nullable LivingEntity shooter) {
+        Random random = world.getRandom();
+        ItemStack stack = Items.ARROW.getDefaultInstance();
+        if (random.nextDouble() < TIPPED_RATE) {
+            List<Potion> potions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
+            stack = PotionUtils.setPotion(Items.TIPPED_ARROW.getDefaultInstance(), potions.get(random.nextInt(potions.size())));
+        } else if (random.nextDouble() < SPECTRAL_RATE) {
+            stack = Items.SPECTRAL_ARROW.getDefaultInstance();
+        }
+        AbstractArrow arrow = ((ArrowItem) stack.getItem()).createArrow(world, stack, shooter);
+        arrow.setCritArrow(true);
+        arrow.setShotFromCrossbow(random.nextBoolean());
+        arrow.setKnockback(random.nextInt(Enchantments.PUNCH_ARROWS.getMaxLevel() + 1));
+        int power = random.nextInt(Enchantments.POWER_ARROWS.getMaxLevel() + 1);
+        if (power > 0) {
+            arrow.setBaseDamage(arrow.getBaseDamage() + power * 0.5 + 0.5);
+        }
+        if (random.nextDouble() < FIRE_RATE) {
+            arrow.setSecondsOnFire(100);
+        }
+        return arrow;
+    }
+
     public void add(Vec3 start, Vec3 direction, @Nullable UUID shooter, int count) {
         data.put(new ShotData(start, direction, shooter), count);
     }
@@ -115,21 +162,10 @@ public class ArrowSummonsData extends SavedData {
             Vec3 start = getStartPosition(rand, center, direction);
             Projectile projectile;
             if (rand.nextDouble() < FIREWORK_RATE) {
-                ItemStack stack = Items.FIREWORK_ROCKET.getDefaultInstance();
-                projectile = new FireworkRocketEntity(world, stack, shooter, start.x(), start.y(), start.z(), true);
+                projectile = new FireworkRocketEntity(world, randomFirework(rand), shooter, start.x(), start.y(), start.z(), true);
             } else {
-                projectile = ((ArrowItem) Items.ARROW).createArrow(world, Items.ARROW.getDefaultInstance(), shooter);
+                projectile = randomArrow(world, shooter);
                 projectile.setPos(start);
-                ((AbstractArrow) projectile).setCritArrow(true);
-                ((AbstractArrow) projectile).setShotFromCrossbow(rand.nextBoolean());
-                ((AbstractArrow) projectile).setKnockback(rand.nextInt(Enchantments.PUNCH_ARROWS.getMaxLevel() + 1));
-                int power = rand.nextInt(Enchantments.POWER_ARROWS.getMaxLevel() + 1);
-                if (power > 0) {
-                    ((AbstractArrow) projectile).setBaseDamage(((AbstractArrow) projectile).getBaseDamage() + power * 0.5 + 0.5);
-                }
-                if (rand.nextDouble() < FIRE_RATE) {
-                    projectile.setSecondsOnFire(100);
-                }
                 ((AbstractArrow) projectile).pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
             }
             float multiplier = rand.nextFloat() * 2 + 1.5f;
