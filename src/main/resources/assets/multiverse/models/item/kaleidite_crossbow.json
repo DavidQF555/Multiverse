@@ -1,0 +1,41 @@
+{
+  "parent": "item/crossbow",
+  "textures": {
+    "layer0": "multiverse:item/kaleidite_crossbow_standby"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "multiverse:pulling": 1
+      },
+      "model": "multiverse:item/kaleidite_crossbow_pulling_0"
+    },
+    {
+      "predicate": {
+        "multiverse:pulling": 1,
+        "multiverse:pull": 0.58
+      },
+      "model": "multiverse:item/kaleidite_crossbow_pulling_1"
+    },
+    {
+      "predicate": {
+        "multiverse:pulling": 1,
+        "multiverse:pull": 1.0
+      },
+      "model": "multiverse:item/kaleidite_crossbow_pulling_2"
+    },
+    {
+      "predicate": {
+        "multiverse:charged": 1
+      },
+      "model": "multiverse:item/kaleidite_crossbow_arrow"
+    },
+    {
+      "predicate": {
+        "multiverse:charged": 1,
+        "multiverse:firework": 1
+      },
+      "model": "multiverse:item/kaleidite_crossbow_firework"
+    }
+  ]
+}
