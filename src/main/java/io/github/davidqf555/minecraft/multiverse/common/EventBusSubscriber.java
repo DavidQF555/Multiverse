@@ -1,18 +1,18 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.common.items.IArmorHitEffect;
+import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,6 +35,13 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
+    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && !event.level.isClientSide()) {
+            ArrowSummonsData.get((ServerLevel) event.level).ifPresent(data -> data.tick((ServerLevel) event.level));
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         ItemStack main = entity.getItemInHand(InteractionHand.MAIN_HAND);
@@ -51,18 +58,6 @@ public final class EventBusSubscriber {
                 event.setCanceled(true);
             }
             off.split(1);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingAttack(LivingAttackEvent event) {
-        LivingEntity entity = event.getEntity();
-        for (ItemStack stack : entity.getArmorSlots()) {
-            Item item = stack.getItem();
-            if (!stack.isEmpty() && item instanceof IArmorHitEffect && !((IArmorHitEffect) item).onHit(entity, event.getSource(), event.getAmount())) {
-                event.setCanceled(true);
-                break;
-            }
         }
     }
 

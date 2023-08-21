@@ -1,12 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.TagRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -46,7 +46,6 @@ public class DoppelgangerEntity extends PathfinderMob {
 
     public DoppelgangerEntity(EntityType<? extends DoppelgangerEntity> mob, Level level) {
         super(mob, level);
-        setCustomNameVisible(true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -57,23 +56,26 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
-        T entity = type.spawn(player.getLevel(), null, player, center, MobSpawnType.MOB_SUMMONED, false, false);
+        T entity = EntityUtil.randomSpawn(type, player.getLevel(), center, minOffset, maxOffset, MobSpawnType.REINFORCEMENT);
         if (entity != null) {
-            EntityUtil.randomTeleport(entity, entity.position(), minOffset, maxOffset, false);
             entity.doRiftEffect();
             entity.setOriginal(player);
         }
         return entity;
     }
 
+    public static boolean canSpawn(EntityType<? extends DoppelgangerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
+        return spawn == MobSpawnType.REINFORCEMENT;
+    }
+
     private static TagKey<Item> getEquipmentTag(EquipmentSlot slot) {
         return switch (slot) {
-            case HEAD -> TagRegistry.DOPPELGANGER_HEAD;
-            case CHEST -> TagRegistry.DOPPELGANGER_CHEST;
-            case LEGS -> TagRegistry.DOPPELGANGER_LEGS;
-            case FEET -> TagRegistry.DOPPELGANGER_FEET;
-            case MAINHAND -> TagRegistry.DOPPELGANGER_MAIN_HAND;
-            case OFFHAND -> TagRegistry.DOPPELGANGER_OFF_HAND;
+            case HEAD -> MultiverseTags.DOPPELGANGER_HEAD;
+            case CHEST -> MultiverseTags.DOPPELGANGER_CHEST;
+            case LEGS -> MultiverseTags.DOPPELGANGER_LEGS;
+            case FEET -> MultiverseTags.DOPPELGANGER_FEET;
+            case MAINHAND -> MultiverseTags.DOPPELGANGER_MAIN_HAND;
+            case OFFHAND -> MultiverseTags.DOPPELGANGER_OFF_HAND;
         };
     }
 
@@ -157,7 +159,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         Player original = getOriginal();
         if (original == null) {
             kill();
-        } else if (Math.min(original.tickCount - original.getLastHurtMobTimestamp(), original.tickCount - original.getLastHurtByMobTimestamp()) >= TIMEOUT) {
+        } else if (original.tickCount - Math.max(original.getLastHurtMobTimestamp(), original.getLastHurtByMobTimestamp()) >= TIMEOUT) {
             kill();
         }
     }
@@ -201,9 +203,11 @@ public class DoppelgangerEntity extends PathfinderMob {
         if (player == null) {
             setOriginalId(null);
             setCustomName(null);
+            setCustomNameVisible(false);
         } else {
             setOriginalId(player.getUUID());
             setCustomName(player.getDisplayName());
+            setCustomNameVisible(true);
         }
     }
 

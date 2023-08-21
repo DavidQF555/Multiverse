@@ -1,0 +1,22 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "###",
+    "SX#",
+    "#S#"
+  ],
+  "key": {
+    "#": {
+      "item": "multiverse:kaleidite_shard"
+    },
+    "X": {
+      "item": "multiverse:multiversal_beacon"
+    },
+    "S": {
+      "item": "string"
+    }
+  },
+  "result": {
+    "item": "multiverse:kaleidite_crossbow"
+  }
+}
