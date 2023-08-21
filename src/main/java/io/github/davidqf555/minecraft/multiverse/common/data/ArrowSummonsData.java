@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.data;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -32,8 +33,8 @@ import java.util.*;
 public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummonsData";
-    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2, PARTICLES_OFFSET = 0.35;
-    private static final int PERIOD = 5, PARTICLES = 100, TRIES = 16;
+    private static final double PARTICLES_OFFSET = 0.35;
+    private static final int PARTICLES = 100, TRIES = 16;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
     protected ArrowSummonsData(CompoundTag tag) {
@@ -66,7 +67,7 @@ public class ArrowSummonsData extends SavedData {
             int count = this.data.get(data);
             if (count <= 0) {
                 iterator.remove();
-            } else if (level.getGameTime() % PERIOD == 0) {
+            } else if (level.getGameTime() % ServerConfigs.INSTANCE.spawnPeriod.get() == 0) {
                 LivingEntity shooter = null;
                 if (data.shooter != null) {
                     Entity e = level.getEntity(data.shooter);
@@ -129,7 +130,7 @@ public class ArrowSummonsData extends SavedData {
         if (power > 0) {
             arrow.setBaseDamage(arrow.getBaseDamage() + power * 0.5 + 0.5);
         }
-        if (random.nextDouble() < FIRE_RATE) {
+        if (random.nextDouble() < ServerConfigs.INSTANCE.fireRate.get()) {
             arrow.setSecondsOnFire(100);
         }
         return arrow;
@@ -155,8 +156,11 @@ public class ArrowSummonsData extends SavedData {
     @Nullable
     protected Vec3 getStartPosition(ServerLevel world, Vec3 center, Vec3 direction) {
         Random random = world.getRandom();
+        double min = ServerConfigs.INSTANCE.minSpawnRadius.get();
+        double max = ServerConfigs.INSTANCE.maxSpawnRadius.get();
+        double offset = ServerConfigs.INSTANCE.spawnOffset.get();
         for (int i = 0; i < TRIES; i++) {
-            double dist = random.nextDouble(MIN_RAD, MAX_RAD);
+            double dist = random.nextDouble() * (max - min) + min;
             float angle = random.nextFloat() * Mth.PI * 2;
             Vec3 start = direction.cross(new Vec3(0, 1, 0));
             if (start.lengthSqr() == 0) {
@@ -168,7 +172,7 @@ public class ArrowSummonsData extends SavedData {
             Vec3 perp = start.subtract(parallel);
             Vec3 cross = direction.cross(perp).normalize();
             Vec3 rotate = perp.scale(Mth.cos(angle)).add(cross.scale(Mth.sin(angle) * perp.length()));
-            Vec3 pos = center.add(rotate.add(parallel).scale(dist)).add(direction.reverse().scale(OFFSET));
+            Vec3 pos = center.add(rotate.add(parallel).scale(dist)).add(direction.scale(offset));
             BlockPos block = new BlockPos(pos);
             if (!world.getBlockState(block).isSolidRender(world, block)) {
                 return pos;
@@ -184,7 +188,7 @@ public class ArrowSummonsData extends SavedData {
             Vec3 start = getStartPosition(world, center, direction);
             if (start != null) {
                 Projectile projectile;
-                if (fireworksOnly || rand.nextDouble() < FIREWORK_RATE) {
+                if (fireworksOnly || rand.nextDouble() < ServerConfigs.INSTANCE.fireworkRate.get()) {
                     projectile = new FireworkRocketEntity(world, randomFirework(rand), shooter, start.x(), start.y(), start.z(), true);
                 } else {
                     projectile = randomArrow(world, shooter);

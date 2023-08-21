@@ -156,7 +156,7 @@ public final class DimensionHelper {
         } else {
             biomes.addAll(sets.get(random.nextInt(sets.size())));
         }
-        double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
+        double chance = ServerConfigs.INSTANCE.additionalBiomeTagChance.get();
         for (Set<ResourceKey<Biome>> set : sets) {
             if (random.nextDouble() < chance) {
                 biomes.addAll(set);
