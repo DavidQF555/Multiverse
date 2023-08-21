@@ -1,14 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.packets;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
-import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -48,13 +42,7 @@ public class RiftParticlesPacket {
     }
 
     private void handle(NetworkEvent.Context context) {
-        context.enqueueWork(() -> {
-            ClientLevel world = Minecraft.getInstance().level;
-            if (world != null) {
-                int color = MultiverseColorHelper.getColor(world, world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get() + 1));
-                ClientHelper.addParticles(ParticleTypeRegistry.RIFT.get(), center, new Vec3(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0), centerVariation, 0, count);
-            }
-        });
+        context.enqueueWork(() -> ClientHelper.addRiftParticles(center, centerVariation, count));
         context.setPacketHandled(true);
     }
 

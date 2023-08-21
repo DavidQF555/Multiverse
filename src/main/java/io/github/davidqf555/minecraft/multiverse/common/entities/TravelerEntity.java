@@ -95,7 +95,11 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            int color = MultiverseColorHelper.getColor(level, random.nextInt(ServerConfigs.INSTANCE.maxDimensions.get() + 1));
+            int index = getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+            if (index >= DimensionHelper.getIndex(level.dimension())) {
+                index++;
+            }
+            int color = MultiverseColorHelper.getColor(level, index);
             for (int i = 0; i < PARTICLES_COUNT; i++) {
                 level.addParticle(ParticleTypeRegistry.RIFT.get(), getRandomX(1), getRandomY(), getRandomZ(1), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
             }
