@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
-import io.github.davidqf555.minecraft.multiverse.common.items.IArmorHitEffect;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseExistingData;
@@ -15,13 +14,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -77,18 +74,6 @@ public final class EventBusSubscriber {
                 event.setCanceled(true);
             }
             off.split(1);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingAttack(LivingAttackEvent event) {
-        LivingEntity entity = event.getEntityLiving();
-        for (ItemStack stack : entity.getArmorSlots()) {
-            Item item = stack.getItem();
-            if (!stack.isEmpty() && item instanceof IArmorHitEffect && !((IArmorHitEffect) item).onHit(entity, event.getSource(), event.getAmount())) {
-                event.setCanceled(true);
-                break;
-            }
         }
     }
 

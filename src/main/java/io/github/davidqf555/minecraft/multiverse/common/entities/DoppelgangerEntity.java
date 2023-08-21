@@ -156,7 +156,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         Player original = getOriginal();
         if (original == null) {
             kill();
-        } else if (Math.min(original.tickCount - original.getLastHurtMobTimestamp(), original.tickCount - original.getLastHurtByMobTimestamp()) >= TIMEOUT) {
+        } else if (original.tickCount - Math.max(original.getLastHurtMobTimestamp(), original.getLastHurtByMobTimestamp()) >= TIMEOUT) {
             kill();
         }
     }
