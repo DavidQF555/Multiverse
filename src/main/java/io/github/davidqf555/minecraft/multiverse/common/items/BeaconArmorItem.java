@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class BeaconArmorItem extends ArmorItem {
 
-    private static final int MIN_OFFSET = 4, MAX_OFFSET = 8, LIMIT = 8, PERIOD = 40, TIMEOUT = 600;
+    private static final int MIN_OFFSET = 1, MAX_OFFSET = 8, LIMIT = 8, PERIOD = 40, TIMEOUT = 600;
 
     public BeaconArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties properties) {
         super(material, slot, properties);
@@ -25,7 +25,7 @@ public class BeaconArmorItem extends ArmorItem {
     @Override
     public void onArmorTick(ItemStack stack, Level level, Player player) {
         super.onArmorTick(stack, level, player);
-        if (level instanceof ServerLevel && (player.getLastHurtMob() != null || player.getLastHurtByMob() != null) && player.tickCount - Math.max(player.getLastHurtByMobTimestamp(), player.getLastHurtMobTimestamp()) < TIMEOUT && level.getGameTime() % PERIOD == 0) {
+        if (level instanceof ServerLevel && player.getLastHurtByMob() != null && player.tickCount - player.getLastHurtByMobTimestamp() < TIMEOUT && level.getGameTime() % PERIOD == 0) {
             int count = 0;
             UUID id = player.getUUID();
             for (Entity test : ((ServerLevel) level).getAllEntities()) {

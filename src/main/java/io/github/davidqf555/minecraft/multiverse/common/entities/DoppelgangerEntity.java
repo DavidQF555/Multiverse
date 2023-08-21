@@ -33,6 +33,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 public class DoppelgangerEntity extends PathfinderMob {
@@ -45,7 +46,6 @@ public class DoppelgangerEntity extends PathfinderMob {
 
     public DoppelgangerEntity(EntityType<? extends DoppelgangerEntity> mob, Level level) {
         super(mob, level);
-        setCustomNameVisible(true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -56,13 +56,16 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
-        T entity = type.spawn(player.getLevel(), null, null, player, center, MobSpawnType.MOB_SUMMONED, false, false);
+        T entity = EntityUtil.randomSpawn(type, player.getLevel(), center, minOffset, maxOffset, MobSpawnType.REINFORCEMENT);
         if (entity != null) {
-            EntityUtil.randomTeleport(entity, entity.position(), minOffset, maxOffset, false);
             entity.doRiftEffect();
             entity.setOriginal(player);
         }
         return entity;
+    }
+
+    public static boolean canSpawn(EntityType<? extends DoppelgangerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, Random rand) {
+        return spawn == MobSpawnType.REINFORCEMENT;
     }
 
     private static TagKey<Item> getEquipmentTag(EquipmentSlot slot) {
@@ -200,9 +203,11 @@ public class DoppelgangerEntity extends PathfinderMob {
         if (player == null) {
             setOriginalId(null);
             setCustomName(null);
+            setCustomNameVisible(false);
         } else {
             setOriginalId(player.getUUID());
             setCustomName(player.getDisplayName());
+            setCustomNameVisible(true);
         }
     }
 

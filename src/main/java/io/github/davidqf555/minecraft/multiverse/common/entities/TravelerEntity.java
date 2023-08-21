@@ -54,9 +54,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(TravelerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final byte RIFT_PARTICLES_EVENT = 50;
-    private static final int MAX_DOPPELGANGERS = 10, SPAWN_PERIOD = 20, PARTICLES_COUNT = 50;
+    private static final int MAX_DOPPELGANGERS = 10, SPAWN_PERIOD = 20, PARTICLES_COUNT = 50, MIN_TP = 8, MAX_TP = 16;
     private static final float CROSSBOW_POWER = 1.6f;
-    private static final double MIN_TP = 8, MAX_TP = 16;
     private final ServerBossEvent bar;
     private UUID original;
 
@@ -223,9 +222,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         if (getOriginalId() == null) {
             LivingEntity target = getTarget();
             if (level.getGameTime() % SPAWN_PERIOD == 0 && target != null && getDoppelgangers().size() < MAX_DOPPELGANGERS) {
-                Entity clone = getType().spawn((ServerLevel) level, null, null, null, target.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
+                Entity clone = EntityUtil.randomSpawn(getType(), (ServerLevel) level, target.blockPosition(), MIN_TP, MAX_TP, MobSpawnType.REINFORCEMENT);
                 if (clone instanceof TravelerEntity) {
-                    EntityUtil.randomTeleport((LivingEntity) clone, target.position(), MIN_TP, MAX_TP, false);
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     ((TravelerEntity) clone).doRiftEffect();
