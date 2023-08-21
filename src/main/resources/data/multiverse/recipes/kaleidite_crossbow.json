@@ -13,7 +13,7 @@
       "item": "multiverse:multiversal_beacon"
     },
     "S": {
-      "item": "string"
+      "tag": "forge:string"
     }
   },
   "result": {

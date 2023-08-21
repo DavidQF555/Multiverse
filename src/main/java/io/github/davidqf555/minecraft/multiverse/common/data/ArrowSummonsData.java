@@ -33,7 +33,7 @@ import java.util.*;
 
 public class ArrowSummonsData extends SavedData {
 
-    private static final String NAME = Multiverse.MOD_ID + "_ArrowSummonsData";
+    private static final String NAME = Multiverse.MOD_ID + "_ArrowSummons";
     private static final double PARTICLES_OFFSET = 0.35;
     private static final int PARTICLES = 100, TRIES = 16;
     private final Map<ShotData, Integer> data = new HashMap<>();
