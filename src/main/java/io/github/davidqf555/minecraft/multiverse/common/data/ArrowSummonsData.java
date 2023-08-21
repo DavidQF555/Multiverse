@@ -87,7 +87,7 @@ public class ArrowSummonsData extends SavedData {
     protected ItemStack randomFirework(Random random) {
         ItemStack stack = Items.FIREWORK_ROCKET.getDefaultInstance();
         CompoundTag tag = stack.getOrCreateTagElement(FireworkRocketItem.TAG_FIREWORKS);
-        tag.putByte(FireworkRocketItem.TAG_FLIGHT, (byte) random.nextInt(1, 9));
+        tag.putByte(FireworkRocketItem.TAG_FLIGHT, (byte) random.nextInt(1, 4));
         ListTag explosions = new ListTag();
         DyeColor[] options = DyeColor.values();
         int count = random.nextInt(1, 5);
