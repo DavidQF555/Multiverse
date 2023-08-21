@@ -9,6 +9,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,7 +32,7 @@ import java.util.*;
 public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummonsData";
-    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, TIPPED_RATE = 0.3, SPECTRAL_RATE = 0.1, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2, PARTICLES_OFFSET = 0.35;
+    private static final double FIREWORK_RATE = 0.2, FIRE_RATE = 0.2, MAX_RAD = 10, MIN_RAD = 4, OFFSET = 2, PARTICLES_OFFSET = 0.35;
     private static final int PERIOD = 5, PARTICLES = 100, TRIES = 16;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
@@ -108,17 +109,22 @@ public class ArrowSummonsData extends SavedData {
 
     protected AbstractArrow randomArrow(ServerLevel world, @Nullable LivingEntity shooter) {
         Random random = world.getRandom();
-        ItemStack stack = Items.ARROW.getDefaultInstance();
-        if (random.nextDouble() < TIPPED_RATE) {
+        ArrowItem item = (ArrowItem) ForgeRegistries.ITEMS.tags().getTag(ItemTags.ARROWS).getRandomElement(random).filter(i -> i instanceof ArrowItem).orElse(Items.ARROW);
+        ItemStack stack = item.getDefaultInstance();
+        if (item == Items.TIPPED_ARROW) {
             List<Potion> potions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
-            stack = PotionUtils.setPotion(Items.TIPPED_ARROW.getDefaultInstance(), potions.get(random.nextInt(potions.size())));
-        } else if (random.nextDouble() < SPECTRAL_RATE) {
-            stack = Items.SPECTRAL_ARROW.getDefaultInstance();
+            PotionUtils.setPotion(stack, potions.get(random.nextInt(potions.size())));
         }
-        AbstractArrow arrow = ((ArrowItem) stack.getItem()).createArrow(world, stack, shooter);
+        AbstractArrow arrow;
+        try {
+            arrow = item.createArrow(world, stack, shooter);
+        } catch (Exception exception) {
+            arrow = ((ArrowItem) Items.ARROW).createArrow(world, stack, shooter);
+        }
         arrow.setCritArrow(true);
         arrow.setShotFromCrossbow(random.nextBoolean());
         arrow.setKnockback(random.nextInt(Enchantments.PUNCH_ARROWS.getMaxLevel() + 1));
+        arrow.setPierceLevel((byte) random.nextInt(Enchantments.PIERCING.getMaxLevel() + 1));
         int power = random.nextInt(Enchantments.POWER_ARROWS.getMaxLevel() + 1);
         if (power > 0) {
             arrow.setBaseDamage(arrow.getBaseDamage() + power * 0.5 + 0.5);
