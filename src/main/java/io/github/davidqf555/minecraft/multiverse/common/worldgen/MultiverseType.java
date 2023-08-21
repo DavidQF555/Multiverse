@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -60,7 +60,7 @@ public enum MultiverseType {
     }
 
     public boolean is(ResourceKey<Biome> biome) {
-        return MultiverseBiomesRegistry.getMultiverseBiomes().getBiomes(this).contains(biome);
+        return MultiverseBiomeTagsRegistry.getMultiverseBiomes().getBiomes(this).contains(biome);
     }
 
     public TagKey<Block> getInfiniburn() {

@@ -1,7 +1,5 @@
-package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -10,7 +8,7 @@ import net.minecraftforge.common.Tags;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class MultiverseBiomesRegistry {
+public final class MultiverseBiomeTagsRegistry {
 
     private static final Set<TagKey<Biome>> TAGS = new HashSet<>();
     private static MultiverseBiomes biomes = VanillaMultiverseBiomes.INSTANCE;
@@ -77,7 +75,7 @@ public final class MultiverseBiomesRegistry {
         add(Tags.Biomes.IS_END);
     }
 
-    private MultiverseBiomesRegistry() {
+    private MultiverseBiomeTagsRegistry() {
     }
 
     public static MultiverseBiomes getMultiverseBiomes() {
@@ -85,7 +83,7 @@ public final class MultiverseBiomesRegistry {
     }
 
     public static void setMultiverseBiomes(MultiverseBiomes biomes) {
-        MultiverseBiomesRegistry.biomes = biomes;
+        MultiverseBiomeTagsRegistry.biomes = biomes;
     }
 
     public static void add(TagKey<Biome> tag) {

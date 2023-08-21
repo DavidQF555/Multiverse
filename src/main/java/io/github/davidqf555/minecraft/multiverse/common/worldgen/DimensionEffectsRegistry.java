@@ -1,7 +1,6 @@
-package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseEffectType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class DimensionTypeEffectsRegistry {
+public final class DimensionEffectsRegistry {
 
     public static final Map<ResourceLocation, Integer> FOG = new HashMap<>();
 
@@ -23,7 +22,7 @@ public final class DimensionTypeEffectsRegistry {
         }
     }
 
-    private DimensionTypeEffectsRegistry() {
+    private DimensionEffectsRegistry() {
     }
 
     @SubscribeEvent

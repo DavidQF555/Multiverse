@@ -1,12 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.TagRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -70,12 +70,12 @@ public class DoppelgangerEntity extends PathfinderMob {
 
     private static TagKey<Item> getEquipmentTag(EquipmentSlot slot) {
         return switch (slot) {
-            case HEAD -> TagRegistry.DOPPELGANGER_HEAD;
-            case CHEST -> TagRegistry.DOPPELGANGER_CHEST;
-            case LEGS -> TagRegistry.DOPPELGANGER_LEGS;
-            case FEET -> TagRegistry.DOPPELGANGER_FEET;
-            case MAINHAND -> TagRegistry.DOPPELGANGER_MAIN_HAND;
-            case OFFHAND -> TagRegistry.DOPPELGANGER_OFF_HAND;
+            case HEAD -> MultiverseTags.DOPPELGANGER_HEAD;
+            case CHEST -> MultiverseTags.DOPPELGANGER_CHEST;
+            case LEGS -> MultiverseTags.DOPPELGANGER_LEGS;
+            case FEET -> MultiverseTags.DOPPELGANGER_FEET;
+            case MAINHAND -> MultiverseTags.DOPPELGANGER_MAIN_HAND;
+            case OFFHAND -> MultiverseTags.DOPPELGANGER_OFF_HAND;
         };
     }
 
