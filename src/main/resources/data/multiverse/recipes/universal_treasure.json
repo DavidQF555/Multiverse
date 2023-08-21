@@ -2,19 +2,19 @@
   "type": "crafting_shapeless",
   "ingredients": [
     {
-      "item": "nether_star"
+      "tag": "forge:nether_stars"
     },
     {
       "item": "totem_of_undying"
     },
     {
-      "item": "netherite_ingot"
+      "tag": "forge:ingots/netherite"
     },
     {
-      "item": "diamond"
+      "tag": "forge:gems/diamond"
     },
     {
-      "item": "emerald"
+      "tag": "forge:gems/emerald"
     },
     {
       "item": "heart_of_the_sea"

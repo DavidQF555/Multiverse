@@ -10,7 +10,7 @@
       "item": "multiverse:kaleidite_shard"
     },
     "X": {
-      "item": "iron_ingot"
+      "tag": "forge:ingots/iron"
     }
   },
   "result": {
