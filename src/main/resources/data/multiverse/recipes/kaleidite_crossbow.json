@@ -2,18 +2,21 @@
   "type": "crafting_shaped",
   "pattern": [
     "###",
-    "#X#",
-    "###"
+    "SX#",
+    "#S#"
   ],
   "key": {
     "#": {
       "item": "multiverse:kaleidite_shard"
     },
     "X": {
-      "tag": "forge:ingots/iron"
+      "item": "multiverse:multiversal_beacon"
+    },
+    "S": {
+      "tag": "forge:string"
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_core"
+    "item": "multiverse:kaleidite_crossbow"
   }
 }

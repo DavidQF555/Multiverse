@@ -6,8 +6,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.DimensionTypeEffectsRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.MultiverseBiomesRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -138,7 +137,7 @@ public final class DimensionHelper {
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
         MultiverseType type = pair.getFirst();
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(shape.getNoiseSettingsKey(type));
-        BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomesRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
+        BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomeTagsRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
         Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(shape, type, random));
         ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, seed, shape, index);
         return new LevelStem(dimType, generator);
@@ -149,7 +148,7 @@ public final class DimensionHelper {
         Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
         for (MultiverseTimeType time : MultiverseTimeType.values()) {
             if (!ceiling || time.isNight()) {
-                for (MultiverseEffectType effect : DimensionTypeEffectsRegistry.getEffects()) {
+                for (MultiverseEffectType effect : DimensionEffectsRegistry.getEffects()) {
                     if (!effect.isNightOnly() || time.isNight()) {
                         types.put(shape.getTypeKey(type, time, effect), effect.getWeight() * time.getWeight());
                     }
@@ -184,7 +183,7 @@ public final class DimensionHelper {
     private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, RandomSource random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        List<Set<ResourceKey<Biome>>> sets = MultiverseBiomesRegistry.getMultiverseBiomeTags().stream()
+        List<Set<ResourceKey<Biome>>> sets = MultiverseBiomeTagsRegistry.getMultiverseBiomeTags().stream()
                 .map(registry::getTag)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -202,7 +201,7 @@ public final class DimensionHelper {
         } else {
             biomes.addAll(sets.get(random.nextInt(sets.size())));
         }
-        double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
+        double chance = ServerConfigs.INSTANCE.additionalBiomeTagChance.get();
         for (Set<ResourceKey<Biome>> set : sets) {
             if (random.nextDouble() < chance) {
                 biomes.addAll(set);

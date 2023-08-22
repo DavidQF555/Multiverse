@@ -1,8 +1,7 @@
-package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.google.common.collect.ImmutableList;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseEffectType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class DimensionTypeEffectsRegistry {
+public final class DimensionEffectsRegistry {
 
     public static final Map<ResourceLocation, Integer> FOG = new HashMap<>();
     private static final List<MultiverseEffectType> EFFECTS;
@@ -29,7 +28,7 @@ public final class DimensionTypeEffectsRegistry {
         EFFECTS = builder.build();
     }
 
-    private DimensionTypeEffectsRegistry() {
+    private DimensionEffectsRegistry() {
     }
 
     public static List<MultiverseEffectType> getEffects() {

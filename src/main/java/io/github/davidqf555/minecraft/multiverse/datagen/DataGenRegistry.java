@@ -2,11 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.datagen;
 
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseEffectType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseTimeType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.DimensionTypeEffectsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.*;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -52,7 +48,7 @@ public final class DataGenRegistry {
             for (MultiverseType type : MultiverseType.values()) {
                 for (MultiverseTimeType time : MultiverseTimeType.values()) {
                     if (!shape.hasCeiling() || time.isNight()) {
-                        for (MultiverseEffectType effect : DimensionTypeEffectsRegistry.getEffects()) {
+                        for (MultiverseEffectType effect : DimensionEffectsRegistry.getEffects()) {
                             if (!effect.isNightOnly() || time.isNight()) {
                                 types.put(shape.getTypeKey(type, time, effect).location(), shape.createDimensionType(type, time, effect));
                             }
