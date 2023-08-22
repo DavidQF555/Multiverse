@@ -34,7 +34,7 @@ public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummons";
     private static final double PARTICLES_OFFSET = 0.35;
-    private static final int PARTICLES = 100, TRIES = 16;
+    private static final int PARTICLES = 100;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
     protected ArrowSummonsData(CompoundTag tag) {
@@ -68,15 +68,13 @@ public class ArrowSummonsData extends SavedData {
             if (count <= 0) {
                 iterator.remove();
             } else if (level.getGameTime() % ServerConfigs.INSTANCE.spawnPeriod.get() == 0) {
-                LivingEntity shooter = null;
-                if (data.shooter != null) {
-                    Entity e = level.getEntity(data.shooter);
-                    if (e instanceof LivingEntity) {
-                        shooter = (LivingEntity) e;
-                    }
+                Entity shooter = level.getEntity(data.shooter);
+                if (shooter instanceof LivingEntity && !shooter.isRemoved()) {
+                    shoot(level, (LivingEntity) shooter, data.start, data.direction, data.fireworksOnly);
+                    this.data.put(data, count - 1);
+                } else {
+                    iterator.remove();
                 }
-                shoot(level, shooter, data.start, data.direction, data.fireworksOnly);
-                this.data.put(data, count - 1);
             }
         }
     }
@@ -108,7 +106,7 @@ public class ArrowSummonsData extends SavedData {
         return stack;
     }
 
-    protected AbstractArrow randomArrow(ServerLevel world, @Nullable LivingEntity shooter) {
+    protected AbstractArrow randomArrow(ServerLevel world, LivingEntity shooter) {
         Random random = world.getRandom();
         ArrowItem item = (ArrowItem) ForgeRegistries.ITEMS.tags().getTag(ItemTags.ARROWS).getRandomElement(random).filter(i -> i instanceof ArrowItem).orElse(Items.ARROW);
         ItemStack stack = item.getDefaultInstance();
@@ -116,12 +114,7 @@ public class ArrowSummonsData extends SavedData {
             List<Potion> potions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
             PotionUtils.setPotion(stack, potions.get(random.nextInt(potions.size())));
         }
-        AbstractArrow arrow;
-        try {
-            arrow = item.createArrow(world, stack, shooter);
-        } catch (Exception exception) {
-            arrow = ((ArrowItem) Items.ARROW).createArrow(world, stack, shooter);
-        }
+        AbstractArrow arrow = item.createArrow(world, stack, shooter);
         arrow.setCritArrow(true);
         arrow.setShotFromCrossbow(random.nextBoolean());
         arrow.setKnockback(random.nextInt(Enchantments.PUNCH_ARROWS.getMaxLevel() + 1));
@@ -136,7 +129,7 @@ public class ArrowSummonsData extends SavedData {
         return arrow;
     }
 
-    public void add(Vec3 start, Vec3 direction, @Nullable UUID shooter, int count, boolean fireworksOnly) {
+    public void add(Vec3 start, Vec3 direction, UUID shooter, int count, boolean fireworksOnly) {
         data.put(new ShotData(start, direction, shooter, fireworksOnly), count);
     }
 
@@ -159,7 +152,7 @@ public class ArrowSummonsData extends SavedData {
         double min = ServerConfigs.INSTANCE.minSpawnRadius.get();
         double max = ServerConfigs.INSTANCE.maxSpawnRadius.get();
         double offset = ServerConfigs.INSTANCE.spawnOffset.get();
-        for (int i = 0; i < TRIES; i++) {
+        for (int i = 0; i < 16; i++) {
             double dist = random.nextDouble() * (max - min) + min;
             float angle = random.nextFloat() * Mth.PI * 2;
             Vec3 start = direction.cross(new Vec3(0, 1, 0));
@@ -181,7 +174,7 @@ public class ArrowSummonsData extends SavedData {
         return null;
     }
 
-    private void shoot(ServerLevel world, @Nullable LivingEntity shooter, Vec3 center, Vec3 direction, boolean fireworksOnly) {
+    private void shoot(ServerLevel world, LivingEntity shooter, Vec3 center, Vec3 direction, boolean fireworksOnly) {
         if (!world.isClientSide()) {
             direction = direction.normalize();
             Random rand = world.getRandom();
@@ -211,7 +204,7 @@ public class ArrowSummonsData extends SavedData {
         protected UUID shooter;
         protected boolean fireworksOnly;
 
-        protected ShotData(Vec3 start, Vec3 direction, @Nullable UUID shooter, boolean fireworksOnly) {
+        protected ShotData(Vec3 start, Vec3 direction, UUID shooter, boolean fireworksOnly) {
             this.start = start;
             this.direction = direction.normalize();
             this.shooter = shooter;
@@ -228,9 +221,7 @@ public class ArrowSummonsData extends SavedData {
             tag.putDouble("DirectionY", direction.y());
             tag.putDouble("DirectionZ", direction.z());
             tag.putBoolean("FireworksOnly", fireworksOnly);
-            if (shooter != null) {
-                tag.putUUID("Shooter", shooter);
-            }
+            tag.putUUID("Shooter", shooter);
             return tag;
         }
 
