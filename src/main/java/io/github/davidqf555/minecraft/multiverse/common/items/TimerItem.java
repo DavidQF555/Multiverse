@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
@@ -18,13 +17,13 @@ public abstract class TimerItem extends Item {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (entity.level instanceof ServerLevel) {
-            if (entity.tickCount >= timer) {
+        if (entity.tickCount >= timer) {
+            if (!entity.level.isClientSide()) {
                 doTimerEffect(stack, entity);
                 entity.remove(Entity.RemovalReason.KILLED);
-                return true;
             }
-        } else {
+            return true;
+        } else if (entity.level.isClientSide()) {
             doTickEffect(stack, entity);
         }
         return false;

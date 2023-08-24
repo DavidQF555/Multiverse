@@ -1,18 +1,21 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
+import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -56,10 +59,10 @@ public class SpawnCollectorItem extends TimerItem {
 
     @Override
     protected void doTimerEffect(ItemStack stack, ItemEntity entity) {
-        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, entity.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
+        BlockPos center = entity.blockPosition();
+        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, center, MobSpawnType.MOB_SUMMONED, false, false);
         if (boss != null) {
             boss.setPortalCooldown();
-            BlockPos center = entity.blockPosition();
             FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level, ((ServerLevel) entity.level).getChunkSource().getGenerator(), entity.level.getRandom(), center, RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false)));
             BlockEntity tile = entity.level.getBlockEntity(center);
             if (tile instanceof RiftTileEntity) {
@@ -73,7 +76,8 @@ public class SpawnCollectorItem extends TimerItem {
         int period = 1 + 100 / (1 + entity.tickCount);
         if (entity.level.getGameTime() % period == 0) {
             Random random = entity.level.getRandom();
-            entity.level.addParticle(ParticleTypes.END_ROD, entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), random.nextGaussian() * 0.005, random.nextGaussian() * 0.005, random.nextGaussian() * 0.005);
+            int color = MultiverseColorHelper.getColor(entity.level, random.nextInt(ServerConfigs.INSTANCE.maxDimensions.get() + 1));
+            entity.level.addParticle(ParticleTypeRegistry.RIFT.get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }
 
