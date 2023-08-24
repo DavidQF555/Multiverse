@@ -36,6 +36,7 @@ public class RiftBlock extends BaseEntityBlock {
 
     public RiftBlock(Properties properties) {
         super(properties);
+        registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, false));
     }
 
     @Override
