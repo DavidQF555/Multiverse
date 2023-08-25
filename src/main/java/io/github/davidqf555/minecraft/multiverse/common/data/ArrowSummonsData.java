@@ -152,18 +152,18 @@ public class ArrowSummonsData extends SavedData {
         double min = ServerConfigs.INSTANCE.minSpawnRadius.get();
         double max = ServerConfigs.INSTANCE.maxSpawnRadius.get();
         double offset = ServerConfigs.INSTANCE.spawnOffset.get();
+        Vec3 start = direction.cross(new Vec3(0, 1, 0));
+        if (start.lengthSqr() < 1E-8) {
+            start = new Vec3(1, 0, 0);
+        } else {
+            start = start.normalize();
+        }
+        Vec3 parallel = direction.scale(direction.dot(start));
+        Vec3 perp = start.subtract(parallel);
+        Vec3 cross = direction.cross(perp).normalize();
         for (int i = 0; i < 16; i++) {
             double dist = random.nextDouble() * (max - min) + min;
             float angle = random.nextFloat() * Mth.TWO_PI;
-            Vec3 start = direction.cross(new Vec3(0, 1, 0));
-            if (start.lengthSqr() < 1E-8) {
-                start = new Vec3(1, 0, 0);
-            } else {
-                start = start.normalize();
-            }
-            Vec3 parallel = direction.scale(direction.dot(start));
-            Vec3 perp = start.subtract(parallel);
-            Vec3 cross = direction.cross(perp).normalize();
             Vec3 rotate = perp.scale(Mth.cos(angle)).add(cross.scale(Mth.sin(angle) * perp.length()));
             Vec3 pos = center.add(rotate.add(parallel).scale(dist)).add(direction.scale(offset));
             BlockPos block = new BlockPos(pos);
