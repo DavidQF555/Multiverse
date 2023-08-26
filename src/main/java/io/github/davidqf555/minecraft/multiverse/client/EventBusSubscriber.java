@@ -8,6 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -42,7 +43,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> RiftTileEntityRenderer.SHADER = shader);
+        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
     }
 
     @SubscribeEvent
@@ -60,7 +61,8 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterParticleFactory(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ParticleTypeRegistry.RIFT.get(), RiftParticle.Provider::new);
+        ParticleEngine engine = Minecraft.getInstance().particleEngine;
+        engine.register(ParticleTypeRegistry.RIFT.get(), RiftParticle.Provider::new);
     }
 
     @SubscribeEvent

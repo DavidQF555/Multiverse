@@ -1,21 +1,18 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
-import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -23,16 +20,19 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class SpawnCollectorItem extends TimerItem {
 
+    private static final double PARTICLE_RANGE = 3;
     private Component lore;
 
     public SpawnCollectorItem(Properties properties, int timer) {
@@ -73,11 +73,11 @@ public class SpawnCollectorItem extends TimerItem {
 
     @Override
     protected void doTickEffect(ItemStack stack, ItemEntity entity) {
-        int period = 1 + 100 / (1 + entity.tickCount);
+        int period = 5 + 100 / (1 + entity.tickCount);
         if (entity.level.getGameTime() % period == 0) {
             Random random = entity.level.getRandom();
-            int color = MultiverseColorHelper.getColor(entity.level, random.nextInt(ServerConfigs.INSTANCE.maxDimensions.get() + 1));
-            entity.level.addParticle(ParticleTypeRegistry.RIFT.get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
+            Vec3 pos = entity.position().add(random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE);
+            ClientHelper.addRiftParticles(OptionalInt.empty(), pos);
         }
     }
 

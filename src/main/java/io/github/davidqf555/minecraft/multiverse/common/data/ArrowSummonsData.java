@@ -33,8 +33,6 @@ import java.util.*;
 public class ArrowSummonsData extends SavedData {
 
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummons";
-    private static final double PARTICLES_OFFSET = 0.35;
-    private static final int PARTICLES = 100;
     private final Map<ShotData, Integer> data = new HashMap<>();
 
     protected ArrowSummonsData(CompoundTag tag) {
@@ -80,7 +78,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(OptionalInt.empty(), start, PARTICLES_OFFSET, PARTICLES));
+        Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(OptionalInt.empty(), start));
     }
 
     protected ItemStack randomFirework(Random random) {

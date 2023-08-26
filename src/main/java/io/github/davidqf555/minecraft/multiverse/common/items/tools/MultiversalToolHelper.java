@@ -30,7 +30,6 @@ public final class MultiversalToolHelper {
 
     public static final Component LORE = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.LIGHT_PURPLE);
     public static final Component INSTRUCTIONS = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.BLUE);
-    private static final int PARTICLES = 50;
 
     private MultiversalToolHelper() {
     }
@@ -71,7 +70,7 @@ public final class MultiversalToolHelper {
                 BlockPos block = new BlockPos(pos.getX() * scale, pos.getY(), pos.getZ() * scale);
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
-                    Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(w::dimension), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block), 0.5, PARTICLES));
+                    Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(w::dimension), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
                     Block.dropResources(s, world, pos);
                 }
             });

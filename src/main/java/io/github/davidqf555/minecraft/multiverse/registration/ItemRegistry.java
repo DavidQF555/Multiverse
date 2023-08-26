@@ -24,7 +24,7 @@ public final class ItemRegistry {
     };
 
     public static final RegistryObject<RiftSwordItem> BOUNDLESS_BLADE = register("boundless_blade", () -> new RiftSwordItem(KaleiditeItemTier.INSTANCE, 2, -2.4f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
-    public static final RegistryObject<SpawnCollectorItem> UNIVERSAL_TREASURE = register("universal_treasure", () -> new SpawnCollectorItem(new Item.Properties().rarity(Rarity.RARE).tab(TAB).stacksTo(1).fireResistant(), 300));
+    public static final RegistryObject<SpawnCollectorItem> UNIVERSAL_TREASURE = register("universal_treasure", () -> new SpawnCollectorItem(new Item.Properties().rarity(Rarity.RARE).tab(TAB).stacksTo(1).fireResistant(), 160));
     public static final RegistryObject<RiftDeathItem> TOTEM_OF_ESCAPE = register("totem_of_escape", () -> new RiftDeathItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.UNCOMMON), 5));
     public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> new RiftCoreItem(new Item.Properties().tab(TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDITE_SHARD = register("kaleidite_shard", () -> new Item(new Item.Properties().tab(TAB)));
