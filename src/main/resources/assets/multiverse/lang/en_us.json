@@ -19,6 +19,8 @@
   "item.multiverse.kaleidite_pickaxe": "Kaleidite Pickaxe",
   "item.multiverse.kaleidite_shovel": "Kaleidite Shovel",
   "item.multiverse.kaleidite_axe": "Kaleidite Axe",
+  "item.multiverse.multiversal_lore": "Breaks blocks in other dimensions. ",
+  "item.multiverse.multiversal_instructions": "Right click to target a random dimension. Right click while crouching to target the current dimension. ",
   "block.multiverse.rift": "Rift",
   "block.multiverse.kaleidite_cluster": "Kaleidite Cluster",
   "advancements.multiverse.boundless.title": "Boundless",
