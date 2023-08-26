@@ -2,6 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.items.*;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalAxeItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalPickaxeItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalShovelItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraftforge.registries.DeferredRegister;
@@ -31,6 +34,9 @@ public final class ItemRegistry {
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.LEGS, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.FEET, new Item.Properties().tab(TAB)));
     public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> new SummonCrossbowItem(new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
+    public static final RegistryObject<MultiversalPickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<MultiversalShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<MultiversalAxeItem> KALEIDITE_AXE = register("kaleidite_axe", () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 

@@ -11,6 +11,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.OptionalInt;
 import java.util.Random;
 
 public final class ClientHelper {
@@ -32,13 +33,16 @@ public final class ClientHelper {
         }
     }
 
-    public static void addRiftParticles(Vec3 center, double variation, int count) {
+    public static void addRiftParticles(OptionalInt from, Vec3 center, double variation, int count) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
-            int index = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-            if (index >= DimensionHelper.getIndex(world.dimension())) {
-                index++;
-            }
+            int index = from.orElseGet(() -> {
+                int i = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+                if (i >= DimensionHelper.getIndex(world.dimension())) {
+                    i++;
+                }
+                return i;
+            });
             int color = MultiverseColorHelper.getColor(world, index);
             addParticles(ParticleTypeRegistry.RIFT.get(), center, new Vec3(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0), variation, 0, count);
         }
