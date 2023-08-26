@@ -47,12 +47,15 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onHandleBlockColor(ColorHandlerEvent.Block event) {
-        event.getBlockColors().register(KaleiditeColor.Block.INSTANCE, BlockRegistry.KALEIDITE_CLUSTER.get());
+        event.getBlockColors().register(KaleiditeCurrentColor.Block.INSTANCE, BlockRegistry.KALEIDITE_CLUSTER.get());
     }
 
     @SubscribeEvent
     public static void onHandleItemColor(ColorHandlerEvent.Item event) {
-        event.getItemColors().register(KaleiditeColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
+        event.getItemColors().register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
+        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
+        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
+        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
     }
 
     @SubscribeEvent
