@@ -71,6 +71,7 @@ public final class MultiversalToolHelper {
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
                     Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(w::dimension), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
+                    Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)));
                     Block.dropResources(s, world, pos);
                 }
             });
