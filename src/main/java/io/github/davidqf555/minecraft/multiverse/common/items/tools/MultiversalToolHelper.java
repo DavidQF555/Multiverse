@@ -13,12 +13,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -61,7 +63,7 @@ public final class MultiversalToolHelper {
         setTarget(stack, DimensionHelper.getIndex(world.dimension()));
     }
 
-    public static void mineBlock(Entity entity, ServerLevel world, ItemStack stack, BlockPos pos) {
+    public static void mineBlock(Player entity, ServerLevel world, ItemStack stack, BlockPos pos) {
         int target = MultiversalToolHelper.getTarget(stack);
         int current = DimensionHelper.getIndex(world.dimension());
         if (target != current) {
@@ -72,7 +74,14 @@ public final class MultiversalToolHelper {
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
                     Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(w::dimension), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
                     Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)));
-                    Block.dropResources(s, world, pos);
+                    Block.dropResources(s, new LootContext.Builder(world)
+                            .withRandom(entity.getRandom())
+                            .withParameter(LootContextParams.TOOL, stack)
+                            .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                            .withParameter(LootContextParams.BLOCK_STATE, s)
+                            .withOptionalParameter(LootContextParams.BLOCK_ENTITY, w.getBlockEntity(block))
+                            .withParameter(LootContextParams.THIS_ENTITY, entity)
+                    );
                 }
             });
         }

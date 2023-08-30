@@ -34,7 +34,7 @@ public class MultiversalAxeItem extends AxeItem {
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity entity) {
         if (super.mineBlock(stack, world, state, pos, entity)) {
             if (entity instanceof Player && world instanceof ServerLevel) {
-                MultiversalToolHelper.mineBlock(entity, (ServerLevel) world, stack, pos);
+                MultiversalToolHelper.mineBlock((Player) entity, (ServerLevel) world, stack, pos);
             }
             return true;
         }
