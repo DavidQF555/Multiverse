@@ -21,12 +21,13 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class RiftCoreItem extends Item {
 
-    private static final int MAX_RANGE = 50;
+    private static final double MAX_RANGE = 50;
     private Component lore;
 
     public RiftCoreItem(Properties properties) {
@@ -42,7 +43,10 @@ public class RiftCoreItem extends Item {
     @Override
     public void onDestroyed(ItemEntity entity, DamageSource damageSource) {
         if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level, ((ServerLevel) entity.level).getChunkSource().getGenerator(), entity.level.getRandom(), entity.blockPosition(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), false)));
+            int count = entity.getItem().getCount();
+            for (int i = 0; i < count; i++) {
+                FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level, ((ServerLevel) entity.level).getChunkSource().getGenerator(), entity.level.getRandom(), entity.blockPosition(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), false)));
+            }
         }
     }
 
@@ -50,21 +54,30 @@ public class RiftCoreItem extends Item {
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         BlockPos pos = entity.blockPosition();
         if (entity.level.getBlockState(pos).getBlock() instanceof RiftBlock) {
-            entity.level.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
-            removeConnected(entity, pos, 0);
-            entity.discard();
+            if (!entity.level.isClientSide()) {
+                entity.level.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
+                removeConnected(entity, pos, MAX_RANGE);
+                ItemStack item = entity.getItem();
+                item.shrink(1);
+                entity.setItem(item);
+            }
             return true;
         }
         return false;
     }
 
-    private void removeConnected(Entity entity, BlockPos pos, int distance) {
-        if (distance <= MAX_RANGE && entity.level.getBlockState(pos).getBlock() instanceof RiftBlock) {
-            entity.level.destroyBlock(pos, true, entity);
-            for (BlockPos surrounding : BlockPos.betweenClosed(pos.relative(Direction.DOWN).relative(Direction.EAST).relative(Direction.NORTH), pos.relative(Direction.UP).relative(Direction.WEST).relative(Direction.SOUTH))) {
-                if (!surrounding.equals(pos)) {
-                    removeConnected(entity, surrounding, distance + 1);
-                }
+    private void removeConnected(Entity entity, BlockPos start, double distance) {
+        int index = 0;
+        List<BlockPos> list = new LinkedList<>();
+        list.add(start);
+        while (index < list.size()) {
+            BlockPos pos = list.get(index++);
+            if (pos.distSqr(start) <= distance * distance && entity.level.getBlockState(pos).getBlock() instanceof RiftBlock) {
+                BlockPos.betweenClosedStream(pos.relative(Direction.DOWN).relative(Direction.WEST).relative(Direction.SOUTH), pos.relative(Direction.UP).relative(Direction.EAST).relative(Direction.NORTH))
+                        .filter(p -> !list.contains(p))
+                        .map(BlockPos::immutable)
+                        .forEach(list::add);
+                entity.level.destroyBlock(pos, true, entity);
             }
         }
     }

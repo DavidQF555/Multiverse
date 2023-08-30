@@ -11,9 +11,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public final class KaleiditeColor {
+public final class KaleiditeCurrentColor {
 
-    private KaleiditeColor() {
+    private KaleiditeCurrentColor() {
     }
 
     public static class Block implements BlockColor {

@@ -1,15 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
-import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -22,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,10 +28,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RiftBlock extends BaseEntityBlock {
 
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
-    private static final double PARTICLE_DIST = 1.5;
 
     public RiftBlock(Properties properties) {
         super(properties);
+        registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, false));
     }
 
     @Override
@@ -43,9 +39,6 @@ public class RiftBlock extends BaseEntityBlock {
         if (rand.nextDouble() < 0.01) {
             world.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.PORTAL_AMBIENT, SoundSource.BLOCKS, 0.5f, rand.nextFloat() * 0.4f + 0.8f, false);
         }
-        Vec3 vec = Vec3.atCenterOf(pos).add(rand.nextGaussian() * PARTICLE_DIST, rand.nextGaussian() * PARTICLE_DIST, rand.nextGaussian() * PARTICLE_DIST);
-        int color = MultiverseColorHelper.getColor(world, ((RiftTileEntity) world.getBlockEntity(pos)).getTarget());
-        world.addParticle(ParticleTypeRegistry.RIFT.get(), vec.x(), vec.y(), vec.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
     }
 
     @Nonnull

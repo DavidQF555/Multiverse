@@ -8,6 +8,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,26 +16,24 @@ import java.util.function.Supplier;
 public class RiftParticlesPacket {
 
     private static final BiConsumer<RiftParticlesPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
+        buffer.writeBoolean(message.from.isPresent());
+        message.from.ifPresent(buffer::writeInt);
         buffer.writeDouble(message.center.x());
         buffer.writeDouble(message.center.y());
         buffer.writeDouble(message.center.z());
-        buffer.writeDouble(message.centerVariation);
-        buffer.writeInt(message.count);
     };
-    private static final Function<FriendlyByteBuf, RiftParticlesPacket> DECODER = buffer -> new RiftParticlesPacket(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), buffer.readDouble(), buffer.readInt());
+    private static final Function<FriendlyByteBuf, RiftParticlesPacket> DECODER = buffer -> new RiftParticlesPacket(buffer.readBoolean() ? OptionalInt.of(buffer.readInt()) : OptionalInt.empty(), new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
     private static final BiConsumer<RiftParticlesPacket, Supplier<NetworkEvent.Context>> CONSUMER = (message, context) -> {
         NetworkEvent.Context cont = context.get();
         message.handle(cont);
     };
 
+    private final OptionalInt from;
     private final Vec3 center;
-    private final double centerVariation;
-    private final int count;
 
-    public RiftParticlesPacket(Vec3 center, double centerVariation, int count) {
+    public RiftParticlesPacket(OptionalInt from, Vec3 center) {
+        this.from = from;
         this.center = center;
-        this.centerVariation = centerVariation;
-        this.count = count;
     }
 
     public static void register(int index) {
@@ -42,7 +41,7 @@ public class RiftParticlesPacket {
     }
 
     private void handle(NetworkEvent.Context context) {
-        context.enqueueWork(() -> ClientHelper.addRiftParticles(center, centerVariation, count));
+        context.enqueueWork(() -> ClientHelper.addRiftParticles(from, center));
         context.setPacketHandled(true);
     }
 

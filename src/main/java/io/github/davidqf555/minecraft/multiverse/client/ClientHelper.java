@@ -5,14 +5,17 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.OptionalInt;
+
 public final class ClientHelper {
+
+    static ShaderInstance riftShader;
 
     private ClientHelper() {
     }
@@ -21,26 +24,23 @@ public final class ClientHelper {
         Minecraft.getInstance().player.connection.levels().add(key);
     }
 
-    public static void addParticles(ParticleOptions particle, Vec3 center, Vec3 speed, double centerVariation, double speedVariation, int count) {
+    public static void addRiftParticles(OptionalInt from, Vec3 center) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
-            RandomSource rand = world.getRandom();
-            for (int i = 0; i < count; i++) {
-                world.addParticle(particle, center.x() + rand.nextGaussian() * centerVariation, center.y() + rand.nextGaussian() * centerVariation, center.z() + rand.nextGaussian() * centerVariation, speed.x() + rand.nextGaussian() * speedVariation, speed.y() + rand.nextGaussian() * speedVariation, speed.z() + rand.nextGaussian() * speedVariation);
-            }
+            int index = from.orElseGet(() -> {
+                int i = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+                if (i >= DimensionHelper.getIndex(world.dimension())) {
+                    i++;
+                }
+                return i;
+            });
+            int color = MultiverseColorHelper.getColor(world, index);
+            world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }
 
-    public static void addRiftParticles(Vec3 center, double variation, int count) {
-        ClientLevel world = Minecraft.getInstance().level;
-        if (world != null) {
-            int index = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-            if (index >= DimensionHelper.getIndex(world.dimension())) {
-                index++;
-            }
-            int color = MultiverseColorHelper.getColor(world, index);
-            addParticles(ParticleTypeRegistry.RIFT.get(), center, new Vec3(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0), variation, 0, count);
-        }
+    public static ShaderInstance getRiftShader() {
+        return riftShader;
     }
 
 }

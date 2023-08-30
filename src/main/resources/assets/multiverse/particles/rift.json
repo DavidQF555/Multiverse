@@ -1,12 +1,8 @@
 {
   "textures": [
-    "glitter_7",
-    "glitter_6",
-    "glitter_5",
-    "glitter_4",
-    "glitter_3",
-    "glitter_2",
-    "glitter_1",
-    "glitter_0"
+    "multiverse:rift_3",
+    "multiverse:rift_2",
+    "multiverse:rift_1",
+    "multiverse:rift_0"
   ]
 }

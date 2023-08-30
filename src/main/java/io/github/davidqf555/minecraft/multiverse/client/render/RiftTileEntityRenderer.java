@@ -4,23 +4,22 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift_background.png");
-    private static final ResourceLocation PARTICLES = new ResourceLocation("textures/entity/end_portal.png");
-    public static ShaderInstance SHADER = null;
-    private static final RenderType TYPE = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(() -> SHADER)).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(BACKGROUND, false, false).add(PARTICLES, false, false).build()).createCompositeState(false));
+    private static final RenderType TYPE = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftShader)).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(BACKGROUND, false, false).add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build()).createCompositeState(false));
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {

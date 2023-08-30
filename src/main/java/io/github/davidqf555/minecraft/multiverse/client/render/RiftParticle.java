@@ -10,9 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class RiftParticle extends SimpleAnimatedParticle {
 
-    protected RiftParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites) {
-        super(level, x, y, z, sprites, 0);
-        lifetime = 60 + random.nextInt(12);
+    public RiftParticle(ClientLevel world, double x, double y, double z, SpriteSet sprites) {
+        super(world, x, y, z, sprites, 0);
+        lifetime = 10 + random.nextInt(6);
+        hasPhysics = false;
+        scale(10);
         setSpriteFromAge(sprites);
     }
 
