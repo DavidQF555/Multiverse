@@ -3,6 +3,9 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.items.*;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalAxeItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalPickaxeItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalShovelItem;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -33,6 +36,9 @@ public final class ItemRegistry {
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, ArmorItem.Type.LEGGINGS, new Item.Properties()));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, new Item.Properties()));
     public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), () -> new SummonCrossbowItem(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<MultiversalPickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties()));
+    public static final RegistryObject<MultiversalShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties()));
+    public static final RegistryObject<MultiversalAxeItem> KALEIDITE_AXE = register("kaleidite_axe", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -3.1f, new Item.Properties()));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.NATURAL_BLOCKS), () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties()));
 

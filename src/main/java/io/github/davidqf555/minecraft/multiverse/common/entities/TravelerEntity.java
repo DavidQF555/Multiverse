@@ -1,10 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,7 +15,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -48,6 +46,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.UUID;
 
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
@@ -94,14 +93,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            int index = getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-            if (index >= DimensionHelper.getIndex(level().dimension())) {
-                index++;
-            }
-            int color = MultiverseColorHelper.getColor(level(), index);
-            for (int i = 0; i < PARTICLES_COUNT; i++) {
-                level().addParticle(ParticleTypeRegistry.RIFT.get(), getRandomX(1), getRandomY(), getRandomZ(1), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
-            }
+            ClientHelper.addRiftParticles(OptionalInt.empty(), getEyePosition());
         }
         super.handleEntityEvent(b);
     }

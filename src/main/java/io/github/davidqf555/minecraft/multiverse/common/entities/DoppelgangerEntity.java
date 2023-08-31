@@ -1,12 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.client.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
-import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -15,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -34,6 +31,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.UUID;
 
 public class DoppelgangerEntity extends PathfinderMob {
@@ -181,10 +179,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            int color = MultiverseColorHelper.getColor(level(), random.nextInt(ServerConfigs.INSTANCE.maxDimensions.get() + 1));
-            for (int i = 0; i < PARTICLES_COUNT; i++) {
-                level().addParticle(ParticleTypeRegistry.RIFT.get(), getRandomX(1), getRandomY(), getRandomZ(1), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
-            }
+            ClientHelper.addRiftParticles(OptionalInt.empty(), getEyePosition());
         }
         super.handleEntityEvent(b);
     }

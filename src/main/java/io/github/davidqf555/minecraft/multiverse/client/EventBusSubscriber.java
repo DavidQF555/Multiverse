@@ -35,7 +35,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> RiftTileEntityRenderer.SHADER = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
     }
 
     @SubscribeEvent
@@ -45,12 +45,15 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        event.getBlockColors().register(KaleiditeColor.Block.INSTANCE, BlockRegistry.KALEIDITE_CLUSTER.get());
+        event.register(KaleiditeCurrentColor.Block.INSTANCE, BlockRegistry.KALEIDITE_CLUSTER.get());
     }
 
     @SubscribeEvent
-    public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Item event) {
-        event.getItemColors().register(KaleiditeColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
+    public static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
+        event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
     }
 
     @SubscribeEvent
