@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -50,8 +52,12 @@ public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElemen
     protected void apply(JsonElement element, ResourceManager manager, ProfilerFiller filler) {
         BIOMES.clear();
         JsonArray values = element.getAsJsonObject().getAsJsonArray("types");
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.builtinCopy());
         for (JsonElement type : values) {
-            BiomeType.CODEC.decode(JsonOps.INSTANCE, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(BIOMES::add);
+            BiomeType.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(BIOMES::add);
+        }
+        if (BIOMES.isEmpty()) {
+            throw new IllegalStateException("There cannot be 0 biome types");
         }
     }
 

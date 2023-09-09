@@ -106,7 +106,7 @@ public final class DimensionHelper {
         boolean ceiling = shape.hasCeiling();
         RegistryAccess access = server.registryAccess();
         Registry<Biome> biomeRegistry = access.registryOrThrow(Registry.BIOME_REGISTRY);
-        Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(random);
+        Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
         MultiverseType type = pair.getFirst();
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(shape.getNoiseSettingsKey(type));
@@ -137,17 +137,17 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Random random) {
+    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, Random random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        Set<BiomeType> types = BiomeTypesManager.BIOMES.stream().filter(type -> type.getBiomes().stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
+        Set<BiomeType> types = BiomeTypesManager.BIOMES.stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
         if (types.isEmpty()) {
             biomes.add(Biomes.PLAINS);
         } else {
             BiomeType type = selectRandom(random, types);
             types.remove(type);
-            biomes.addAll(type.getBiomes());
+            biomes.addAll(type.getBiomes(registry));
         }
         double chance = ServerConfigs.INSTANCE.additionalBiomeTagChance.get();
         int count = types.size();
@@ -155,7 +155,7 @@ public final class DimensionHelper {
             if (random.nextDouble() < chance) {
                 BiomeType type = selectRandom(random, types);
                 types.remove(type);
-                biomes.addAll(type.getBiomes());
+                biomes.addAll(type.getBiomes(registry));
             }
         }
         biomes.removeIf(valid.negate());
