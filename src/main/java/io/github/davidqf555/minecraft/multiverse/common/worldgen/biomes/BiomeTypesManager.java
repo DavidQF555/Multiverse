@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -27,9 +28,10 @@ import java.util.Set;
 
 public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElement> {
 
-    public static final Set<BiomeType> BIOMES = new HashSet<>();
+    public static final BiomeTypesManager INSTANCE = new BiomeTypesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json"));
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
+    private final Set<BiomeType> biomes = new HashSet<>();
     private final ResourceLocation loc;
 
     public BiomeTypesManager(ResourceLocation loc) {
@@ -50,15 +52,19 @@ public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElemen
 
     @Override
     protected void apply(JsonElement element, ResourceManager manager, ProfilerFiller filler) {
-        BIOMES.clear();
+        biomes.clear();
         JsonArray values = element.getAsJsonObject().getAsJsonArray("types");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.builtinCopy());
         for (JsonElement type : values) {
-            BiomeType.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(BIOMES::add);
+            BiomeType.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(biomes::add);
         }
-        if (BIOMES.isEmpty()) {
+        if (biomes.isEmpty()) {
             throw new IllegalStateException("There cannot be 0 biome types");
         }
+    }
+
+    public Set<BiomeType> getBiomeTypes() {
+        return biomes;
     }
 
 }

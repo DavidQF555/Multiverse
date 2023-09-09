@@ -35,7 +35,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent event) {
-        event.addListener(new BiomeTypesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json")));
+        event.addListener(BiomeTypesManager.INSTANCE);
     }
 
     @SubscribeEvent

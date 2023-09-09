@@ -140,7 +140,7 @@ public final class DimensionHelper {
     private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, Random random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        Set<BiomeType> types = BiomeTypesManager.BIOMES.stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
+        Set<BiomeType> types = BiomeTypesManager.INSTANCE.getBiomeTypes().stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
         if (types.isEmpty()) {
             biomes.add(Biomes.PLAINS);
@@ -149,7 +149,7 @@ public final class DimensionHelper {
             types.remove(type);
             biomes.addAll(type.getBiomes(registry));
         }
-        double chance = ServerConfigs.INSTANCE.additionalBiomeTagChance.get();
+        double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
         int count = types.size();
         for (int i = 0; i < count; i++) {
             if (random.nextDouble() < chance) {
@@ -177,7 +177,7 @@ public final class DimensionHelper {
         int selected = random.nextInt(total);
         for (BiomeType type : types) {
             total -= type.getWeight();
-            if (total < selected) {
+            if (total <= selected) {
                 return type;
             }
         }
