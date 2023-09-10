@@ -36,7 +36,7 @@ public class SpawnCollectorItem extends TimerItem {
     private Component lore;
 
     public SpawnCollectorItem(Properties properties, int timer) {
-        super(properties, timer);
+        super(properties.stacksTo(1), timer);
     }
 
     @Override

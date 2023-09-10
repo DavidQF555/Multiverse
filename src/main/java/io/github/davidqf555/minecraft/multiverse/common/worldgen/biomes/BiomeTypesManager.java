@@ -61,6 +61,9 @@ public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElemen
         if (biomes.isEmpty()) {
             throw new IllegalStateException("There cannot be 0 biome types");
         }
+        if (biomes.stream().mapToInt(BiomeType::getWeight).sum() <= 0) {
+            throw new IllegalStateException("Total weight must be greater than 0");
+        }
     }
 
     public Set<BiomeType> getBiomeTypes() {
