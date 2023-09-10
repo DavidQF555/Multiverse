@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.items.*;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalAxeItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalPickaxeItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalShovelItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.RiftSwordItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraftforge.registries.DeferredRegister;
@@ -23,7 +24,6 @@ public final class ItemRegistry {
         }
     };
 
-    public static final RegistryObject<RiftSwordItem> BOUNDLESS_BLADE = register("boundless_blade", () -> new RiftSwordItem(KaleiditeItemTier.INSTANCE, 2, -2.4f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
     public static final RegistryObject<SpawnCollectorItem> UNIVERSAL_TREASURE = register("universal_treasure", () -> new SpawnCollectorItem(new Item.Properties().rarity(Rarity.RARE).tab(TAB).stacksTo(1).fireResistant(), 160));
     public static final RegistryObject<RiftDeathItem> TOTEM_OF_ESCAPE = register("totem_of_escape", () -> new RiftDeathItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.UNCOMMON), 5));
     public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> new RiftCoreItem(new Item.Properties().tab(TAB).rarity(Rarity.UNCOMMON)));
@@ -34,6 +34,7 @@ public final class ItemRegistry {
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.LEGS, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.FEET, new Item.Properties().tab(TAB)));
     public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> new SummonCrossbowItem(new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
+    public static final RegistryObject<RiftSwordItem> KALEIDITE_SWORD = register("kaleidite_sword", () -> new RiftSwordItem(KaleiditeItemTier.INSTANCE, 3, -2.4f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
     public static final RegistryObject<MultiversalPickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
     public static final RegistryObject<MultiversalShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties().tab(TAB)));
     public static final RegistryObject<MultiversalAxeItem> KALEIDITE_AXE = register("kaleidite_axe", () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -3.1f, new Item.Properties().tab(TAB)));

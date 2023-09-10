@@ -57,6 +57,7 @@ public final class EventBusSubscriber {
         event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
         event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
         event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
+        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SWORD.get());
     }
 
     @SubscribeEvent
