@@ -19,7 +19,6 @@ public class SimpleTemplateItem extends SmithingTemplateItem {
         this.foiled = foiled;
     }
 
-
     @Override
     public boolean isFoil(ItemStack stack) {
         return foiled;
@@ -31,6 +30,11 @@ public class SimpleTemplateItem extends SmithingTemplateItem {
             return rarity;
         }
         return super.getRarity(stack);
+    }
+
+    @Override
+    public String getDescriptionId() {
+        return getOrCreateDescriptionId();
     }
 
 }
