@@ -7,6 +7,12 @@
       "biomes": "#is_beach"
     },
     {
+      "biomes": "#is_deep_ocean"
+    },
+    {
+      "biomes": "#is_end"
+    },
+    {
       "biomes": "#is_forest"
     },
     {
@@ -14,9 +20,6 @@
     },
     {
       "biomes": "#is_jungle"
-    },
-    {
-      "biomes": "#is_deep_ocean"
     },
     {
       "biomes": "#is_mountain"
@@ -28,154 +31,118 @@
       "biomes": "#is_ocean"
     },
     {
+      "biomes": "#is_overworld"
+    },
+    {
       "biomes": "#is_river"
+    },
+    {
+      "biomes": "#is_savanna"
     },
     {
       "biomes": "#is_taiga"
     },
     {
-      "biomes": "#forge:is_beach"
+      "biomes": "#forge:is_cold/end"
     },
     {
-      "biomes": "#forge:is_hot"
+      "biomes": "#forge:is_cold/overworld"
     },
     {
-      "biomes": "#forge:is_hot_overworld"
+      "biomes": "#forge:is_dense/overworld"
     },
     {
-      "biomes": "#forge:is_hot_nether"
+      "biomes": "#forge:is_dry/end"
     },
     {
-      "biomes": "#forge:is_hot_end"
+      "biomes": "#forge:is_dry/nether"
+    },
+    {
+      "biomes": "#forge:is_dry/overworld"
+    },
+    {
+      "biomes": "#forge:is_hot/nether"
+    },
+    {
+      "biomes": "#forge:is_hot/overworld"
+    },
+    {
+      "biomes": "#forge:is_sparse/overworld"
+    },
+    {
+      "biomes": "#forge:is_wet/overworld"
+    },
+    {
+      "biomes": "#forge:is_cave"
     },
     {
       "biomes": "#forge:is_cold"
     },
     {
-      "biomes": "#forge:is_cold_overworld"
-    },
-    {
-      "biomes": "#forge:is_cold_nether"
-    },
-    {
-      "biomes": "#forge:is_cold_end"
-    },
-    {
-      "biomes": "#forge:is_sparse"
-    },
-    {
-      "biomes": "#forge:is_sparse_overworld"
-    },
-    {
-      "biomes": "#forge:is_sparse_nether"
-    },
-    {
-      "biomes": "#forge:is_sparse_end"
+      "biomes": "#forge:is_coniferous"
     },
     {
       "biomes": "#forge:is_dense"
     },
     {
-      "biomes": "#forge:is_dense_overworld"
-    },
-    {
-      "biomes": "#forge:is_dense_nether"
-    },
-    {
-      "biomes": "#forge:is_dense_end"
-    },
-    {
-      "biomes": "#forge:is_wet"
-    },
-    {
-      "biomes": "#forge:is_wet_overworld"
-    },
-    {
-      "biomes": "#forge:is_wet_nether"
-    },
-    {
-      "biomes": "#forge:is_wet_end"
+      "biomes": "#forge:is_desert"
     },
     {
       "biomes": "#forge:is_dry"
     },
     {
-      "biomes": "#forge:is_dry_overworld"
-    },
-    {
-      "biomes": "#forge:is_dry_nether"
-    },
-    {
-      "biomes": "#forge:is_dry_end"
-    },
-    {
-      "biomes": "#forge:is_savanna"
-    },
-    {
-      "biomes": "#forge:is_coniferous"
-    },
-    {
-      "biomes": "#forge:is_spooky"
-    },
-    {
-      "biomes": "#forge:is_dead"
+      "biomes": "#forge:is_hot"
     },
     {
       "biomes": "#forge:is_lush"
     },
     {
+      "biomes": "#forge:is_mountain"
+    },
+    {
       "biomes": "#forge:is_mushroom"
-    },
-    {
-      "biomes": "#forge:is_magical"
-    },
-    {
-      "biomes": "#forge:is_rare"
-    },
-    {
-      "biomes": "#forge:is_plateau"
-    },
-    {
-      "biomes": "#forge:is_modified"
-    },
-    {
-      "biomes": "#forge:is_water"
-    },
-    {
-      "biomes": "#forge:is_plains"
-    },
-    {
-      "biomes": "#forge:is_swamp"
-    },
-    {
-      "biomes": "#forge:is_sandy"
-    },
-    {
-      "biomes": "#forge:is_snowy"
-    },
-    {
-      "biomes": "#forge:is_wasteland"
-    },
-    {
-      "biomes": "#forge:is_beach"
-    },
-    {
-      "biomes": "#forge:is_void"
-    },
-    {
-      "biomes": "#forge:is_underground"
     },
     {
       "biomes": "#forge:is_peak"
     },
     {
+      "biomes": "#forge:is_plains"
+    },
+    {
+      "biomes": "#forge:is_plateau"
+    },
+    {
+      "biomes": "#forge:is_rare"
+    },
+    {
+      "biomes": "#forge:is_sandy"
+    },
+    {
       "biomes": "#forge:is_slope"
     },
     {
-      "biomes": "#forge:is_overworld"
+      "biomes": "#forge:is_snowy"
     },
     {
-      "biomes": "#forge:is_end"
+      "biomes": "#forge:is_sparse"
+    },
+    {
+      "biomes": "#forge:is_spooky"
+    },
+    {
+      "biomes": "#forge:is_swamp"
+    },
+    {
+      "biomes": "#forge:is_underground"
+    },
+    {
+      "biomes": "#forge:is_wasteland"
+    },
+    {
+      "biomes": "#forge:is_water"
+    },
+    {
+      "biomes": "#forge:is_wet"
     }
   ]
 }
