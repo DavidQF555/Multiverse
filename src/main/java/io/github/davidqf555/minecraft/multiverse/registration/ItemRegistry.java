@@ -8,7 +8,10 @@ import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalP
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalShovelItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.RiftSwordItem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,7 +48,7 @@ public final class ItemRegistry {
     public static final RegistryObject<MultiversalPickaxeItem> PRISMATIC_PICKAXE = register("prismatic_pickaxe", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 2, -2.8f, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<MultiversalShovelItem> PRISMATIC_SHOVEL = register("prismatic_shovel", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 2.5f, -3, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<MultiversalAxeItem> PRISMATIC_AXE = register("prismatic_axe", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -2.1f, new Item.Properties().rarity(Rarity.EPIC)));
-    public static final RegistryObject<SimpleLoreItem> DIMENSIONAL_PRISM = register("dimensional_prism", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<SimpleTemplateItem> DIMENSIONAL_PRISM = register("dimensional_prism", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), () -> new SimpleTemplateItem(true, Rarity.RARE, Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "dimensional_prism.applies_to"))).withStyle(ChatFormatting.BLUE), Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "dimensional_prism.ingredients"))).withStyle(ChatFormatting.BLUE), Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "dimensional_prism.lore"))).withStyle(ChatFormatting.GOLD), Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "base_description"))), Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "dimensional_prism.additions_description"))), List.of(new ResourceLocation("item/empty_slot_axe"), new ResourceLocation("item/empty_slot_sword"), new ResourceLocation("item/empty_slot_shovel"), new ResourceLocation("item/empty_slot_pickaxe")), List.of(new ResourceLocation("item/empty_slot_ingot"))));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.NATURAL_BLOCKS), () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties()));
 
