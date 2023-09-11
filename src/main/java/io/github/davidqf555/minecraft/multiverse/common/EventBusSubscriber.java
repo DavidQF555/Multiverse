@@ -4,7 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseExistingData;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeTypesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.core.Holder;
@@ -54,7 +54,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        BiomeTypesManager.INSTANCE.load(event.getServer());
+        BiomesManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent

@@ -6,9 +6,8 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeTypesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -112,7 +111,7 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(shape.getNoiseSettingsKey(type));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
-        BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomeTagsRegistry.getMultiverseBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
+        BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(BiomesManager.INSTANCE.getBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(shape, type, time, effect, lighting);
         ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, shape, index);
@@ -140,7 +139,7 @@ public final class DimensionHelper {
     private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, Random random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        Set<BiomeType> types = BiomeTypesManager.INSTANCE.getBiomeTypes().stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
+        Set<BiomeType> types = BiomesManager.INSTANCE.getBiomeTypes().stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
         if (types.isEmpty()) {
             biomes.add(Biomes.PLAINS);

@@ -23,20 +23,29 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BiomeTypesManager {
+public class BiomesManager {
 
-    public static final BiomeTypesManager INSTANCE = new BiomeTypesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json"));
+    public static final BiomesManager INSTANCE = new BiomesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json"));
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final Set<BiomeType> biomes = new HashSet<>();
+    private final Set<BiomeType> types = new HashSet<>();
     private final ResourceLocation loc;
+    private MultiverseBiomes biomes = VanillaMultiverseBiomes.INSTANCE;
 
-    protected BiomeTypesManager(ResourceLocation loc) {
+    protected BiomesManager(ResourceLocation loc) {
         this.loc = loc;
     }
 
     public Set<BiomeType> getBiomeTypes() {
+        return types;
+    }
+
+    public MultiverseBiomes getBiomes() {
         return biomes;
+    }
+
+    public void setBiomes(MultiverseBiomes biomes) {
+        this.biomes = biomes;
     }
 
     public void load(MinecraftServer server) {
@@ -50,14 +59,14 @@ public class BiomeTypesManager {
 
         JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("types");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
-        biomes.clear();
+        types.clear();
         for (JsonElement type : values) {
-            BiomeType.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(biomes::add);
+            BiomeType.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(types::add);
         }
-        if (biomes.isEmpty()) {
+        if (types.isEmpty()) {
             throw new IllegalStateException("There cannot be 0 biome types");
         }
-        if (biomes.stream().mapToInt(BiomeType::getWeight).sum() <= 0) {
+        if (types.stream().mapToInt(BiomeType::getWeight).sum() <= 0) {
             throw new IllegalStateException("Total weight must be greater than 0");
         }
     }
