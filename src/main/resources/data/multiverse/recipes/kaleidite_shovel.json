@@ -1,10 +1,17 @@
 {
-  "type": "smithing",
-  "base": {
-    "item": "diamond_shovel"
-  },
-  "addition": {
-    "item": "multiverse:dimensional_prism"
+  "type": "crafting_shaped",
+  "pattern": [
+    "#",
+    "S",
+    "S"
+  ],
+  "key": {
+    "#": {
+      "item": "multiverse:kaleidite_shard"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    }
   },
   "result": {
     "item": "multiverse:kaleidite_shovel"

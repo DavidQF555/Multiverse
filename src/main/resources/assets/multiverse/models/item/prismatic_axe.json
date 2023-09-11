@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "multiverse:item/kaleidite_axe_inner",
+    "layer1": "multiverse:item/prismatic_axe_outer"
+  }
+}

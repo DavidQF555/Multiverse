@@ -8,6 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -53,11 +54,16 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onHandleItemColor(ColorHandlerEvent.Item event) {
-        event.getItemColors().register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
-        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
-        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
-        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
-        event.getItemColors().register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SWORD.get());
+        ItemColors colors = event.getItemColors();
+        colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
+        colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
+        colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
+        colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
+        colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_SWORD.get());
+        colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_PICKAXE.get());
+        colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SHOVEL.get());
+        colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_AXE.get());
+        colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SWORD.get());
     }
 
     @SubscribeEvent

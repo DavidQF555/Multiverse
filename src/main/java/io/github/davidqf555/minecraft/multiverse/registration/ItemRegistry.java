@@ -34,11 +34,15 @@ public final class ItemRegistry {
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.LEGS, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, EquipmentSlot.FEET, new Item.Properties().tab(TAB)));
     public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> new SummonCrossbowItem(new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
-    public static final RegistryObject<RiftSwordItem> KALEIDITE_SWORD = register("kaleidite_sword", () -> new RiftSwordItem(KaleiditeItemTier.INSTANCE, 3, -2.4f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
-    public static final RegistryObject<MultiversalPickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
-    public static final RegistryObject<MultiversalShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties().tab(TAB)));
-    public static final RegistryObject<MultiversalAxeItem> KALEIDITE_AXE = register("kaleidite_axe", () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -3.1f, new Item.Properties().tab(TAB)));
-    public static final RegistryObject<SimpleFoiledItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> new SimpleFoiledItem(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", () -> new SwordItem(KaleiditeItemTier.INSTANCE, 3, -2.4f, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<PickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> new PickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<ShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> new ShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<AxeItem> KALEIDITE_AXE = register("kaleidite_axe", () -> new AxeItem(KaleiditeItemTier.INSTANCE, 6, -3.1f, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<RiftSwordItem> PRISMATIC_SWORD = register("prismatic_sword", () -> new RiftSwordItem(KaleiditeItemTier.INSTANCE, 4, -2.4f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
+    public static final RegistryObject<MultiversalPickaxeItem> PRISMATIC_PICKAXE = register("prismatic_pickaxe", () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 2, -2.8f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
+    public static final RegistryObject<MultiversalShovelItem> PRISMATIC_SHOVEL = register("prismatic_shovel", () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 2.5f, -3, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
+    public static final RegistryObject<MultiversalAxeItem> PRISMATIC_AXE = register("prismatic_axe", () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -2.1f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
+    public static final RegistryObject<SimpleFoiledItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> new SimpleFoiledItem(new Item.Properties().tab(TAB).rarity(Rarity.RARE)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 
