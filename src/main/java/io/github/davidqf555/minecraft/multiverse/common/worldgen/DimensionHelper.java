@@ -6,6 +6,8 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeTypesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -182,28 +184,22 @@ public final class DimensionHelper {
     private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, RandomSource random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        List<Set<ResourceKey<Biome>>> sets = MultiverseBiomeTagsRegistry.getMultiverseBiomeTags().stream()
-                .map(registry::getTag)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(named -> named.stream()
-                        .map(Holder::value)
-                        .map(biome -> ResourceKey.create(Registries.BIOME, registry.getKey(biome)))
-                        .filter(valid)
-                        .collect(Collectors.toSet())
-                )
-                .filter(set -> !set.isEmpty())
-                .toList();
+        Set<BiomeType> types = BiomeTypesManager.INSTANCE.getBiomeTypes().stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
-        if (sets.isEmpty()) {
+        if (types.isEmpty()) {
             biomes.add(Biomes.PLAINS);
         } else {
-            biomes.addAll(sets.get(random.nextInt(sets.size())));
+            BiomeType type = selectRandom(random, types);
+            types.remove(type);
+            biomes.addAll(type.getBiomes(registry));
         }
-        double chance = ServerConfigs.INSTANCE.additionalBiomeTagChance.get();
-        for (Set<ResourceKey<Biome>> set : sets) {
+        double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
+        int count = types.size();
+        for (int i = 0; i < count; i++) {
             if (random.nextDouble() < chance) {
-                biomes.addAll(set);
+                BiomeType type = selectRandom(random, types);
+                types.remove(type);
+                biomes.addAll(type.getBiomes(registry));
             }
         }
         biomes.removeIf(valid.negate());
@@ -218,6 +214,18 @@ public final class DimensionHelper {
         MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));
         return Pair.of(type, biomes);
+    }
+
+    private static BiomeType selectRandom(RandomSource random, Set<BiomeType> types) {
+        int total = types.stream().mapToInt(BiomeType::getWeight).sum();
+        int selected = random.nextInt(total);
+        for (BiomeType type : types) {
+            total -= type.getWeight();
+            if (total <= selected) {
+                return type;
+            }
+        }
+        throw new RuntimeException();
     }
 
 }

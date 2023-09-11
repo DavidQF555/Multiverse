@@ -51,9 +51,14 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
         event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
-        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
-        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
-        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
+        event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
+        event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_SHOVEL.get());
+        event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_AXE.get());
+        event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_SWORD.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_PICKAXE.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SHOVEL.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_AXE.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SWORD.get());
     }
 
     @SubscribeEvent

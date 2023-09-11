@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeTypesManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -12,6 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -22,6 +24,11 @@ import net.minecraftforge.fml.common.Mod;
 public final class EventBusSubscriber {
 
     private EventBusSubscriber() {
+    }
+
+    @SubscribeEvent
+    public static void onAddReloadListener(AddReloadListenerEvent event) {
+        event.addListener(BiomeTypesManager.INSTANCE);
     }
 
     @SubscribeEvent

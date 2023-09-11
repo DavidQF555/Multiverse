@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
-import io.github.davidqf555.minecraft.multiverse.common.items.RiftSwordItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.RiftSwordItem;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
@@ -39,6 +39,7 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -72,7 +73,7 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
-        setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.BOUNDLESS_BLADE.get().getDefaultInstance());
+        setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.PRISMATIC_AXE.get().getDefaultInstance());
     }
 
     @Override
@@ -227,12 +228,12 @@ public class CollectorEntity extends SpellcasterIllager {
             float angle = getMainArm() == HumanoidArm.RIGHT ? 45 : -45;
             Vec3 look = getLookAngle();
             Vec3 start = getEyePosition().add(look);
-            RiftSwordItem.slash((ServerLevel) level, start, look, 4, 3, 15, angle);
+            RiftSwordItem.slash((ServerLevel) level, start, look, 4, 3, 15, angle, Optional.empty());
         }
 
         @Override
         protected int getCastingTime() {
-            return 100;
+            return 60;
         }
 
         @Override

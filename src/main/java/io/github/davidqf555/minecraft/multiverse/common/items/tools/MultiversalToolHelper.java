@@ -29,7 +29,8 @@ import java.util.OptionalInt;
 
 public final class MultiversalToolHelper {
 
-    public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.LIGHT_PURPLE);
+    public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
+    public static final Component CROUCH_INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.BLUE);
     public static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.BLUE);
 
     private MultiversalToolHelper() {
@@ -40,12 +41,16 @@ public final class MultiversalToolHelper {
         return tag.contains("Target", Tag.TAG_INT) ? tag.getInt("Target") : 0;
     }
 
-    public static void setTarget(ItemStack stack, int target) {
-        CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
-        tag.putInt("Target", target);
+    public static boolean setTarget(ItemStack stack, int target) {
+        if (getTarget(stack) != target) {
+            CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
+            tag.putInt("Target", target);
+            return true;
+        }
+        return false;
     }
 
-    public static void setRandomTarget(ServerLevel world, ItemStack stack) {
+    public static void setRandomExistingTarget(ServerLevel world, ItemStack stack) {
         int current = getTarget(stack);
         List<Integer> existing = new ArrayList<>();
         int max = ServerConfigs.INSTANCE.maxDimensions.get();
@@ -58,8 +63,17 @@ public final class MultiversalToolHelper {
         setTarget(stack, existing.isEmpty() ? 0 : existing.get(world.getRandom().nextInt(existing.size())));
     }
 
-    public static void setCurrent(Level world, ItemStack stack) {
-        setTarget(stack, DimensionHelper.getIndex(world.dimension()));
+    public static void setRandomTarget(Level world, ItemStack stack) {
+        int current = getTarget(stack);
+        int rand = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+        if (rand >= current) {
+            rand++;
+        }
+        setTarget(stack, rand);
+    }
+
+    public static boolean setCurrent(Level world, ItemStack stack) {
+        return setTarget(stack, DimensionHelper.getIndex(world.dimension()));
     }
 
     public static void mineBlock(Player entity, ServerLevel world, ItemStack stack, BlockPos pos) {

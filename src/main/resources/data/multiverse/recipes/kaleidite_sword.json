@@ -1,9 +1,9 @@
 {
   "type": "crafting_shaped",
   "pattern": [
-    "##",
-    "S#",
-    "S "
+    "#",
+    "#",
+    "S"
   ],
   "key": {
     "#": {
@@ -14,6 +14,6 @@
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_axe"
+    "item": "multiverse:kaleidite_sword"
   }
 }

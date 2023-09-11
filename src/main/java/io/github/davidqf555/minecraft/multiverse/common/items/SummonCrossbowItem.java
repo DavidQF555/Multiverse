@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public class SummonCrossbowItem extends CrossbowItem {
 
     public SummonCrossbowItem(Properties properties) {
-        super(properties);
+        super(properties.stacksTo(1));
     }
 
     @Override
