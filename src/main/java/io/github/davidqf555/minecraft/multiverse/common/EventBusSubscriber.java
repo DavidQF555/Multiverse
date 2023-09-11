@@ -19,9 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,11 +31,6 @@ import net.minecraftforge.fml.common.Mod;
 public final class EventBusSubscriber {
 
     private EventBusSubscriber() {
-    }
-
-    @SubscribeEvent
-    public static void onAddReloadListener(AddReloadListenerEvent event) {
-        event.addListener(BiomeTypesManager.INSTANCE);
     }
 
     @SubscribeEvent
@@ -55,6 +50,11 @@ public final class EventBusSubscriber {
                 Registry.register(registry, loc, DimensionHelper.createDimension(server, index));
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent event) {
+        BiomeTypesManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent

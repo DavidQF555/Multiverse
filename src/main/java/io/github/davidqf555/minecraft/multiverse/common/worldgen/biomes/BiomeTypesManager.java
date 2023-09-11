@@ -8,14 +8,11 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -26,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElement> {
+public class BiomeTypesManager {
 
     public static final BiomeTypesManager INSTANCE = new BiomeTypesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json"));
     private static final Gson GSON = new GsonBuilder().create();
@@ -34,27 +31,26 @@ public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElemen
     private final Set<BiomeType> biomes = new HashSet<>();
     private final ResourceLocation loc;
 
-    public BiomeTypesManager(ResourceLocation loc) {
+    protected BiomeTypesManager(ResourceLocation loc) {
         this.loc = loc;
     }
 
-    @Override
-    protected JsonElement prepare(ResourceManager manager, ProfilerFiller filler) {
+    public Set<BiomeType> getBiomeTypes() {
+        return biomes;
+    }
+
+    public void load(MinecraftServer server) {
         Resource resource;
         try {
-            resource = manager.getResource(loc);
+            resource = server.getResourceManager().getResource(loc);
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
         Reader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
-        return GsonHelper.fromJson(GSON, reader, JsonElement.class);
-    }
 
-    @Override
-    protected void apply(JsonElement element, ResourceManager manager, ProfilerFiller filler) {
+        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("types");
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
         biomes.clear();
-        JsonArray values = element.getAsJsonObject().getAsJsonArray("types");
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.builtinCopy());
         for (JsonElement type : values) {
             BiomeType.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(biomes::add);
         }
@@ -64,10 +60,6 @@ public class BiomeTypesManager extends SimplePreparableReloadListener<JsonElemen
         if (biomes.stream().mapToInt(BiomeType::getWeight).sum() <= 0) {
             throw new IllegalStateException("Total weight must be greater than 0");
         }
-    }
-
-    public Set<BiomeType> getBiomeTypes() {
-        return biomes;
     }
 
 }
