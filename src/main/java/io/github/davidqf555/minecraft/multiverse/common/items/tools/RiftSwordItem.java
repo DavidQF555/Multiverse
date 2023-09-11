@@ -60,7 +60,7 @@ public class RiftSwordItem extends SwordItem {
             float angle = used == HumanoidArm.RIGHT ? 45 : -45;
             Vec3 look = entity.getLookAngle();
             Vec3 start = entity.getEyePosition();
-            if (slash((ServerLevel) world, start, look, 4, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack))) && entity instanceof Player) {
+            if (slash((ServerLevel) world, start, look, 4, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack))) && entity instanceof Player && !((Player) entity).isCreative()) {
                 ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
             }
         }
