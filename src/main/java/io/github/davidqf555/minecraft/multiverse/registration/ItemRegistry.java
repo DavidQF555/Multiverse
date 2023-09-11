@@ -38,6 +38,7 @@ public final class ItemRegistry {
     public static final RegistryObject<MultiversalPickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> new MultiversalPickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
     public static final RegistryObject<MultiversalShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties().tab(TAB)));
     public static final RegistryObject<MultiversalAxeItem> KALEIDITE_AXE = register("kaleidite_axe", () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -3.1f, new Item.Properties().tab(TAB)));
+    public static final RegistryObject<SimpleFoiledItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> new SimpleFoiledItem(new Item.Properties().tab(TAB)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 

@@ -1,12 +1,12 @@
 {
   "type": "smithing",
   "base": {
-    "item": "diamond_axe"
+    "item": "diamond_sword"
   },
   "addition": {
     "item": "multiverse:dimensional_prism"
   },
   "result": {
-    "item": "multiverse:kaleidite_axe"
+    "item": "multiverse:kaleidite_sword"
   }
 }

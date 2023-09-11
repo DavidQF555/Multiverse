@@ -2,7 +2,7 @@
   "parent": "multiverse:collector_of_all",
   "display": {
     "icon": {
-      "item": "multiverse:kaleidite_sword"
+      "item": "multiverse:dimensional_prism"
     },
     "title": {
       "translate": "advancements.multiverse.boundless.title"
@@ -19,7 +19,7 @@
         "items": [
           {
             "items": [
-              "multiverse:kaleidite_sword"
+              "multiverse:dimensional_prism"
             ]
           }
         ]

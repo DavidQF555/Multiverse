@@ -1,17 +1,10 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "###",
-    " X ",
-    " X "
-  ],
-  "key": {
-    "#": {
-      "item": "multiverse:kaleidite_shard"
-    },
-    "X": {
-      "tag": "forge:ingots/iron"
-    }
+  "type": "smithing",
+  "base": {
+    "item": "diamond_pickaxe"
+  },
+  "addition": {
+    "item": "multiverse:dimensional_prism"
   },
   "result": {
     "item": "multiverse:kaleidite_pickaxe"
