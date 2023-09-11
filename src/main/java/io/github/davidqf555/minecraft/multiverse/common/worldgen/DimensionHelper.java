@@ -8,6 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -139,7 +140,8 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(shape.getNoiseSettingsKey(type));
         BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(BiomesManager.INSTANCE.getBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
         Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(shape, type, random));
-        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, seed, shape, index);
+        SerializableFluidPicker fluid = shape.getSea(type.getDefaultFluid(), seed, index);
+        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, shape, fluid);
         return new LevelStem(dimType, generator);
     }
 
