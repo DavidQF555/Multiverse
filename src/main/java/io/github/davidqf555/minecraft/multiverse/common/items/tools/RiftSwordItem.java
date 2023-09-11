@@ -29,6 +29,8 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class RiftSwordItem extends SwordItem {
 
+    private static final int MIN_CHARGE = 20;
+
     public RiftSwordItem(Tier tier, int damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
     }
@@ -49,18 +51,21 @@ public class RiftSwordItem extends SwordItem {
     @Override
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
         if (world instanceof ServerLevel) {
-            int count = Math.min(600, getUseDuration(stack) - remaining);
-            int width = 1 + count / 200;
-            int height = 5 + count / 20;
-            HumanoidArm used = entity.getMainArm();
-            if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
-                used = used.getOpposite();
-            }
-            float angle = used == HumanoidArm.RIGHT ? 45 : -45;
-            Vec3 look = entity.getLookAngle();
-            Vec3 start = entity.getEyePosition();
-            if (slash((ServerLevel) world, start, look, 4, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack))) && entity instanceof Player && !((Player) entity).isCreative()) {
-                ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
+            int duration = getUseDuration(stack) - remaining;
+            if (duration >= MIN_CHARGE) {
+                int count = Math.min(600, duration);
+                int width = 1 + count / 200;
+                int height = 5 + count / 10;
+                HumanoidArm used = entity.getMainArm();
+                if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
+                    used = used.getOpposite();
+                }
+                float angle = used == HumanoidArm.RIGHT ? 45 : -45;
+                Vec3 look = entity.getLookAngle();
+                Vec3 start = entity.getEyePosition();
+                if (slash((ServerLevel) world, start, look, 4, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack))) && entity instanceof Player && !((Player) entity).isCreative()) {
+                    ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
+                }
             }
         }
     }

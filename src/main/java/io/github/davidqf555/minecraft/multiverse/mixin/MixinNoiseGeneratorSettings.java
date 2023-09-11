@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.mixin;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +22,7 @@ public class MixinNoiseGeneratorSettings implements IMultiverseNoiseGeneratorSet
     private void surfaceRule(CallbackInfoReturnable<SurfaceRules.RuleSource> callback) {
         if (shape != null && type != null) {
             if (surface == null) {
-                surface = MultiverseBiomeTagsRegistry.getMultiverseBiomes().createSurface(shape, type);
+                surface = BiomesManager.INSTANCE.getBiomes().createSurface(shape, type);
             }
             callback.setReturnValue(surface);
         }
