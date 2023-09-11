@@ -20,8 +20,8 @@ public final class DimensionEffectsRegistry {
         for (DyeColor color : DyeColor.values()) {
             FOG.put(new ResourceLocation(Multiverse.MOD_ID, "fog/" + color.getName()), color.getFireworkColor());
         }
-        builder.add(new MultiverseEffectType(16, false, BuiltinDimensionTypes.OVERWORLD_EFFECTS));
-        builder.add(new MultiverseEffectType(4, true, BuiltinDimensionTypes.END_EFFECTS));
+        builder.add(new MultiverseEffectType(32, false, BuiltinDimensionTypes.OVERWORLD_EFFECTS));
+        builder.add(new MultiverseEffectType(8, true, BuiltinDimensionTypes.END_EFFECTS));
         for (ResourceLocation key : FOG.keySet()) {
             builder.add(new MultiverseEffectType(1, false, key));
         }

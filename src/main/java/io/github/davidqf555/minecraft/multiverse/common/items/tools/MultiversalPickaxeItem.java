@@ -28,6 +28,7 @@ public class MultiversalPickaxeItem extends PickaxeItem {
         super.appendHoverText(stack, world, text, flag);
         text.add(MultiversalToolHelper.LORE);
         text.add(MultiversalToolHelper.INSTRUCTIONS);
+        text.add(MultiversalToolHelper.CROUCH_INSTRUCTIONS);
     }
 
     @Override
@@ -43,15 +44,15 @@ public class MultiversalPickaxeItem extends PickaxeItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (world instanceof ServerLevel) {
-            ItemStack stack = player.getItemInHand(hand);
-            if (player.isCrouching()) {
-                MultiversalToolHelper.setCurrent(world, stack);
-            } else {
-                MultiversalToolHelper.setRandomTarget((ServerLevel) world, stack);
+        ItemStack stack = player.getItemInHand(hand);
+        if (!player.isCrouching()) {
+            if (!MultiversalToolHelper.setCurrent(world, stack)) {
+                return InteractionResultHolder.pass(stack);
             }
+        } else if (world instanceof ServerLevel) {
+            MultiversalToolHelper.setRandomExistingTarget((ServerLevel) world, stack);
         }
-        return super.use(world, player, hand);
+        return InteractionResultHolder.consume(stack);
     }
 
 }

@@ -1,0 +1,12 @@
+{
+  "type": "smithing",
+  "base": {
+    "item": "multiverse:kaleidite_pickaxe"
+  },
+  "addition": {
+    "item": "multiverse:dimensional_prism"
+  },
+  "result": {
+    "item": "multiverse:prismatic_pickaxe"
+  }
+}

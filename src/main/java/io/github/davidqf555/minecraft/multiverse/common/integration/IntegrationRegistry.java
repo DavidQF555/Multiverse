@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,7 +17,7 @@ public final class IntegrationRegistry {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         if (ModList.get().isLoaded("terrablender")) {
-            MultiverseBiomeTagsRegistry.setMultiverseBiomes(new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME)));
+            BiomesManager.INSTANCE.setBiomes(new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME)));
         }
     }
 

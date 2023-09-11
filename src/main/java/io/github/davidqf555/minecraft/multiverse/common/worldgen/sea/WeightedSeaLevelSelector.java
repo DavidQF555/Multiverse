@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea;
 
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Aquifer;
 
 import java.util.Map;
 import java.util.Random;
@@ -16,7 +16,7 @@ public class WeightedSeaLevelSelector implements SeaLevelSelector {
     }
 
     @Override
-    public Aquifer.FluidPicker getSeaLevel(BlockState block, long seed, int index) {
+    public SerializableFluidPicker getSeaLevel(BlockState block, long seed, int index) {
         int total = selectors.values().stream().reduce(Integer::sum).orElseThrow();
         RANDOM.setSeed(seed + index * 6000000L);
         int rand = RANDOM.nextInt(total);

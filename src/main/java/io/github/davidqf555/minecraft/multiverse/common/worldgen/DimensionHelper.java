@@ -6,7 +6,9 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeTagsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -137,9 +139,10 @@ public final class DimensionHelper {
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
         MultiverseType type = pair.getFirst();
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(shape.getNoiseSettingsKey(type));
-        BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(MultiverseBiomeTagsRegistry.getMultiverseBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
+        BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(BiomesManager.INSTANCE.getBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
         Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(shape, type, random));
-        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, seed, shape, index);
+        SerializableFluidPicker fluid = shape.getSea(type.getDefaultFluid(), seed, index);
+        ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, shape, fluid);
         return new LevelStem(dimType, generator);
     }
 
@@ -183,28 +186,22 @@ public final class DimensionHelper {
     private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, RandomSource random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
-        List<Set<ResourceKey<Biome>>> sets = MultiverseBiomeTagsRegistry.getMultiverseBiomeTags().stream()
-                .map(registry::getTag)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(named -> named.stream()
-                        .map(Holder::value)
-                        .map(biome -> ResourceKey.create(Registries.BIOME, registry.getKey(biome)))
-                        .filter(valid)
-                        .collect(Collectors.toSet())
-                )
-                .filter(set -> !set.isEmpty())
-                .toList();
+        Set<BiomeType> types = BiomesManager.INSTANCE.getBiomeTypes().stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
         Set<ResourceKey<Biome>> biomes = new HashSet<>();
-        if (sets.isEmpty()) {
+        if (types.isEmpty()) {
             biomes.add(Biomes.PLAINS);
         } else {
-            biomes.addAll(sets.get(random.nextInt(sets.size())));
+            BiomeType type = selectRandom(random, types);
+            types.remove(type);
+            biomes.addAll(type.getBiomes(registry));
         }
-        double chance = ServerConfigs.INSTANCE.additionalBiomeTagChance.get();
-        for (Set<ResourceKey<Biome>> set : sets) {
+        double chance = ServerConfigs.INSTANCE.additionalBiomeTypeChance.get();
+        int count = types.size();
+        for (int i = 0; i < count; i++) {
             if (random.nextDouble() < chance) {
-                biomes.addAll(set);
+                BiomeType type = selectRandom(random, types);
+                types.remove(type);
+                biomes.addAll(type.getBiomes(registry));
             }
         }
         biomes.removeIf(valid.negate());
@@ -219,6 +216,18 @@ public final class DimensionHelper {
         MultiverseType type = counts.keySet().stream().max((i, j) -> counts.get(j) - counts.get(i)).orElseThrow();
         biomes.removeIf(key -> !type.is(key));
         return Pair.of(type, biomes);
+    }
+
+    private static BiomeType selectRandom(RandomSource random, Set<BiomeType> types) {
+        int total = types.stream().mapToInt(BiomeType::getWeight).sum();
+        int selected = random.nextInt(total);
+        for (BiomeType type : types) {
+            total -= type.getWeight();
+            if (total <= selected) {
+                return type;
+            }
+        }
+        throw new RuntimeException();
     }
 
 }

@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.*;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -85,7 +86,7 @@ public enum MultiverseShape {
         return weight;
     }
 
-    public Aquifer.FluidPicker getSea(BlockState block, long seed, int index) {
+    public SerializableFluidPicker getSea(BlockState block, long seed, int index) {
         return sea.getSeaLevel(block, seed, index);
     }
 

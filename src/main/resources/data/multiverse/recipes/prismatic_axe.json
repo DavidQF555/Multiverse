@@ -1,0 +1,12 @@
+{
+  "type": "smithing",
+  "base": {
+    "item": "multiverse:kaleidite_axe"
+  },
+  "addition": {
+    "item": "multiverse:dimensional_prism"
+  },
+  "result": {
+    "item": "multiverse:prismatic_axe"
+  }
+}

@@ -14,14 +14,14 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue additionalBiomeTagChance, fixedTimeChance, travelerSpawnFactor, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
+    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
     public final ForgeConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, spawnPeriod, spawnCount;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
         maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
                 .defineInRange("max", 25, 1, Integer.MAX_VALUE);
-        additionalBiomeTagChance = builder.comment("Each additional biome tag has this chance to be in new Multiverse dimensions. ")
+        additionalBiomeTypeChance = builder.comment("Each additional biome tag has this chance to be in new Multiverse dimensions. ")
                 .defineInRange("biomeTypeChance", 0.025, 0, 1);
         fixedTimeChance = builder.comment("This is the chance that a Multiverse dimension has a random, fixed time. ")
                 .defineInRange("fixedTimeChance", 0.25, 0, 1);

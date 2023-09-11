@@ -27,7 +27,8 @@ import java.util.OptionalInt;
 
 public final class MultiversalToolHelper {
 
-    public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.LIGHT_PURPLE);
+    public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
+    public static final Component CROUCH_INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.BLUE);
     public static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.BLUE);
 
     private MultiversalToolHelper() {
@@ -38,12 +39,16 @@ public final class MultiversalToolHelper {
         return tag.contains("Target", Tag.TAG_INT) ? tag.getInt("Target") : 0;
     }
 
-    public static void setTarget(ItemStack stack, int target) {
-        CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
-        tag.putInt("Target", target);
+    public static boolean setTarget(ItemStack stack, int target) {
+        if (getTarget(stack) != target) {
+            CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
+            tag.putInt("Target", target);
+            return true;
+        }
+        return false;
     }
 
-    public static void setRandomTarget(ServerLevel world, ItemStack stack) {
+    public static void setRandomExistingTarget(ServerLevel world, ItemStack stack) {
         int current = getTarget(stack);
         List<Integer> existing = new ArrayList<>();
         int max = ServerConfigs.INSTANCE.maxDimensions.get();
@@ -56,8 +61,17 @@ public final class MultiversalToolHelper {
         setTarget(stack, existing.isEmpty() ? 0 : existing.get(world.getRandom().nextInt(existing.size())));
     }
 
-    public static void setCurrent(Level world, ItemStack stack) {
-        setTarget(stack, DimensionHelper.getIndex(world.dimension()));
+    public static void setRandomTarget(Level world, ItemStack stack) {
+        int current = getTarget(stack);
+        int rand = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
+        if (rand >= current) {
+            rand++;
+        }
+        setTarget(stack, rand);
+    }
+
+    public static boolean setCurrent(Level world, ItemStack stack) {
+        return setTarget(stack, DimensionHelper.getIndex(world.dimension()));
     }
 
     public static void mineBlock(Player entity, ServerLevel world, ItemStack stack, BlockPos pos) {
@@ -69,8 +83,8 @@ public final class MultiversalToolHelper {
                 BlockPos block = BlockPos.containing(pos.getX() * scale, pos.getY(), pos.getZ() * scale);
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
-                    Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(w::dimension), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
-                    Multiverse.CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)));
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)));
                     Block.dropResources(s, world, pos, w.getBlockEntity(block), entity, stack);
                 }
             });
