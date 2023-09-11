@@ -49,7 +49,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(TravelerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final byte RIFT_PARTICLES_EVENT = 50;
-    private static final int MAX_DOPPELGANGERS = 10, SPAWN_PERIOD = 20, PARTICLES_COUNT = 50, MIN_TP = 8, MAX_TP = 16;
+    private static final int MAX_DOPPELGANGERS = 10, SPAWN_PERIOD = 20, MIN_TP = 8, MAX_TP = 16;
     private static final float CROSSBOW_POWER = 1.6f;
     private final ServerBossEvent bar;
     private UUID original;
@@ -165,7 +165,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-        if (super.hurt(source, damage)) {
+        if (super.hurt(source, damage) && getOriginalId() == null) {
             EntityUtil.randomTeleport(this, position(), MIN_TP, MAX_TP, true);
             return true;
         }

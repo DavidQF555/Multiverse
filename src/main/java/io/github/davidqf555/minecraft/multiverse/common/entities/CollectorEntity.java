@@ -72,7 +72,7 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.KALEIDITE_SWORD.get().getDefaultInstance());
+        setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.PRISMATIC_AXE.get().getDefaultInstance());
     }
 
     @Override
@@ -232,7 +232,7 @@ public class CollectorEntity extends SpellcasterIllager {
 
         @Override
         protected int getCastingTime() {
-            return 100;
+            return 60;
         }
 
         @Override
