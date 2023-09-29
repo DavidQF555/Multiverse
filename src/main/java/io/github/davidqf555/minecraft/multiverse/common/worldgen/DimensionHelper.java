@@ -124,7 +124,7 @@ public final class DimensionHelper {
         map.put(worldKey, newWorld);
         server.markWorldsDirty();
         MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(newWorld));
-        Multiverse.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateClientDimensionsPacket(worldKey));
+        Multiverse.CHANNEL.send(new UpdateClientDimensionsPacket(worldKey), PacketDistributor.ALL.noArg());
         return newWorld;
     }
 

@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -52,11 +53,11 @@ public class ArrowSummonsData extends SavedData {
     }
 
     public static Optional<ArrowSummonsData> get(ServerLevel level) {
-        return Optional.ofNullable(level.getDataStorage().get(ArrowSummonsData::new, NAME));
+        return Optional.ofNullable(level.getDataStorage().get(new Factory<>(ArrowSummonsData::new, ArrowSummonsData::new, DataFixTypes.LEVEL), NAME));
     }
 
     public static ArrowSummonsData getOrCreate(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(ArrowSummonsData::new, ArrowSummonsData::new, NAME);
+        return level.getDataStorage().computeIfAbsent(new Factory<>(ArrowSummonsData::new, ArrowSummonsData::new, DataFixTypes.LEVEL), NAME);
     }
 
     public void tick(ServerLevel level) {
@@ -79,7 +80,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(BlockPos.containing(start))), new RiftParticlesPacket(OptionalInt.empty(), start));
+        Multiverse.CHANNEL.send(new RiftParticlesPacket(OptionalInt.empty(), start), PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(BlockPos.containing(start))));
     }
 
     protected ItemStack randomFirework(RandomSource random) {

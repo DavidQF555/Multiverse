@@ -17,7 +17,7 @@ public final class BlockRegistry {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Multiverse.MOD_ID);
 
-    public static final RegistryObject<RiftBlock> RIFT = register("rift", () -> new RiftBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).noCollission().noOcclusion().strength(-1, 3600000).noLootTable().noParticlesOnBreak().randomTicks().lightLevel(state -> 15)));
+    public static final RegistryObject<RiftBlock> RIFT = register("rift", () -> new RiftBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).noCollission().noOcclusion().strength(-1, 3600000).noLootTable().noTerrainParticles().randomTicks().lightLevel(state -> 15)));
     public static final RegistryObject<AmethystClusterBlock> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new AmethystClusterBlock(7, 3, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().strength(1.5f).lightLevel(state -> 5)));
 
     private BlockRegistry() {

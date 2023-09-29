@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -22,9 +23,9 @@ public class BeaconArmorItem extends ArmorItem {
     }
 
     @Override
-    public void onArmorTick(ItemStack stack, Level level, Player player) {
-        super.onArmorTick(stack, level, player);
-        if (level instanceof ServerLevel && player.getLastHurtByMob() != null && player.tickCount - player.getLastHurtByMobTimestamp() < TIMEOUT && level.getGameTime() % PERIOD == 0) {
+    public void onInventoryTick(ItemStack stack, Level level, Player player, int slotIndex, int selectedIndex) {
+        super.onInventoryTick(stack, level, player, slotIndex, selectedIndex);
+        if (getEquipmentSlot().getIndex(Inventory.INVENTORY_SIZE) == slotIndex && level instanceof ServerLevel && player.getLastHurtByMob() != null && player.tickCount - player.getLastHurtByMobTimestamp() < TIMEOUT && level.getGameTime() % PERIOD == 0) {
             int count = 0;
             UUID id = player.getUUID();
             for (Entity test : ((ServerLevel) level).getAllEntities()) {

@@ -4,14 +4,12 @@ import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class RiftParticlesPacket {
 
@@ -23,10 +21,6 @@ public class RiftParticlesPacket {
         buffer.writeDouble(message.center.z());
     };
     private static final Function<FriendlyByteBuf, RiftParticlesPacket> DECODER = buffer -> new RiftParticlesPacket(buffer.readBoolean() ? OptionalInt.of(buffer.readInt()) : OptionalInt.empty(), new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
-    private static final BiConsumer<RiftParticlesPacket, Supplier<NetworkEvent.Context>> CONSUMER = (message, context) -> {
-        NetworkEvent.Context cont = context.get();
-        message.handle(cont);
-    };
 
     private final OptionalInt from;
     private final Vec3 center;
@@ -37,11 +31,15 @@ public class RiftParticlesPacket {
     }
 
     public static void register(int index) {
-        Multiverse.CHANNEL.registerMessage(index, RiftParticlesPacket.class, ENCODER, DECODER, CONSUMER, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        Multiverse.CHANNEL.messageBuilder(RiftParticlesPacket.class, index, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ENCODER)
+                .decoder(DECODER)
+                .consumerMainThread(RiftParticlesPacket::handle)
+                .add();
     }
 
-    private void handle(NetworkEvent.Context context) {
-        context.enqueueWork(() -> ClientHelper.addRiftParticles(from, center));
+    private void handle(CustomPayloadEvent.Context context) {
+        ClientHelper.addRiftParticles(from, center);
         context.setPacketHandled(true);
     }
 

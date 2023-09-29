@@ -32,9 +32,9 @@ public class DoppelgangerRenderer extends HumanoidMobRenderer<DoppelgangerEntity
         UUID id = entity.getOriginalId();
         if (id != null) {
             PlayerInfo info = Minecraft.getInstance().getConnection().getPlayerInfo(id);
-            return info == null ? DefaultPlayerSkin.getDefaultSkin(id) : info.getSkinLocation();
+            return (info == null ? DefaultPlayerSkin.get(id) : info.getSkin()).texture();
         }
-        return DefaultPlayerSkin.getDefaultSkin();
+        return DefaultPlayerSkin.getDefaultTexture();
     }
 
 }

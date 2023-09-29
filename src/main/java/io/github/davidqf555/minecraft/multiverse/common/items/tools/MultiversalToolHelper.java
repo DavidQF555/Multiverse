@@ -83,8 +83,8 @@ public final class MultiversalToolHelper {
                 BlockPos block = BlockPos.containing(pos.getX() * scale, pos.getY(), pos.getZ() * scale);
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
-                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
-                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)));
+                    Multiverse.CHANNEL.send(new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)), PacketDistributor.TRACKING_CHUNK.with(w.getChunkAt(block)));
+                    Multiverse.CHANNEL.send(new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)), PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos)));
                     Block.dropResources(s, world, pos, w.getBlockEntity(block), entity, stack);
                 }
             });

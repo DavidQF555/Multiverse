@@ -32,9 +32,4 @@ public class SimpleTemplateItem extends SmithingTemplateItem {
         return super.getRarity(stack);
     }
 
-    @Override
-    public String getDescriptionId() {
-        return getOrCreateDescriptionId();
-    }
-
 }

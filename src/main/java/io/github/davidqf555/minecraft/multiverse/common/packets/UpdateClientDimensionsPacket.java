@@ -7,22 +7,16 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class UpdateClientDimensionsPacket {
 
     private static final BiConsumer<UpdateClientDimensionsPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> buffer.writeUtf(message.key.location().toString());
     private static final Function<FriendlyByteBuf, UpdateClientDimensionsPacket> DECODER = buffer -> new UpdateClientDimensionsPacket(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buffer.readUtf())));
-    private static final BiConsumer<UpdateClientDimensionsPacket, Supplier<NetworkEvent.Context>> CONSUMER = (message, context) -> {
-        NetworkEvent.Context cont = context.get();
-        message.handle(cont);
-    };
 
     private final ResourceKey<Level> key;
 
@@ -31,11 +25,15 @@ public class UpdateClientDimensionsPacket {
     }
 
     public static void register(int index) {
-        Multiverse.CHANNEL.registerMessage(index, UpdateClientDimensionsPacket.class, ENCODER, DECODER, CONSUMER, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        Multiverse.CHANNEL.messageBuilder(UpdateClientDimensionsPacket.class, index, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ENCODER)
+                .decoder(DECODER)
+                .consumerMainThread(UpdateClientDimensionsPacket::handle)
+                .add();
     }
 
-    private void handle(NetworkEvent.Context context) {
-        context.enqueueWork(() -> ClientHelper.addDimension(key));
+    private void handle(CustomPayloadEvent.Context context) {
+        ClientHelper.addDimension(key);
         context.setPacketHandled(true);
     }
 
