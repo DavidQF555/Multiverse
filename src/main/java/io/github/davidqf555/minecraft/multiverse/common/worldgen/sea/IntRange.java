@@ -1,9 +1,16 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import java.util.Random;
 
 public class IntRange {
 
+    public static final Codec<IntRange> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+            Codec.INT.fieldOf("min").forGetter(IntRange::getMin),
+            Codec.INT.fieldOf("max").forGetter(IntRange::getMax)
+    ).apply(inst, IntRange::of));
     private final int min, max;
 
     protected IntRange(int min, int max) {

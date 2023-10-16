@@ -2,7 +2,7 @@ name: Build and upload mod
 on:
   release:
     types: [ published ]
-    branches: [ forge-1.20 ]
+    branches: [ forge-1.20.1 ]
 
 jobs:
 

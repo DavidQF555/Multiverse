@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -79,8 +78,7 @@ public final class MultiversalToolHelper {
         int current = DimensionHelper.getIndex(world.dimension());
         if (target != current) {
             DimensionHelper.getWorld(world.getServer(), target).ifPresent(w -> {
-                double scale = DimensionType.getTeleportationScale(w.dimensionType(), world.dimensionType());
-                BlockPos block = BlockPos.containing(pos.getX() * scale, pos.getY(), pos.getZ() * scale);
+                BlockPos block = BlockPos.containing(DimensionHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
                     Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));

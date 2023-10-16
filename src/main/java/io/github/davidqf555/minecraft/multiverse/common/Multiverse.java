@@ -43,5 +43,6 @@ public class Multiverse {
         BiomeModifierRegistry.SERIALIZERS.register(bus);
         CreativeModeTabRegistry.TABS.register(bus);
         SerializableFluidPickerRegistry.CODECS.register(bus);
+        SeaLevelSelectorRegistry.CODECS.register(bus);
     }
 }
