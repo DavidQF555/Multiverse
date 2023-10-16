@@ -42,5 +42,6 @@ public class Multiverse {
         ChunkGeneratorRegistry.GENERATORS.register(bus);
         BiomeModifierRegistry.SERIALIZERS.register(bus);
         SerializableFluidPickerRegistry.CODECS.register(bus);
+        SeaLevelSelectorRegistry.CODECS.register(bus);
     }
 }
