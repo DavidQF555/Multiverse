@@ -39,7 +39,7 @@ public class RiftSwordItem extends SwordItem {
         look = look.normalize();
         BlockPos center = BlockPos.containing(start.add(look.scale(dist)));
         RiftConfig.Rotation rotation = new RiftConfig.Rotation(look, angle);
-        return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
+        return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(target, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
     }
 
     @Override
