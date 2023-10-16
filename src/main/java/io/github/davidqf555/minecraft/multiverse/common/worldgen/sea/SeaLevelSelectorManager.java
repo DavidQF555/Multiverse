@@ -19,12 +19,11 @@ import java.util.Set;
 
 public class SeaLevelSelectorManager extends SimpleJsonResourceReloadListener {
 
-    public static final SeaLevelSelectorManager INSTANCE = new SeaLevelSelectorManager("worldgen/sea_level");
-    private static final Gson GSON = new GsonBuilder().create();
+    public static final SeaLevelSelectorManager INSTANCE = new SeaLevelSelectorManager(new GsonBuilder().create(), "worldgen/sea_level");
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    protected SeaLevelSelectorManager(String directory) {
-        super(GSON, directory);
+    protected SeaLevelSelectorManager(Gson gson, String directory) {
+        super(gson, directory);
     }
 
     @Override
