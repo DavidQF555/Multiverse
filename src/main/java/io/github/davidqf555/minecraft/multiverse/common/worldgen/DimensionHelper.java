@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.border.BorderChangeListener;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -63,6 +65,15 @@ public final class DimensionHelper {
             overworld = BiomeManager.obfuscateSeed(overworld);
         }
         return overworld + 80000L * index;
+    }
+
+    public static Vec3 translate(Vec3 pos, DimensionType from, DimensionType to, boolean logical) {
+        int fromHeight = logical ? from.logicalHeight() : from.height();
+        int toHeight = logical ? to.logicalHeight() : to.height();
+        double factorY = Mth.clamp((pos.y() - from.minY()) / fromHeight, 0, 1);
+        double y = to.minY() + toHeight * factorY;
+        double scale = DimensionType.getTeleportationScale(from, to);
+        return new Vec3(pos.x() * scale, y, pos.z() * scale);
     }
 
     public static ResourceKey<Level> getRegistryKey(int index) {
