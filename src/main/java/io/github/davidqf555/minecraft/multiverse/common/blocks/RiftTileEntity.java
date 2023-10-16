@@ -15,7 +15,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
@@ -92,11 +91,11 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     @Override
     public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
         DimensionType target = destWorld.dimensionType();
-        double scale = DimensionType.getTeleportationScale(entity.level.dimensionType(), target);
+        DimensionType from = entity.level.dimensionType();
         BlockPos rift = getBlockPos();
-        BlockPos scaled = BlockPos.containing(rift.getX() * scale, rift.getY(), rift.getZ() * scale);
+        Vec3 scaled = DimensionHelper.translate(Vec3.atBottomCenterOf(rift), from, target, true);
         WorldBorder border = destWorld.getWorldBorder();
-        BlockPos clamped = BlockPos.containing(Mth.clamp(scaled.getX(), border.getMinX(), border.getMaxX()), Mth.clamp(scaled.getY(), 1, target.logicalHeight()), Mth.clamp(scaled.getZ(), border.getMinZ(), border.getMaxZ()));
+        BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
         int current = DimensionHelper.getIndex(entity.level.dimension());
         return new PortalInfo(Vec3.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift))), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
 
