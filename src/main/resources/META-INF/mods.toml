@@ -7,6 +7,7 @@ modId = "${mod_id}"
 version = "${mod_version}"
 displayName = "${mod_name}"
 displayURL = "https://github.com/DavidQF555/Multiverse"
+updateJSONURL = "https://raw.githubusercontent.com/DavidQF555/Multiverse/update/update.json"
 logoFile = "logo.png"
 authors = "${mod_authors}"
 description = 'This mod adds a multiverse.'
