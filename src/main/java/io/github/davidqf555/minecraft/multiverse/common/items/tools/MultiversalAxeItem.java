@@ -45,7 +45,7 @@ public class MultiversalAxeItem extends AxeItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!player.isCrouching()) {
+        if (!player.isShiftKeyDown()) {
             if (!MultiversalToolHelper.setCurrent(world, stack)) {
                 return InteractionResultHolder.pass(stack);
             }

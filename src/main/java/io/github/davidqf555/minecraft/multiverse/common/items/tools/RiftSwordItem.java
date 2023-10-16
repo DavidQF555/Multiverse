@@ -39,7 +39,7 @@ public class RiftSwordItem extends SwordItem {
         look = look.normalize();
         BlockPos center = BlockPos.containing(start.add(look.scale(dist)));
         RiftConfig.Rotation rotation = new RiftConfig.Rotation(look, angle);
-        return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
+        return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(target, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
     }
 
     @Override
@@ -83,8 +83,10 @@ public class RiftSwordItem extends SwordItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isCrouching()) {
-            MultiversalToolHelper.setRandomTarget(world, stack);
+        if (player.isShiftKeyDown()) {
+            if (!world.isClientSide()) {
+                MultiversalToolHelper.setRandomTarget(world, stack);
+            }
         } else if (MultiversalToolHelper.getTarget(stack) == DimensionHelper.getIndex(world.dimension())) {
             return InteractionResultHolder.pass(stack);
         } else {

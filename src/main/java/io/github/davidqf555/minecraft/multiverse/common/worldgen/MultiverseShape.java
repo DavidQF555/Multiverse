@@ -1,7 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.*;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.FlatSeaLevelSelector;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.IntRange;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelector;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -14,30 +16,23 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 public enum MultiverseShape {
 
-    NORMAL(1, "normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false), new WeightedSeaLevelSelector(Map.of(
-            FlatSeaLevelSelector.of(26, 100), 3,
-            new WaveSeaLevelSelector(IntRange.of(45, 53), IntRange.of(10, 16), IntRange.of(48, 64)), 1
-    ))),
-    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), FlatSeaLevelSelector.of(-64, -64)),
-    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), new WeightedSeaLevelSelector(Map.of(
-            FlatSeaLevelSelector.of(24, 40), 3,
-            new WaveSeaLevelSelector(IntRange.of(20, 30), IntRange.of(4, 8), IntRange.of(48, 64)), 1
-    )));
+    NORMAL(1, "normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false)),
+    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE))),
+    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)));
 
     private final String name;
     private final NoiseSettings noise;
-    private final SeaLevelSelector sea;
     private final Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router;
     private final float light;
     private final boolean floor, ceiling;
     private final int height, weight, minY;
+    private SeaLevelSelector sea = new FlatSeaLevelSelector(IntRange.of(0, 0));
 
-    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, SeaLevelSelector sea) {
+    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router) {
         this.weight = weight;
         this.minY = minY;
         this.name = name;
@@ -45,13 +40,16 @@ public enum MultiverseShape {
         this.ceiling = ceiling;
         this.height = height;
         this.light = light;
-        this.sea = sea;
         this.router = router;
         noise = NoiseSettings.create(this.minY, this.height, sizeHorizontal, sizeVertical);
     }
 
     public int getMinY() {
         return minY;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public ResourceKey<NoiseGeneratorSettings> getNoiseSettingsKey(MultiverseType type) {
@@ -88,6 +86,10 @@ public enum MultiverseShape {
 
     public SerializableFluidPicker getSea(BlockState block, long seed, int index) {
         return sea.getSeaLevel(block, seed, index);
+    }
+
+    public void setSeaLevelSelector(SeaLevelSelector sea) {
+        this.sea = sea;
     }
 
 }
