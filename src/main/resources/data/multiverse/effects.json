@@ -1,0 +1,61 @@
+{
+  "effects": [
+    {
+      "type": "overworld",
+      "weight": 32
+    },
+    {
+      "type": "the_end",
+      "weight": 8
+    },
+    {
+      "type": "fog/white"
+    },
+    {
+      "type": "fog/orange"
+    },
+    {
+      "type": "fog/magenta"
+    },
+    {
+      "type": "fog/light_blue"
+    },
+    {
+      "type": "fog/yellow"
+    },
+    {
+      "type": "fog/lime"
+    },
+    {
+      "type": "fog/pink"
+    },
+    {
+      "type": "fog/gray"
+    },
+    {
+      "type": "fog/light_gray"
+    },
+    {
+      "type": "fog/cyan"
+    },
+    {
+      "type": "fog/purple"
+    },
+    {
+      "type": "fog/blue"
+    },
+    {
+      "type": "fog/brown"
+    },
+    {
+      "type": "fog/green"
+    },
+    {
+      "type": "fog/red"
+    },
+    {
+      "type": "fog/black"
+    }
+  ]
+}
+

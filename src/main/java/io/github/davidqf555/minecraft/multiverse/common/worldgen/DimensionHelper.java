@@ -9,6 +9,8 @@ import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDime
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.EffectsManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -162,10 +164,8 @@ public final class DimensionHelper {
         Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
         for (MultiverseTimeType time : MultiverseTimeType.values()) {
             if (!ceiling || time.isNight()) {
-                for (MultiverseEffectType effect : DimensionEffectsRegistry.getEffects()) {
-                    if (!effect.isNightOnly() || time.isNight()) {
-                        types.put(shape.getTypeKey(type, time, effect), effect.getWeight() * time.getWeight());
-                    }
+                for (MultiverseEffect effect : EffectsManager.INSTANCE.getEffects()) {
+                    types.put(shape.getTypeKey(type, time, effect.getType()), effect.getWeight() * time.getWeight());
                 }
             }
         }

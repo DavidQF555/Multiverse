@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNois
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.EffectsManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelectorManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -41,6 +42,7 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         BiomesManager.INSTANCE.load(event.getServer());
+        EffectsManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent

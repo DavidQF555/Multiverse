@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffectType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.FlatSeaLevelSelector;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.IntRange;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelector;
@@ -61,7 +62,7 @@ public enum MultiverseShape {
     }
 
     public ResourceKey<DimensionType> getTypeKey(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
-        return ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name + "/" + time.getName() + "/" + effect.getLocation().getPath()));
+        return ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name + "/" + time.getName() + "/" + effect.getName()));
     }
 
     public DimensionType createDimensionType(MultiverseType type, MultiverseTimeType time, MultiverseEffectType effect) {
