@@ -8,19 +8,22 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
 
 public enum MultiverseType {
 
-    OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD),
-    NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER),
-    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END);
+    OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD, BuiltinDimensionTypes.OVERWORLD),
+    NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER, BuiltinDimensionTypes.NETHER),
+    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END, BuiltinDimensionTypes.END);
 
     private final String name;
     private final BlockState block, fluid;
+    private final ResourceKey<DimensionType> normal;
     private final TagKey<Block> infiniburn;
     private final boolean natural, ultrawarm, hasRaids, piglinSafe;
 
-    MultiverseType(String name, boolean natural, boolean ultrawarm, boolean hasRaids, boolean piglinSafe, BlockState block, BlockState fluid, TagKey<Block> infiniburn) {
+    MultiverseType(String name, boolean natural, boolean ultrawarm, boolean hasRaids, boolean piglinSafe, BlockState block, BlockState fluid, TagKey<Block> infiniburn, ResourceKey<DimensionType> normal) {
         this.name = name;
         this.block = block;
         this.fluid = fluid;
@@ -29,6 +32,7 @@ public enum MultiverseType {
         this.ultrawarm = ultrawarm;
         this.hasRaids = hasRaids;
         this.piglinSafe = piglinSafe;
+        this.normal = normal;
     }
 
     public String getName() {
@@ -65,6 +69,10 @@ public enum MultiverseType {
 
     public TagKey<Block> getInfiniburn() {
         return infiniburn;
+    }
+
+    public ResourceKey<DimensionType> getNormalType() {
+        return normal;
     }
 
 }
