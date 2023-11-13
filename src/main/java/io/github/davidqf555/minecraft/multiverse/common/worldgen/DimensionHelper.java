@@ -8,6 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDime
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -122,7 +123,7 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(shape.getNoiseSettingsKey(type));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
-        BiomeSource provider = new MultiverseBiomeSource(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(BiomesManager.INSTANCE.getBiomes().getParameters(key), biomeRegistry.getOrCreateHolder(key))).collect(Collectors.toList())));
+        BiomeSource provider = new MultiverseBiomeSource(getBiomeParameters(access, type, shape, biomes));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(shape, type, time, effect, lighting);
         ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, shape, index);
@@ -131,6 +132,41 @@ public final class DimensionHelper {
 
     private static Holder<DimensionType> createDimensionType(MultiverseShape shape, MultiverseType type, OptionalLong time, ResourceLocation effect, float light) {
         return Holder.direct(DimensionType.create(time, !shape.hasCeiling(), shape.hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, false, type.isPiglinSafe(), true, true, type.hasRaids(), shape.getMinY(), shape.getHeight(), shape.getHeight(), type.getInfiniburn(), effect, light));
+    }
+
+    private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShape shape, Set<ResourceKey<Biome>> biomes) {
+        MultiverseBiomes ref = BiomesManager.INSTANCE.getBiomes();
+        Registry<Biome> biomeReg = access.registryOrThrow(Registry.BIOME_REGISTRY);
+        Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+        List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
+        for (ResourceKey<Biome> biome : biomes) {
+            Holder<Biome> holder = biomeReg.getOrCreateHolder(biome);
+            Climate.ParameterPoint orig = ref.getParameters(biome);
+            Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()), shape);
+            Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
+            out.add(Pair.of(point, holder));
+        }
+        return new Climate.ParameterList<>(out);
+    }
+
+    //needed because depth function has a constant lerp of y from -64 to 320, scaled from 1.5 to -1.5
+    private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShape to) {
+        double start = depth.min() / 10000.0;
+        double end = depth.max() / 10000.0;
+
+        double fDepthStart = Mth.clampedMap(from.minY(), -64, 320, 1.5, -1.5);
+        double fDepthEnd = Mth.clampedMap(from.minY() + from.height(), -64, 320, 1.5, -1.5);
+
+        double fStartFactor = Mth.inverseLerp(start, fDepthStart, fDepthEnd);
+        double fEndFactor = Mth.inverseLerp(end, fDepthStart, fDepthEnd);
+
+        double tDepthStart = Mth.clampedMap(to.getMinY(), -64, 320, 1.5, -1.5);
+        double tDepthEnd = Mth.clampedMap(to.getMinY() + to.getHeight(), -64, 320, 1.5, -1.5);
+
+        float nStart = (float) Mth.lerp(fStartFactor, tDepthStart, tDepthEnd);
+        float nEnd = (float) Mth.lerp(fEndFactor, tDepthStart, tDepthEnd);
+
+        return Climate.Parameter.span(nStart, nEnd);
     }
 
     private static MultiverseShape randomShape(Random random) {
