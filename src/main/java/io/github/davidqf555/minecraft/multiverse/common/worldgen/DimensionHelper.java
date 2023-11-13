@@ -8,6 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -149,7 +150,7 @@ public final class DimensionHelper {
         Set<ResourceKey<Biome>> biomes = pair.getSecond();
         MultiverseType type = pair.getFirst();
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registries.NOISE_SETTINGS).getHolderOrThrow(shape.getNoiseSettingsKey(type));
-        BiomeSource provider = MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(biomes.stream().map(key -> Pair.of(BiomesManager.INSTANCE.getBiomes().getParameters(key), (Holder<Biome>) biomeRegistry.getHolderOrThrow(key))).collect(Collectors.toList())));
+        BiomeSource provider = MultiNoiseBiomeSource.createFromList(getBiomeParameters(access, type, shape, biomes));
         Holder<DimensionType> dimType = access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(getRandomType(shape, type, random));
         SerializableFluidPicker fluid = shape.getSea(type.getDefaultFluid(), seed, index);
         ChunkGenerator generator = new MultiverseChunkGenerator(provider, settings, shape, fluid);
@@ -177,6 +178,41 @@ public final class DimensionHelper {
             }
         }
         throw new RuntimeException();
+    }
+
+    private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShape shape, Set<ResourceKey<Biome>> biomes) {
+        MultiverseBiomes ref = BiomesManager.INSTANCE.getBiomes();
+        Registry<Biome> biomeReg = access.registryOrThrow(Registries.BIOME);
+        Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registries.DIMENSION_TYPE);
+        List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
+        for (ResourceKey<Biome> biome : biomes) {
+            Holder<Biome> holder = biomeReg.getHolderOrThrow(biome);
+            Climate.ParameterPoint orig = ref.getParameters(biome);
+            Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()), shape);
+            Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
+            out.add(Pair.of(point, holder));
+        }
+        return new Climate.ParameterList<>(out);
+    }
+
+    //needed because depth function has a constant lerp of y from -64 to 320, scaled from 1.5 to -1.5
+    private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShape to) {
+        double start = depth.min() / 10000.0;
+        double end = depth.max() / 10000.0;
+
+        double fDepthStart = Mth.clampedMap(from.minY(), -64, 320, 1.5, -1.5);
+        double fDepthEnd = Mth.clampedMap(from.minY() + from.height(), -64, 320, 1.5, -1.5);
+
+        double fStartFactor = Mth.inverseLerp(start, fDepthStart, fDepthEnd);
+        double fEndFactor = Mth.inverseLerp(end, fDepthStart, fDepthEnd);
+
+        double tDepthStart = Mth.clampedMap(to.getMinY(), -64, 320, 1.5, -1.5);
+        double tDepthEnd = Mth.clampedMap(to.getMinY() + to.getHeight(), -64, 320, 1.5, -1.5);
+
+        float nStart = (float) Mth.lerp(fStartFactor, tDepthStart, tDepthEnd);
+        float nEnd = (float) Mth.lerp(fEndFactor, tDepthStart, tDepthEnd);
+
+        return Climate.Parameter.span(nStart, nEnd);
     }
 
     private static MultiverseShape randomShape(RandomSource random) {
