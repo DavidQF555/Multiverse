@@ -14,7 +14,7 @@ public enum MultiverseType {
 
     OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_LOCATION),
     NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER, DimensionType.NETHER_LOCATION),
-    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END, DimensionType.NETHER_LOCATION);
+    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END, DimensionType.END_LOCATION);
 
     private final String name;
     private final BlockState block, fluid;
