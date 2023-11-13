@@ -38,5 +38,9 @@
   "advancements.multiverse.boundless.title": "Boundless",
   "advancements.multiverse.boundless.description": "Obtain a boundless blade",
   "advancements.multiverse.collector_of_all.title": "Collector of All",
-  "advancements.multiverse.collector_of_all.description": "Obtain a universal treasure"
+  "advancements.multiverse.collector_of_all.description": "Obtain a universal treasure",
+  "command.multiverse.multiverse.no_dimensions": "No multiverse dimensions present.",
+  "command.multiverse.multiverse.indices_header": "Multiverse dimension indices:",
+  "command.multiverse.multiverse.index": "  %s",
+  "command.multiverse.multiverse.out_of_bounds": "Specified index is outside allowed range."
 }
