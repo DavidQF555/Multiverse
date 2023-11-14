@@ -95,17 +95,26 @@ public class RiftConfig implements FeatureConfiguration {
 
     }
 
-    public record Rotation(Vec3 axis, float angle) {
+    public static class Rotation {
 
         public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Vec3.CODEC.fieldOf("axis").forGetter(Rotation::axis),
-                Codec.FLOAT.fieldOf("angle").forGetter(Rotation::angle)
+                Vec3.CODEC.fieldOf("axis").forGetter(Rotation::getAxis),
+                Codec.FLOAT.fieldOf("angle").forGetter(Rotation::getAngle)
         ).apply(builder, Rotation::new));
+        private final Vec3 axis;
+        private final float angle;
 
         public Rotation(Vec3 axis, float angle) {
-            this.axis = axis;
-            this.axis.normalize();
+            this.axis = axis.normalize();
             this.angle = angle;
+        }
+
+        public Vec3 getAxis() {
+            return axis;
+        }
+
+        public float getAngle() {
+            return angle;
         }
 
     }

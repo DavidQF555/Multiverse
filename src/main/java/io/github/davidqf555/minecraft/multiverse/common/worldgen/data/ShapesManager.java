@@ -44,7 +44,7 @@ public class ShapesManager {
 
     public void load(MinecraftServer server) {
         JsonArray values;
-        try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();) {
+        try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader()) {
             values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("shapes");
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
