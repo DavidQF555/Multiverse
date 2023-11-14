@@ -7,8 +7,12 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.EffectsManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.TimesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -102,8 +106,7 @@ public final class DimensionHelper {
         LayeredRegistryAccess<RegistryLayer> registries = server.registries();
         RegistryAccess.ImmutableRegistryAccess composite = (RegistryAccess.ImmutableRegistryAccess) registries.compositeAccess();
         Map<ResourceKey<? extends Registry<?>>, Registry<?>> regmap = new HashMap<>(composite.registries);
-        ResourceKey<? extends Registry<?>> key = ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("root")), new ResourceLocation("dimension"));
-        MappedRegistry<LevelStem> oldRegistry = (MappedRegistry<LevelStem>) regmap.get(key);
+        MappedRegistry<LevelStem> oldRegistry = (MappedRegistry<LevelStem>) regmap.get(Registries.LEVEL_STEM);
         Lifecycle oldLifecycle = oldRegistry.registryLifecycle();
         MappedRegistry<LevelStem> newRegistry = new MappedRegistry<>(Registries.LEVEL_STEM, oldLifecycle, false);
         for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : oldRegistry.entrySet()) {
@@ -115,7 +118,7 @@ public final class DimensionHelper {
             }
         }
         Registry.register(newRegistry, dimensionKey, dimension);
-        regmap.replace(key, newRegistry);
+        regmap.replace(Registries.LEVEL_STEM, newRegistry);
         composite.registries = regmap;
 
         ServerLevel newWorld = new ServerLevel(
@@ -159,16 +162,15 @@ public final class DimensionHelper {
     }
 
     private static ResourceKey<DimensionType> getRandomType(MultiverseShape shape, MultiverseType type, RandomSource rand) {
-        boolean ceiling = shape.hasCeiling();
         Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
-        for (MultiverseTimeType time : MultiverseTimeType.values()) {
-            if (!ceiling || time.isNight()) {
-                for (MultiverseEffectType effect : DimensionEffectsRegistry.getEffects()) {
-                    if (!effect.isNightOnly() || time.isNight()) {
-                        types.put(shape.getTypeKey(type, time, effect), effect.getWeight() * time.getWeight());
-                    }
-                }
-            }
+        Map<MultiverseTime, Integer> times = shape.getFixedTime().map(time -> Map.of(time, 1)).orElseGet(TimesManager.INSTANCE::getTimes);
+        Map<MultiverseEffect, Integer> effects = EffectsManager.INSTANCE.getEffects();
+        for (MultiverseEffect effect : effects.keySet()) {
+            int w = effects.get(effect);
+            times.forEach((time, weight) -> {
+                ResourceKey<DimensionType> key = shape.getTypeKey(type, time, effect);
+                types.put(key, types.getOrDefault(key, 0) + w * weight);
+            });
         }
         int total = types.values().stream().reduce(Integer::sum).orElseThrow();
         int random = rand.nextInt(total);
@@ -217,12 +219,12 @@ public final class DimensionHelper {
     }
 
     private static MultiverseShape randomShape(RandomSource random) {
-        MultiverseShape[] values = MultiverseShape.values();
-        int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
+        Map<MultiverseShape, Integer> shapes = ShapesManager.INSTANCE.getShapes();
+        int totalWeight = shapes.values().stream().mapToInt(Integer::intValue).sum();
         int selected = random.nextInt(totalWeight);
         int current = 0;
-        for (MultiverseShape type : values) {
-            current += type.getWeight();
+        for (MultiverseShape type : shapes.keySet()) {
+            current += shapes.get(type);
             if (selected < current) {
                 return type;
             }

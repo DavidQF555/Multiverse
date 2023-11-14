@@ -37,7 +37,7 @@ import java.util.UUID;
 public class DoppelgangerEntity extends PathfinderMob {
 
     private static final EntityDataAccessor<Optional<UUID>> ORIGINAL = SynchedEntityData.defineId(DoppelgangerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final int TIMEOUT = 600, PARTICLES_COUNT = 50;
+    private static final int TIMEOUT = 600;
     private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final double GEAR_RATE = 0.8;
     private static final float ENCHANT_RATE = 0.5f;
@@ -78,6 +78,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     @Nullable
+    @SuppressWarnings("deprecation")
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawn, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
         populateDefaultEquipmentSlots(random, difficulty);

@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
