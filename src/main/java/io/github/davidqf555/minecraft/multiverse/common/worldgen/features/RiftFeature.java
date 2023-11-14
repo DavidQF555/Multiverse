@@ -92,7 +92,7 @@ public class RiftFeature extends Feature<RiftConfig> {
     }
 
     protected boolean isColliding(Vec3 center, RiftConfig.Rotation rotation, double width, double height, double depth, Vec3 pos) {
-        Vec3 normal = new Vec3(rotation.axis());
+        Vec3 normal = new Vec3(rotation.getAxis());
         Vec3 line = pos.subtract(center);
         Vec3 proj = normal.scale(normal.dot(line));
         if (proj.lengthSqr() > depth * depth) {
@@ -102,7 +102,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         if (cross.lengthSqr() == 0) {
             cross = new Vec3(1, 0, 0);
         }
-        Vec3 horizontal = rotate(cross, normal, rotation.angle());
+        Vec3 horizontal = rotate(cross, normal, rotation.getAngle());
         Vec3 comp = line.subtract(proj);
         Vec3 projWidth = horizontal.scale(horizontal.dot(comp) / horizontal.lengthSqr());
         double compWidth = projWidth.length();

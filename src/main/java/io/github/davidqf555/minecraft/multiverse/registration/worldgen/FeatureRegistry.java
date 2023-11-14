@@ -13,13 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleRandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
@@ -57,8 +54,4 @@ public final class FeatureRegistry {
         return PlacementUtils.inlinePlaced(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockRegistry.KALEIDITE_CLUSTER.get().defaultBlockState().setValue(AmethystClusterBlock.FACING, direction))), SolidPlacement.of(direction.getOpposite(), 4));
     }
 
-    private static <FC extends FeatureConfiguration, F extends Feature<FC>> Holder<PlacedFeature> register(ResourceLocation name, ConfiguredFeature<FC, F> feature, PlacementModifier... placement) {
-        Holder<ConfiguredFeature<?, ?>> placed = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, name, feature);
-        return PlacementUtils.register(name.getPath(), placed, placement);
-    }
 }
