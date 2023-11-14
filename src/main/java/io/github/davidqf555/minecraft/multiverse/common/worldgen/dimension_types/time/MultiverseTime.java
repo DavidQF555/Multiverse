@@ -1,29 +1,40 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.ExtraCodecs;
+import javax.annotation.Nullable;
+import java.util.OptionalLong;
 
-public class MultiverseTime {
+public enum MultiverseTime {
 
-    public static final Codec<MultiverseTime> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            Codec.STRING.xmap(MultiverseTimeType::byName, MultiverseTimeType::getName).fieldOf("type").forGetter(MultiverseTime::getType),
-            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("weight", 1).forGetter(MultiverseTime::getWeight)
-    ).apply(inst, MultiverseTime::new));
-    private final MultiverseTimeType type;
-    private final int weight;
+    DYNAMIC("dynamic", OptionalLong.empty()),
+    DAY("day", OptionalLong.of(6000)),
+    NIGHT("night", OptionalLong.of(18000)),
+    SUNRISE("sunrise", OptionalLong.of(23500)),
+    SUNSET("sunset", OptionalLong.of(12500));
 
-    public MultiverseTime(MultiverseTimeType type, int weight) {
-        this.type = type;
-        this.weight = weight;
+    private final String name;
+    private final OptionalLong time;
+
+    MultiverseTime(String name, OptionalLong time) {
+        this.name = name;
+        this.time = time;
     }
 
-    public MultiverseTimeType getType() {
-        return type;
+    @Nullable
+    public static MultiverseTime byName(String name) {
+        for (MultiverseTime type : values()) {
+            if (type.getName().equals(name)) {
+                return type;
+            }
+        }
+        return null;
     }
 
-    public int getWeight() {
-        return weight;
+    public OptionalLong getTime() {
+        return time;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

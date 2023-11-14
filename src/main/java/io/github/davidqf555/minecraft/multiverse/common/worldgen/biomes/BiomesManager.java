@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class BiomesManager {
 
-    public static final BiomesManager INSTANCE = new BiomesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json"));
+    public static final BiomesManager INSTANCE = new BiomesManager(new ResourceLocation(Multiverse.MOD_ID, "worldgen/multiverse/biomes.json"));
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Set<BiomeType> types = new HashSet<>();

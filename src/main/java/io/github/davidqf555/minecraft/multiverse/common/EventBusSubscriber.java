@@ -8,7 +8,7 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesMa
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.EffectsManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.TimesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelectorManager;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.ShapesManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -34,7 +34,7 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         Registry<NoiseGeneratorSettings> settings = event.getServer().registryAccess().registryOrThrow(Registries.NOISE_SETTINGS);
-        for (MultiverseShapeType shape : MultiverseShapeType.values()) {
+        for (MultiverseShape shape : MultiverseShape.values()) {
             for (MultiverseType type : MultiverseType.values()) {
                 ((IMultiverseNoiseGeneratorSettings) (Object) settings.get(shape.getNoiseSettingsKey(type))).setSettings(shape, type);
             }

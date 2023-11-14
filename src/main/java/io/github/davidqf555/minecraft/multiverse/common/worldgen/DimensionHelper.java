@@ -12,10 +12,9 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.Multiver
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.EffectsManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTime;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTimeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.TimesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.ShapesManager;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -150,7 +149,7 @@ public final class DimensionHelper {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
-        MultiverseShapeType shape = randomShape(random);
+        MultiverseShape shape = randomShape(random);
         RegistryAccess access = server.registryAccess();
         Registry<Biome> biomeRegistry = access.registryOrThrow(Registries.BIOME);
         Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
@@ -164,18 +163,15 @@ public final class DimensionHelper {
         return new LevelStem(dimType, generator);
     }
 
-    private static ResourceKey<DimensionType> getRandomType(MultiverseShapeType shape, MultiverseType type, RandomSource rand) {
+    private static ResourceKey<DimensionType> getRandomType(MultiverseShape shape, MultiverseType type, RandomSource rand) {
         Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
-        Map<MultiverseTimeType, Integer> times = new HashMap<>();
-        shape.getFixedTime().ifPresentOrElse(t -> times.put(t, 1), () -> {
-            for (MultiverseTime time : TimesManager.INSTANCE.getTimes()) {
-                times.put(time.getType(), times.getOrDefault(time.getType(), 0) + time.getWeight());
-            }
-        });
-        for (MultiverseEffect effect : EffectsManager.INSTANCE.getEffects()) {
+        Map<MultiverseTime, Integer> times = shape.getFixedTime().map(time -> Map.of(time, 1)).orElseGet(TimesManager.INSTANCE::getTimes);
+        Map<MultiverseEffect, Integer> effects = EffectsManager.INSTANCE.getEffects();
+        for (MultiverseEffect effect : effects.keySet()) {
+            int w = effects.get(effect);
             times.forEach((time, weight) -> {
-                ResourceKey<DimensionType> key = shape.getTypeKey(type, time, effect.getType());
-                types.put(key, types.getOrDefault(key, 0) + effect.getWeight() * weight);
+                ResourceKey<DimensionType> key = shape.getTypeKey(type, time, effect);
+                types.put(key, types.getOrDefault(key, 0) + w * weight);
             });
         }
         int total = types.values().stream().reduce(Integer::sum).orElseThrow();
@@ -189,7 +185,7 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShapeType shape, Set<ResourceKey<Biome>> biomes) {
+    private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShape shape, Set<ResourceKey<Biome>> biomes) {
         MultiverseBiomes ref = BiomesManager.INSTANCE.getBiomes();
         Registry<Biome> biomeReg = access.registryOrThrow(Registries.BIOME);
         Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registries.DIMENSION_TYPE);
@@ -205,7 +201,7 @@ public final class DimensionHelper {
     }
 
     //needed because depth function has a constant lerp of y from -64 to 320, scaled from 1.5 to -1.5
-    private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShapeType to) {
+    private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShape to) {
         double start = depth.min() / 10000.0;
         double end = depth.max() / 10000.0;
 
@@ -224,15 +220,12 @@ public final class DimensionHelper {
         return Climate.Parameter.span(nStart, nEnd);
     }
 
-    private static MultiverseShapeType randomShape(RandomSource random) {
-        Map<MultiverseShapeType, Integer> shapes = new EnumMap<>(MultiverseShapeType.class);
-        ShapesManager.INSTANCE.getShapes().forEach(shape -> {
-            shapes.put(shape.getType(), shapes.getOrDefault(shape.getType(), 0) + shape.getWeight());
-        });
+    private static MultiverseShape randomShape(RandomSource random) {
+        Map<MultiverseShape, Integer> shapes = ShapesManager.INSTANCE.getShapes();
         int totalWeight = shapes.values().stream().mapToInt(Integer::intValue).sum();
         int selected = random.nextInt(totalWeight);
         int current = 0;
-        for (MultiverseShapeType type : shapes.keySet()) {
+        for (MultiverseShape type : shapes.keySet()) {
             current += shapes.get(type);
             if (selected < current) {
                 return type;

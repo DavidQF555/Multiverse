@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 import com.google.common.collect.ImmutableSet;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -63,7 +63,7 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public SurfaceRules.RuleSource createSurface(MultiverseShapeType shape, MultiverseType type) {
+    public SurfaceRules.RuleSource createSurface(MultiverseShape shape, MultiverseType type) {
         boolean ceiling = shape.hasCeiling();
         boolean floor = shape.hasFloor();
         return switch (type) {
