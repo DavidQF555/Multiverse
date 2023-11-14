@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public final class MultiverseCommand {
@@ -30,6 +31,7 @@ public final class MultiverseCommand {
     private static final Component NO_DIMENSIONS = new TranslatableComponent(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.no_dimensions")));
     private static final Component INDICES_HEADER = new TranslatableComponent(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.indices_header")));
     private static final String INDEX = Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.index"));
+    private static final String OUT_OF_BOUNDS = Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.out_of_bounds"));
 
     private MultiverseCommand() {
     }
@@ -41,7 +43,7 @@ public final class MultiverseCommand {
                         .executes(context -> list(context.getSource()))
                 )
                 .then(Commands.literal("teleport")
-                        .then(Commands.argument("index", IntegerArgumentType.integer(0, ServerConfigs.INSTANCE.maxDimensions.get()))
+                        .then(Commands.argument("index", IntegerArgumentType.integer(0))
                                 .executes(context -> teleport(context.getSource(), IntegerArgumentType.getInteger(context, "index")))
                         )
                 )
@@ -67,7 +69,12 @@ public final class MultiverseCommand {
 
     private static int teleport(CommandSourceStack stack, int index) throws CommandSyntaxException {
         Entity entity = stack.getEntityOrException();
-        ServerLevel world = DimensionHelper.getOrCreateWorld(stack.getServer(), index);
+        Optional<ServerLevel> op = DimensionHelper.getWorld(stack.getServer(), index);
+        if (op.isEmpty() && index > ServerConfigs.INSTANCE.maxDimensions.get()) {
+            stack.sendFailure(new TranslatableComponent(OUT_OF_BOUNDS, index, ServerConfigs.INSTANCE.maxDimensions.get()));
+            return 0;
+        }
+        ServerLevel world = op.orElseGet(() -> DimensionHelper.getOrCreateWorld(stack.getServer(), index));
         Vec3 pos = DimensionHelper.translate(entity.position(), entity.level.dimensionType(), world.dimensionType(), true);
         world.getChunkAt(new BlockPos(pos));
         entity.changeDimension(world, new ITeleporter() {
