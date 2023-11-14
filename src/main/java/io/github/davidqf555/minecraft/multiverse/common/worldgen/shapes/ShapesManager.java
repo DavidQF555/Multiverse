@@ -42,13 +42,12 @@ public class ShapesManager {
     }
 
     public void load(MinecraftServer server) {
-        Reader reader;
-        try {
-            reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();
+        JsonArray values;
+        try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();) {
+            values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("shapes");
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("shapes");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
         shapes.clear();
         for (JsonElement type : values) {

@@ -42,14 +42,12 @@ public class EffectsManager {
     }
 
     public void load(MinecraftServer server) {
-        Reader reader;
-
-        try {
-            reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();
+        JsonArray values;
+        try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader()) {
+            values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("effects");
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("effects");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
         effects.clear();
         for (JsonElement type : values) {

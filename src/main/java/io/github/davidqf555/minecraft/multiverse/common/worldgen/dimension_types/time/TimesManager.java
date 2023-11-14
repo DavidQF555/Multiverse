@@ -42,14 +42,12 @@ public class TimesManager {
     }
 
     public void load(MinecraftServer server) {
-        Reader reader;
-
-        try {
-            reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();
+        JsonArray values;
+        try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader()) {
+            values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("times");
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("times");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
         times.clear();
         for (JsonElement type : values) {
