@@ -15,6 +15,8 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTimeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.TimesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.ShapesManager;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -148,7 +150,7 @@ public final class DimensionHelper {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         long seed = getSeed(overworld.getSeed(), index, false);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
-        MultiverseShape shape = randomShape(random);
+        MultiverseShapeType shape = randomShape(random);
         RegistryAccess access = server.registryAccess();
         Registry<Biome> biomeRegistry = access.registryOrThrow(Registries.BIOME);
         Pair<MultiverseType, Set<ResourceKey<Biome>>> pair = randomBiomes(biomeRegistry, random);
@@ -162,7 +164,7 @@ public final class DimensionHelper {
         return new LevelStem(dimType, generator);
     }
 
-    private static ResourceKey<DimensionType> getRandomType(MultiverseShape shape, MultiverseType type, RandomSource rand) {
+    private static ResourceKey<DimensionType> getRandomType(MultiverseShapeType shape, MultiverseType type, RandomSource rand) {
         Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
         Map<MultiverseTimeType, Integer> times = new HashMap<>();
         shape.getFixedTime().ifPresentOrElse(t -> times.put(t, 1), () -> {
@@ -187,7 +189,7 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShape shape, Set<ResourceKey<Biome>> biomes) {
+    private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShapeType shape, Set<ResourceKey<Biome>> biomes) {
         MultiverseBiomes ref = BiomesManager.INSTANCE.getBiomes();
         Registry<Biome> biomeReg = access.registryOrThrow(Registries.BIOME);
         Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registries.DIMENSION_TYPE);
@@ -203,7 +205,7 @@ public final class DimensionHelper {
     }
 
     //needed because depth function has a constant lerp of y from -64 to 320, scaled from 1.5 to -1.5
-    private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShape to) {
+    private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShapeType to) {
         double start = depth.min() / 10000.0;
         double end = depth.max() / 10000.0;
 
@@ -222,13 +224,16 @@ public final class DimensionHelper {
         return Climate.Parameter.span(nStart, nEnd);
     }
 
-    private static MultiverseShape randomShape(RandomSource random) {
-        MultiverseShape[] values = MultiverseShape.values();
-        int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
+    private static MultiverseShapeType randomShape(RandomSource random) {
+        Map<MultiverseShapeType, Integer> shapes = new EnumMap<>(MultiverseShapeType.class);
+        ShapesManager.INSTANCE.getShapes().forEach(shape -> {
+            shapes.put(shape.getType(), shapes.getOrDefault(shape.getType(), 0) + shape.getWeight());
+        });
+        int totalWeight = shapes.values().stream().mapToInt(Integer::intValue).sum();
         int selected = random.nextInt(totalWeight);
         int current = 0;
-        for (MultiverseShape type : values) {
-            current += type.getWeight();
+        for (MultiverseShapeType type : shapes.keySet()) {
+            current += shapes.get(type);
             if (selected < current) {
                 return type;
             }

@@ -3,12 +3,13 @@ package io.github.davidqf555.minecraft.multiverse.common;
 import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.EffectsManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.TimesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelectorManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.ShapesManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -33,7 +34,7 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         Registry<NoiseGeneratorSettings> settings = event.getServer().registryAccess().registryOrThrow(Registries.NOISE_SETTINGS);
-        for (MultiverseShape shape : MultiverseShape.values()) {
+        for (MultiverseShapeType shape : MultiverseShapeType.values()) {
             for (MultiverseType type : MultiverseType.values()) {
                 ((IMultiverseNoiseGeneratorSettings) (Object) settings.get(shape.getNoiseSettingsKey(type))).setSettings(shape, type);
             }
@@ -45,6 +46,7 @@ public final class EventBusSubscriber {
         BiomesManager.INSTANCE.load(event.getServer());
         EffectsManager.INSTANCE.load(event.getServer());
         TimesManager.INSTANCE.load(event.getServer());
+        ShapesManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent

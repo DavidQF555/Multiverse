@@ -2,10 +2,10 @@ package io.github.davidqf555.minecraft.multiverse.datagen;
 
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffectType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTimeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -39,7 +39,7 @@ public final class DataGenRegistry {
     }
 
     private static void registerNoiseGeneratorSettings(BootstapContext<NoiseGeneratorSettings> context) {
-        for (MultiverseShape shape : MultiverseShape.values()) {
+        for (MultiverseShapeType shape : MultiverseShapeType.values()) {
             for (MultiverseType type : MultiverseType.values()) {
                 context.register(shape.getNoiseSettingsKey(type), shape.createNoiseSettings(context, type));
             }
@@ -48,7 +48,7 @@ public final class DataGenRegistry {
 
     private static Map<ResourceLocation, DimensionType> getDimensionTypes() {
         Map<ResourceLocation, DimensionType> types = new HashMap<>();
-        for (MultiverseShape shape : MultiverseShape.values()) {
+        for (MultiverseShapeType shape : MultiverseShapeType.values()) {
             Set<MultiverseTimeType> times = shape.getFixedTime().map(Set::of).orElseGet(() -> EnumSet.allOf(MultiverseTimeType.class));
             for (MultiverseType type : MultiverseType.values()) {
                 for (MultiverseTimeType time : times) {

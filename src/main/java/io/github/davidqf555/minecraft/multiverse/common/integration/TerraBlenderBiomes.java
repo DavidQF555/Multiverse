@@ -1,10 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
@@ -76,7 +76,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public SurfaceRules.RuleSource createSurface(MultiverseShape shape, MultiverseType type) {
+    public SurfaceRules.RuleSource createSurface(MultiverseShapeType shape, MultiverseType type) {
         boolean ceiling = shape.hasCeiling();
         boolean floor = shape.hasFloor();
         return switch (type) {

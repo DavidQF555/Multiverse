@@ -1,7 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
+
 public interface IMultiverseNoiseGeneratorSettings {
 
-    void setSettings(MultiverseShape shape, MultiverseType type);
+    void setSettings(MultiverseShapeType shape, MultiverseType type);
 
 }

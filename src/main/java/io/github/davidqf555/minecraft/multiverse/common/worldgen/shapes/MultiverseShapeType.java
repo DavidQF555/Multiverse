@@ -1,6 +1,7 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffectType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTimeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.FlatSeaLevelSelector;
@@ -17,27 +18,27 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.*;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public enum MultiverseShape {
+public enum MultiverseShapeType {
 
-    NORMAL(1, "normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false), Optional.empty()),
-    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), Optional.empty()),
-    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), Optional.of(MultiverseTimeType.NIGHT));
+    NORMAL("normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false), Optional.empty()),
+    ISLANDS("islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), Optional.empty()),
+    ROOFED("roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), Optional.of(MultiverseTimeType.NIGHT));
 
     private final String name;
     private final NoiseSettings noise;
     private final Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router;
     private final float light;
     private final boolean floor, ceiling;
-    private final int height, weight, minY;
+    private final int height, minY;
     private final Optional<MultiverseTimeType> fixedTime;
     private SeaLevelSelector sea = new FlatSeaLevelSelector(IntRange.of(0, 0));
 
-    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, Optional<MultiverseTimeType> fixedTime) {
-        this.weight = weight;
+    MultiverseShapeType(String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, Optional<MultiverseTimeType> fixedTime) {
         this.minY = minY;
         this.name = name;
         this.floor = floor;
@@ -47,6 +48,16 @@ public enum MultiverseShape {
         this.router = router;
         this.fixedTime = fixedTime;
         noise = NoiseSettings.create(this.minY, this.height, sizeHorizontal, sizeVertical);
+    }
+
+    @Nullable
+    public static MultiverseShapeType byName(String name) {
+        for (MultiverseShapeType type : values()) {
+            if (type.getName().equals(name)) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public int getMinY() {
@@ -83,10 +94,6 @@ public enum MultiverseShape {
 
     public int getHeight() {
         return height;
-    }
-
-    public int getWeight() {
-        return weight;
     }
 
     public SerializableFluidPicker getSea(BlockState block, long seed, int index) {

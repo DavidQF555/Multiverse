@@ -1,0 +1,13 @@
+{
+  "shapes": [
+    {
+      "type": "normal"
+    },
+    {
+      "type": "islands"
+    },
+    {
+      "type": "roofed"
+    }
+  ]
+}

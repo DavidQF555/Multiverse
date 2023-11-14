@@ -1,9 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.mixin;
 
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinNoiseGeneratorSettings implements IMultiverseNoiseGeneratorSettings {
 
     private SurfaceRules.RuleSource surface;
-    private MultiverseShape shape;
+    private MultiverseShapeType shape;
     private MultiverseType type;
 
     @Inject(method = {"surfaceRule"}, at = {@At("HEAD")}, cancellable = true)
@@ -29,7 +29,7 @@ public class MixinNoiseGeneratorSettings implements IMultiverseNoiseGeneratorSet
     }
 
     @Override
-    public void setSettings(MultiverseShape shape, MultiverseType type) {
+    public void setSettings(MultiverseShapeType shape, MultiverseType type) {
         this.shape = shape;
         this.type = type;
     }

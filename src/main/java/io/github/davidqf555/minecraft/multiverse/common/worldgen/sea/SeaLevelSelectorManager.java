@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShapeType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -28,10 +28,10 @@ public class SeaLevelSelectorManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> elements, ResourceManager manager, ProfilerFiller filler) {
-        Set<MultiverseShape> shapes = EnumSet.allOf(MultiverseShape.class);
+        Set<MultiverseShapeType> shapes = EnumSet.allOf(MultiverseShapeType.class);
         elements.forEach((loc, element) -> {
             if (loc.getNamespace().equals(Multiverse.MOD_ID)) {
-                for (MultiverseShape shape : shapes) {
+                for (MultiverseShapeType shape : shapes) {
                     if (loc.getPath().equals(shape.getName())) {
                         SeaLevelSelector selector = SeaLevelSelector.CODEC.get().decode(JsonOps.INSTANCE, element).getOrThrow(true, LOGGER::error).getFirst();
                         shape.setSeaLevelSelector(selector);
@@ -42,7 +42,7 @@ public class SeaLevelSelectorManager extends SimpleJsonResourceReloadListener {
                 LOGGER.warn("Could not find shape: {}", loc.getPath());
             }
         });
-        for (MultiverseShape shape : shapes) {
+        for (MultiverseShapeType shape : shapes) {
             LOGGER.error("Could not find sea level selector for {}", shape.getName());
         }
     }
