@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import javax.annotation.Nullable;
 import java.util.OptionalLong;

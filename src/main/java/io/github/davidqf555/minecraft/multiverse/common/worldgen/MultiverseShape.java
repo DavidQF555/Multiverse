@@ -1,9 +1,7 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffect;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTime;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.FlatSeaLevelSelector;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.IntRange;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelector;

@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,8 +9,8 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseTime;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;

@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.effects;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.resources.ResourceLocation;

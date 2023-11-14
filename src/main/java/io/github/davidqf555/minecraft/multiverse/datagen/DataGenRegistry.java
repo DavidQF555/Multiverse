@@ -2,10 +2,10 @@ package io.github.davidqf555.minecraft.multiverse.datagen;
 
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseTime;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffect;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTime;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffect;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;

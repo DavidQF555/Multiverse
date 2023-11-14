@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,6 +8,9 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;

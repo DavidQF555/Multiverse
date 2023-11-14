@@ -4,7 +4,6 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.BiomeSource;
