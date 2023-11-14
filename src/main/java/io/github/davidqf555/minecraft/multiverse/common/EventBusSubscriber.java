@@ -5,7 +5,10 @@ import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.EffectsManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.TimesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelectorManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -40,7 +43,10 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
+        ShapesManager.INSTANCE.load(event.getServer());
         BiomesManager.INSTANCE.load(event.getServer());
+        TimesManager.INSTANCE.load(event.getServer());
+        EffectsManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent
