@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.effects;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,20 +19,20 @@ import java.io.Reader;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EffectsManager {
+public class TimesManager {
 
-    public static final EffectsManager INSTANCE = new EffectsManager(new ResourceLocation(Multiverse.MOD_ID, "effects.json"));
+    public static final TimesManager INSTANCE = new TimesManager(new ResourceLocation(Multiverse.MOD_ID, "times.json"));
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final Set<MultiverseEffect> effects = new HashSet<>();
+    private final Set<MultiverseTime> times = new HashSet<>();
     private final ResourceLocation loc;
 
-    protected EffectsManager(ResourceLocation loc) {
+    protected TimesManager(ResourceLocation loc) {
         this.loc = loc;
     }
 
-    public Set<MultiverseEffect> getEffects() {
-        return effects;
+    public Set<MultiverseTime> getTimes() {
+        return times;
     }
 
     public void load(MinecraftServer server) {
@@ -43,16 +43,16 @@ public class EffectsManager {
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("effects");
+        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("times");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
-        effects.clear();
+        times.clear();
         for (JsonElement type : values) {
-            MultiverseEffect.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(effects::add);
+            MultiverseTime.CODEC.decode(ops, type).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(times::add);
         }
-        if (effects.isEmpty()) {
-            throw new IllegalStateException("There cannot be 0 effects");
+        if (times.isEmpty()) {
+            throw new IllegalStateException("There cannot be 0 times");
         }
-        if (effects.stream().mapToInt(MultiverseEffect::getWeight).sum() <= 0) {
+        if (times.stream().mapToInt(MultiverseTime::getWeight).sum() <= 0) {
             throw new IllegalStateException("Total weight must be greater than 0");
         }
     }

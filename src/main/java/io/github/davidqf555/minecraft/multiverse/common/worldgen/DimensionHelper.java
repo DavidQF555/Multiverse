@@ -9,8 +9,11 @@ import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDime
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.EffectsManager;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffect;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.EffectsManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffect;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTime;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTimeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.TimesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -160,14 +163,18 @@ public final class DimensionHelper {
     }
 
     private static ResourceKey<DimensionType> getRandomType(MultiverseShape shape, MultiverseType type, RandomSource rand) {
-        boolean ceiling = shape.hasCeiling();
         Map<ResourceKey<DimensionType>, Integer> types = new HashMap<>();
-        for (MultiverseTimeType time : MultiverseTimeType.values()) {
-            if (!ceiling || time.isNight()) {
-                for (MultiverseEffect effect : EffectsManager.INSTANCE.getEffects()) {
-                    types.put(shape.getTypeKey(type, time, effect.getType()), effect.getWeight() * time.getWeight());
-                }
+        Map<MultiverseTimeType, Integer> times = new HashMap<>();
+        shape.getFixedTime().ifPresentOrElse(t -> times.put(t, 1), () -> {
+            for (MultiverseTime time : TimesManager.INSTANCE.getTimes()) {
+                times.put(time.getType(), times.getOrDefault(time.getType(), 0) + time.getWeight());
             }
+        });
+        for (MultiverseEffect effect : EffectsManager.INSTANCE.getEffects()) {
+            times.forEach((time, weight) -> {
+                ResourceKey<DimensionType> key = shape.getTypeKey(type, time, effect.getType());
+                types.put(key, types.getOrDefault(key, 0) + effect.getWeight() * weight);
+            });
         }
         int total = types.values().stream().reduce(Integer::sum).orElseThrow();
         int random = rand.nextInt(total);

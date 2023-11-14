@@ -5,7 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.client.effects.ColoredFogEffect
 import io.github.davidqf555.minecraft.multiverse.client.render.*;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.DimensionEffectsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.item.ItemProperties;

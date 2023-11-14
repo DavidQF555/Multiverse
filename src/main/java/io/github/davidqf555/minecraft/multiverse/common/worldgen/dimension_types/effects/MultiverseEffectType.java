@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.effects;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;

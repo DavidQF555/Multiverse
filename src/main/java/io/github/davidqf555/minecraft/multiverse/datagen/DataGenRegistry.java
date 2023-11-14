@@ -3,9 +3,9 @@ package io.github.davidqf555.minecraft.multiverse.datagen;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseTimeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.MultiverseEffectType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.effects.MultiverseEffectType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.dimension_types.time.MultiverseTimeType;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -20,6 +20,7 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -48,12 +49,11 @@ public final class DataGenRegistry {
     private static Map<ResourceLocation, DimensionType> getDimensionTypes() {
         Map<ResourceLocation, DimensionType> types = new HashMap<>();
         for (MultiverseShape shape : MultiverseShape.values()) {
+            Set<MultiverseTimeType> times = shape.getFixedTime().map(Set::of).orElseGet(() -> EnumSet.allOf(MultiverseTimeType.class));
             for (MultiverseType type : MultiverseType.values()) {
-                for (MultiverseTimeType time : MultiverseTimeType.values()) {
-                    if (!shape.hasCeiling() || time.isNight()) {
-                        for (MultiverseEffectType effect : MultiverseEffectType.values()) {
-                            types.put(shape.getTypeKey(type, time, effect).location(), shape.createDimensionType(type, time, effect));
-                        }
+                for (MultiverseTimeType time : times) {
+                    for (MultiverseEffectType effect : MultiverseEffectType.values()) {
+                        types.put(shape.getTypeKey(type, time, effect).location(), shape.createDimensionType(type, time, effect));
                     }
                 }
             }

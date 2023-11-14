@@ -1,0 +1,22 @@
+{
+  "times": [
+    {
+      "type": "dynamic",
+      "weight": 8
+    },
+    {
+      "type": "day",
+      "weight": 3
+    },
+    {
+      "type": "night",
+      "weight": 3
+    },
+    {
+      "type": "sunrise"
+    },
+    {
+      "type": "sunset"
+    }
+  ]
+}
