@@ -43,10 +43,10 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        BiomesManager.INSTANCE.load(event.getServer());
-        EffectsManager.INSTANCE.load(event.getServer());
-        TimesManager.INSTANCE.load(event.getServer());
         ShapesManager.INSTANCE.load(event.getServer());
+        BiomesManager.INSTANCE.load(event.getServer());
+        TimesManager.INSTANCE.load(event.getServer());
+        EffectsManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent

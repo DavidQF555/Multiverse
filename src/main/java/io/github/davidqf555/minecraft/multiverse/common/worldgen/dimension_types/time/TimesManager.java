@@ -9,6 +9,8 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.shapes.ShapesManager;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class TimesManager {
 
@@ -42,6 +45,9 @@ public class TimesManager {
     }
 
     public void load(MinecraftServer server) {
+        if (ShapesManager.INSTANCE.getShapes().entrySet().stream().filter(entry -> entry.getValue() > 0).map(Map.Entry::getKey).map(MultiverseShape::getFixedTime).allMatch(Optional::isPresent)) {
+            return;
+        }
         JsonArray values;
         try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader()) {
             values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("times");
