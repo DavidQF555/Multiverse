@@ -106,8 +106,7 @@ public final class DimensionHelper {
         LayeredRegistryAccess<RegistryLayer> registries = server.registries();
         RegistryAccess.ImmutableRegistryAccess composite = (RegistryAccess.ImmutableRegistryAccess) registries.compositeAccess();
         Map<ResourceKey<? extends Registry<?>>, Registry<?>> regmap = new HashMap<>(composite.registries);
-        ResourceKey<? extends Registry<?>> key = ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("root")), new ResourceLocation("dimension"));
-        MappedRegistry<LevelStem> oldRegistry = (MappedRegistry<LevelStem>) regmap.get(key);
+        MappedRegistry<LevelStem> oldRegistry = (MappedRegistry<LevelStem>) regmap.get(Registries.LEVEL_STEM);
         Lifecycle oldLifecycle = oldRegistry.registryLifecycle();
         MappedRegistry<LevelStem> newRegistry = new MappedRegistry<>(Registries.LEVEL_STEM, oldLifecycle, false);
         for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : oldRegistry.entrySet()) {
@@ -119,7 +118,7 @@ public final class DimensionHelper {
             }
         }
         Registry.register(newRegistry, dimensionKey, dimension);
-        regmap.replace(key, newRegistry);
+        regmap.replace(Registries.LEVEL_STEM, newRegistry);
         composite.registries = regmap;
 
         ServerLevel newWorld = new ServerLevel(
