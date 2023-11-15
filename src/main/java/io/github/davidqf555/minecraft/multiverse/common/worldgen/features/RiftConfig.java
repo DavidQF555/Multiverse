@@ -1,13 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ public class RiftConfig implements FeatureConfiguration {
     }
 
     public static RiftConfig of(Optional<Integer> target, BlockState block, boolean natural) {
-        return new RiftConfig(target, block, natural, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()), Optional.empty());
+        return new RiftConfig(target, block, natural, new Size(1, 3, 6, 10), Optional.empty());
     }
 
     public static RiftConfig fixed(Optional<Integer> target, BlockState block, boolean natural, double width, double height, Optional<Rotation> rotation) {
@@ -60,9 +59,9 @@ public class RiftConfig implements FeatureConfiguration {
 
     public Rotation getRotation(RandomSource rand) {
         return rotation.orElseGet(() -> {
-            Vector3f axis = new Vector3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
-            if (!axis.normalize()) {
-                axis = Vector3f.YP;
+            Vec3 axis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()).normalize();
+            if (axis.lengthSqr() == 0) {
+                axis = new Vec3(0, 1, 0);
             }
             return new Rotation(axis, rand.nextFloat() * 180);
         });
@@ -99,20 +98,18 @@ public class RiftConfig implements FeatureConfiguration {
     public static class Rotation {
 
         public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Vector3f.CODEC.fieldOf("axis").forGetter(Rotation::getAxis),
+                Vec3.CODEC.fieldOf("axis").forGetter(Rotation::getAxis),
                 Codec.FLOAT.fieldOf("angle").forGetter(Rotation::getAngle)
         ).apply(builder, Rotation::new));
-
-        private final Vector3f axis;
+        private final Vec3 axis;
         private final float angle;
 
-        public Rotation(Vector3f axis, float angle) {
-            this.axis = axis;
-            this.axis.normalize();
+        public Rotation(Vec3 axis, float angle) {
+            this.axis = axis.normalize();
             this.angle = angle;
         }
 
-        public Vector3f getAxis() {
+        public Vec3 getAxis() {
             return axis;
         }
 

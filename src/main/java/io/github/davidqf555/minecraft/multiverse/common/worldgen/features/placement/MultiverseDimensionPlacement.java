@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class MultiverseDimensionPlacement extends PlacementModifier {
 
-    public static final MultiverseDimensionPlacement INSTANCE = new MultiverseDimensionPlacement();
+    private static final MultiverseDimensionPlacement INSTANCE = new MultiverseDimensionPlacement();
     public static final Codec<MultiverseDimensionPlacement> CODEC = Codec.unit(INSTANCE);
 
     @Override

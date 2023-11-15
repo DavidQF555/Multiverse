@@ -13,6 +13,10 @@
       "weight": 6
     },
     {
+      "biomes": "#is_end",
+      "weight": 6
+    },
+    {
       "biomes": "#is_forest",
       "weight": 6
     },
@@ -37,7 +41,15 @@
       "weight": 6
     },
     {
+      "biomes": "#is_overworld",
+      "weight": 6
+    },
+    {
       "biomes": "#is_river",
+      "weight": 6
+    },
+    {
+      "biomes": "#is_savanna",
       "weight": 6
     },
     {
@@ -75,7 +87,7 @@
       "biomes": "#forge:is_wet/overworld"
     },
     {
-      "biomes": "#forge:is_beach",
+      "biomes": "#forge:is_cave",
       "weight": 6
     },
     {
@@ -91,12 +103,12 @@
       "weight": 5
     },
     {
-      "biomes": "#forge:is_dry",
-      "weight": 3
+      "biomes": "#forge:is_desert",
+      "weight": 6
     },
     {
-      "biomes": "#forge:is_end",
-      "weight": 6
+      "biomes": "#forge:is_dry",
+      "weight": 3
     },
     {
       "biomes": "#forge:is_hot",
@@ -107,11 +119,11 @@
       "weight": 6
     },
     {
-      "biomes": "#forge:is_mushroom",
+      "biomes": "#forge:is_mountain",
       "weight": 6
     },
     {
-      "biomes": "#forge:is_overworld",
+      "biomes": "#forge:is_mushroom",
       "weight": 6
     },
     {
@@ -132,10 +144,6 @@
     },
     {
       "biomes": "#forge:is_sandy",
-      "weight": 6
-    },
-    {
-      "biomes": "#forge:is_savanna",
       "weight": 6
     },
     {

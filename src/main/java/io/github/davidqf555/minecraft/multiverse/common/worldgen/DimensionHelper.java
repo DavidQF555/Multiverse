@@ -6,8 +6,11 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.EffectsManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -124,9 +127,10 @@ public final class DimensionHelper {
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
         BiomeSource provider = new MultiNoiseBiomeSource(getBiomeParameters(access, type, shape, biomes));
-        ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
+        ResourceLocation effect = randomEffect(random);
         Holder<DimensionType> dimType = createDimensionType(shape, type, time, effect, lighting);
-        ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, shape, index);
+        SerializableFluidPicker fluid = shape.getSea(type.getDefaultFluid(), seed, index);
+        ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, settings, shape, fluid);
         return new LevelStem(dimType, generator);
     }
 
@@ -171,12 +175,12 @@ public final class DimensionHelper {
     }
 
     private static MultiverseShape randomShape(RandomSource random) {
-        MultiverseShape[] values = MultiverseShape.values();
-        int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
+        Map<MultiverseShape, Integer> shapes = ShapesManager.INSTANCE.getShapes();
+        int totalWeight = shapes.values().stream().mapToInt(Integer::intValue).sum();
         int selected = random.nextInt(totalWeight);
         int current = 0;
-        for (MultiverseShape type : values) {
-            current += type.getWeight();
+        for (MultiverseShape type : shapes.keySet()) {
+            current += shapes.get(type);
             if (selected < current) {
                 return type;
             }
@@ -238,14 +242,15 @@ public final class DimensionHelper {
         return OptionalLong.empty();
     }
 
-    private static ResourceLocation randomEffect(boolean night, RandomSource random) {
-        MultiverseEffectType[] types = MultiverseEffectType.getTypes().stream().filter(type -> !type.isNightOnly() || night).toArray(MultiverseEffectType[]::new);
-        int total = Arrays.stream(types).mapToInt(MultiverseEffectType::getWeight).sum();
-        int rand = random.nextInt(total);
-        for (MultiverseEffectType type : types) {
-            total -= type.getWeight();
-            if (rand >= total) {
-                return type.getLocation();
+    private static ResourceLocation randomEffect(RandomSource random) {
+        Map<ResourceLocation, Integer> effects = EffectsManager.INSTANCE.getEffects();
+        int totalWeight = effects.values().stream().mapToInt(Integer::intValue).sum();
+        int selected = random.nextInt(totalWeight);
+        int current = 0;
+        for (ResourceLocation type : effects.keySet()) {
+            current += effects.get(type);
+            if (selected < current) {
+                return type;
             }
         }
         throw new RuntimeException();

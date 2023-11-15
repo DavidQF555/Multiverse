@@ -4,21 +4,19 @@ import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseExistingData;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
-import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
-import net.minecraft.core.Holder;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.EffectsManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelectorManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -30,13 +28,6 @@ import net.minecraftforge.fml.common.Mod;
 public final class EventBusSubscriber {
 
     private EventBusSubscriber() {
-    }
-
-    @SubscribeEvent
-    public static void onBiomeLoading(BiomeLoadingEvent event) {
-        event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, Holder.direct(FeatureRegistry.PLACED_RIFT.get()));
-        event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, Holder.direct(FeatureRegistry.KALEIDITE_CLUSTER.get()));
-        event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityRegistry.TRAVELER.get(), 1, 1, 1));
     }
 
     @SubscribeEvent
@@ -53,7 +44,14 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
+        ShapesManager.INSTANCE.load(event.getServer());
         BiomesManager.INSTANCE.load(event.getServer());
+        EffectsManager.INSTANCE.load(event.getServer());
+    }
+
+    @SubscribeEvent
+    public static void onAddReloadListener(AddReloadListenerEvent event) {
+        event.addListener(SeaLevelSelectorManager.INSTANCE);
     }
 
     @SubscribeEvent

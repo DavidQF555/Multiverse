@@ -1,20 +1,7 @@
 {
-  "replace": false,
   "values": [
-    "trident",
-    "wooden_sword",
-    "iron_sword",
-    "golden_sword",
-    "diamond_sword",
-    "netherite_sword",
-    "wooden_axe",
-    "iron_axe",
-    "golden_axe",
-    "diamond_axe",
-    "netherite_axe",
-    "multiverse:kaleidite_axe",
-    "multiverse:kaleidite_sword",
-    "multiverse:prismatic_axe",
-    "multiverse:prismatic_sword"
+    "#axes",
+    "#swords",
+    "#forge:tools/tridents"
   ]
 }

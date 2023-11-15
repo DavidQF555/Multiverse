@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#multiverse:multiverse",
+  "features": "multiverse:kaleidite_cluster",
+  "step": "local_modifications"
+}

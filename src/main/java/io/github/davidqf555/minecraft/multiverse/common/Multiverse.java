@@ -1,10 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.registration.*;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.NoiseSettingsRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,8 +39,11 @@ public class Multiverse {
         TileEntityRegistry.TYPES.register(bus);
         ParticleTypeRegistry.TYPES.register(bus);
         PlacementRegistry.TYPES.register(bus);
-        FeatureRegistry.PLACED.register(bus);
         ChunkGeneratorRegistry.GENERATORS.register(bus);
         NoiseSettingsRegistry.SETTINGS.register(bus);
+        BiomeModifierRegistry.SERIALIZERS.register(bus);
+        SerializableFluidPickerRegistry.CODECS.register(bus);
+        SeaLevelSelectorRegistry.CODECS.register(bus);
     }
+
 }

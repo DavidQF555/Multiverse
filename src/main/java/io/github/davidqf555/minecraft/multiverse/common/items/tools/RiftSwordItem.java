@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.items.tools;
 
-import com.mojang.math.Vector3f;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
@@ -39,7 +38,7 @@ public class RiftSwordItem extends SwordItem {
     public static boolean slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, Optional<Integer> target) {
         look = look.normalize();
         BlockPos center = new BlockPos(start.add(look.scale(dist)));
-        RiftConfig.Rotation rotation = new RiftConfig.Rotation(new Vector3f(look), angle);
+        RiftConfig.Rotation rotation = new RiftConfig.Rotation(look, angle);
         return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(target, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
     }
 

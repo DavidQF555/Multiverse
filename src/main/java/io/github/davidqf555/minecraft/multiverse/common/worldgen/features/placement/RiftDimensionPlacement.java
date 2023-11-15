@@ -15,8 +15,11 @@ import java.util.stream.Stream;
 
 public class RiftDimensionPlacement extends PlacementModifier {
 
-    public static final RiftDimensionPlacement INSTANCE = new RiftDimensionPlacement();
-    public static final Codec<RiftDimensionPlacement> CODEC = Codec.unit(INSTANCE);
+    private static final RiftDimensionPlacement INSTANCE = new RiftDimensionPlacement();
+    public static final Codec<RiftDimensionPlacement> CODEC = Codec.unit(() -> INSTANCE);
+
+    protected RiftDimensionPlacement() {
+    }
 
     @Override
     public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {

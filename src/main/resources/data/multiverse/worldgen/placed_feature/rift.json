@@ -1,0 +1,30 @@
+{
+  "feature": "multiverse:rift",
+  "placement": [
+    {
+      "type": "multiverse:rift_dimension"
+    },
+    {
+      "type": "height_range",
+      "height": {
+        "type": "uniform",
+        "min_inclusive": {
+          "above_bottom": 0
+        },
+        "max_inclusive": {
+          "below_top": 0
+        }
+      }
+    },
+    {
+      "type": "rarity_filter",
+      "chance": 50
+    },
+    {
+      "type": "in_square"
+    },
+    {
+      "type": "biome"
+    }
+  ]
+}

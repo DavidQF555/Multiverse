@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,6 +8,9 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -21,7 +24,7 @@ import java.util.Set;
 
 public class BiomesManager {
 
-    public static final BiomesManager INSTANCE = new BiomesManager(new ResourceLocation(Multiverse.MOD_ID, "biome_types.json"));
+    public static final BiomesManager INSTANCE = new BiomesManager(new ResourceLocation(Multiverse.MOD_ID, "worldgen/multiverse/biomes.json"));
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Set<BiomeType> types = new HashSet<>();
@@ -45,13 +48,12 @@ public class BiomesManager {
     }
 
     public void load(MinecraftServer server) {
-        Reader reader;
-        try {
-            reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();
+        JsonArray values;
+        try (Reader reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader()) {
+            values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("types");
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("types");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
         types.clear();
         for (JsonElement type : values) {
