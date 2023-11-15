@@ -15,10 +15,7 @@ import terrablender.api.Regions;
 import terrablender.api.SurfaceRuleManager;
 import terrablender.worldgen.surface.NamespacedSurfaceRuleSource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TerraBlenderBiomes implements MultiverseBiomes {
@@ -28,23 +25,33 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     private final List<SurfaceRules.RuleSource> nether;
     private final Set<ResourceKey<Biome>> overworldBiomes;
     private final Set<ResourceKey<Biome>> netherBiomes;
-    private final Map<ResourceKey<Biome>, Climate.ParameterPoint> parameters = new HashMap<>();
+    private final Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> parameters = new HashMap<>();
 
     public TerraBlenderBiomes(Registry<Biome> registry) {
         super();
-        Map<ResourceKey<Biome>, Climate.ParameterPoint> overworld = getBiomes(registry, RegionType.OVERWORLD);
+        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> overworld = getBiomes(registry, RegionType.OVERWORLD);
         overworldBiomes = overworld.keySet();
         this.overworld = getSurface(SurfaceRuleManager.RuleCategory.OVERWORLD);
-        Map<ResourceKey<Biome>, Climate.ParameterPoint> nether = getBiomes(registry, RegionType.NETHER);
+        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> nether = getBiomes(registry, RegionType.NETHER);
         netherBiomes = nether.keySet();
         this.nether = getSurface(SurfaceRuleManager.RuleCategory.NETHER);
-        parameters.putAll(overworld);
         parameters.putAll(nether);
+        parameters.putAll(overworld);
     }
 
-    private static Map<ResourceKey<Biome>, Climate.ParameterPoint> getBiomes(Registry<Biome> registry, RegionType type) {
-        Map<ResourceKey<Biome>, Climate.ParameterPoint> map = new HashMap<>();
-        Regions.get(type).forEach(region -> region.addBiomes(registry, pair -> map.put(pair.getSecond(), pair.getFirst())));
+    private static Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> getBiomes(Registry<Biome> registry, RegionType type) {
+        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> map = new HashMap<>();
+        Regions.get(type).forEach(region -> region.addBiomes(registry, pair -> {
+            ResourceKey<Biome> key = pair.getSecond();
+            List<Climate.ParameterPoint> add;
+            if (map.containsKey(key)) {
+                add = map.get(key);
+            } else {
+                add = new ArrayList<>();
+                map.put(key, add);
+            }
+            add.add(pair.getFirst());
+        }));
         return map;
     }
 
@@ -71,8 +78,8 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public Climate.ParameterPoint getParameters(ResourceKey<Biome> biome) {
-        return parameters.getOrDefault(biome, ZERO);
+    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome) {
+        return parameters.getOrDefault(biome, List.of(ZERO));
     }
 
     @Override

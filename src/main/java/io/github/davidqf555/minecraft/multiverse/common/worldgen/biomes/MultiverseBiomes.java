@@ -7,6 +7,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 
+import java.util.List;
 import java.util.Set;
 
 public interface MultiverseBiomes {
@@ -17,7 +18,7 @@ public interface MultiverseBiomes {
 
     Set<ResourceKey<Biome>> getEndBiomes();
 
-    Climate.ParameterPoint getParameters(ResourceKey<Biome> biome);
+    List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome);
 
     default Set<ResourceKey<Biome>> getBiomes(MultiverseType type) {
         return switch (type) {
