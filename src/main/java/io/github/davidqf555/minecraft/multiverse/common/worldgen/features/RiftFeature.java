@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
@@ -29,7 +29,7 @@ public class RiftFeature extends Feature<RiftConfig> {
     public boolean place(FeaturePlaceContext<RiftConfig> context) {
         WorldGenLevel reader = context.level();
         RiftConfig config = context.config();
-        Random rand = context.random();
+        RandomSource rand = context.random();
         int target = config.getTarget().orElseGet(() -> {
             int current = DimensionHelper.getIndex(reader.getLevel().dimension());
             int dim = rand.nextInt(ServerConfigs.INSTANCE.maxDimensions.get());

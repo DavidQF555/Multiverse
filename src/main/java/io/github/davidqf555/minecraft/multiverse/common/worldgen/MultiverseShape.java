@@ -3,35 +3,36 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.*;
 import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.TerrainShaper;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public enum MultiverseShape {
 
-    NORMAL(1, "normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), new WeightedSeaLevelSelector(Map.of(
+    NORMAL(1, "normal", false, true, -64, 384, 1, 2, registry -> NoiseRouterData.overworld(registry, false, false), new WeightedSeaLevelSelector(Map.of(
             FlatSeaLevelSelector.of(26, 100), 3,
             new WaveSeaLevelSelector(IntRange.of(45, 53), IntRange.of(10, 16), IntRange.of(48, 64)), 1
     ))),
-    ISLANDS(1, "islands", false, false, 0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands(), FlatSeaLevelSelector.of(-64, -64)),
-    ROOFED(1, "roofed", true, true, 0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether(), new WeightedSeaLevelSelector(Map.of(
+    ISLANDS(1, "islands", false, false, 0, 256, 2, 1, NoiseRouterData::floatingIslands, FlatSeaLevelSelector.of(-64, -64)),
+    ROOFED(1, "roofed", true, true, 0, 128, 1, 2, NoiseRouterData::nether, new WeightedSeaLevelSelector(Map.of(
             FlatSeaLevelSelector.of(24, 40), 3,
             new WaveSeaLevelSelector(IntRange.of(20, 30), IntRange.of(4, 8), IntRange.of(48, 64)), 1
     )));
 
     private final String name;
     private final NoiseSettings noise;
+    private final Function<Registry<DensityFunction>, NoiseRouter> router;
     private final SeaLevelSelector sea;
     private final boolean floor, ceiling;
     private final int height, weight, minY;
 
-    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, NoiseSamplingSettings sampling, NoiseSlider top, NoiseSlider bottom, int sizeHorizontal, int sizeVertical, TerrainShaper terrain, SeaLevelSelector sea) {
+    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, Function<Registry<DensityFunction>, NoiseRouter> router, SeaLevelSelector sea) {
         this.weight = weight;
         this.minY = minY;
         this.name = name;
@@ -39,7 +40,8 @@ public enum MultiverseShape {
         this.ceiling = ceiling;
         this.height = height;
         this.sea = sea;
-        noise = NoiseSettings.create(this.minY, this.height, sampling, top, bottom, sizeHorizontal, sizeVertical, terrain);
+        this.router = router;
+        noise = NoiseSettings.create(this.minY, this.height, sizeHorizontal, sizeVertical);
     }
 
     public int getMinY() {
@@ -54,8 +56,8 @@ public enum MultiverseShape {
         return type.getName() + "/" + name;
     }
 
-    public NoiseGeneratorSettings createNoiseSettings(MultiverseType type) {
-        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !hasCeiling() && hasFloor() ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), SurfaceRules.state(Blocks.AIR.defaultBlockState()), 0, false, true, true, false);
+    public NoiseGeneratorSettings createNoiseSettings(MultiverseType type, Registry<DensityFunction> registry) {
+        return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), router.apply(registry), SurfaceRules.state(Blocks.AIR.defaultBlockState()), List.of(), 0, false, true, true, false);
     }
 
     public boolean hasFloor() {

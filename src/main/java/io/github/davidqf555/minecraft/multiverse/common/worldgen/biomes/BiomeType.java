@@ -40,7 +40,7 @@ public class BiomeType {
         return biomes.stream()
                 .filter(Holder::isBound)
                 .map(Holder::value)
-                .map(biome -> ResourceKey.create(Registry.BIOME_REGISTRY, biome.getRegistryName()))
+                .map(biome -> ResourceKey.create(Registry.BIOME_REGISTRY, registry.getKey(biome)))
                 .collect(Collectors.toSet());
     }
 

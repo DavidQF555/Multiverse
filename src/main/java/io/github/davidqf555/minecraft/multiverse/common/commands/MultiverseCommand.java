@@ -11,7 +11,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -28,8 +27,8 @@ import java.util.function.Function;
 
 public final class MultiverseCommand {
 
-    private static final Component NO_DIMENSIONS = new TranslatableComponent(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.no_dimensions")));
-    private static final Component INDICES_HEADER = new TranslatableComponent(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.indices_header")));
+    private static final Component NO_DIMENSIONS = Component.translatable(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.no_dimensions")));
+    private static final Component INDICES_HEADER = Component.translatable(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.indices_header")));
     private static final String INDEX = Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.index"));
     private static final String OUT_OF_BOUNDS = Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.out_of_bounds"));
 
@@ -62,7 +61,7 @@ public final class MultiverseCommand {
             stack.sendSuccess(NO_DIMENSIONS, false);
         } else {
             stack.sendSuccess(INDICES_HEADER, false);
-            indices.forEach(index -> stack.sendSuccess(new TranslatableComponent(INDEX, index), false));
+            indices.forEach(index -> stack.sendSuccess(Component.translatable(INDEX, index), false));
         }
         return 1;
     }
@@ -71,7 +70,7 @@ public final class MultiverseCommand {
         Entity entity = stack.getEntityOrException();
         Optional<ServerLevel> op = DimensionHelper.getWorld(stack.getServer(), index);
         if (op.isEmpty() && index > ServerConfigs.INSTANCE.maxDimensions.get()) {
-            stack.sendFailure(new TranslatableComponent(OUT_OF_BOUNDS, index, ServerConfigs.INSTANCE.maxDimensions.get()));
+            stack.sendFailure(Component.translatable(OUT_OF_BOUNDS, index, ServerConfigs.INSTANCE.maxDimensions.get()));
             return 0;
         }
         ServerLevel world = op.orElseGet(() -> DimensionHelper.getOrCreateWorld(stack.getServer(), index));

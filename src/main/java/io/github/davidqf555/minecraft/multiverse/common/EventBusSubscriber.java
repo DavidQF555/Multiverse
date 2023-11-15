@@ -23,7 +23,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -58,15 +57,15 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && !event.world.isClientSide()) {
-            ArrowSummonsData.get((ServerLevel) event.world).ifPresent(data -> data.tick((ServerLevel) event.world));
+    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && !event.level.isClientSide()) {
+            ArrowSummonsData.get((ServerLevel) event.level).ifPresent(data -> data.tick((ServerLevel) event.level));
         }
     }
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         ItemStack main = entity.getItemInHand(InteractionHand.MAIN_HAND);
         ItemStack off = entity.getItemInHand(InteractionHand.OFF_HAND);
         if (!main.isEmpty() && main.getItem() instanceof IDeathEffect) {

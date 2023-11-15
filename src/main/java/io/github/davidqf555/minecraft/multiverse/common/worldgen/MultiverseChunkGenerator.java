@@ -25,12 +25,14 @@ public class MultiverseChunkGenerator extends NoiseBasedChunkGenerator {
     )).apply(p_188643_, p_188643_.stable(MultiverseChunkGenerator::new)));
 
     private final int index;
+    private final long seed;
     private final MultiverseShape shape;
 
     public MultiverseChunkGenerator(Registry<StructureSet> p_209106_, Registry<NormalNoise.NoiseParameters> p_209107_, BiomeSource p_209108_, long p_209109_, Holder<NoiseGeneratorSettings> p_209110_, MultiverseShape shape, int index) {
-        super(p_209106_, p_209107_, p_209108_, p_209109_, p_209110_);
+        super(p_209106_, p_209107_, p_209108_, p_209110_);
         this.index = index;
         this.shape = shape;
+        this.seed = p_209109_;
         globalFluidPicker = shape.getSea(p_209110_.value().defaultFluid(), p_209109_, index);
     }
 

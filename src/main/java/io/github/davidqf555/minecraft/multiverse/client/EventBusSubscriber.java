@@ -11,16 +11,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -48,12 +46,12 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onHandleBlockColor(ColorHandlerEvent.Block event) {
+    public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         event.getBlockColors().register(KaleiditeCurrentColor.Block.INSTANCE, BlockRegistry.KALEIDITE_CLUSTER.get());
     }
 
     @SubscribeEvent
-    public static void onHandleItemColor(ColorHandlerEvent.Item event) {
+    public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Item event) {
         ItemColors colors = event.getItemColors();
         colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
         colors.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
@@ -67,7 +65,7 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onRegisterParticleFactory(ParticleFactoryRegisterEvent event) {
+    public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         ParticleEngine engine = Minecraft.getInstance().particleEngine;
         engine.register(ParticleTypeRegistry.RIFT.get(), RiftParticle.Provider::new);
     }
@@ -76,7 +74,6 @@ public final class EventBusSubscriber {
     public static void onFMLClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             DimensionEffectsRegistry.FOG.forEach((key, color) -> DimensionSpecialEffects.EFFECTS.put(key, new ColoredFogEffect(color)));
-            ItemBlockRenderTypes.setRenderLayer(BlockRegistry.KALEIDITE_CLUSTER.get(), RenderType.cutout());
             ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pull"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pull")));
             ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pulling"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pulling")));
             ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "charged"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("charged")));

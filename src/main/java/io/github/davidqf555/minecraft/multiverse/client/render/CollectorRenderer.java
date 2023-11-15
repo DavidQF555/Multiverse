@@ -21,7 +21,7 @@ public class CollectorRenderer<T extends SpellcasterIllager> extends IllagerRend
 
     public CollectorRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.ILLUSIONER)), 0.5f);
-        addLayer(new ItemInHandLayer<>(this) {
+        addLayer(new ItemInHandLayer<>(this, manager.getItemInHandRenderer()) {
             @Override
             public void render(PoseStack matrix, MultiBufferSource buffer, int p_225628_3_, T entity, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
                 if (entity.isCastingSpell() || entity.isAggressive()) {

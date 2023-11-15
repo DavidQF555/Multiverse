@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "textures": {
     "inner": "multiverse:block/kaleidite_cluster_inner",
     "outer": "multiverse:block/kaleidite_cluster_outer",

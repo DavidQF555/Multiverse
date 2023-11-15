@@ -2,13 +2,13 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public final class EntityUtil {
 
@@ -16,11 +16,11 @@ public final class EntityUtil {
     }
 
     public static boolean randomTeleport(LivingEntity entity, Vec3 center, double min, double max, boolean effect) {
-        Random rand = entity.getRandom();
+        RandomSource rand = entity.getRandom();
         for (int i = 0; i < 16; i++) {
-            double dX = rand.nextDouble(min, max);
-            double dY = rand.nextDouble(min, max);
-            double dZ = rand.nextDouble(min, max);
+            double dX = min + (max - min) * rand.nextDouble();
+            double dY = min + (max - min) * rand.nextDouble();
+            double dZ = min + (max - min) * rand.nextDouble();
             if (rand.nextBoolean()) {
                 dX *= -1;
             }
@@ -41,7 +41,7 @@ public final class EntityUtil {
     public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
         T entity = type.create(world, null, null, null, center, spawn, false, false);
         if (entity != null) {
-            Random rand = world.getRandom();
+            RandomSource rand = world.getRandom();
             for (int i = 0; i < 50; i++) {
                 int dX = rand.nextInt(min, max + 1);
                 if (rand.nextBoolean()) {

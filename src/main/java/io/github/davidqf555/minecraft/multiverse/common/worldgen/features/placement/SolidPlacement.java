@@ -6,13 +6,13 @@ import io.github.davidqf555.minecraft.multiverse.registration.worldgen.Placement
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class SolidPlacement extends PlacementModifier {
@@ -36,7 +36,7 @@ public class SolidPlacement extends PlacementModifier {
     }
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
+    public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         WorldGenLevel level = context.getLevel();
         BlockPos.MutableBlockPos mutable = pos.mutable();
         for (int step = 0; step < steps; step++) {

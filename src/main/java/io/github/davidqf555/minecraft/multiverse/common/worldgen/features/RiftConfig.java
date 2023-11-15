@@ -5,11 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 import java.util.Optional;
-import java.util.Random;
 
 public class RiftConfig implements FeatureConfiguration {
 
@@ -58,13 +58,13 @@ public class RiftConfig implements FeatureConfiguration {
         return size;
     }
 
-    public Rotation getRotation(Random rand) {
+    public Rotation getRotation(RandomSource rand) {
         return rotation.orElseGet(() -> {
             Vector3f axis = new Vector3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
             if (!axis.normalize()) {
                 axis = Vector3f.YP;
             }
-            return new Rotation(axis, rand.nextFloat(180));
+            return new Rotation(axis, rand.nextFloat() * 180);
         });
     }
 
@@ -86,11 +86,11 @@ public class RiftConfig implements FeatureConfiguration {
             this.maxHeight = maxHeight;
         }
 
-        public double getWidth(Random random) {
+        public double getWidth(RandomSource random) {
             return random.nextDouble() * (maxWidth - minWidth) + minWidth;
         }
 
-        public double getHeight(Random random) {
+        public double getHeight(RandomSource random) {
             return random.nextDouble() * (maxHeight - minHeight) + minHeight;
         }
 

@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -65,18 +66,18 @@ public class CollectorEntity extends SpellcasterIllager {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
-        populateDefaultEquipmentSlots(difficulty);
-        populateDefaultEquipmentEnchantments(difficulty);
+        populateDefaultEquipmentSlots(level.getRandom(), difficulty);
+        populateDefaultEquipmentEnchantments(level.getRandom(), difficulty);
         return super.finalizeSpawn(level, difficulty, type, data, tag);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.PRISMATIC_AXE.get().getDefaultInstance());
     }
 
     @Override
-    protected void populateDefaultEquipmentEnchantments(DifficultyInstance p_21462_) {
+    protected void populateDefaultEquipmentEnchantments(RandomSource random, DifficultyInstance p_21462_) {
     }
 
     @Override

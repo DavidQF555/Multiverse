@@ -11,8 +11,8 @@ import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRe
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class SpawnCollectorItem extends TimerItem {
@@ -47,7 +46,7 @@ public class SpawnCollectorItem extends TimerItem {
 
     protected Component getLore() {
         if (lore == null) {
-            lore = new TranslatableComponent(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD);
+            lore = Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD);
         }
         return lore;
     }
@@ -75,7 +74,7 @@ public class SpawnCollectorItem extends TimerItem {
     protected void doTickEffect(ItemStack stack, ItemEntity entity) {
         int period = 5 + 100 / (1 + entity.tickCount);
         if (entity.level.getGameTime() % period == 0) {
-            Random random = entity.level.getRandom();
+            RandomSource random = entity.level.getRandom();
             Vec3 pos = entity.position().add(random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE);
             ClientHelper.addRiftParticles(OptionalInt.empty(), pos);
         }

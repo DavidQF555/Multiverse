@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNois
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraftforge.registries.DeferredRegister;
 
@@ -16,7 +17,7 @@ public final class NoiseSettingsRegistry {
         for (MultiverseShape type : MultiverseShape.values()) {
             for (MultiverseType biome : MultiverseType.values()) {
                 SETTINGS.register(type.getLocation(biome), () -> {
-                    NoiseGeneratorSettings settings = type.createNoiseSettings(biome);
+                    NoiseGeneratorSettings settings = type.createNoiseSettings(biome, BuiltinRegistries.DENSITY_FUNCTION);
                     ((IMultiverseNoiseGeneratorSettings) (Object) settings).setSettings(type, biome);
                     return settings;
                 });

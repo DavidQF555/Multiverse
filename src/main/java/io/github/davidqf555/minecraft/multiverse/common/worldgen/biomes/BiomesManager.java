@@ -11,15 +11,11 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
 import org.slf4j.Logger;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,14 +45,12 @@ public class BiomesManager {
     }
 
     public void load(MinecraftServer server) {
-        Resource resource;
+        Reader reader;
         try {
-            resource = server.getResourceManager().getResource(loc);
+            reader = server.getResourceManager().getResourceOrThrow(loc).openAsReader();
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }
-        Reader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
-
         JsonArray values = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject().getAsJsonArray("types");
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
         types.clear();

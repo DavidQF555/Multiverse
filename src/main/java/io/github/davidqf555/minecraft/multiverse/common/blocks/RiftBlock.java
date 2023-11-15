@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.material.Fluid;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class RiftBlock extends BaseEntityBlock {
@@ -35,7 +35,7 @@ public class RiftBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
         if (rand.nextDouble() < 0.01) {
             world.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.PORTAL_AMBIENT, SoundSource.BLOCKS, 0.5f, rand.nextFloat() * 0.4f + 0.8f, false);
         }
@@ -55,7 +55,7 @@ public class RiftBlock extends BaseEntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         if (state.getValue(TEMPORARY)) {
             world.destroyBlock(pos, true);
         }

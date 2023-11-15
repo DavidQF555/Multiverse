@@ -4,11 +4,11 @@ import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class MultiverseDimensionPlacement extends PlacementModifier {
@@ -17,7 +17,7 @@ public class MultiverseDimensionPlacement extends PlacementModifier {
     public static final Codec<MultiverseDimensionPlacement> CODEC = Codec.unit(INSTANCE);
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
+    public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         return DimensionHelper.getIndex(context.getLevel().getLevel().dimension()) == 0 ? Stream.empty() : Stream.of(pos);
     }
 

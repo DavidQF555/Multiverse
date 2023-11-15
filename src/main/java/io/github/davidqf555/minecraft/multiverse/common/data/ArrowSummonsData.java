@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -81,7 +82,7 @@ public class ArrowSummonsData extends SavedData {
         Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(new BlockPos(start))), new RiftParticlesPacket(OptionalInt.empty(), start));
     }
 
-    protected ItemStack randomFirework(Random random) {
+    protected ItemStack randomFirework(RandomSource random) {
         ItemStack stack = Items.FIREWORK_ROCKET.getDefaultInstance();
         CompoundTag tag = stack.getOrCreateTagElement(FireworkRocketItem.TAG_FIREWORKS);
         tag.putByte(FireworkRocketItem.TAG_FLIGHT, (byte) random.nextInt(1, 4));
@@ -105,7 +106,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected AbstractArrow randomArrow(ServerLevel world, LivingEntity shooter) {
-        Random random = world.getRandom();
+        RandomSource random = world.getRandom();
         ArrowItem item = (ArrowItem) ForgeRegistries.ITEMS.tags().getTag(ItemTags.ARROWS).getRandomElement(random).filter(i -> i instanceof ArrowItem).orElse(Items.ARROW);
         ItemStack stack = item.getDefaultInstance();
         if (item == Items.TIPPED_ARROW) {
@@ -146,7 +147,7 @@ public class ArrowSummonsData extends SavedData {
 
     @Nullable
     protected Vec3 getStartPosition(ServerLevel world, Vec3 center, Vec3 direction) {
-        Random random = world.getRandom();
+        RandomSource random = world.getRandom();
         double min = ServerConfigs.INSTANCE.minSpawnRadius.get();
         double max = ServerConfigs.INSTANCE.maxSpawnRadius.get();
         double offset = ServerConfigs.INSTANCE.spawnOffset.get();
@@ -175,7 +176,7 @@ public class ArrowSummonsData extends SavedData {
     private void shoot(ServerLevel world, LivingEntity shooter, Vec3 center, Vec3 direction, boolean fireworksOnly) {
         if (!world.isClientSide()) {
             direction = direction.normalize();
-            Random rand = world.getRandom();
+            RandomSource rand = world.getRandom();
             Vec3 start = getStartPosition(world, center, direction);
             if (start != null) {
                 Projectile projectile;

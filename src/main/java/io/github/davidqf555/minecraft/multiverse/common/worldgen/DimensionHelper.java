@@ -7,7 +7,6 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -17,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.border.BorderChangeListener;
@@ -31,7 +31,7 @@ import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
@@ -100,11 +100,11 @@ public final class DimensionHelper {
         ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
         Registry.register(dimensionGeneratorSettings.dimensions(), dimensionKey.location(), dimension);
         DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
-        ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension.typeHolder(), server.progressListenerFactory.create(11), dimension.generator(), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
+        ServerLevel newWorld = new ServerLevel(server, server.executor, server.storageSource, derivedWorldInfo, worldKey, dimension, server.progressListenerFactory.create(11), dimensionGeneratorSettings.isDebug(), BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()), ImmutableList.of(), false);
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
         map.put(worldKey, newWorld);
         server.markWorldsDirty();
-        MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newWorld));
+        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(newWorld));
         Multiverse.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateClientDimensionsPacket(worldKey));
         return newWorld;
     }
@@ -123,7 +123,7 @@ public final class DimensionHelper {
         Holder<NoiseGeneratorSettings> settings = access.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getHolderOrThrow(shape.getNoiseSettingsKey(type));
         float lighting = ceiling ? random.nextFloat() * 0.5f + 0.1f : random.nextFloat() * 0.2f;
         OptionalLong time = ceiling ? OptionalLong.of(18000) : randomTime(random);
-        BiomeSource provider = new MultiverseBiomeSource(getBiomeParameters(access, type, shape, biomes));
+        BiomeSource provider = new MultiNoiseBiomeSource(getBiomeParameters(access, type, shape, biomes));
         ResourceLocation effect = randomEffect(time.isPresent() && time.getAsLong() < 22300 && time.getAsLong() > 13188, random);
         Holder<DimensionType> dimType = createDimensionType(shape, type, time, effect, lighting);
         ChunkGenerator generator = new MultiverseChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), provider, seed, settings, shape, index);
@@ -131,7 +131,7 @@ public final class DimensionHelper {
     }
 
     private static Holder<DimensionType> createDimensionType(MultiverseShape shape, MultiverseType type, OptionalLong time, ResourceLocation effect, float light) {
-        return Holder.direct(DimensionType.create(time, !shape.hasCeiling(), shape.hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, false, type.isPiglinSafe(), true, true, type.hasRaids(), shape.getMinY(), shape.getHeight(), shape.getHeight(), type.getInfiniburn(), effect, light));
+        return Holder.direct(new DimensionType(time, !shape.hasCeiling(), shape.hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, false, true, shape.getMinY(), shape.getHeight(), shape.getHeight(), type.getInfiniburn(), effect, light, type.getMonsterSettings()));
     }
 
     private static Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, MultiverseShape shape, Set<ResourceKey<Biome>> biomes) {
@@ -140,7 +140,7 @@ public final class DimensionHelper {
         Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
         for (ResourceKey<Biome> biome : biomes) {
-            Holder<Biome> holder = biomeReg.getOrCreateHolder(biome);
+            Holder<Biome> holder = biomeReg.getOrCreateHolderOrThrow(biome);
             for (Climate.ParameterPoint orig : ref.getParameters(biome)) {
                 Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()), shape);
                 Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
@@ -170,7 +170,7 @@ public final class DimensionHelper {
         return Climate.Parameter.span(nStart, nEnd);
     }
 
-    private static MultiverseShape randomShape(Random random) {
+    private static MultiverseShape randomShape(RandomSource random) {
         MultiverseShape[] values = MultiverseShape.values();
         int totalWeight = Arrays.stream(values).mapToInt(MultiverseShape::getWeight).sum();
         int selected = random.nextInt(totalWeight);
@@ -184,7 +184,7 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, Random random) {
+    private static Pair<MultiverseType, Set<ResourceKey<Biome>>> randomBiomes(Registry<Biome> registry, RandomSource random) {
         Set<MultiverseType> biomesTypes = EnumSet.allOf(MultiverseType.class);
         Predicate<ResourceKey<Biome>> valid = key -> biomesTypes.stream().anyMatch(type -> type.is(key));
         Set<BiomeType> types = BiomesManager.INSTANCE.getBiomeTypes().stream().filter(type -> type.getBiomes(registry).stream().anyMatch(valid)).collect(Collectors.toCollection(HashSet::new));
@@ -219,7 +219,7 @@ public final class DimensionHelper {
         return Pair.of(type, biomes);
     }
 
-    private static BiomeType selectRandom(Random random, Set<BiomeType> types) {
+    private static BiomeType selectRandom(RandomSource random, Set<BiomeType> types) {
         int total = types.stream().mapToInt(BiomeType::getWeight).sum();
         int selected = random.nextInt(total);
         for (BiomeType type : types) {
@@ -231,14 +231,14 @@ public final class DimensionHelper {
         throw new RuntimeException();
     }
 
-    private static OptionalLong randomTime(Random random) {
+    private static OptionalLong randomTime(RandomSource random) {
         if (random.nextDouble() < ServerConfigs.INSTANCE.fixedTimeChance.get()) {
             return OptionalLong.of(random.nextInt(24000));
         }
         return OptionalLong.empty();
     }
 
-    private static ResourceLocation randomEffect(boolean night, Random random) {
+    private static ResourceLocation randomEffect(boolean night, RandomSource random) {
         MultiverseEffectType[] types = MultiverseEffectType.getTypes().stream().filter(type -> !type.isNightOnly() || night).toArray(MultiverseEffectType[]::new);
         int total = Arrays.stream(types).mapToInt(MultiverseEffectType::getWeight).sum();
         int rand = random.nextInt(total);

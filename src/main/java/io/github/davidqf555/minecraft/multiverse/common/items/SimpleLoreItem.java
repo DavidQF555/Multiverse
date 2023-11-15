@@ -2,7 +2,6 @@ package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -36,7 +35,7 @@ public class SimpleLoreItem extends Item {
 
     public Component getLore() {
         if (lore == null) {
-            lore = new TranslatableComponent(getDescriptionId() + ".lore").withStyle(formatting);
+            lore = Component.translatable(getDescriptionId() + ".lore").withStyle(formatting);
         }
         return lore;
     }

@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -31,7 +32,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Random;
 import java.util.UUID;
 
 public class DoppelgangerEntity extends PathfinderMob {
@@ -62,7 +62,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         return entity;
     }
 
-    public static boolean canSpawn(EntityType<? extends DoppelgangerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, Random rand) {
+    public static boolean canSpawn(EntityType<? extends DoppelgangerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
         return spawn == MobSpawnType.REINFORCEMENT;
     }
 
@@ -80,13 +80,13 @@ public class DoppelgangerEntity extends PathfinderMob {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawn, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
-        populateDefaultEquipmentSlots(difficulty);
-        populateDefaultEquipmentEnchantments(difficulty);
+        populateDefaultEquipmentSlots(level.getRandom(), difficulty);
+        populateDefaultEquipmentEnchantments(level.getRandom(), difficulty);
         return super.finalizeSpawn(level, difficulty, spawn, data, tag);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (random.nextDouble() < GEAR_RATE) {
                 ForgeRegistries.ITEMS.tags().getTag(getEquipmentTag(slot)).getRandomElement(random).map(Item::getDefaultInstance).ifPresent(stack -> setItemSlot(slot, stack));
@@ -95,11 +95,11 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     @Override
-    protected void populateDefaultEquipmentEnchantments(DifficultyInstance difficulty) {
-        enchantSpawnedWeapon(4 * ENCHANT_RATE);
+    protected void populateDefaultEquipmentEnchantments(RandomSource random, DifficultyInstance difficulty) {
+        enchantSpawnedWeapon(random, 4 * ENCHANT_RATE);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot.getType() == EquipmentSlot.Type.ARMOR) {
-                enchantSpawnedArmor(2 * ENCHANT_RATE, slot);
+                enchantSpawnedArmor(random, 2 * ENCHANT_RATE, slot);
             }
         }
     }
@@ -110,7 +110,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         return false;
     }
 

@@ -1,7 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.registration.*;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.NoiseSettingsRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,7 +44,6 @@ public class Multiverse {
         PlacementRegistry.TYPES.register(bus);
         FeatureRegistry.PLACED.register(bus);
         ChunkGeneratorRegistry.GENERATORS.register(bus);
-        BiomeSourceRegistry.SOURCES.register(bus);
         NoiseSettingsRegistry.SETTINGS.register(bus);
     }
 }

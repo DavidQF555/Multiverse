@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -43,7 +44,10 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalInt;
+import java.util.UUID;
 
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
 
@@ -68,7 +72,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 .add(Attributes.ATTACK_DAMAGE, 5);
     }
 
-    public static boolean canSpawn(EntityType<? extends TravelerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, Random rand) {
+    public static boolean canSpawn(EntityType<? extends TravelerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
         return spawn != MobSpawnType.NATURAL && (spawn != MobSpawnType.CHUNK_GENERATION || DimensionHelper.getIndex(level.getLevel().dimension()) != 0 && rand.nextDouble() < ServerConfigs.INSTANCE.travelerSpawnFactor.get());
     }
 
@@ -149,7 +153,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         return getOriginalId() == null;
     }
 
@@ -268,14 +272,14 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
-        populateDefaultEquipmentSlots(difficulty);
-        populateDefaultEquipmentEnchantments(difficulty);
+        populateDefaultEquipmentSlots(level.getRandom(), difficulty);
+        populateDefaultEquipmentEnchantments(level.getRandom(), difficulty);
         return super.finalizeSpawn(level, difficulty, type, data, tag);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        super.populateDefaultEquipmentSlots(difficulty);
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+        super.populateDefaultEquipmentSlots(random, difficulty);
         setItemInHand(InteractionHand.MAIN_HAND, (random.nextBoolean() ? Items.IRON_AXE : Items.CROSSBOW).getDefaultInstance());
     }
 

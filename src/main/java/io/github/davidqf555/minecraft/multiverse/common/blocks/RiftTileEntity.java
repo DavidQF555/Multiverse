@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
@@ -32,7 +33,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
@@ -101,7 +101,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     }
 
-    private BlockPos getOrCreateRift(ServerLevel dest, Random rand, BlockPos center, int range, int current, BlockState state) {
+    private BlockPos getOrCreateRift(ServerLevel dest, RandomSource rand, BlockPos center, int range, int current, BlockState state) {
         PoiManager manager = dest.getPoiManager();
         PoiType poi = POIRegistry.RIFT.get();
         manager.ensureLoadedAndValid(dest, center, range);

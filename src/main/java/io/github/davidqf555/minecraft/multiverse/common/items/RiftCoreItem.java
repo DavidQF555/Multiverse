@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -84,7 +83,7 @@ public class RiftCoreItem extends Item {
 
     protected Component getLore() {
         if (lore == null) {
-            lore = new TranslatableComponent(getDescriptionId() + ".lore").withStyle(ChatFormatting.LIGHT_PURPLE);
+            lore = Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.LIGHT_PURPLE);
         }
         return lore;
     }
