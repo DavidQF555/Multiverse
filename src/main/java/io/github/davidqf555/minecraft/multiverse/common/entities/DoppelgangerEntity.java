@@ -83,7 +83,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawn, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
         populateDefaultEquipmentSlots(random, difficulty);
         populateDefaultEquipmentEnchantments(random, difficulty);
-        return data;
+        return super.finalizeSpawn(level, difficulty, spawn, data, tag);
     }
 
     @Override
