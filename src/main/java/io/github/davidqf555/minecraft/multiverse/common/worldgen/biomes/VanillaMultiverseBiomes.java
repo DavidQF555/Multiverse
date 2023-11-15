@@ -11,10 +11,7 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class VanillaMultiverseBiomes implements MultiverseBiomes {
 
@@ -22,19 +19,27 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
     private static final Set<ResourceKey<Biome>> OVERWORLD;
     private static final Set<ResourceKey<Biome>> NETHER = Set.of(Biomes.NETHER_WASTES, Biomes.WARPED_FOREST, Biomes.CRIMSON_FOREST, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS);
     private static final Set<ResourceKey<Biome>> END = Set.of(Biomes.THE_END, Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS);
-    private static final Map<ResourceKey<Biome>, Climate.ParameterPoint> PARAMETERS = new HashMap<>();
+    private static final Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> PARAMETERS = new HashMap<>();
     private static final Climate.ParameterPoint ZERO = Climate.parameters(0, 0, 0, 0, 0, 0, 0);
 
     static {
-        PARAMETERS.put(Biomes.NETHER_WASTES, Climate.parameters(0, 0, 0, 0, 0, 0, 0));
-        PARAMETERS.put(Biomes.SOUL_SAND_VALLEY, Climate.parameters(0, -0.5f, 0, 0, 0, 0, 0));
-        PARAMETERS.put(Biomes.CRIMSON_FOREST, Climate.parameters(0.4f, 0, 0, 0, 0, 0, 0));
-        PARAMETERS.put(Biomes.WARPED_FOREST, Climate.parameters(0, 0.5f, 0, 0, 0, 0, 0.375F));
-        PARAMETERS.put(Biomes.BASALT_DELTAS, Climate.parameters(-0.5f, 0, 0, 0, 0, 0, 0.175F));
+        PARAMETERS.put(Biomes.NETHER_WASTES, List.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0)));
+        PARAMETERS.put(Biomes.SOUL_SAND_VALLEY, List.of(Climate.parameters(0, -0.5f, 0, 0, 0, 0, 0)));
+        PARAMETERS.put(Biomes.CRIMSON_FOREST, List.of(Climate.parameters(0.4f, 0, 0, 0, 0, 0, 0)));
+        PARAMETERS.put(Biomes.WARPED_FOREST, List.of(Climate.parameters(0, 0.5f, 0, 0, 0, 0, 0.375F)));
+        PARAMETERS.put(Biomes.BASALT_DELTAS, List.of(Climate.parameters(-0.5f, 0, 0, 0, 0, 0, 0.175F)));
         ImmutableSet.Builder<ResourceKey<Biome>> overworld = ImmutableSet.builder();
         new OverworldBiomeBuilder().addBiomes(pair -> {
-            overworld.add(pair.getSecond());
-            PARAMETERS.put(pair.getSecond(), pair.getFirst());
+            ResourceKey<Biome> key = pair.getSecond();
+            overworld.add(key);
+            List<Climate.ParameterPoint> add;
+            if (PARAMETERS.containsKey(key)) {
+                add = PARAMETERS.get(key);
+            } else {
+                add = new ArrayList<>();
+                PARAMETERS.put(key, add);
+            }
+            add.add(pair.getFirst());
         });
         OVERWORLD = overworld.build();
     }
@@ -58,8 +63,8 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public Climate.ParameterPoint getParameters(ResourceKey<Biome> biome) {
-        return PARAMETERS.getOrDefault(biome, ZERO);
+    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome) {
+        return PARAMETERS.getOrDefault(biome, List.of(ZERO));
     }
 
     @Override
