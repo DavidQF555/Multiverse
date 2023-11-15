@@ -10,7 +10,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -79,7 +78,7 @@ public enum MultiverseShape {
     }
 
     public DimensionType createDimensionType(MultiverseType type, MultiverseTime time, MultiverseEffect effect) {
-        return new DimensionType(time.getTime(), !hasCeiling(), hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), light, new DimensionType.MonsterSettings(type.isPiglinSafe(), type.hasRaids(), UniformInt.of(0, 7), 0));
+        return new DimensionType(time.getTime(), !hasCeiling(), hasCeiling(), type.isUltrawarm(), type.isNatural(), 1, true, true, getMinY(), getHeight(), getHeight(), type.getInfiniburn(), effect.getLocation(), light, type.getMonsterSettings());
     }
 
     public boolean hasFloor() {
