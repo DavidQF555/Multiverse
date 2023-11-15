@@ -141,18 +141,19 @@ public final class DimensionHelper {
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
         for (ResourceKey<Biome> biome : biomes) {
             Holder<Biome> holder = biomeReg.getOrCreateHolder(biome);
-            Climate.ParameterPoint orig = ref.getParameters(biome);
-            Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()), shape);
-            Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
-            out.add(Pair.of(point, holder));
+            for (Climate.ParameterPoint orig : ref.getParameters(biome)) {
+                Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()), shape);
+                Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
+                out.add(Pair.of(point, holder));
+            }
         }
         return new Climate.ParameterList<>(out);
     }
 
     //needed because depth function has a constant lerp of y from -64 to 320, scaled from 1.5 to -1.5
     private static Climate.Parameter translateDepth(Climate.Parameter depth, DimensionType from, MultiverseShape to) {
-        double start = depth.min() / 10000.0;
-        double end = depth.max() / 10000.0;
+        double start = Climate.unquantizeCoord(depth.min());
+        double end = Climate.unquantizeCoord(depth.max());
 
         double fDepthStart = Mth.clampedMap(from.minY(), -64, 320, 1.5, -1.5);
         double fDepthEnd = Mth.clampedMap(from.minY() + from.height(), -64, 320, 1.5, -1.5);
