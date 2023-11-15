@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.mixin;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.spongepowered.asm.mixin.Mixin;

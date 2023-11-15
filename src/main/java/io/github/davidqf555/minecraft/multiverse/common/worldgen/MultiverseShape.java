@@ -11,16 +11,17 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.*;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public enum MultiverseShape {
 
-    NORMAL(1, "normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), new WeightedSeaLevelSelector(Map.of(
+    NORMAL("normal", false, true, -64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false), new WeightedSeaLevelSelector(Map.of(
             FlatSeaLevelSelector.of(26, 100), 3,
             new WaveSeaLevelSelector(IntRange.of(45, 53), IntRange.of(10, 16), IntRange.of(48, 64)), 1
     ))),
-    ISLANDS(1, "islands", false, false, 0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands(), FlatSeaLevelSelector.of(-64, -64)),
-    ROOFED(1, "roofed", true, true, 0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether(), new WeightedSeaLevelSelector(Map.of(
+    ISLANDS("islands", false, false, 0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands(), FlatSeaLevelSelector.of(-64, -64)),
+    ROOFED("roofed", true, true, 0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether(), new WeightedSeaLevelSelector(Map.of(
             FlatSeaLevelSelector.of(24, 40), 3,
             new WaveSeaLevelSelector(IntRange.of(20, 30), IntRange.of(4, 8), IntRange.of(48, 64)), 1
     )));
@@ -29,10 +30,9 @@ public enum MultiverseShape {
     private final NoiseSettings noise;
     private final SeaLevelSelector sea;
     private final boolean floor, ceiling;
-    private final int height, weight, minY;
+    private final int height, minY;
 
-    MultiverseShape(int weight, String name, boolean ceiling, boolean floor, int minY, int height, NoiseSamplingSettings sampling, NoiseSlider top, NoiseSlider bottom, int sizeHorizontal, int sizeVertical, TerrainShaper terrain, SeaLevelSelector sea) {
-        this.weight = weight;
+    MultiverseShape(String name, boolean ceiling, boolean floor, int minY, int height, NoiseSamplingSettings sampling, NoiseSlider top, NoiseSlider bottom, int sizeHorizontal, int sizeVertical, TerrainShaper terrain, SeaLevelSelector sea) {
         this.minY = minY;
         this.name = name;
         this.floor = floor;
@@ -40,6 +40,16 @@ public enum MultiverseShape {
         this.height = height;
         this.sea = sea;
         noise = NoiseSettings.create(this.minY, this.height, sampling, top, bottom, sizeHorizontal, sizeVertical, terrain);
+    }
+
+    @Nullable
+    public static MultiverseShape byName(String name) {
+        for (MultiverseShape shape : values()) {
+            if (shape.getName().equals(name)) {
+                return shape;
+            }
+        }
+        return null;
     }
 
     public int getMinY() {
@@ -70,12 +80,12 @@ public enum MultiverseShape {
         return height;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
     public Aquifer.FluidPicker getSea(BlockState block, long seed, int index) {
         return sea.getSeaLevel(block, seed, index);
+    }
+
+    public String getName() {
+        return name;
     }
 
 }
