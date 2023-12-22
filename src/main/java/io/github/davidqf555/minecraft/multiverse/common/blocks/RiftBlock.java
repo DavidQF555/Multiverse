@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
@@ -28,10 +29,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RiftBlock extends BaseEntityBlock {
 
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
+    public static final MapCodec<RiftBlock> CODEC = simpleCodec(RiftBlock::new);
 
     public RiftBlock(Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, false));
+    }
+
+    @Override
+    protected MapCodec<? extends RiftBlock> codec() {
+        return CODEC;
     }
 
     @Override

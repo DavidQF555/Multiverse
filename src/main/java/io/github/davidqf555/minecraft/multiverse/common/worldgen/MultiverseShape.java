@@ -6,8 +6,8 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.FlatSeaLeve
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.IntRange;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelector;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -22,20 +22,20 @@ import java.util.function.Function;
 
 public enum MultiverseShape {
 
-    NORMAL("normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE), false, false), Optional.empty()),
-    ISLANDS("islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), Optional.empty()),
-    ROOFED("roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookup(Registries.DENSITY_FUNCTION), provider.lookup(Registries.NOISE)), Optional.of(MultiverseTime.NIGHT));
+    NORMAL("normal", false, true, -64, 384, 1, 2, 0, provider -> NoiseRouterData.overworld(provider.lookupOrThrow(Registries.DENSITY_FUNCTION), provider.lookupOrThrow(Registries.NOISE), false, false), Optional.empty()),
+    ISLANDS("islands", false, false, 0, 256, 2, 1, 0.1f, provider -> NoiseRouterData.floatingIslands(provider.lookupOrThrow(Registries.DENSITY_FUNCTION), provider.lookupOrThrow(Registries.NOISE)), Optional.empty()),
+    ROOFED("roofed", true, true, 0, 128, 1, 2, 0.2f, provider -> NoiseRouterData.nether(provider.lookupOrThrow(Registries.DENSITY_FUNCTION), provider.lookupOrThrow(Registries.NOISE)), Optional.of(MultiverseTime.NIGHT));
 
     private final String name;
     private final NoiseSettings noise;
-    private final Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router;
+    private final Function<HolderLookup.Provider, NoiseRouter> router;
     private final float light;
     private final boolean floor, ceiling;
     private final int height, minY;
     private final Optional<MultiverseTime> fixedTime;
     private SeaLevelSelector sea = new FlatSeaLevelSelector(IntRange.of(0, 0));
 
-    MultiverseShape(String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, Optional<MultiverseTime> fixedTime) {
+    MultiverseShape(String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<HolderLookup.Provider, NoiseRouter> router, Optional<MultiverseTime> fixedTime) {
         this.minY = minY;
         this.name = name;
         this.floor = floor;
@@ -69,7 +69,7 @@ public enum MultiverseShape {
         return ResourceKey.create(Registries.NOISE_SETTINGS, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name));
     }
 
-    public NoiseGeneratorSettings createNoiseSettings(BootstapContext<NoiseGeneratorSettings> provider, MultiverseType type) {
+    public NoiseGeneratorSettings createNoiseSettings(HolderLookup.Provider provider, MultiverseType type) {
         return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), router.apply(provider), SurfaceRules.state(Blocks.AIR.defaultBlockState()), List.of(), 0, false, true, true, false);
     }
 

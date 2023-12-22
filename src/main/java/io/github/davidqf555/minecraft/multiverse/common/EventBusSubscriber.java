@@ -36,7 +36,7 @@ public final class EventBusSubscriber {
         Registry<NoiseGeneratorSettings> settings = event.getServer().registryAccess().registryOrThrow(Registries.NOISE_SETTINGS);
         for (MultiverseShape shape : MultiverseShape.values()) {
             for (MultiverseType type : MultiverseType.values()) {
-                ((IMultiverseNoiseGeneratorSettings) (Object) settings.get(shape.getNoiseSettingsKey(type))).setSettings(shape, type);
+                ((IMultiverseNoiseGeneratorSettings) (Object) settings.getOrThrow(shape.getNoiseSettingsKey(type))).setSettings(shape, type);
             }
         }
     }
