@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.datagen;
 
 import com.google.gson.JsonElement;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
@@ -8,6 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -30,7 +32,8 @@ public class NoiseGeneratorSettingsProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
         Path folder = output.getOutputFolder(PackOutput.Target.DATA_PACK);
-        return lookup.thenApply(lookup -> {
+        return lookup.thenCompose(lookup -> {
+            DynamicOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, lookup);
             List<CompletableFuture<?>> all = new ArrayList<>();
             for (MultiverseShape shape : MultiverseShape.values()) {
                 for (MultiverseType type : MultiverseType.values()) {
@@ -38,13 +41,13 @@ public class NoiseGeneratorSettingsProvider implements DataProvider {
                     ResourceLocation loc = key.location();
                     NoiseGeneratorSettings settings = shape.createNoiseSettings(lookup, type);
                     Path path = folder.resolve(loc.getNamespace()).resolve(key.registry().getPath()).resolve(loc.getPath() + ".json");
-                    JsonElement encoded = NoiseGeneratorSettings.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, settings).getOrThrow(false, (msg) -> {
+                    JsonElement encoded = NoiseGeneratorSettings.DIRECT_CODEC.encodeStart(ops, settings).getOrThrow(false, (msg) -> {
                         LOGGER.error("Failed to encode {}: {}", path, msg);
                     });
                     all.add(DataProvider.saveStable(cachedOutput, encoded, path));
                 }
             }
-            return CompletableFuture.allOf(all.toArray(CompletableFuture[]::new)).join();
+            return CompletableFuture.allOf(all.toArray(CompletableFuture[]::new));
         });
     }
 
