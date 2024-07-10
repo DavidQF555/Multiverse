@@ -11,10 +11,12 @@ updateJSONURL = "https://raw.githubusercontent.com/DavidQF555/Multiverse/update/
 logoFile = "logo.png"
 authors = "${mod_authors}"
 description = 'This mod adds a multiverse.'
+[[mixins]]
+config = "multiverse.mixins.json"
 [[dependencies.${ mod_id }]]
-modId = "forge"
+modId = "neoforge"
 mandatory = true
-versionRange = "${forge_version_range}"
+versionRange = "${neo_version_range}"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.${ mod_id }]]
