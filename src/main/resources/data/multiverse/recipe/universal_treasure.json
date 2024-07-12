@@ -2,19 +2,19 @@
   "type": "crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:nether_stars"
+      "tag": "c:nether_stars"
     },
     {
       "item": "totem_of_undying"
     },
     {
-      "tag": "forge:ingots/netherite"
+      "tag": "c:ingots/netherite"
     },
     {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     {
-      "tag": "forge:gems/emerald"
+      "tag": "c:gems/emerald"
     },
     {
       "item": "heart_of_the_sea"
@@ -27,6 +27,6 @@
     }
   ],
   "result": {
-    "item": "multiverse:universal_treasure"
+    "id": "multiverse:universal_treasure"
   }
 }

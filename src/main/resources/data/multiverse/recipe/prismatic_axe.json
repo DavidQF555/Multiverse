@@ -1,13 +1,13 @@
 {
   "type": "smithing_transform",
   "addition": {
-    "tag": "forge:ingots/iron"
+    "tag": "c:ingots/iron"
   },
   "base": {
-    "item": "multiverse:kaleidite_shovel"
+    "item": "multiverse:kaleidite_axe"
   },
   "result": {
-    "item": "multiverse:prismatic_shovel"
+    "id": "multiverse:prismatic_axe"
   },
   "template": {
     "item": "multiverse:dimensional_prism"

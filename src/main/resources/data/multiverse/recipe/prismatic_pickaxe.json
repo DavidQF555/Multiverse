@@ -1,13 +1,13 @@
 {
   "type": "smithing_transform",
   "addition": {
-    "tag": "forge:ingots/iron"
+    "tag": "c:ingots/iron"
   },
   "base": {
     "item": "multiverse:kaleidite_pickaxe"
   },
   "result": {
-    "item": "multiverse:prismatic_pickaxe"
+    "id": "multiverse:prismatic_pickaxe"
   },
   "template": {
     "item": "multiverse:dimensional_prism"

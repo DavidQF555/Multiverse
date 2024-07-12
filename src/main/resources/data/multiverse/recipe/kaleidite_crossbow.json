@@ -13,10 +13,10 @@
       "item": "multiverse:multiversal_beacon"
     },
     "S": {
-      "tag": "forge:string"
+      "tag": "c:strings"
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_crossbow"
+    "id": "multiverse:kaleidite_crossbow"
   }
 }

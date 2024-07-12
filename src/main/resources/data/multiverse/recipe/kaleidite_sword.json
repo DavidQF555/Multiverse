@@ -10,10 +10,10 @@
       "item": "multiverse:kaleidite_shard"
     },
     "S": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_sword"
+    "id": "multiverse:kaleidite_sword"
   }
 }

@@ -1,15 +1,19 @@
 {
   "type": "crafting_shaped",
   "pattern": [
-    "# #",
-    "# #"
+    "##",
+    "S#",
+    "S "
   ],
   "key": {
     "#": {
       "item": "multiverse:kaleidite_shard"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_boots"
+    "id": "multiverse:kaleidite_axe"
   }
 }

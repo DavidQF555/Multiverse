@@ -1,19 +1,19 @@
 {
   "type": "crafting_shaped",
   "pattern": [
-    "##",
-    "S#",
-    "S "
+    "###",
+    "#X#",
+    "###"
   ],
   "key": {
     "#": {
       "item": "multiverse:kaleidite_shard"
     },
-    "S": {
-      "tag": "forge:rods/wooden"
+    "X": {
+      "tag": "c:ingots/iron"
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_axe"
+    "id": "multiverse:kaleidite_core"
   }
 }
