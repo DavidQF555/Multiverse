@@ -1,186 +1,292 @@
 {
   "types": [
     {
-      "biomes": "#is_badlands",
+      "biomes": "#c:is_cold",
       "weight": 6
     },
     {
-      "biomes": "#is_beach",
+      "biomes": "#c:is_cold/end",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_cold/nether",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_cold/overworld",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_dense_vegetation",
       "weight": 6
     },
     {
-      "biomes": "#is_deep_ocean",
+      "biomes": "#c:is_dense_vegetation/end",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_dense_vegetation/nether",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_dense_vegetation/overworld",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_dry",
       "weight": 6
     },
     {
-      "biomes": "#is_end",
+      "biomes": "#c:is_dry/end",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_dry/nether",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_dry/overworld",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_hot",
       "weight": 6
     },
     {
-      "biomes": "#is_forest",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_hill",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_jungle",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_mountain",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_nether",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_ocean",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_overworld",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_river",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_savanna",
-      "weight": 6
-    },
-    {
-      "biomes": "#is_taiga",
-      "weight": 6
-    },
-    {
-      "biomes": "#forge:is_cold/end"
-    },
-    {
-      "biomes": "#forge:is_cold/overworld"
-    },
-    {
-      "biomes": "#forge:is_dense/overworld"
-    },
-    {
-      "biomes": "#forge:is_dry/end"
-    },
-    {
-      "biomes": "#forge:is_dry/nether"
-    },
-    {
-      "biomes": "#forge:is_dry/overworld"
-    },
-    {
-      "biomes": "#forge:is_hot/nether"
-    },
-    {
-      "biomes": "#forge:is_hot/overworld"
-    },
-    {
-      "biomes": "#forge:is_sparse/overworld"
-    },
-    {
-      "biomes": "#forge:is_wet/overworld"
-    },
-    {
-      "biomes": "#forge:is_cave",
-      "weight": 6
-    },
-    {
-      "biomes": "#forge:is_cold",
-      "weight": 4
-    },
-    {
-      "biomes": "#forge:is_coniferous",
-      "weight": 6
-    },
-    {
-      "biomes": "#forge:is_dense",
-      "weight": 5
-    },
-    {
-      "biomes": "#forge:is_desert",
-      "weight": 6
-    },
-    {
-      "biomes": "#forge:is_dry",
+      "biomes": "#c:is_hot/end",
       "weight": 3
     },
     {
-      "biomes": "#forge:is_hot",
+      "biomes": "#c:is_hot/overworld",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_mountain",
+      "weight": 6
+    },
+    {
+      "biomes": "#c:is_mountain/peak",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_mountain/slope",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_sparse_vegetation",
+      "weight": 6
+    },
+    {
+      "biomes": "#c:is_sparse_vegetation/end",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_sparse_vegetation/nether",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_sparse_vegetation/overworld",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_tree/coniferous",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_tree/deciduous",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_tree/jungle",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_tree/savanna",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_wet",
+      "weight": 6
+    },
+    {
+      "biomes": "#c:is_wet/end",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_wet/nether",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_wet/overworld",
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_aquatic",
+      "weight": 8
+    },
+    {
+      "biomes": "#c:is_aquatic_icy",
       "weight": 4
     },
     {
-      "biomes": "#forge:is_lush",
+      "biomes": "#c:is_ocean",
       "weight": 6
     },
     {
-      "biomes": "#forge:is_mountain",
+      "biomes": "#c:is_deep_ocean",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_shallow_ocean",
+      "weight": 3
+    },
+    {
+      "biomes": "#c:is_forest",
       "weight": 6
     },
     {
-      "biomes": "#forge:is_mushroom",
-      "weight": 6
+      "biomes": "#c:is_birch_forest",
+      "weight": 2
     },
     {
-      "biomes": "#forge:is_peak",
-      "weight": 6
+      "biomes": "#c:is_flower_forest",
+      "weight": 2
     },
     {
-      "biomes": "#forge:is_plains",
-      "weight": 6
+      "biomes": "#c:is_nether_forest",
+      "weight": 2
     },
     {
-      "biomes": "#forge:is_plateau",
-      "weight": 6
+      "biomes": "#c:is_plains",
+      "weight": 8
     },
     {
-      "biomes": "#forge:is_rare",
-      "weight": 6
+      "biomes": "#c:is_snowy_plains",
+      "weight": 4
     },
     {
-      "biomes": "#forge:is_sandy",
-      "weight": 6
+      "biomes": "#c:is_badlands",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_slope",
-      "weight": 6
+      "biomes": "#c:is_beach",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_snowy",
-      "weight": 6
+      "biomes": "#c:is_cave",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_sparse",
-      "weight": 5
+      "biomes": "#c:is_dead",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_spooky",
-      "weight": 6
+      "biomes": "#c:is_desert",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_swamp",
-      "weight": 6
+      "biomes": "#c:is_end",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_underground",
-      "weight": 6
+      "biomes": "#c:is_floral",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_wasteland",
-      "weight": 6
+      "biomes": "#c:is_hill",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_water",
-      "weight": 6
+      "biomes": "#c:is_icy",
+      "weight": 12
     },
     {
-      "biomes": "#forge:is_wet",
-      "weight": 5
+      "biomes": "#c:is_jungle",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_lush",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_magical",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_modified",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_mushroom",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_nether",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_old_growth",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_outer_end_island",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_overworld",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_plateau",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_rare",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_river",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_sandy",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_savanna",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_snowy",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_spooky",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_stony_shores",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_swamp",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_taiga",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_underground",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_wasteland",
+      "weight": 12
+    },
+    {
+      "biomes": "#c:is_windswept",
+      "weight": 12
     }
   ]
 }

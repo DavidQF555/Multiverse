@@ -7,7 +7,8 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTa
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -40,7 +41,6 @@ public class DoppelgangerEntity extends PathfinderMob {
     private static final int TIMEOUT = 600;
     private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final double GEAR_RATE = 0.8;
-    private static final float ENCHANT_RATE = 0.5f;
 
     public DoppelgangerEntity(EntityType<? extends DoppelgangerEntity> mob, Level level) {
         super(mob, level);
@@ -89,9 +89,14 @@ public class DoppelgangerEntity extends PathfinderMob {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+        Registry<Item> registry = level().registryAccess().registryOrThrow(Registries.ITEM);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (random.nextDouble() < GEAR_RATE) {
-                BuiltInRegistries.ITEM.getTag(getEquipmentTag(slot)).get().getRandomElement(random).map(Holder::value).map(Item::getDefaultInstance).ifPresent(stack -> setItemSlot(slot, stack));
+                registry.getTag(getEquipmentTag(slot))
+                        .flatMap(tag -> tag.getRandomElement(random))
+                        .map(Holder::value)
+                        .map(Item::getDefaultInstance)
+                        .ifPresent(stack -> setItemSlot(slot, stack));
             }
         }
     }
