@@ -1,13 +1,14 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Aquifer;
 
 public class FlatFluidPicker implements SerializableFluidPicker {
 
-    public static final Codec<FlatFluidPicker> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+    public static final MapCodec<FlatFluidPicker> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             Codec.INT.fieldOf("level").forGetter(picker -> picker.level),
             BlockState.CODEC.fieldOf("fluid").forGetter(picker -> picker.state)
     ).apply(inst, FlatFluidPicker::new));
@@ -27,7 +28,7 @@ public class FlatFluidPicker implements SerializableFluidPicker {
     }
 
     @Override
-    public Codec<? extends SerializableFluidPicker> codec() {
+    public MapCodec<? extends FlatFluidPicker> codec() {
         return CODEC;
     }
 

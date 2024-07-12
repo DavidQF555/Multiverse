@@ -11,7 +11,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.OptionalInt;
+import java.util.Optional;
 
 public final class ClientHelper {
 
@@ -24,7 +24,7 @@ public final class ClientHelper {
         Minecraft.getInstance().player.connection.levels().add(key);
     }
 
-    public static void addRiftParticles(OptionalInt from, Vec3 center) {
+    public static void addRiftParticles(Optional<Integer> from, Vec3 center) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
             int index = from.orElseGet(() -> {

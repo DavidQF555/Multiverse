@@ -13,7 +13,7 @@ public final class DimensionEffectsRegistry {
 
     static {
         for (DyeColor color : DyeColor.values()) {
-            FOG.put(color, new ResourceLocation(Multiverse.MOD_ID, "fog/" + color.getName()));
+            FOG.put(color, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "fog/" + color.getName()));
         }
     }
 

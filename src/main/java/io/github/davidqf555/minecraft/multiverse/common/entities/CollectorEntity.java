@@ -34,8 +34,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -65,10 +65,10 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(random, difficulty);
-        populateDefaultEquipmentEnchantments(random, difficulty);
-        return super.finalizeSpawn(level, difficulty, type, data, tag);
+        populateDefaultEquipmentEnchantments(level, random, difficulty);
+        return super.finalizeSpawn(level, difficulty, type, data);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class CollectorEntity extends SpellcasterIllager {
     }
 
     @Override
-    protected void populateDefaultEquipmentEnchantments(RandomSource random, DifficultyInstance p_21462_) {
+    protected void populateDefaultEquipmentEnchantments(ServerLevelAccessor level, RandomSource random, DifficultyInstance p_21462_) {
     }
 
     @Override
@@ -116,8 +116,9 @@ public class CollectorEntity extends SpellcasterIllager {
         targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false, true));
     }
 
+
     @Override
-    public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+    public void applyRaidBuffs(ServerLevel level, int p_213660_1_, boolean p_213660_2_) {
     }
 
     @Override
@@ -141,8 +142,8 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Nullable
     @Override
-    public Entity changeDimension(ServerLevel world, ITeleporter teleporter) {
-        Entity entity = super.changeDimension(world, teleporter);
+    public Entity changeDimension(DimensionTransition transition) {
+        Entity entity = super.changeDimension(transition);
         if (entity instanceof CollectorEntity) {
             ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level().dimension()));
             entity.setPortalCooldown();

@@ -36,9 +36,9 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -84,7 +84,7 @@ public final class DimensionHelper {
     }
 
     public static ResourceKey<Level> getRegistryKey(int index) {
-        return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
+        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, String.valueOf(index)));
     }
 
     public static int getIndex(ResourceKey<Level> world) {
@@ -138,8 +138,8 @@ public final class DimensionHelper {
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
         map.put(worldKey, newWorld);
         server.markWorldsDirty();
-        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(newWorld));
-        Multiverse.CHANNEL.send(new UpdateClientDimensionsPacket(worldKey), PacketDistributor.ALL.noArg());
+        NeoForge.EVENT_BUS.post(new LevelEvent.Load(newWorld));
+        PacketDistributor.sendToAllPlayers(new UpdateClientDimensionsPacket(worldKey));
         return newWorld;
     }
 

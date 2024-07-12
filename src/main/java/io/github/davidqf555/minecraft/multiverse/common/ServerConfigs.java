@@ -1,23 +1,23 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class ServerConfigs {
 
     public static final ServerConfigs INSTANCE;
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
     static {
-        Pair<ServerConfigs, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(ServerConfigs::new);
+        Pair<ServerConfigs, ModConfigSpec> pair = new ModConfigSpec.Builder().configure(ServerConfigs::new);
         INSTANCE = pair.getLeft();
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
-    public final ForgeConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, spawnPeriod, spawnCount;
+    public final ModConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
+    public final ModConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, spawnPeriod, spawnCount;
 
-    public ServerConfigs(ForgeConfigSpec.Builder builder) {
+    public ServerConfigs(ModConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
         maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
                 .defineInRange("max", 25, 1, Integer.MAX_VALUE);

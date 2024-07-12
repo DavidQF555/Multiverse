@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class RiftDimensionPlacement extends PlacementModifier {
 
     private static final RiftDimensionPlacement INSTANCE = new RiftDimensionPlacement();
-    public static final Codec<RiftDimensionPlacement> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<RiftDimensionPlacement> CODEC = MapCodec.unit(() -> INSTANCE);
 
     protected RiftDimensionPlacement() {
     }

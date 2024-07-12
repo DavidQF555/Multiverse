@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.WaveFluidPicker;
@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class WaveSeaLevelSelector implements SeaLevelSelector {
 
-    public static final Codec<WaveSeaLevelSelector> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+    public static final MapCodec<WaveSeaLevelSelector> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             IntRange.CODEC.fieldOf("center").forGetter(selector -> selector.center),
             IntRange.CODEC.fieldOf("amplitude").forGetter(selector -> selector.amplitude),
             IntRange.CODEC.fieldOf("period").forGetter(selector -> selector.period)
@@ -31,7 +31,7 @@ public class WaveSeaLevelSelector implements SeaLevelSelector {
     }
 
     @Override
-    public Codec<? extends SeaLevelSelector> codec() {
+    public MapCodec<? extends WaveSeaLevelSelector> codec() {
         return CODEC;
     }
 

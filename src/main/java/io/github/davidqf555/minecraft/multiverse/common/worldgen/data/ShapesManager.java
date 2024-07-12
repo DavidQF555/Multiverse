@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class ShapesManager {
 
-    public static final ShapesManager INSTANCE = new ShapesManager(new ResourceLocation(Multiverse.MOD_ID, "worldgen/multiverse/shapes.json"));
+    public static final ShapesManager INSTANCE = new ShapesManager(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "worldgen/multiverse/shapes.json"));
     public static final Codec<Pair<MultiverseShape, Integer>> ENTRY_CODEC = Codec.mapPair(
             Codec.STRING.xmap(MultiverseShape::byName, MultiverseShape::getName).fieldOf("shape"),
             ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("weight", 1)

@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.portal.DimensionTransition;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,11 +29,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class RiftBlock extends BaseEntityBlock {
 
+    public static final MapCodec<RiftBlock> CODEC = simpleCodec(RiftBlock::new);
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
 
     public RiftBlock(Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, false));
+    }
+
+    @Override
+    protected MapCodec<? extends RiftBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -54,7 +62,6 @@ public class RiftBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         if (state.getValue(TEMPORARY)) {
             world.destroyBlock(pos, true);
@@ -67,22 +74,25 @@ public class RiftBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public boolean canBeReplaced(BlockState state, Fluid fluid) {
         return false;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity)) {
+        if (world instanceof ServerLevel && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity)) {
             if (!entity.isOnPortalCooldown()) {
                 MinecraftServer server = world.getServer();
                 int target = ((RiftTileEntity) tile).getTarget();
                 if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
                     ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
-                    entity.changeDimension(dim, (RiftTileEntity) tile);
+                    if (entity.canChangeDimensions(world, dim)) {
+                        DimensionTransition trans = ((RiftTileEntity) tile).getPortalDestination(dim, entity, entity.blockPosition());
+                        if (trans != null) {
+                            entity.changeDimension(trans);
+                        }
+                    }
                 }
             }
             entity.setPortalCooldown();

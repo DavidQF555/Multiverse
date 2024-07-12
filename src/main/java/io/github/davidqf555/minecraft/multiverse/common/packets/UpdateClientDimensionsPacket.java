@@ -1,40 +1,31 @@
 package io.github.davidqf555.minecraft.multiverse.common.packets;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+public class UpdateClientDimensionsPacket implements CustomPacketPayload {
 
-public class UpdateClientDimensionsPacket {
-
-    private static final BiConsumer<UpdateClientDimensionsPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> buffer.writeUtf(message.key.location().toString());
-    private static final Function<FriendlyByteBuf, UpdateClientDimensionsPacket> DECODER = buffer -> new UpdateClientDimensionsPacket(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buffer.readUtf())));
-
+    public static final StreamCodec<FriendlyByteBuf, UpdateClientDimensionsPacket> CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8.map(loc -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(loc)), key -> key.location().toString()), packet -> packet.key,
+            UpdateClientDimensionsPacket::new
+    );
+    public static final IPayloadHandler<UpdateClientDimensionsPacket> HANDLER = (packet, context) -> ClientHelper.addDimension(packet.key);
     private final ResourceKey<Level> key;
 
     public UpdateClientDimensionsPacket(ResourceKey<Level> key) {
         this.key = key;
     }
 
-    public static void register(int index) {
-        Multiverse.CHANNEL.messageBuilder(UpdateClientDimensionsPacket.class, index, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ENCODER)
-                .decoder(DECODER)
-                .consumerMainThread(UpdateClientDimensionsPacket::handle)
-                .add();
+    @Override
+    public Type<? extends UpdateClientDimensionsPacket> type() {
+        return PacketRegistry.UPDATE_DIM;
     }
-
-    private void handle(CustomPayloadEvent.Context context) {
-        ClientHelper.addDimension(key);
-        context.setPacketHandled(true);
-    }
-
 }

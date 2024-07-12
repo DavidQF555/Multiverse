@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CollectorRenderer<T extends SpellcasterIllager> extends IllagerRenderer<T> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/collector.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "textures/entity/collector.png");
 
     public CollectorRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.ILLUSIONER)), 0.5f);

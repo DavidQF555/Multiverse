@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TravelerRenderer extends IllagerRenderer<TravelerEntity> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/traveler.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "textures/entity/traveler.png");
 
     public TravelerRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.PILLAGER)), 0.5f);

@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class SolidPlacement extends PlacementModifier {
 
-    public static final Codec<SolidPlacement> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+    public static final MapCodec<SolidPlacement> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             Direction.CODEC.fieldOf("direction").forGetter(placement -> placement.dir),
             ExtraCodecs.POSITIVE_INT.fieldOf("steps").forGetter(placement -> placement.steps)
     ).apply(inst, SolidPlacement::of));

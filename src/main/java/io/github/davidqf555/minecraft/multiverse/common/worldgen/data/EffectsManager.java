@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class EffectsManager {
 
-    public static final EffectsManager INSTANCE = new EffectsManager(new ResourceLocation(Multiverse.MOD_ID, "worldgen/multiverse/effects.json"));
+    public static final EffectsManager INSTANCE = new EffectsManager(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "worldgen/multiverse/effects.json"));
     public static final Codec<Pair<MultiverseEffect, Integer>> ENTRY_CODEC = Codec.mapPair(
             Codec.STRING.xmap(MultiverseEffect::byName, MultiverseEffect::getName).fieldOf("effect"),
             ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("weight", 1)

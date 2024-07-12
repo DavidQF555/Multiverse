@@ -34,9 +34,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
@@ -46,7 +44,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
@@ -93,15 +91,15 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            ClientHelper.addRiftParticles(OptionalInt.empty(), getEyePosition());
+            ClientHelper.addRiftParticles(Optional.empty(), getEyePosition());
         }
         super.handleEntityEvent(b);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        getEntityData().define(IS_CHARGING_CROSSBOW, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_CHARGING_CROSSBOW, false);
     }
 
     @Override
@@ -231,7 +229,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    public void applyRaidBuffs(int p_37844_, boolean p_37845_) {
+    public void applyRaidBuffs(ServerLevel level, int p_37844_, boolean p_37845_) {
     }
 
     @Override
@@ -271,10 +269,10 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(random, difficulty);
-        populateDefaultEquipmentEnchantments(random, difficulty);
-        return super.finalizeSpawn(level, difficulty, type, data, tag);
+        populateDefaultEquipmentEnchantments(level, random, difficulty);
+        return super.finalizeSpawn(level, difficulty, type, data);
     }
 
     @Override
@@ -291,22 +289,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public void performRangedAttack(LivingEntity entity, float dist) {
         performCrossbowAttack(this, CROSSBOW_POWER);
-    }
-
-    @Override
-    public void shootCrossbowProjectile(LivingEntity entity, ItemStack stack, Projectile projectile, float dist) {
-        shootCrossbowProjectile(this, entity, projectile, dist, CROSSBOW_POWER);
-    }
-
-    @Override
-    public boolean isAlliedTo(Entity entity) {
-        if (super.isAlliedTo(entity)) {
-            return true;
-        } else if (entity instanceof LivingEntity && ((LivingEntity) entity).getMobType() == MobType.ILLAGER) {
-            return getTeam() == null && entity.getTeam() == null;
-        } else {
-            return false;
-        }
     }
 
     @Override

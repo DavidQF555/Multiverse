@@ -2,26 +2,21 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.ChannelBuilder;
-import net.minecraftforge.network.SimpleChannel;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 
 @Mod("multiverse")
 public class Multiverse {
 
     public static final String MOD_ID = "multiverse";
-    public static final SimpleChannel CHANNEL = ChannelBuilder.named(new ResourceLocation(MOD_ID, MOD_ID)).simpleChannel();
 
     public Multiverse() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC);
-        addRegistries(FMLJavaModLoadingContext.get().getModEventBus());
-        MinecraftForge.EVENT_BUS.register(this);
+        ModContainer container = ModLoadingContext.get().getActiveContainer();
+        container.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC);
+        addRegistries(container.getEventBus());
     }
 
     private void addRegistries(IEventBus bus) {
@@ -38,5 +33,7 @@ public class Multiverse {
         CreativeModeTabRegistry.TABS.register(bus);
         SerializableFluidPickerRegistry.CODECS.register(bus);
         SeaLevelSelectorRegistry.CODECS.register(bus);
+        DataComponentTypeRegistry.TYPES.register(bus);
+        ArmorMaterialRegistry.MATERIALS.register(bus);
     }
 }

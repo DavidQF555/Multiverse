@@ -3,10 +3,17 @@ package io.github.davidqf555.minecraft.multiverse.common.data;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,15 +26,22 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -37,12 +51,12 @@ public class ArrowSummonsData extends SavedData {
     private static final String NAME = Multiverse.MOD_ID + "_ArrowSummons";
     private final Map<ShotData, Integer> data = new HashMap<>();
 
-    protected ArrowSummonsData(CompoundTag tag) {
+    protected ArrowSummonsData(CompoundTag tag, HolderLookup.Provider provider) {
         if (tag.contains("Data", Tag.TAG_LIST)) {
             for (Tag t : tag.getList("Data", Tag.TAG_COMPOUND)) {
                 if (((CompoundTag) t).contains("Data", Tag.TAG_COMPOUND) && ((CompoundTag) t).contains("Count", Tag.TAG_INT)) {
                     ShotData shot = new ShotData(Vec3.ZERO, Vec3.ZERO, null, false);
-                    shot.deserializeNBT(((CompoundTag) t).getCompound("Data"));
+                    shot.deserializeNBT(provider, ((CompoundTag) t).getCompound("Data"));
                     data.put(shot, ((CompoundTag) t).getInt("Count"));
                 }
             }
@@ -80,52 +94,58 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(new RiftParticlesPacket(OptionalInt.empty(), start), PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(BlockPos.containing(start))));
+        PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(BlockPos.containing(start)), new RiftParticlesPacket(Optional.empty(), start));
     }
 
     protected ItemStack randomFirework(RandomSource random) {
         ItemStack stack = Items.FIREWORK_ROCKET.getDefaultInstance();
-        CompoundTag tag = stack.getOrCreateTagElement(FireworkRocketItem.TAG_FIREWORKS);
-        tag.putByte(FireworkRocketItem.TAG_FLIGHT, (byte) random.nextInt(1, 4));
-        ListTag explosions = new ListTag();
+        int flight = random.nextInt(1, 4);
+        List<FireworkExplosion> explosions = new ArrayList<>();
         DyeColor[] options = DyeColor.values();
         int count = random.nextInt(1, 5);
         for (int i = 0; i < count; i++) {
-            CompoundTag explosion = new CompoundTag();
-            explosion.putByte(FireworkRocketItem.TAG_EXPLOSION_TYPE, (byte) random.nextInt(FireworkRocketItem.Shape.values().length));
-            explosion.putBoolean(FireworkRocketItem.TAG_EXPLOSION_FLICKER, random.nextBoolean());
-            explosion.putBoolean(FireworkRocketItem.TAG_EXPLOSION_TRAIL, random.nextBoolean());
+            FireworkExplosion.Shape shape = Util.getRandom(FireworkExplosion.Shape.values(), random);
+            boolean flicker = random.nextBoolean();
+            boolean trail = random.nextBoolean();
             int[] colors = new int[random.nextInt(1, 9)];
             for (int j = 0; j < colors.length; j++) {
                 colors[j] = options[random.nextInt(options.length)].getFireworkColor();
             }
-            explosion.putIntArray(FireworkRocketItem.TAG_EXPLOSION_COLORS, colors);
-            explosions.add(explosion);
+            explosions.add(new FireworkExplosion(shape, IntList.of(colors), IntList.of(), trail, flicker));
         }
-        tag.put(FireworkRocketItem.TAG_EXPLOSIONS, explosions);
+        stack.set(DataComponents.FIREWORKS, new Fireworks(flight, explosions));
         return stack;
     }
 
     protected AbstractArrow randomArrow(ServerLevel world, LivingEntity shooter) {
         RandomSource random = world.getRandom();
-        ArrowItem item = (ArrowItem) ForgeRegistries.ITEMS.tags().getTag(ItemTags.ARROWS).getRandomElement(random).filter(i -> i instanceof ArrowItem).orElse(Items.ARROW);
+        ArrowItem item = (ArrowItem) BuiltInRegistries.ITEM.getTag(ItemTags.ARROWS)
+                .map(tag -> tag.getRandomElement(random))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Holder::value)
+                .filter(i -> i instanceof ArrowItem)
+                .orElse(Items.ARROW);
         ItemStack stack = item.getDefaultInstance();
         if (item == Items.TIPPED_ARROW) {
-            List<Potion> potions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
-            PotionUtils.setPotion(stack, potions.get(random.nextInt(potions.size())));
+            PotionContents potion = BuiltInRegistries.POTION.getRandom(random)
+                    .map(PotionContents::new)
+                    .orElse(PotionContents.EMPTY);
+            stack.set(DataComponents.POTION_CONTENTS, potion);
         }
-        AbstractArrow arrow = item.createArrow(world, stack, shooter);
-        arrow.setCritArrow(true);
-        arrow.setShotFromCrossbow(random.nextBoolean());
-        arrow.setKnockback(random.nextInt(Enchantments.PUNCH_ARROWS.getMaxLevel() + 1));
-        arrow.setPierceLevel((byte) random.nextInt(Enchantments.PIERCING.getMaxLevel() + 1));
-        int power = random.nextInt(Enchantments.POWER_ARROWS.getMaxLevel() + 1);
-        if (power > 0) {
-            arrow.setBaseDamage(arrow.getBaseDamage() + power * 0.5 + 0.5);
+        ItemStack bow = (random.nextBoolean() ? Items.CROSSBOW : Items.BOW).getDefaultInstance();
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        for (ResourceKey<Enchantment> key : List.of(Enchantments.PUNCH, Enchantments.PIERCING, Enchantments.POWER)) {
+            Holder<Enchantment> holder = world.holderOrThrow(key);
+            int max = holder.value().getMaxLevel();
+            enchantments.set(holder, random.nextInt(max + 1));
         }
         if (random.nextDouble() < ServerConfigs.INSTANCE.fireRate.get()) {
-            arrow.setSecondsOnFire(100);
+            enchantments.set(world.holderOrThrow(Enchantments.FLAME), 1);
         }
+        EnchantmentHelper.setEnchantments(bow, enchantments.toImmutable());
+        AbstractArrow arrow = item.createArrow(world, stack, shooter, bow);
+        arrow.setCritArrow(true);
         return arrow;
     }
 
@@ -134,11 +154,11 @@ public class ArrowSummonsData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
         ListTag list = new ListTag();
         data.forEach((data, count) -> {
             CompoundTag t = new CompoundTag();
-            t.put("Data", data.serializeNBT());
+            t.put("Data", data.serializeNBT(provider));
             t.putInt("Count", count);
             list.add(t);
         });
@@ -212,7 +232,7 @@ public class ArrowSummonsData extends SavedData {
         }
 
         @Override
-        public CompoundTag serializeNBT() {
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
             CompoundTag tag = new CompoundTag();
             tag.putDouble("StartX", start.x());
             tag.putDouble("StartY", start.y());
@@ -226,7 +246,7 @@ public class ArrowSummonsData extends SavedData {
         }
 
         @Override
-        public void deserializeNBT(CompoundTag nbt) {
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
             if (nbt.contains("StartX", Tag.TAG_DOUBLE) && nbt.contains("StartY", Tag.TAG_DOUBLE) && nbt.contains("StartZ", Tag.TAG_DOUBLE)) {
                 start = new Vec3(nbt.getDouble("StartX"), nbt.getDouble("StartY"), nbt.getDouble("StartZ"));
             }

@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
@@ -33,7 +34,7 @@ public class SeaLevelSelectorManager extends SimpleJsonResourceReloadListener {
             if (loc.getNamespace().equals(Multiverse.MOD_ID)) {
                 for (MultiverseShape shape : shapes) {
                     if (loc.getPath().equals(shape.getName())) {
-                        SeaLevelSelector selector = SeaLevelSelector.CODEC.get().decode(JsonOps.INSTANCE, element).getOrThrow(true, LOGGER::error).getFirst();
+                        SeaLevelSelector selector = SeaLevelSelector.CODEC.get().decode(JsonOps.INSTANCE, element).getOrThrow(JsonParseException::new).getFirst();
                         shape.setSeaLevelSelector(selector);
                         shapes.remove(shape);
                         return;

@@ -6,6 +6,8 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtBy
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,11 +29,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.UUID;
 
 public class DoppelgangerEntity extends PathfinderMob {
@@ -74,33 +74,34 @@ public class DoppelgangerEntity extends PathfinderMob {
             case FEET -> MultiverseTags.DOPPELGANGER_FEET;
             case MAINHAND -> MultiverseTags.DOPPELGANGER_MAIN_HAND;
             case OFFHAND -> MultiverseTags.DOPPELGANGER_OFF_HAND;
+            case BODY -> MultiverseTags.DOPPELGANGER_BODY;
         };
     }
 
     @Nullable
     @SuppressWarnings("deprecation")
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawn, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawn, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(random, difficulty);
-        populateDefaultEquipmentEnchantments(random, difficulty);
-        return super.finalizeSpawn(level, difficulty, spawn, data, tag);
+        populateDefaultEquipmentEnchantments(level, random, difficulty);
+        return super.finalizeSpawn(level, difficulty, spawn, data);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (random.nextDouble() < GEAR_RATE) {
-                ForgeRegistries.ITEMS.tags().getTag(getEquipmentTag(slot)).getRandomElement(random).map(Item::getDefaultInstance).ifPresent(stack -> setItemSlot(slot, stack));
+                BuiltInRegistries.ITEM.getTag(getEquipmentTag(slot)).get().getRandomElement(random).map(Holder::value).map(Item::getDefaultInstance).ifPresent(stack -> setItemSlot(slot, stack));
             }
         }
     }
 
     @Override
-    protected void populateDefaultEquipmentEnchantments(RandomSource random, DifficultyInstance difficulty) {
-        enchantSpawnedWeapon(random, 4 * ENCHANT_RATE);
+    protected void populateDefaultEquipmentEnchantments(ServerLevelAccessor level, RandomSource random, DifficultyInstance difficulty) {
+        enchantSpawnedWeapon(level, random, difficulty);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot.getType() == EquipmentSlot.Type.ARMOR) {
-                enchantSpawnedArmor(random, 2 * ENCHANT_RATE, slot);
+            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                enchantSpawnedArmor(level, random, slot, difficulty);
             }
         }
     }
@@ -147,9 +148,9 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        getEntityData().define(ORIGINAL, Optional.empty());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ORIGINAL, Optional.empty());
     }
 
     @Override
@@ -180,7 +181,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            ClientHelper.addRiftParticles(OptionalInt.empty(), getEyePosition());
+            ClientHelper.addRiftParticles(Optional.empty(), getEyePosition());
         }
         super.handleEntityEvent(b);
     }

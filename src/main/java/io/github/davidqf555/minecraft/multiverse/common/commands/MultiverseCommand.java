@@ -16,21 +16,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public final class MultiverseCommand {
 
-    private static final Component NO_DIMENSIONS = Component.translatable(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.no_dimensions")));
-    private static final Component INDICES_HEADER = Component.translatable(Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.indices_header")));
-    private static final String INDEX = Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.index"));
-    private static final String OUT_OF_BOUNDS = Util.makeDescriptionId("command", new ResourceLocation(Multiverse.MOD_ID, "multiverse.out_of_bounds"));
+    private static final Component NO_DIMENSIONS = Component.translatable(Util.makeDescriptionId("command", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiverse.no_dimensions")));
+    private static final Component INDICES_HEADER = Component.translatable(Util.makeDescriptionId("command", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiverse.indices_header")));
+    private static final String INDEX = Util.makeDescriptionId("command", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiverse.index"));
+    private static final String OUT_OF_BOUNDS = Util.makeDescriptionId("command", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiverse.out_of_bounds"));
 
     private MultiverseCommand() {
     }
@@ -76,12 +74,7 @@ public final class MultiverseCommand {
         ServerLevel world = op.orElseGet(() -> DimensionHelper.getOrCreateWorld(stack.getServer(), index));
         Vec3 pos = DimensionHelper.translate(entity.position(), entity.level().dimensionType(), world.dimensionType(), true);
         world.getChunkAt(BlockPos.containing(pos));
-        entity.changeDimension(world, new ITeleporter() {
-            @Override
-            public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
-                return new PortalInfo(pos, Vec3.ZERO, entity.getYRot(), entity.getXRot());
-            }
-        });
+        entity.changeDimension(new DimensionTransition(world, pos, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
         return 1;
     }
 

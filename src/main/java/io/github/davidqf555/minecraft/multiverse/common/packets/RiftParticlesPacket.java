@@ -1,46 +1,42 @@
 package io.github.davidqf555.minecraft.multiverse.common.packets;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
-import java.util.OptionalInt;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.Optional;
 
-public class RiftParticlesPacket {
+public class RiftParticlesPacket implements CustomPacketPayload {
 
-    private static final BiConsumer<RiftParticlesPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
-        buffer.writeBoolean(message.from.isPresent());
-        message.from.ifPresent(buffer::writeInt);
-        buffer.writeDouble(message.center.x());
-        buffer.writeDouble(message.center.y());
-        buffer.writeDouble(message.center.z());
-    };
-    private static final Function<FriendlyByteBuf, RiftParticlesPacket> DECODER = buffer -> new RiftParticlesPacket(buffer.readBoolean() ? OptionalInt.of(buffer.readInt()) : OptionalInt.empty(), new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
+    public static final StreamCodec<FriendlyByteBuf, RiftParticlesPacket> CODEC = StreamCodec.composite(
+            ByteBufCodecs.optional(ByteBufCodecs.INT), packet -> packet.from,
+            ByteBufCodecs.DOUBLE, packet -> packet.x,
+            ByteBufCodecs.DOUBLE, packet -> packet.y,
+            ByteBufCodecs.DOUBLE, packet -> packet.z,
+            RiftParticlesPacket::new
+    );
+    public static final IPayloadHandler<RiftParticlesPacket> HANDLER = (packet, context) -> ClientHelper.addRiftParticles(packet.from, new Vec3(packet.x, packet.y, packet.z));
+    private final Optional<Integer> from;
+    private final double x, y, z;
 
-    private final OptionalInt from;
-    private final Vec3 center;
+    public RiftParticlesPacket(Optional<Integer> from, Vec3 loc) {
+        this(from, loc.x(), loc.y(), loc.z());
+    }
 
-    public RiftParticlesPacket(OptionalInt from, Vec3 center) {
+    public RiftParticlesPacket(Optional<Integer> from, double x, double y, double z) {
         this.from = from;
-        this.center = center;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public static void register(int index) {
-        Multiverse.CHANNEL.messageBuilder(RiftParticlesPacket.class, index, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ENCODER)
-                .decoder(DECODER)
-                .consumerMainThread(RiftParticlesPacket::handle)
-                .add();
-    }
-
-    private void handle(CustomPayloadEvent.Context context) {
-        ClientHelper.addRiftParticles(from, center);
-        context.setPacketHandled(true);
+    @Override
+    public Type<? extends RiftParticlesPacket> type() {
+        return PacketRegistry.RIFT_PARTICLES;
     }
 
 }

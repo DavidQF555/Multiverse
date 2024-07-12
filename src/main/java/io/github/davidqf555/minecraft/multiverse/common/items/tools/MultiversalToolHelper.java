@@ -4,44 +4,43 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.registration.DataComponentTypeRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Optional;
 
 public final class MultiversalToolHelper {
 
-    public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
-    public static final Component CROUCH_INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.BLUE);
-    public static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.BLUE);
+    public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
+    public static final Component CROUCH_INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.BLUE);
+    public static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.BLUE);
 
     private MultiversalToolHelper() {
     }
 
     public static int getTarget(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
-        return tag.contains("Target", Tag.TAG_INT) ? tag.getInt("Target") : 0;
+        return stack.getOrDefault(DataComponentTypeRegistry.TARGET.get(), 0);
     }
 
     public static boolean setTarget(ItemStack stack, int target) {
-        if (getTarget(stack) != target) {
-            CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
-            tag.putInt("Target", target);
+        int current = getTarget(stack);
+        if (current != target) {
+            stack.set(DataComponentTypeRegistry.TARGET.get(), target);
             return true;
         }
         return false;
@@ -81,8 +80,8 @@ public final class MultiversalToolHelper {
                 BlockPos block = BlockPos.containing(DimensionHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
-                    Multiverse.CHANNEL.send(new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)), PacketDistributor.TRACKING_CHUNK.with(w.getChunkAt(block)));
-                    Multiverse.CHANNEL.send(new RiftParticlesPacket(OptionalInt.of(target), Vec3.atCenterOf(pos)), PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos)));
+                    PacketDistributor.sendToPlayersTrackingChunk(w, new ChunkPos(block), new RiftParticlesPacket(Optional.of(current), Vec3.atCenterOf(block)));
+                    PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(pos), new RiftParticlesPacket(Optional.of(current), Vec3.atCenterOf(pos)));
                     Block.dropResources(s, world, pos, w.getBlockEntity(block), entity, stack);
                 }
             });

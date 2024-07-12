@@ -17,16 +17,13 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @ParametersAreNonnullByDefault
 public class SpawnCollectorItem extends TimerItem {
@@ -39,8 +36,8 @@ public class SpawnCollectorItem extends TimerItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
-        super.appendHoverText(stack, world, text, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
+        super.appendHoverText(stack, context, text, flag);
         text.add(getLore());
     }
 
@@ -76,7 +73,7 @@ public class SpawnCollectorItem extends TimerItem {
         if (entity.level().getGameTime() % period == 0) {
             RandomSource random = entity.level().getRandom();
             Vec3 pos = entity.position().add(random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE);
-            ClientHelper.addRiftParticles(OptionalInt.empty(), pos);
+            ClientHelper.addRiftParticles(Optional.empty(), pos);
         }
     }
 

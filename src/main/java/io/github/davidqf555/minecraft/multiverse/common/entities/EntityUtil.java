@@ -38,7 +38,7 @@ public final class EntityUtil {
 
     @Nullable
     public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
-        return Optional.ofNullable(type.create(world, null, entity -> {
+        return Optional.ofNullable(type.create(world, entity -> {
             RandomSource rand = world.getRandom();
             for (int i = 0; i < 50; i++) {
                 int dX = rand.nextInt(min, max + 1);
@@ -54,7 +54,7 @@ public final class EntityUtil {
                     dZ *= -1;
                 }
                 BlockPos pos = center.offset(dX, dY, dZ);
-                if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, pos, type) && world.noCollision(type.getAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5))) {
+                if (SpawnPlacements.getPlacementType(type).isSpawnPositionOk(world, pos, type) && world.noCollision(type.getSpawnAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5))) {
                     entity.setPos(Vec3.atBottomCenterOf(pos));
                     world.addFreshEntityWithPassengers(entity);
                 }

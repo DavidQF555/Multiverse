@@ -16,19 +16,20 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
-@Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public final class EventBusSubscriber {
+@EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+public final class CommonEventBusSubscriber {
 
-    private EventBusSubscriber() {
+    private CommonEventBusSubscriber() {
     }
 
     @SubscribeEvent
@@ -55,9 +56,10 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onLevelTick(TickEvent.LevelTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && !event.level.isClientSide()) {
-            ArrowSummonsData.get((ServerLevel) event.level).ifPresent(data -> data.tick((ServerLevel) event.level));
+    public static void onLevelTick(LevelTickEvent.Pre event) {
+        Level level = event.getLevel();
+        if (!level.isClientSide()) {
+            ArrowSummonsData.get((ServerLevel) level).ifPresent(data -> data.tick((ServerLevel) level));
         }
     }
 

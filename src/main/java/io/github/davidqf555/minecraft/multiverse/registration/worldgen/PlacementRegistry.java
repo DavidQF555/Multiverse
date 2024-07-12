@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.MultiverseDimensionPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.RiftDimensionPlacement;
@@ -8,21 +8,21 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placem
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class PlacementRegistry {
 
     public static final DeferredRegister<PlacementModifierType<?>> TYPES = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, Multiverse.MOD_ID);
 
-    public static final RegistryObject<PlacementModifierType<RiftDimensionPlacement>> RIFT_DIMENSION = register("rift_dimension", RiftDimensionPlacement.CODEC);
-    public static final RegistryObject<PlacementModifierType<MultiverseDimensionPlacement>> MULTIVERSE = register("multiverse", MultiverseDimensionPlacement.CODEC);
-    public static final RegistryObject<PlacementModifierType<SolidPlacement>> SOLID = register("solid", SolidPlacement.CODEC);
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<RiftDimensionPlacement>> RIFT_DIMENSION = register("rift_dimension", RiftDimensionPlacement.CODEC);
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<MultiverseDimensionPlacement>> MULTIVERSE = register("multiverse", MultiverseDimensionPlacement.CODEC);
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<SolidPlacement>> SOLID = register("solid", SolidPlacement.CODEC);
 
     private PlacementRegistry() {
     }
 
-    private static <T extends PlacementModifier> RegistryObject<PlacementModifierType<T>> register(String name, Codec<T> codec) {
+    private static <T extends PlacementModifier> DeferredHolder<PlacementModifierType<?>, PlacementModifierType<T>> register(String name, MapCodec<T> codec) {
         return TYPES.register(name, () -> () -> codec);
     }
 

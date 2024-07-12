@@ -11,18 +11,18 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.*;
 
 import java.io.IOException;
 
-@Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public final class EventBusSubscriber {
+@EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public final class ClientEventBusSubscriber {
 
-    private EventBusSubscriber() {
+    private ClientEventBusSubscriber() {
     }
 
     @SubscribeEvent
@@ -35,7 +35,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
     }
 
     @SubscribeEvent
@@ -69,10 +69,10 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onFMLClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pull"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pull")));
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pulling"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pulling")));
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "charged"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("charged")));
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "firework"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("firework")));
+            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "pull"), ItemProperties.getProperty(Items.CROSSBOW.getDefaultInstance(), ResourceLocation.withDefaultNamespace("pull")));
+            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "pulling"), ItemProperties.getProperty(Items.CROSSBOW.getDefaultInstance(), ResourceLocation.withDefaultNamespace("pulling")));
+            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "charged"), ItemProperties.getProperty(Items.CROSSBOW.getDefaultInstance(), ResourceLocation.withDefaultNamespace("charged")));
+            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "firework"), ItemProperties.getProperty(Items.CROSSBOW.getDefaultInstance(), ResourceLocation.withDefaultNamespace("firework")));
         });
     }
 

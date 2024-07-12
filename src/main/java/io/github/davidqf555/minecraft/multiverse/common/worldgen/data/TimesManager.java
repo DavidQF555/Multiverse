@@ -26,7 +26,7 @@ import java.util.Optional;
 
 public class TimesManager {
 
-    public static final TimesManager INSTANCE = new TimesManager(new ResourceLocation(Multiverse.MOD_ID, "worldgen/multiverse/times.json"));
+    public static final TimesManager INSTANCE = new TimesManager(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "worldgen/multiverse/times.json"));
     public static final Codec<Pair<MultiverseTime, Integer>> ENTRY_CODEC = Codec.mapPair(
             Codec.STRING.xmap(MultiverseTime::byName, MultiverseTime::getName).fieldOf("time"),
             ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("weight", 1)

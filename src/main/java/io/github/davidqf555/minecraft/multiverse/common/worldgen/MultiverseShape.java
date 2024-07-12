@@ -7,7 +7,7 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.IntRange;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.SeaLevelSelector;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -28,14 +28,14 @@ public enum MultiverseShape {
 
     private final String name;
     private final NoiseSettings noise;
-    private final Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router;
+    private final Function<BootstrapContext<NoiseGeneratorSettings>, NoiseRouter> router;
     private final float light;
     private final boolean floor, ceiling;
     private final int height, minY;
     private final Optional<MultiverseTime> fixedTime;
     private SeaLevelSelector sea = new FlatSeaLevelSelector(IntRange.of(0, 0));
 
-    MultiverseShape(String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstapContext<NoiseGeneratorSettings>, NoiseRouter> router, Optional<MultiverseTime> fixedTime) {
+    MultiverseShape(String name, boolean ceiling, boolean floor, int minY, int height, int sizeHorizontal, int sizeVertical, float light, Function<BootstrapContext<NoiseGeneratorSettings>, NoiseRouter> router, Optional<MultiverseTime> fixedTime) {
         this.minY = minY;
         this.name = name;
         this.floor = floor;
@@ -66,15 +66,15 @@ public enum MultiverseShape {
     }
 
     public ResourceKey<NoiseGeneratorSettings> getNoiseSettingsKey(MultiverseType type) {
-        return ResourceKey.create(Registries.NOISE_SETTINGS, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name));
+        return ResourceKey.create(Registries.NOISE_SETTINGS, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, type.getName() + "/" + name));
     }
 
-    public NoiseGeneratorSettings createNoiseSettings(BootstapContext<NoiseGeneratorSettings> provider, MultiverseType type) {
+    public NoiseGeneratorSettings createNoiseSettings(BootstrapContext<NoiseGeneratorSettings> provider, MultiverseType type) {
         return new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), router.apply(provider), SurfaceRules.state(Blocks.AIR.defaultBlockState()), List.of(), 0, false, true, true, false);
     }
 
     public ResourceKey<DimensionType> getTypeKey(MultiverseType type, MultiverseTime time, MultiverseEffect effect) {
-        return ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(Multiverse.MOD_ID, type.getName() + "/" + name + "/" + time.getName() + "/" + effect.getName()));
+        return ResourceKey.create(Registries.DIMENSION_TYPE, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, type.getName() + "/" + name + "/" + time.getName() + "/" + effect.getName()));
     }
 
     public DimensionType createDimensionType(MultiverseType type, MultiverseTime time, MultiverseEffect effect) {

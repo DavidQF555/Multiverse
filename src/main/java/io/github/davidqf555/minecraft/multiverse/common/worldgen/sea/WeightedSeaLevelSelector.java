@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
 import net.minecraft.util.ExtraCodecs;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
 
 public class WeightedSeaLevelSelector implements SeaLevelSelector {
 
-    public static final Supplier<Codec<WeightedSeaLevelSelector>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> inst.group(
+    public static final Supplier<MapCodec<WeightedSeaLevelSelector>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> inst.group(
             Entry.CODEC.get().listOf().fieldOf("entries").flatXmap(WeightedSeaLevelSelector::nonempty, WeightedSeaLevelSelector::nonempty).forGetter(selector -> selector.selectors)
     ).apply(inst, WeightedSeaLevelSelector::new)));
     private static final Random RANDOM = new Random(0);
@@ -46,7 +47,7 @@ public class WeightedSeaLevelSelector implements SeaLevelSelector {
     }
 
     @Override
-    public Codec<? extends SeaLevelSelector> codec() {
+    public MapCodec<? extends WeightedSeaLevelSelector> codec() {
         return CODEC.get();
     }
 

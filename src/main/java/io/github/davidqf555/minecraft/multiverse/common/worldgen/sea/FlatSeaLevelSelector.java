@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.FlatFluidPicker;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers.SerializableFluidPicker;
@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class FlatSeaLevelSelector implements SeaLevelSelector {
 
-    public static final Codec<FlatSeaLevelSelector> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+    public static final MapCodec<FlatSeaLevelSelector> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             IntRange.CODEC.fieldOf("range").forGetter(selector -> selector.range)
     ).apply(inst, FlatSeaLevelSelector::new));
     private static final Random RANDOM = new Random(0);
@@ -27,7 +27,7 @@ public class FlatSeaLevelSelector implements SeaLevelSelector {
     }
 
     @Override
-    public Codec<? extends SeaLevelSelector> codec() {
+    public MapCodec<? extends FlatSeaLevelSelector> codec() {
         return CODEC;
     }
 

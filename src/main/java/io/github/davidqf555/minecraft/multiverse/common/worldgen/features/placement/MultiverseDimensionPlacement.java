@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.core.BlockPos;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public class MultiverseDimensionPlacement extends PlacementModifier {
 
     private static final MultiverseDimensionPlacement INSTANCE = new MultiverseDimensionPlacement();
-    public static final Codec<MultiverseDimensionPlacement> CODEC = Codec.unit(INSTANCE);
+    public static final MapCodec<MultiverseDimensionPlacement> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {

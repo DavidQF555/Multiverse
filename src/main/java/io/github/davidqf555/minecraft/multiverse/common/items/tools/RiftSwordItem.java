@@ -19,7 +19,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -31,8 +30,8 @@ public class RiftSwordItem extends SwordItem {
 
     private static final int MIN_CHARGE = 20;
 
-    public RiftSwordItem(Tier tier, int damage, float speed, Properties properties) {
-        super(tier, damage, speed, properties);
+    public RiftSwordItem(Tier tier, Properties properties) {
+        super(tier, properties);
     }
 
     public static boolean slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, Optional<Integer> target) {
@@ -43,15 +42,15 @@ public class RiftSwordItem extends SwordItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
-        super.appendHoverText(stack, world, text, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
+        super.appendHoverText(stack, context, text, flag);
         text.add(MultiversalToolHelper.CROUCH_INSTRUCTIONS);
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
         if (world instanceof ServerLevel) {
-            int duration = getUseDuration(stack) - remaining;
+            int duration = getUseDuration(stack, entity) - remaining;
             if (duration >= MIN_CHARGE) {
                 int count = Math.min(600, duration);
                 int width = 1 + count / 200;
@@ -71,7 +70,7 @@ public class RiftSwordItem extends SwordItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity user) {
         return 72000;
     }
 

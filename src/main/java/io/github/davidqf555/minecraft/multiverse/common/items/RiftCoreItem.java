@@ -16,10 +16,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,8 +33,8 @@ public class RiftCoreItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        super.appendHoverText(stack, level, lines, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
+        super.appendHoverText(stack, context, lines, flag);
         lines.add(getLore());
     }
 

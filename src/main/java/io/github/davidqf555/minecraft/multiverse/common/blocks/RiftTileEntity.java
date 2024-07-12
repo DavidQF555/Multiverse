@@ -8,8 +8,8 @@ import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -19,25 +19,24 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
+import net.minecraft.world.level.block.Portal;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RiftTileEntity extends BlockEntity implements ITeleporter {
+public class RiftTileEntity extends BlockEntity implements Portal {
 
     private int target;
 
@@ -58,14 +57,14 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
         tag.putInt("Target", getTarget());
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
         if (tag.contains("Target", CompoundTag.TAG_INT)) {
             setTarget(tag.getInt("Target"));
         }
@@ -78,18 +77,13 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return serializeNBT();
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        deserializeNBT(pkt.getTag());
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return saveWithFullMetadata(provider);
     }
 
     @Nullable
     @Override
-    public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
+    public DimensionTransition getPortalDestination(ServerLevel destWorld, Entity entity, BlockPos pos) {
         DimensionType target = destWorld.dimensionType();
         DimensionType from = entity.level().dimensionType();
         BlockPos rift = getBlockPos();
@@ -97,7 +91,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
         int current = DimensionHelper.getIndex(entity.level().dimension());
-        return new PortalInfo(Vec3.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift))), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
+        return new DimensionTransition(destWorld, Vec3.atBottomCenterOf(getOrCreateRift(destWorld, destWorld.getRandom(), clamped, ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift))), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
 
     }
 

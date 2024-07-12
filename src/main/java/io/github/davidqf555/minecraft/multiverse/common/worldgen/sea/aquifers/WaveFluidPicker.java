@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.sea.aquifers;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
@@ -8,7 +9,7 @@ import net.minecraft.world.level.levelgen.Aquifer;
 
 public class WaveFluidPicker implements SerializableFluidPicker {
 
-    public static final Codec<WaveFluidPicker> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+    public static final MapCodec<WaveFluidPicker> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             BlockState.CODEC.fieldOf("fluid").forGetter(picker -> picker.fluid),
             Codec.INT.fieldOf("center").forGetter(picker -> picker.center),
             Codec.INT.fieldOf("amplitude").forGetter(picker -> picker.amplitude),
@@ -39,7 +40,7 @@ public class WaveFluidPicker implements SerializableFluidPicker {
     }
 
     @Override
-    public Codec<? extends SerializableFluidPicker> codec() {
+    public MapCodec<? extends WaveFluidPicker> codec() {
         return CODEC;
     }
 
