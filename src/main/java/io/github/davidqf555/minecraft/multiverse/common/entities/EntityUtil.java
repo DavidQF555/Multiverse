@@ -7,7 +7,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 public final class EntityUtil {
 
@@ -38,7 +37,8 @@ public final class EntityUtil {
 
     @Nullable
     public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
-        return Optional.ofNullable(type.create(world, entity -> {
+        T entity = type.create(world, null, center, spawn, false, false);
+        if (entity != null) {
             RandomSource rand = world.getRandom();
             for (int i = 0; i < 50; i++) {
                 int dX = rand.nextInt(min, max + 1);
@@ -57,9 +57,11 @@ public final class EntityUtil {
                 if (SpawnPlacements.getPlacementType(type).isSpawnPositionOk(world, pos, type) && world.noCollision(type.getSpawnAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5))) {
                     entity.setPos(Vec3.atBottomCenterOf(pos));
                     world.addFreshEntityWithPassengers(entity);
+                    return entity;
                 }
             }
-        }, center, spawn, false, false)).filter(Entity::isAddedToWorld).orElse(null);
+        }
+        return null;
     }
 
 }
