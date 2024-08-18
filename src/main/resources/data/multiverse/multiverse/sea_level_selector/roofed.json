@@ -1,0 +1,32 @@
+{
+  "type": "multiverse:weighted",
+  "selectors": [
+    {
+      "selector": {
+        "type": "multiverse:flat",
+        "range": {
+          "min": 24,
+          "max": 40
+        }
+      },
+      "weight": 3
+    },
+    {
+      "selector": {
+        "type": "multiverse:wave",
+        "center": {
+          "min": 20,
+          "max": 30
+        },
+        "amplitude": {
+          "min": 4,
+          "max": 8
+        },
+        "period": {
+          "min": 48,
+          "max": 64
+        }
+      }
+    }
+  ]
+}

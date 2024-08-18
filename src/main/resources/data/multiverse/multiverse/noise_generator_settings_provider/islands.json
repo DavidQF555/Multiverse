@@ -1,0 +1,8 @@
+{
+  "type": "multiverse:type_map",
+  "types": {
+    "overworld": "multiverse:islands/overworld",
+    "nether": "multiverse:islands/nether",
+    "end": "multiverse:islands/end"
+  }
+}

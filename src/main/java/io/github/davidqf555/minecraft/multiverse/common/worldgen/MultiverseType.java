@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
+import com.mojang.serialization.Codec;
+import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -10,12 +11,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 
+import javax.annotation.Nullable;
+
 public enum MultiverseType {
 
     OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_LOCATION),
     NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER, DimensionType.NETHER_LOCATION),
     END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END, DimensionType.END_LOCATION);
 
+    public static final Codec<MultiverseType> CODEC = Codec.STRING.xmap(MultiverseType::byName, MultiverseType::getName);
     private final String name;
     private final BlockState block, fluid;
     private final ResourceKey<DimensionType> normal;
@@ -32,6 +36,16 @@ public enum MultiverseType {
         this.hasRaids = hasRaids;
         this.piglinSafe = piglinSafe;
         this.normal = normal;
+    }
+
+    @Nullable
+    public static MultiverseType byName(String name) {
+        for (MultiverseType type : values()) {
+            if (name.equals(type.getName())) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public String getName() {
@@ -63,7 +77,7 @@ public enum MultiverseType {
     }
 
     public boolean is(ResourceKey<Biome> biome) {
-        return BiomesManager.INSTANCE.getBiomes().getBiomes(this).contains(biome);
+        return ConfigHelper.biomes.getBiomes(this).contains(biome);
     }
 
     public TagKey<Block> getInfiniburn() {

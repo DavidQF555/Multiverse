@@ -1,13 +1,13 @@
 {
   "shapes": [
     {
-      "shape": "normal"
+      "shape": "multiverse:normal"
     },
     {
-      "shape": "islands"
+      "shape": "multiverse:islands"
     },
     {
-      "shape": "roofed"
+      "shape": "multiverse:roofed"
     }
   ]
 }

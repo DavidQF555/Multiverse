@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
@@ -28,6 +27,6 @@ public interface MultiverseBiomes {
         };
     }
 
-    SurfaceRules.RuleSource createSurface(MultiverseShape shape, MultiverseType type);
+    SurfaceRules.RuleSource createSurface(boolean floor, boolean ceiling, MultiverseType type);
 
 }

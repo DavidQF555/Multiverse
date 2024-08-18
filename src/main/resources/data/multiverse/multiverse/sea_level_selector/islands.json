@@ -1,0 +1,7 @@
+{
+  "type": "multiverse:flat",
+  "range": {
+    "min": -64,
+    "max": -64
+  }
+}

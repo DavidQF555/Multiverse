@@ -1,0 +1,23 @@
+{
+  "type": "multiverse:biome_config",
+  "biomes": "multiverse:normal",
+  "dimension": {
+    "type": "multiverse:dual",
+    "chunk": {
+      "type": "multiverse:noise",
+      "sea_level": "multiverse:normal",
+      "noise_settings": "multiverse:normal",
+      "biomes": {
+        "type": "multiverse:noise",
+        "min_y": -64,
+        "max_y": 320
+      }
+    },
+    "dim_type": {
+      "type": "multiverse:generic",
+      "has_ceiling": false,
+      "min_y": -64,
+      "height": 384
+    }
+  }
+}

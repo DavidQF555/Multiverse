@@ -1,0 +1,8 @@
+{
+  "type": "multiverse:type_map",
+  "types": {
+    "overworld": "multiverse:roofed/overworld",
+    "nether": "multiverse:roofed/nether",
+    "end": "multiverse:roofed/end"
+  }
+}
