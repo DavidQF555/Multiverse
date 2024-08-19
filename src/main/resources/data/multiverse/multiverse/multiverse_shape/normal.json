@@ -13,11 +13,6 @@
         "max_y": 320
       }
     },
-    "dim_type": {
-      "type": "multiverse:generic",
-      "has_ceiling": false,
-      "min_y": -64,
-      "height": 384
-    }
+    "dim_type": "multiverse:normal"
   }
 }

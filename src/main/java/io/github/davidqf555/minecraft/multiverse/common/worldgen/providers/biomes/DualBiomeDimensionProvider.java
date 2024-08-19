@@ -24,9 +24,9 @@ public class DualBiomeDimensionProvider implements BiomeDimensionProvider {
             BiomeDimensionTypeProvider.CODEC.fieldOf("dim_type").forGetter(val -> val.type)
     ).apply(inst, DualBiomeDimensionProvider::new));
     private final BiomeChunkGeneratorProvider<?> chunk;
-    private final BiomeDimensionTypeProvider type;
+    private final Holder<BiomeDimensionTypeProvider> type;
 
-    public DualBiomeDimensionProvider(BiomeChunkGeneratorProvider<?> chunk, BiomeDimensionTypeProvider type) {
+    public DualBiomeDimensionProvider(BiomeChunkGeneratorProvider<?> chunk, Holder<BiomeDimensionTypeProvider> type) {
         this.chunk = chunk;
         this.type = type;
     }
@@ -34,7 +34,7 @@ public class DualBiomeDimensionProvider implements BiomeDimensionProvider {
     @Override
     public LevelStem provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<ResourceKey<Biome>> biomes) {
         ChunkGenerator gen = chunk.provide(access, seed, random, type, biomes);
-        Holder<DimensionType> holder = this.type.provide(access, seed, random, type, biomes);
+        Holder<DimensionType> holder = this.type.value().provide(access, seed, random, type, biomes);
         return new LevelStem(holder, gen);
     }
 

@@ -13,11 +13,6 @@
         "max_y": 128
       }
     },
-    "dim_type": {
-      "type": "multiverse:generic",
-      "has_ceiling": true,
-      "min_y": 0,
-      "height": 128
-    }
+    "dim_type": "multiverse:roofed"
   }
 }

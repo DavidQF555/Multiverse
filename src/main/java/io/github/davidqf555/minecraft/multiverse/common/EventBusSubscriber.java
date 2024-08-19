@@ -4,7 +4,6 @@ import io.github.davidqf555.minecraft.multiverse.common.data.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseExistingData;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.EffectsManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
@@ -56,7 +55,6 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         ShapesManager.INSTANCE.load(event.getServer());
-        EffectsManager.INSTANCE.load(event.getServer());
     }
 
     @SubscribeEvent

@@ -1,10 +1,8 @@
-package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceLocation;
