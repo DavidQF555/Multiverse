@@ -57,7 +57,7 @@ public class CodecDataProvider<T> implements DataProvider {
 
     @Override
     public String getName() {
-        return registry.toString();
+        return registry.location().toString();
     }
 
 }

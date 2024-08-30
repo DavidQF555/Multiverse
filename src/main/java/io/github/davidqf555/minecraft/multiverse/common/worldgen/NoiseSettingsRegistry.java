@@ -36,7 +36,15 @@ public final class NoiseSettingsRegistry {
             for (MultiverseType type : MultiverseType.values()) {
                 ResourceLocation loc = new ResourceLocation(Multiverse.MOD_ID, pair.getFirst() + "/" + type.getName());
                 builder.put(loc, new NoiseSettingsEntry(
-                        new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(), !ceiling && floor ? NoiseRouterData.overworldWithNewCaves(noise, false) : NoiseRouterData.nether(noise), SurfaceRules.state(Blocks.AIR.defaultBlockState()), 0, false, true, true, false),
+                        new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(),
+                                type.createRouter(noise),
+                                SurfaceRules.state(Blocks.AIR.defaultBlockState()),
+                                0,
+                                false,
+                                true,
+                                true,
+                                false
+                        ),
                         type,
                         floor,
                         ceiling
