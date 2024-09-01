@@ -10,18 +10,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.NoiseRouterData;
-import net.minecraft.world.level.levelgen.NoiseRouterWithOnlyNoises;
-import net.minecraft.world.level.levelgen.NoiseSettings;
 
 import javax.annotation.Nullable;
-import java.util.function.Function;
 
 public enum MultiverseType {
 
-    OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_LOCATION, noise -> NoiseRouterData.overworldWithNewCaves(noise, false)),
-    NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER, DimensionType.NETHER_LOCATION, NoiseRouterData::nether),
-    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END, DimensionType.END_LOCATION, NoiseRouterData::nether);
+    OVERWORLD("overworld", true, false, true, false, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_LOCATION),
+    NETHER("nether", false, true, false, true, Blocks.NETHERRACK.defaultBlockState(), Blocks.LAVA.defaultBlockState(), BlockTags.INFINIBURN_NETHER, DimensionType.NETHER_LOCATION),
+    END("end", false, false, true, false, Blocks.END_STONE.defaultBlockState(), Blocks.AIR.defaultBlockState(), BlockTags.INFINIBURN_END, DimensionType.END_LOCATION);
 
     public static final Codec<MultiverseType> CODEC = Codec.STRING.xmap(MultiverseType::byName, MultiverseType::getName);
     private final String name;
@@ -29,9 +25,8 @@ public enum MultiverseType {
     private final ResourceKey<DimensionType> normal;
     private final TagKey<Block> infiniburn;
     private final boolean natural, ultrawarm, hasRaids, piglinSafe;
-    private final Function<NoiseSettings, NoiseRouterWithOnlyNoises> router;
 
-    MultiverseType(String name, boolean natural, boolean ultrawarm, boolean hasRaids, boolean piglinSafe, BlockState block, BlockState fluid, TagKey<Block> infiniburn, ResourceKey<DimensionType> normal, Function<NoiseSettings, NoiseRouterWithOnlyNoises> router) {
+    MultiverseType(String name, boolean natural, boolean ultrawarm, boolean hasRaids, boolean piglinSafe, BlockState block, BlockState fluid, TagKey<Block> infiniburn, ResourceKey<DimensionType> normal) {
         this.name = name;
         this.block = block;
         this.fluid = fluid;
@@ -41,7 +36,6 @@ public enum MultiverseType {
         this.hasRaids = hasRaids;
         this.piglinSafe = piglinSafe;
         this.normal = normal;
-        this.router = router;
     }
 
     @Nullable
@@ -92,10 +86,6 @@ public enum MultiverseType {
 
     public ResourceKey<DimensionType> getNormalType() {
         return normal;
-    }
-
-    public NoiseRouterWithOnlyNoises createRouter(NoiseSettings noise) {
-        return router.apply(noise);
     }
 
 }
