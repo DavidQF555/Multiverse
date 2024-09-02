@@ -38,6 +38,14 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
         this(EntityRegistry.KALEIDITE_CORE.get(), owner, pLevel);
     }
 
+    public KaleiditeCoreEntity(EntityType<? extends KaleiditeCoreEntity> type, double x, double y, double z, Level world) {
+        super(type, x, y, z, world);
+    }
+
+    public KaleiditeCoreEntity(double x, double y, double z, Level world) {
+        this(EntityRegistry.KALEIDITE_CORE.get(), x, y, z, world);
+    }
+
     @Override
     protected Item getDefaultItem() {
         return ItemRegistry.KALEIDITE_CORE.get();
