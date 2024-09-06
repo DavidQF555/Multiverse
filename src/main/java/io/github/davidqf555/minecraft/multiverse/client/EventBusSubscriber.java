@@ -42,6 +42,7 @@ public final class EventBusSubscriber {
         event.registerEntityRenderer(EntityRegistry.TRAVELER.get(), TravelerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DOPPELGANGER.get(), DoppelgangerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KALEIDITE_CORE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.RIFT.get(), RiftRenderer::new);
     }
 
     @SubscribeEvent

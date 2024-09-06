@@ -1,10 +1,13 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
+import io.github.davidqf555.minecraft.multiverse.common.entities.serializers.DoubleSerializer;
+import io.github.davidqf555.minecraft.multiverse.common.entities.serializers.VectorSerializer;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.Util;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,12 +24,18 @@ public final class ModBus {
 
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> DispenserBlock.registerBehavior(ItemRegistry.KALEIDITE_CORE.get(), new AbstractProjectileDispenseBehavior() {
-            @Override
-            protected Projectile getProjectile(Level world, Position pos, ItemStack stack) {
-                return Util.make(new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world), entity -> entity.setItem(stack));
-            }
-        }));
+        event.enqueueWork(() -> {
+                    DispenserBlock.registerBehavior(ItemRegistry.KALEIDITE_CORE.get(), new AbstractProjectileDispenseBehavior() {
+                        @Override
+                        protected Projectile getProjectile(Level world, Position pos, ItemStack stack) {
+                            return Util.make(new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world), entity -> entity.setItem(stack));
+                        }
+
+                    });
+            EntityDataSerializers.registerSerializer(VectorSerializer.INSTANCE);
+            EntityDataSerializers.registerSerializer(DoubleSerializer.INSTANCE);
+                }
+        );
     }
 
 }
