@@ -11,6 +11,8 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -68,10 +70,17 @@ public final class RiftHelper {
             if (canReplace(reader, pos)) {
                 Vec3[] polygon = calculateSectionPolygon(vertices, normal, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
                 if (polygon.length >= 3) {
+                    BlockState base = state;
+                    Fluid fluid = reader.getFluidState(pos).getType();
                     if (drop) {
                         writer.destroyBlock(pos, true);
                     }
-                    writer.setBlock(pos, state, 3);
+                    if (fluid == Fluids.WATER) {
+                        base = base.setValue(RiftBlock.FLUID, RiftBlock.LoggedFluid.WATER);
+                    } else if (fluid == Fluids.LAVA) {
+                        base = base.setValue(RiftBlock.FLUID, RiftBlock.LoggedFluid.LAVA);
+                    }
+                    writer.setBlock(pos, base, 3);
                     BlockEntity tile = reader.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
