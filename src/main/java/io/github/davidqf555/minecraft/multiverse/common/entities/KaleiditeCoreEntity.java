@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.LinkedList;
@@ -53,9 +55,12 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     public void tick() {
         BlockPos pos = blockPosition();
         if (!level.isClientSide() && level.getBlockState(pos).getBlock() instanceof RiftBlock) {
-            level.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
-            removeConnected(pos, MAX_RANGE);
-            discard();
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof RiftTileEntity && ((RiftTileEntity) be).isColliding(getBoundingBox())) {
+                level.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
+                removeConnected(pos, MAX_RANGE);
+                discard();
+            }
         }
         super.tick();
     }
