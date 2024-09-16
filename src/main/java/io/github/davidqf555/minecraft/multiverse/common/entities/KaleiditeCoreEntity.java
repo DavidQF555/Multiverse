@@ -1,11 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +14,6 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.LinkedList;
@@ -82,7 +80,7 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
         if (level instanceof ServerLevel) {
-            FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) level, ((ServerLevel) level).getChunkSource().getGenerator(), level.getRandom(), blockPosition(), RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), false)));
+            RiftHelper.placeExplosion((ServerLevel) level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), Optional.empty(), Optional.empty(), position(), true);
             discard();
         }
     }

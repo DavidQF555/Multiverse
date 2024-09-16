@@ -2,12 +2,11 @@ package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -19,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -63,7 +61,7 @@ public class SpawnCollectorItem extends TimerItem {
         CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, center, MobSpawnType.MOB_SUMMONED, false, false);
         if (boss != null) {
             boss.setPortalCooldown();
-            FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), (ServerLevel) entity.level, ((ServerLevel) entity.level).getChunkSource().getGenerator(), entity.level.getRandom(), center, RiftConfig.of(Optional.empty(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false)));
+            RiftHelper.placeExplosion((ServerLevel) entity.level, entity.level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), Optional.empty(), Optional.empty(), entity.position(), true);
             BlockEntity tile = entity.level.getBlockEntity(center);
             if (tile instanceof RiftTileEntity) {
                 boss.setFrom(((RiftTileEntity) tile).getTarget());

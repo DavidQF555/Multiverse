@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +19,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,8 +34,8 @@ public class RiftBlock extends BaseEntityBlock {
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
 
     public RiftBlock(Properties properties) {
-        super(properties);
-        registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, false));
+        super(properties.noCollission().noOcclusion().randomTicks());
+        registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, true));
     }
 
     @Override
@@ -45,6 +49,11 @@ public class RiftBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.INVISIBLE;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return Shapes.empty();
     }
 
     @Nullable
@@ -76,7 +85,7 @@ public class RiftBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity)) {
+        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
             if (!entity.isOnPortalCooldown()) {
                 MinecraftServer server = world.getServer();
                 int target = ((RiftTileEntity) tile).getTarget();
