@@ -78,9 +78,6 @@ public final class DimensionHelper {
 
     @SuppressWarnings("deprecation")
     private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
-        MultiverseExistingData saved = MultiverseExistingData.getOrCreate(server);
-        saved.add(index);
-        saved.setDirty();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         LevelStem dimension = createDimension(server, index);
         WorldData serverConfig = server.getWorldData();
