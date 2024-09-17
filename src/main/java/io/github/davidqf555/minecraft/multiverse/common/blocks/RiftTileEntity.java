@@ -40,6 +40,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     private Vec3 normal = new Vec3(0, 1, 0);
     private Vec3[][] vertices = new Vec3[2][0];
     private int target;
+    private AABB bounds;
 
     protected RiftTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -82,6 +83,22 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     public void setVertices(Vec3[] vertices) {
         this.vertices = convert(vertices);
+        bounds = null;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        if (bounds == null) {
+            Vec3[][] vertices = getVertices();
+            double minX = Arrays.stream(vertices[0]).mapToDouble(Vec3::x).min().orElse(0);
+            double maxX = Arrays.stream(vertices[0]).mapToDouble(Vec3::x).max().orElse(0);
+            double minY = Arrays.stream(vertices[0]).mapToDouble(Vec3::y).min().orElse(0);
+            double maxY = Arrays.stream(vertices[0]).mapToDouble(Vec3::y).max().orElse(0);
+            double minZ = Arrays.stream(vertices[0]).mapToDouble(Vec3::z).min().orElse(0);
+            double maxZ = Arrays.stream(vertices[0]).mapToDouble(Vec3::z).max().orElse(0);
+            bounds = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+        return bounds;
     }
 
     public boolean isColliding(AABB bounds) {

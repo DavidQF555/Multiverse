@@ -46,7 +46,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     public static final EnumProperty<LoggedFluid> FLUID = EnumProperty.create("fluid", LoggedFluid.class, LoggedFluid.values());
 
     public RiftBlock(Properties properties) {
-        super(properties.noCollission().noOcclusion().randomTicks());
+        super(properties.noCollission().randomTicks());
         registerDefaultState(getStateDefinition().any().setValue(TEMPORARY, true).setValue(FLUID, LoggedFluid.AIR));
     }
 

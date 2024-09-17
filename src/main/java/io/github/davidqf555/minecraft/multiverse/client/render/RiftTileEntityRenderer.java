@@ -75,4 +75,9 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         consumer.vertex(pose, (float) p1.x(), (float) p1.y(), (float) p1.z()).color(color).endVertex();
     }
 
+    @Override
+    public int getViewDistance() {
+        return 256;
+    }
+
 }
