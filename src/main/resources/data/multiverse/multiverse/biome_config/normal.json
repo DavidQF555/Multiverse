@@ -1,4 +1,8 @@
 {
+  "count": {
+    "min": 1,
+    "max": 5
+  },
   "types": [
     {
       "biomes": "#is_badlands",
