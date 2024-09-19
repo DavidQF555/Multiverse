@@ -30,8 +30,9 @@ public class ShapeDimensionProvider {
         throw new RuntimeException("Should never get here");
     }
 
-    public LevelStem createDimension(RegistryAccess access, long seed, int index) {
-        WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(DimensionHelper.getSeed(seed, index, false)));
+    public LevelStem createDimension(RegistryAccess access, long base, int index) {
+        long seed = DimensionHelper.getSeed(base, index, false);
+        WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         return createDimension(access, seed, random);
     }
 
