@@ -11,6 +11,12 @@ public final class MultiverseNoiseRouters {
     private MultiverseNoiseRouters() {
     }
 
+    public static NoiseRouterWithOnlyNoises underwater(NoiseSettings noise) {
+        NoiseRouterWithOnlyNoises original = NoiseRouterData.nether(noise);
+        DensityFunction level = DensityFunctions.constant(1);
+        return new NoiseRouterWithOnlyNoises(original.barrierNoise(), level, original.fluidLevelSpreadNoise(), original.lavaNoise(), original.temperature(), original.vegetation(), original.continents(), original.erosion(), original.depth(), original.ridges(), original.initialDensityWithoutJaggedness(), original.finalDensity(), original.veinToggle(), original.veinRidged(), original.veinGap());
+    }
+
     // reference net.minecraft.world.level.levelgen.NoiseRouterData.noodle()
     public static NoiseRouterWithOnlyNoises noodles(NoiseSettings noise, double minThick, double maxThick) {
         NoiseRouterWithOnlyNoises original = NoiseRouterData.overworldWithoutCaves(noise);

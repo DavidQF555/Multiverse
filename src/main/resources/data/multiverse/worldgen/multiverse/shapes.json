@@ -17,6 +17,9 @@
       "shape": "multiverse:mountains"
     },
     {
+      "shape": "multiverse:underwater"
+    },
+    {
       "shape": "multiverse:noodles"
     }
   ]
