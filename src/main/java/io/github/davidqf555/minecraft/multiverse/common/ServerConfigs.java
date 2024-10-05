@@ -31,11 +31,11 @@ public class ServerConfigs {
         minRiftWidth = builder.comment("This is the minimum width radius of naturally generated rifts. ")
                 .defineInRange("minWidth", 1, 0, Double.MAX_VALUE);
         maxRiftWidth = builder.comment("This is the maximum width radius of naturally generated rifts. This should be greater or equal to minWidth. ")
-                .defineInRange("maxWidth", 3, 0, Double.MAX_VALUE);
+                .defineInRange("maxWidth", 8, 0, Double.MAX_VALUE);
         minRiftHeight = builder.comment("This is the minimum height radius of naturally generated rifts. ")
-                .defineInRange("minHeight", 6, 0, Integer.MAX_VALUE);
+                .defineInRange("minHeight", 16, 0, Integer.MAX_VALUE);
         maxRiftHeight = builder.comment("This is the maximum height radius of naturally generated rifts. This should be greater or equal to minHeight. ")
-                .defineInRange("maxHeight", 10, 0, Integer.MAX_VALUE);
+                .defineInRange("maxHeight", 48, 0, Integer.MAX_VALUE);
         builder.pop().push("KaleiditeCrossbow");
         fireworkRate = builder.comment("This is the chance that fireworks are spawned when shooting an arrow. ")
                 .defineInRange("fireworkRate", 0.2, 0, 1);

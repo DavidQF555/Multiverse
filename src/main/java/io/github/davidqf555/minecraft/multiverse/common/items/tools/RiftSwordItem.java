@@ -51,8 +51,8 @@ public class RiftSwordItem extends SwordItem {
             int duration = getUseDuration(stack) - remaining;
             if (duration >= MIN_CHARGE) {
                 int count = Math.min(600, duration);
-                int width = 1 + count / 200;
-                int height = 5 + count / 10;
+                int width = 1 + count / 150;
+                int height = 16 + count / 10;
                 HumanoidArm used = entity.getMainArm();
                 if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
                     used = used.getOpposite();
