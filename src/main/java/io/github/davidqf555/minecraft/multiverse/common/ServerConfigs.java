@@ -15,7 +15,7 @@ public class ServerConfigs {
     }
 
     public final ForgeConfigSpec.DoubleValue fixedTimeChance, travelerSpawnFactor, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
-    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount;
+    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, boundlessBladeCooldown, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
@@ -36,6 +36,8 @@ public class ServerConfigs {
                 .defineInRange("minHeight", 16, 0, Integer.MAX_VALUE);
         maxRiftHeight = builder.comment("This is the maximum height radius of naturally generated rifts. This should be greater or equal to minHeight. ")
                 .defineInRange("maxHeight", 48, 0, Integer.MAX_VALUE);
+        slowFalling = builder.comment("This is the number of ticks that players get slow falling for after exiting a rift. Set to 0 if don't want slow falling. ")
+                .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
         builder.pop().push("KaleiditeCrossbow");
         fireworkRate = builder.comment("This is the chance that fireworks are spawned when shooting an arrow. ")
                 .defineInRange("fireworkRate", 0.2, 0, 1);

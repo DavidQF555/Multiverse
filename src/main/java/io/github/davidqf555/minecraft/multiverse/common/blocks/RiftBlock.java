@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,7 +11,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -98,7 +102,13 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
                 int target = ((RiftTileEntity) tile).getTarget();
                 if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
                     ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
-                    entity.changeDimension(dim, (RiftTileEntity) tile);
+                    Entity transported = entity.changeDimension(dim, (RiftTileEntity) tile);
+                    if (transported instanceof LivingEntity) {
+                        int duration = ServerConfigs.INSTANCE.slowFalling.get();
+                        if (duration > 0) {
+                            ((LivingEntity) transported).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
+                        }
+                    }
                 }
             }
             entity.setPortalCooldown();
