@@ -6,7 +6,7 @@
     "chunk": {
       "type": "multiverse:noise",
       "sea_level": "multiverse:islands",
-      "noise_settings": "multiverse:noodles",
+      "noise_settings": "multiverse:blobs",
       "biomes": {
         "type": "multiverse:noise",
         "min_y": 0,
