@@ -22,16 +22,16 @@ public final class NoiseSettingsRegistry {
     public static final Map<ResourceLocation, NoiseSettingsEntry> SETTINGS;
     static {
         List<Pair<String, SettingsValue>> shapes = List.of(
-                Pair.of("normal", new SettingsValue(true, false, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false)), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
-                Pair.of("amplified", new SettingsValue(true, false, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125, 2, 0), new NoiseSlider(0.4, 3, 0), 1, 2, TerrainProvider.overworld(true)), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
-                Pair.of("mountains", new SettingsValue(true, false, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 0), new NoiseSlider(0.4, 3, 0), 1, 2, MultiverseTerrainShapers.mountains()), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
+                Pair.of("normal", new SettingsValue(true, false, true, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false)), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
+                Pair.of("amplified", new SettingsValue(true, false, true, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125, 2, 0), new NoiseSlider(0.4, 3, 0), 1, 2, TerrainProvider.overworld(true)), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
+                Pair.of("mountains", new SettingsValue(true, false, true, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 0), new NoiseSlider(0.4, 3, 0), 1, 2, MultiverseTerrainShapers.mountains()), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
 
-                Pair.of("roofed", new SettingsValue(true, true, NoiseSettings.create(0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether()), NoiseRouterData::nether)),
-                Pair.of("underwater", new SettingsValue(true, true, NoiseSettings.create(0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether()), MultiverseNoiseRouters::underwater)),
+                Pair.of("roofed", new SettingsValue(true, true, false, NoiseSettings.create(0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether()), NoiseRouterData::nether)),
+                Pair.of("underwater", new SettingsValue(true, true, false, NoiseSettings.create(0, 128, new NoiseSamplingSettings(1, 3, 80, 60), new NoiseSlider(0.9375, 3, 0), new NoiseSlider(2.5, 4, -1), 1, 2, TerrainProvider.nether()), NoiseRouterData::nether)),
 
-                Pair.of("islands", new SettingsValue(false, false, NoiseSettings.create(0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands()), NoiseRouterData::overworldWithoutCaves)),
-                Pair.of("noodles", new SettingsValue(false, false, NoiseSettings.create(0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands()), noise -> MultiverseNoiseRouters.noodles(noise, 0.1, 0.3))),
-                Pair.of("blobs", new SettingsValue(false, false, NoiseSettings.create(0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands()), noise -> MultiverseNoiseRouters.blobs(noise)))
+                Pair.of("islands", new SettingsValue(false, false, false, NoiseSettings.create(0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands()), NoiseRouterData::overworldWithoutCaves)),
+                Pair.of("noodles", new SettingsValue(false, false, false, NoiseSettings.create(0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands()), noise -> MultiverseNoiseRouters.noodles(noise, 0.1, 0.3))),
+                Pair.of("blobs", new SettingsValue(false, false, false, NoiseSettings.create(0, 256, new NoiseSamplingSettings(2, 1, 80, 160), new NoiseSlider(-23.4375, 64, -46), new NoiseSlider(-0.234375, 7, 1), 2, 1, TerrainProvider.floatingIslands()), MultiverseNoiseRouters::blobs))
         );
         ImmutableMap.Builder<ResourceLocation, NoiseSettingsEntry> builder = ImmutableMap.builder();
         for (Pair<String, SettingsValue> pair : shapes) {
@@ -48,7 +48,7 @@ public final class NoiseSettingsRegistry {
                                 SurfaceRules.state(Blocks.AIR.defaultBlockState()),
                                 0,
                                 false,
-                                true,
+                                val.aquifers(),
                                 true,
                                 false
                         ),
@@ -74,7 +74,7 @@ public final class NoiseSettingsRegistry {
                                      boolean ceiling) {
     }
 
-    private record SettingsValue(boolean floor, boolean ceiling, NoiseSettings noise,
+    private record SettingsValue(boolean floor, boolean ceiling, boolean aquifers, NoiseSettings noise,
                                  Function<NoiseSettings, NoiseRouterWithOnlyNoises> router) {
     }
 
