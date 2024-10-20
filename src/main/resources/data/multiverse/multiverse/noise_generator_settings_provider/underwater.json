@@ -1,8 +1,0 @@
-{
-  "type": "multiverse:type_map",
-  "types": {
-    "overworld": "multiverse:underwater/overworld",
-    "nether": "multiverse:underwater/nether",
-    "end": "multiverse:underwater/end"
-  }
-}

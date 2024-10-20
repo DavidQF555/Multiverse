@@ -1,0 +1,8 @@
+{
+  "type": "multiverse:type_map",
+  "types": {
+    "overworld": "multiverse:flooded/mountains/overworld",
+    "nether": "multiverse:flooded/mountains/nether",
+    "end": "multiverse:flooded/mountains/end"
+  }
+}

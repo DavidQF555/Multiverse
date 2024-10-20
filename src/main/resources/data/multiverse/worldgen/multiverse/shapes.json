@@ -2,25 +2,45 @@
   "shapes": [
     {
       "shape": "multiverse:normal",
+      "weight": 16
+    },
+    {
+      "shape": "multiverse:amplified",
+      "weight": 4
+    },
+    {
+      "shape": "multiverse:mountains",
+      "weight": 4
+    },
+    {
+      "shape": "multiverse:flooded/normal",
+      "weight": 4
+    },
+    {
+      "shape": "multiverse:flooded/amplified"
+    },
+    {
+      "shape": "multiverse:flooded/mountains"
+    },
+    {
+      "shape": "multiverse:roofed",
+      "weight": 8
+    },
+    {
+      "shape": "multiverse:underwater/roofed",
       "weight": 2
     },
     {
-      "shape": "multiverse:islands"
+      "shape": "multiverse:islands",
+      "weight": 10
     },
     {
-      "shape": "multiverse:roofed"
+      "shape": "multiverse:noodles",
+      "weight": 6
     },
     {
-      "shape": "multiverse:amplified"
-    },
-    {
-      "shape": "multiverse:mountains"
-    },
-    {
-      "shape": "multiverse:underwater"
-    },
-    {
-      "shape": "multiverse:noodles"
+      "shape": "multiverse:blobs",
+      "weight": 4
     }
   ]
 }

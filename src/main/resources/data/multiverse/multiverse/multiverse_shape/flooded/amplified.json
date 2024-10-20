@@ -6,7 +6,7 @@
     "chunk": {
       "type": "multiverse:noise",
       "sea_level": "multiverse:flooded",
-      "noise_settings": "multiverse:flooded",
+      "noise_settings": "multiverse:flooded/amplified",
       "biomes": {
         "type": "multiverse:noise",
         "min_y": -64,
