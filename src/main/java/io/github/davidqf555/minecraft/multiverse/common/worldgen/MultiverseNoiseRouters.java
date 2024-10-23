@@ -11,24 +11,23 @@ public final class MultiverseNoiseRouters {
     private MultiverseNoiseRouters() {
     }
 
-    // reference net.minecraft.world.level.levelgen.NoiseRouterData.noodle()
-    public static NoiseRouterWithOnlyNoises noodles(NoiseSettings noise, double minThick, double maxThick) {
+    public static NoiseRouterWithOnlyNoises noodles(NoiseSettings noise, int minY, int height) {
         NoiseRouterWithOnlyNoises original = NoiseRouterData.overworldWithoutCaves(noise);
-        DensityFunction noodle = DensityFunctions.noise(getNoise(Noises.NOODLE), 4, 4);
-        DensityFunction base = DensityFunctions.mappedNoise(getNoise(Noises.NOODLE_THICKNESS), 1, 1, minThick, maxThick);
-        DensityFunction ridgeA = DensityFunctions.noise(getNoise(Noises.NOODLE_RIDGE_A), 4, 4);
-        DensityFunction ridgeB = DensityFunctions.noise(getNoise(Noises.NOODLE_RIDGE_B), 4, 4);
-        DensityFunction ridge = DensityFunctions.mul(DensityFunctions.constant(-4), DensityFunctions.max(ridgeA.abs(), ridgeB.abs()));
-
-        DensityFunction finalDensity = DensityFunctions.rangeChoice(noodle, -1000000, 0, DensityFunctions.add(base, ridge), DensityFunctions.constant(0));
+        DensityFunction ridgeA = DensityFunctions.noise(getNoise(Noises.NOODLE_RIDGE_A), 2, 2);
+        DensityFunction ridgeB = DensityFunctions.noise(getNoise(Noises.NOODLE_RIDGE_B), 2, 2);
+        DensityFunction noodle = DensityFunctions.add(ridgeA.square(), ridgeB.square());
+        DensityFunction yFactor = DensityFunctions.yClampedGradient(minY, minY + height, -0.25, 0.25).square();
+        DensityFunction finalDensity = DensityFunctions.rangeChoice(DensityFunctions.add(noodle, yFactor), 0, 0.02, DensityFunctions.constant(64), DensityFunctions.constant(-64));
         return new NoiseRouterWithOnlyNoises(original.barrierNoise(), original.fluidLevelFloodednessNoise(), original.fluidLevelSpreadNoise(), original.lavaNoise(), original.temperature(), original.vegetation(), original.continents(), original.erosion(), original.depth(), original.ridges(), original.initialDensityWithoutJaggedness(), finalDensity, original.veinToggle(), original.veinRidged(), original.veinGap());
     }
 
-    public static NoiseRouterWithOnlyNoises blobs(NoiseSettings noise) {
+    public static NoiseRouterWithOnlyNoises blobs(NoiseSettings noise, int minY, int height) {
         NoiseRouterWithOnlyNoises original = NoiseRouterData.overworldWithoutCaves(noise);
+
+        DensityFunction yFactor = DensityFunctions.add(DensityFunctions.mul(DensityFunctions.yClampedGradient(minY, minY + height, -1, 1).square(), DensityFunctions.constant(-1)), DensityFunctions.constant(1));
         DensityFunction blobs = DensityFunctions.noise(getNoise(Noises.NOODLE), 4, 4).square();
 
-        DensityFunction finalDensity = DensityFunctions.rangeChoice(blobs, -1000000, 0.375, DensityFunctions.constant(-64), DensityFunctions.constant(64));
+        DensityFunction finalDensity = DensityFunctions.rangeChoice(DensityFunctions.mul(blobs, yFactor), -1000000, 0.3, DensityFunctions.constant(-64), DensityFunctions.constant(64));
         return new NoiseRouterWithOnlyNoises(original.barrierNoise(), original.fluidLevelFloodednessNoise(), original.fluidLevelSpreadNoise(), original.lavaNoise(), original.temperature(), original.vegetation(), original.continents(), original.erosion(), original.depth(), original.ridges(), original.initialDensityWithoutJaggedness(), finalDensity, original.veinToggle(), original.veinRidged(), original.veinGap());
     }
 
