@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -34,7 +35,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
@@ -53,6 +56,10 @@ public class CollectorEntity extends SpellcasterIllager {
         moveControl = new FlyingMoveControl(this, 90, true);
         bar = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS);
         setPersistenceRequired();
+        setNoGravity(true);
+        setPathfindingMalus(BlockPathTypes.LAVA, 8);
+        setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0);
+        setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -60,7 +67,8 @@ public class CollectorEntity extends SpellcasterIllager {
                 .add(Attributes.MAX_HEALTH, 150)
                 .add(Attributes.FLYING_SPEED, 2)
                 .add(Attributes.FOLLOW_RANGE, 40)
-                .add(Attributes.ATTACK_DAMAGE, 5);
+                .add(Attributes.ATTACK_DAMAGE, 5)
+                .add(ForgeMod.ENTITY_GRAVITY.get(), 0);
     }
 
     @Nullable
@@ -69,6 +77,11 @@ public class CollectorEntity extends SpellcasterIllager {
         populateDefaultEquipmentSlots(random, difficulty);
         populateDefaultEquipmentEnchantments(random, difficulty);
         return super.finalizeSpawn(level, difficulty, type, data, tag);
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource pSource) {
+        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
     }
 
     @Override

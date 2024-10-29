@@ -1,9 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.mixin;
 
+import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,23 +14,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinNoiseGeneratorSettings implements IMultiverseNoiseGeneratorSettings {
 
     private SurfaceRules.RuleSource surface;
-    private MultiverseShape shape;
+    private boolean floor, ceiling;
     private MultiverseType type;
 
     @Inject(method = {"surfaceRule"}, at = {@At("HEAD")}, cancellable = true)
     private void surfaceRule(CallbackInfoReturnable<SurfaceRules.RuleSource> callback) {
-        if (shape != null && type != null) {
+        if (type != null) {
             if (surface == null) {
-                surface = BiomesManager.INSTANCE.getBiomes().createSurface(shape, type);
+                surface = ConfigHelper.biomes.createSurface(floor, ceiling, type);
             }
             callback.setReturnValue(surface);
         }
     }
 
     @Override
-    public void setSettings(MultiverseShape shape, MultiverseType type) {
-        this.shape = shape;
+    public void setSettings(boolean floor, boolean ceiling, MultiverseType type) {
+        this.floor = floor;
+        this.ceiling = ceiling;
         this.type = type;
+        surface = null;
     }
 
 }

@@ -1,0 +1,14 @@
+{
+  "type": "multiverse:weighted",
+  "selectors": [
+    {
+      "selector": {
+        "type": "multiverse:flat",
+        "range": {
+          "min": 60,
+          "max": 66
+        }
+      }
+    }
+  ]
+}

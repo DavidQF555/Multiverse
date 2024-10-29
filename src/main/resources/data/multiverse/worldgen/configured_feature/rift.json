@@ -10,9 +10,9 @@
     "natural": true,
     "size": {
       "minWidth": 1,
-      "maxWidth": 3,
-      "minHeight": 6,
-      "maxHeight": 10
+      "maxWidth": 4,
+      "minHeight": 16,
+      "maxHeight": 48
     },
     "rotation": {
       "minX": 0,

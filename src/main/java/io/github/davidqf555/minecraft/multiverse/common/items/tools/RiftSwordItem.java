@@ -1,13 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.items.tools;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,11 +33,10 @@ public class RiftSwordItem extends SwordItem {
         super(tier, damage, speed, properties);
     }
 
-    public static boolean slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, Optional<Integer> target) {
+    public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, Optional<Integer> target) {
         look = look.normalize();
-        BlockPos center = BlockPos.containing(start.add(look.scale(dist)));
-        RiftConfig.Rotation rotation = new RiftConfig.Rotation(look, angle);
-        return FeatureRegistry.RIFT.get().place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), level.getRandom(), center, RiftConfig.fixed(target, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), false, width, height, Optional.of(rotation))));
+        Vec3 center = start.add(look.scale(dist));
+        RiftHelper.placeExplosion(level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), target, Optional.of(Pair.of(look, angle)), center, width, height, true);
     }
 
     @Override
@@ -54,8 +51,8 @@ public class RiftSwordItem extends SwordItem {
             int duration = getUseDuration(stack) - remaining;
             if (duration >= MIN_CHARGE) {
                 int count = Math.min(600, duration);
-                int width = 1 + count / 200;
-                int height = 5 + count / 10;
+                int width = 1 + count / 150;
+                int height = 16 + count / 10;
                 HumanoidArm used = entity.getMainArm();
                 if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
                     used = used.getOpposite();
@@ -63,7 +60,8 @@ public class RiftSwordItem extends SwordItem {
                 float angle = used == HumanoidArm.RIGHT ? 45 : -45;
                 Vec3 look = entity.getLookAngle();
                 Vec3 start = entity.getEyePosition();
-                if (slash((ServerLevel) world, start, look, 4, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack))) && entity instanceof Player && !((Player) entity).isCreative()) {
+                slash((ServerLevel) world, start, look, 2.5, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack)));
+                if (entity instanceof Player && !((Player) entity).isCreative()) {
                     ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
                 }
             }
