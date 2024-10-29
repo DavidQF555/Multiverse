@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 
 import com.google.common.collect.ImmutableSet;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.resources.ResourceKey;
@@ -68,13 +67,12 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public SurfaceRules.RuleSource createSurface(MultiverseShape shape, MultiverseType type) {
-        boolean ceiling = shape.hasCeiling();
-        boolean floor = shape.hasFloor();
+    public SurfaceRules.RuleSource createSurface(boolean floor, boolean ceiling, MultiverseType type) {
         return switch (type) {
+            case OVERWORLD ->
+                    MultiverseSurfaceRuleData.overworld(floor && !ceiling, ceiling, floor, Collections.emptySet());
             case NETHER -> MultiverseSurfaceRuleData.nether(ceiling, floor, Collections.emptySet());
             case END -> MultiverseSurfaceRuleData.end(ceiling, floor, Collections.emptySet());
-            default -> MultiverseSurfaceRuleData.overworld(floor && !ceiling, ceiling, floor, Collections.emptySet());
         };
     }
 

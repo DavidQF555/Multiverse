@@ -1,0 +1,861 @@
+{
+  "type": "multiverse:type_map",
+  "providers": {
+    "overworld": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:normal/overworld/day/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/white"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/green"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/red"
+        },
+        {
+          "value": "multiverse:normal/overworld/day/fog/black"
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/overworld",
+          "weight": 256
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/white",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/orange",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/magenta",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/light_blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/yellow",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/lime",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/pink",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/light_gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/cyan",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/purple",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/brown",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/green",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/red",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/dynamic/fog/black",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/overworld/night/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/overworld/night/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/white"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/green"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/red"
+        },
+        {
+          "value": "multiverse:normal/overworld/night/fog/black"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/white"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/green"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/red"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunrise/fog/black"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/white"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/green"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/red"
+        },
+        {
+          "value": "multiverse:normal/overworld/sunset/fog/black"
+        }
+      ]
+    },
+    "nether": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:normal/nether/day/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/white"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/green"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/red"
+        },
+        {
+          "value": "multiverse:normal/nether/day/fog/black"
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/overworld",
+          "weight": 256
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/white",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/orange",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/magenta",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/light_blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/yellow",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/lime",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/pink",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/light_gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/cyan",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/purple",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/brown",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/green",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/red",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/dynamic/fog/black",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/nether/night/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/nether/night/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/white"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/green"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/red"
+        },
+        {
+          "value": "multiverse:normal/nether/night/fog/black"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/white"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/green"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/red"
+        },
+        {
+          "value": "multiverse:normal/nether/sunrise/fog/black"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/white"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/green"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/red"
+        },
+        {
+          "value": "multiverse:normal/nether/sunset/fog/black"
+        }
+      ]
+    },
+    "end": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:normal/end/day/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/white"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/green"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/red"
+        },
+        {
+          "value": "multiverse:normal/end/day/fog/black"
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/overworld",
+          "weight": 256
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/white",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/orange",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/magenta",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/light_blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/yellow",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/lime",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/pink",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/light_gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/cyan",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/purple",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/brown",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/green",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/red",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/dynamic/fog/black",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:normal/end/night/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/end/night/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/white"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/green"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/red"
+        },
+        {
+          "value": "multiverse:normal/end/night/fog/black"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/white"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/green"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/red"
+        },
+        {
+          "value": "multiverse:normal/end/sunrise/fog/black"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/white"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/orange"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/magenta"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/light_blue"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/yellow"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/lime"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/pink"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/gray"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/light_gray"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/cyan"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/purple"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/blue"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/brown"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/green"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/red"
+        },
+        {
+          "value": "multiverse:normal/end/sunset/fog/black"
+        }
+      ]
+    }
+  }
+}
+

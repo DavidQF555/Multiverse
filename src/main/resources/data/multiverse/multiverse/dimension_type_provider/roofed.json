@@ -1,0 +1,188 @@
+{
+  "type": "multiverse:type_map",
+  "providers": {
+    "overworld": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:roofed/overworld/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:roofed/overworld/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/white"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/orange"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/magenta"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/light_blue"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/yellow"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/lime"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/pink"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/gray"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/light_gray"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/cyan"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/purple"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/blue"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/brown"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/green"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/red"
+        },
+        {
+          "value": "multiverse:roofed/overworld/fog/black"
+        }
+      ]
+    },
+    "nether": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:roofed/nether/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:roofed/nether/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/white"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/orange"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/magenta"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/light_blue"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/yellow"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/lime"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/pink"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/gray"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/light_gray"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/cyan"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/purple"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/blue"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/brown"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/green"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/red"
+        },
+        {
+          "value": "multiverse:roofed/nether/fog/black"
+        }
+      ]
+    },
+    "end": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:roofed/end/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:roofed/end/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:roofed/end/fog/white"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/orange"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/magenta"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/light_blue"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/yellow"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/lime"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/pink"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/gray"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/light_gray"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/cyan"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/purple"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/blue"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/brown"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/green"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/red"
+        },
+        {
+          "value": "multiverse:roofed/end/fog/black"
+        }
+      ]
+    }
+  }
+}
