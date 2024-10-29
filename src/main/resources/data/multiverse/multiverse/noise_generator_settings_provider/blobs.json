@@ -1,0 +1,8 @@
+{
+  "type": "multiverse:type_map",
+  "types": {
+    "overworld": "multiverse:blobs/overworld",
+    "nether": "multiverse:blobs/nether",
+    "end": "multiverse:blobs/end"
+  }
+}

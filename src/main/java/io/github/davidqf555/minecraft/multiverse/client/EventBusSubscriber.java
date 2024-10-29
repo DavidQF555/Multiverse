@@ -1,13 +1,15 @@
 package io.github.davidqf555.minecraft.multiverse.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import io.github.davidqf555.minecraft.multiverse.client.effects.ColoredFogEffect;
+import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeCurrentColor;
+import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeTargetColor;
 import io.github.davidqf555.minecraft.multiverse.client.render.*;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.effects.DimensionEffectsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -31,6 +33,7 @@ public final class EventBusSubscriber {
         event.registerEntityRenderer(EntityRegistry.COLLECTOR.get(), CollectorRenderer<CollectorEntity>::new);
         event.registerEntityRenderer(EntityRegistry.TRAVELER.get(), TravelerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DOPPELGANGER.get(), DoppelgangerRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.KALEIDITE_CORE.get(), ThrownItemRenderer::new);
     }
 
     @SubscribeEvent
@@ -40,7 +43,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
-        DimensionEffectsRegistry.FOG.forEach((color, loc) -> event.register(loc, new ColoredFogEffect(color.getFireworkColor())));
+        DimensionEffectsRegistry.FOG.forEach((loc, color) -> event.register(loc, new ColoredFogEffect(color)));
     }
 
     @SubscribeEvent

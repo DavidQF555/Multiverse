@@ -1,0 +1,18 @@
+{
+  "type": "multiverse:biome_config",
+  "biomes": "multiverse:islands",
+  "dimension": {
+    "type": "multiverse:dual",
+    "chunk": {
+      "type": "multiverse:noise",
+      "sea_level": "multiverse:islands",
+      "noise_settings": "multiverse:islands",
+      "biomes": {
+        "type": "multiverse:noise",
+        "min_y": 0,
+        "max_y": 256
+      }
+    },
+    "dim_type": "multiverse:islands"
+  }
+}
