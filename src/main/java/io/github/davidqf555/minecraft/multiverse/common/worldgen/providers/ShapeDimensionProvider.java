@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.providers;
 
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.dimension.LevelStem;

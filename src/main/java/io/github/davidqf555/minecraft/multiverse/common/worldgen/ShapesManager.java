@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.worldgen.data;
+package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,7 +9,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;

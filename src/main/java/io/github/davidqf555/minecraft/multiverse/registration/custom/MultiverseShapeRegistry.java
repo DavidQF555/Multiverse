@@ -8,28 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DataPackRegistryEvent;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.NewRegistryEvent;
-import net.minecraftforge.registries.RegistryBuilder;
-
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class MultiverseShapeRegistry {
 
     public static final ResourceKey<Registry<MultiverseShape>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "multiverse_shape"));
-    private static Supplier<IForgeRegistry<MultiverseShape>> registry = null;
 
     private MultiverseShapeRegistry() {
-    }
-
-    public static IForgeRegistry<MultiverseShape> getRegistry() {
-        return registry.get();
-    }
-
-    @SubscribeEvent
-    public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<MultiverseShape>().setName(LOCATION.location()));
     }
 
     @SubscribeEvent

@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
 import com.mojang.serialization.Codec;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;

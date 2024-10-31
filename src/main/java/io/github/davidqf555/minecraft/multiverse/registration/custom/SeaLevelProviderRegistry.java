@@ -8,28 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DataPackRegistryEvent;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.NewRegistryEvent;
-import net.minecraftforge.registries.RegistryBuilder;
-
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SeaLevelProviderRegistry {
 
     public static final ResourceKey<Registry<SeaLevelProvider>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "sea_level_provider"));
-    private static Supplier<IForgeRegistry<SeaLevelProvider>> registry = null;
 
     private SeaLevelProviderRegistry() {
-    }
-
-    public static IForgeRegistry<SeaLevelProvider> getRegistry() {
-        return registry.get();
-    }
-
-    @SubscribeEvent
-    public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<SeaLevelProvider>().setName(LOCATION.location()));
     }
 
     @SubscribeEvent

@@ -1,8 +1,10 @@
-package io.github.davidqf555.minecraft.multiverse.common;
+package io.github.davidqf555.minecraft.multiverse.common.events;
 
+import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.Util;
 import net.minecraft.core.Position;

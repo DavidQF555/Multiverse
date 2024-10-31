@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
+import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

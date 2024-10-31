@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.RiftSwordItem;
+import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
