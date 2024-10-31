@@ -1,7 +1,9 @@
-package io.github.davidqf555.minecraft.multiverse.common.blocks;
+package io.github.davidqf555.minecraft.multiverse.common.util;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

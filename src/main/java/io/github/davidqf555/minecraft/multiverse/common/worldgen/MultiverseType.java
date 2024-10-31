@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.mojang.serialization.Codec;
-import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;

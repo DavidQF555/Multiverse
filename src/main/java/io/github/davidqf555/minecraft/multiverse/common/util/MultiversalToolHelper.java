@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.items.tools;
+package io.github.davidqf555.minecraft.multiverse.common.util;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;

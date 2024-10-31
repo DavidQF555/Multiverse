@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.mixin;
 
-import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;

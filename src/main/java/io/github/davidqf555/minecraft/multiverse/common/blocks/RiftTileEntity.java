@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.POIRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;

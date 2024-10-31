@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.items.tools;
 
+import io.github.davidqf555.minecraft.multiverse.common.util.MultiversalToolHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
