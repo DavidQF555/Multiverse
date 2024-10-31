@@ -4,7 +4,7 @@
     "features": [
       {
         "feature": {
-          "type": "simple_block",
+          "type": "multiverse:waterlogged_block",
           "config": {
             "to_place": {
               "type": "simple_state_provider",
@@ -28,7 +28,7 @@
       },
       {
         "feature": {
-          "type": "simple_block",
+          "type": "multiverse:waterlogged_block",
           "config": {
             "to_place": {
               "type": "simple_state_provider",
@@ -52,7 +52,7 @@
       },
       {
         "feature": {
-          "type": "simple_block",
+          "type": "multiverse:waterlogged_block",
           "config": {
             "to_place": {
               "type": "simple_state_provider",
@@ -76,7 +76,7 @@
       },
       {
         "feature": {
-          "type": "simple_block",
+          "type": "multiverse:waterlogged_block",
           "config": {
             "to_place": {
               "type": "simple_state_provider",
@@ -100,7 +100,7 @@
       },
       {
         "feature": {
-          "type": "simple_block",
+          "type": "multiverse:waterlogged_block",
           "config": {
             "to_place": {
               "type": "simple_state_provider",
@@ -124,7 +124,7 @@
       },
       {
         "feature": {
-          "type": "simple_block",
+          "type": "multiverse:waterlogged_block",
           "config": {
             "to_place": {
               "type": "simple_state_provider",

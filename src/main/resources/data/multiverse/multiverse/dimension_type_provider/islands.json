@@ -1,0 +1,861 @@
+{
+  "type": "multiverse:type_map",
+  "providers": {
+    "overworld": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:islands/overworld/day/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/white"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/green"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/red"
+        },
+        {
+          "value": "multiverse:islands/overworld/day/fog/black"
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/overworld",
+          "weight": 256
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/white",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/orange",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/magenta",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/light_blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/yellow",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/lime",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/pink",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/light_gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/cyan",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/purple",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/brown",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/green",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/red",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/dynamic/fog/black",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/overworld/night/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/overworld/night/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/white"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/green"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/red"
+        },
+        {
+          "value": "multiverse:islands/overworld/night/fog/black"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/white"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/green"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/red"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunrise/fog/black"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/white"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/green"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/red"
+        },
+        {
+          "value": "multiverse:islands/overworld/sunset/fog/black"
+        }
+      ]
+    },
+    "nether": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:islands/nether/day/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/white"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/green"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/red"
+        },
+        {
+          "value": "multiverse:islands/nether/day/fog/black"
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/overworld",
+          "weight": 256
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/white",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/orange",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/magenta",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/light_blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/yellow",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/lime",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/pink",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/light_gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/cyan",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/purple",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/brown",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/green",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/red",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/dynamic/fog/black",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/nether/night/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/nether/night/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/white"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/green"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/red"
+        },
+        {
+          "value": "multiverse:islands/nether/night/fog/black"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/white"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/green"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/red"
+        },
+        {
+          "value": "multiverse:islands/nether/sunrise/fog/black"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/white"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/green"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/red"
+        },
+        {
+          "value": "multiverse:islands/nether/sunset/fog/black"
+        }
+      ]
+    },
+    "end": {
+      "type": "multiverse:weighted",
+      "entries": [
+        {
+          "value": "multiverse:islands/end/day/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/white"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/green"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/red"
+        },
+        {
+          "value": "multiverse:islands/end/day/fog/black"
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/overworld",
+          "weight": 256
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/white",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/orange",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/magenta",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/light_blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/yellow",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/lime",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/pink",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/light_gray",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/cyan",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/purple",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/blue",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/brown",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/green",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/red",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/dynamic/fog/black",
+          "weight": 4
+        },
+        {
+          "value": "multiverse:islands/end/night/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/end/night/end",
+          "weight": 8
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/white"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/green"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/red"
+        },
+        {
+          "value": "multiverse:islands/end/night/fog/black"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/white"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/green"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/red"
+        },
+        {
+          "value": "multiverse:islands/end/sunrise/fog/black"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/overworld",
+          "weight": 64
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/white"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/orange"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/magenta"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/light_blue"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/yellow"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/lime"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/pink"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/gray"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/light_gray"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/cyan"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/purple"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/blue"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/brown"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/green"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/red"
+        },
+        {
+          "value": "multiverse:islands/end/sunset/fog/black"
+        }
+      ]
+    }
+  }
+}
+

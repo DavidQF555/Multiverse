@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -40,6 +41,7 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.pathfinder.PathType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -60,6 +62,10 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         super(type, world);
         moveControl = new FlyingMoveControl(this, 90, true);
         bar = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.PROGRESS);
+        setNoGravity(true);
+        setPathfindingMalus(PathType.LAVA, 8);
+        setPathfindingMalus(PathType.DANGER_FIRE, 0);
+        setPathfindingMalus(PathType.DAMAGE_FIRE, 0);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -67,7 +73,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 .add(Attributes.MAX_HEALTH, 150)
                 .add(Attributes.FLYING_SPEED, 2)
                 .add(Attributes.FOLLOW_RANGE, 40)
-                .add(Attributes.ATTACK_DAMAGE, 5);
+                .add(Attributes.ATTACK_DAMAGE, 5)
+                .add(Attributes.GRAVITY, 0);
     }
 
     public static boolean canSpawn(EntityType<? extends TravelerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
@@ -86,6 +93,11 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
             doRiftEffect();
             discard();
         }
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource pSource) {
+        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
     }
 
     @Override
@@ -111,13 +123,12 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new RangedCrossbowAttackGoal<>(this, 1, 16));
-        goalSelector.addGoal(2, new MeleeAttackGoal(this, 1, true));
-        goalSelector.addGoal(3, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));
-        goalSelector.addGoal(4, new WaterAvoidingRandomFlyingGoal(this, 1));
-        goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8));
-        goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        goalSelector.addGoal(0, new RangedCrossbowAttackGoal<>(this, 1, 16));
+        goalSelector.addGoal(1, new MeleeAttackGoal(this, 1, true));
+        goalSelector.addGoal(2, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));
+        goalSelector.addGoal(3, new WaterAvoidingRandomFlyingGoal(this, 1));
+        goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8));
+        goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         targetSelector.addGoal(0, new HurtByTargetGoal(this));
         targetSelector.addGoal(1, new CopyOriginalGoal(TargetingConditions.forCombat()));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, true));
@@ -270,8 +281,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data) {
-        populateDefaultEquipmentSlots(random, difficulty);
-        populateDefaultEquipmentEnchantments(level, random, difficulty);
+        populateDefaultEquipmentSlots(getRandom(), difficulty);
+        populateDefaultEquipmentEnchantments(level, getRandom(), difficulty);
         return super.finalizeSpawn(level, difficulty, type, data);
     }
 

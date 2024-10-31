@@ -14,18 +14,29 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ModConfigSpec.DoubleValue additionalBiomeTypeChance, fixedTimeChance, travelerSpawnFactor, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
-    public final ModConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, spawnPeriod, spawnCount;
+    public final ModConfigSpec.DoubleValue travelerSpawnFactor, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
+    public final ModConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling;
 
     public ServerConfigs(ModConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
         maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
                 .defineInRange("max", 25, 1, Integer.MAX_VALUE);
-        additionalBiomeTypeChance = builder.comment("Each additional biome tag has this chance to be in new Multiverse dimensions. ")
-                .defineInRange("biomeTypeChance", 0.025, 0, 1);
-        fixedTimeChance = builder.comment("This is the chance that a Multiverse dimension has a random, fixed time. ")
-                .defineInRange("fixedTimeChance", 0.25, 0, 1);
-        builder.pop().push("KaleiditeCrossbow");
+        builder.pop().push("Rifts");
+        riftRange = builder.comment("This is the range that is scanned for existing rifts using points of interest. ")
+                .defineInRange("range", 128, 0, Integer.MAX_VALUE);
+        slowFalling = builder.comment("This is the number of ticks that players get slow falling for after exiting a rift. Set to 0 if don't want slow falling. ")
+                .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
+        builder.push("Size of artificially placed rifts (Modify configured/placed feature for naturally generated rifts)");
+        minRiftWidth = builder.comment("This is the minimum width of artificially placed rifts. ")
+                .defineInRange("minWidth", 1, 0, Double.MAX_VALUE);
+        maxRiftWidth = builder.comment("This is the maximum width of artificially placed rifts. This should be greater or equal to minWidth. ")
+                .defineInRange("maxWidth", 4, 0, Double.MAX_VALUE);
+        minRiftHeight = builder.comment("This is the minimum height of artificially placed rifts. ")
+                .defineInRange("minHeight", 16, 0, Integer.MAX_VALUE);
+        maxRiftHeight = builder.comment("This is the maximum height of artificially placed rifts. This should be greater or equal to minHeight. ")
+                .defineInRange("maxHeight", 48, 0, Integer.MAX_VALUE);
+        builder.pop(2);
+        builder.push("KaleiditeCrossbow");
         fireworkRate = builder.comment("This is the chance that fireworks are spawned when shooting an arrow. ")
                 .defineInRange("fireworkRate", 0.2, 0, 1);
         fireRate = builder.comment("This is the chance that a spawned arrow is on fire. ")
@@ -41,8 +52,6 @@ public class ServerConfigs {
         spawnCount = builder.comment("This is the number of projectiles spawned every time the crossbow is shot. ")
                 .defineInRange("spawnCount", 20, 0, Integer.MAX_VALUE);
         builder.pop().push("Miscellaneous");
-        riftRange = builder.comment("This is the range that is scanned for existing rifts. ")
-                .defineInRange("range", 128, 0, Integer.MAX_VALUE);
         boundlessBladeCooldown = builder.comment("This is the cooldown of the Boundless Blade item in ticks. ")
                 .defineInRange("boundlessBladeCooldown", 500, 0, Integer.MAX_VALUE);
         travelerSpawnFactor = builder.comment("This is the factor from the base that Travelers spawn")

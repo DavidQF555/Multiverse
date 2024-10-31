@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
+import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.BiomesManager;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -17,7 +17,7 @@ public final class IntegrationRegistry {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         if (ModList.get().isLoaded("terrablender")) {
-            BiomesManager.INSTANCE.setBiomes(new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME)));
+            ConfigHelper.biomes = new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME));
         }
     }
 
