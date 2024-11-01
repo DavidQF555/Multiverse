@@ -17,5 +17,6 @@ build
 eclipse
 run
 runs
+run-data
 
 src/generated
