@@ -18,7 +18,7 @@
     },
     {
       "type": "rarity_filter",
-      "chance": 50
+      "chance": 100
     },
     {
       "type": "in_square"

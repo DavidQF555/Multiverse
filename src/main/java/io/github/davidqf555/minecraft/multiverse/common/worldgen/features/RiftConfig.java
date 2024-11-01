@@ -3,36 +3,26 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-import java.util.Optional;
-
 public class RiftConfig implements FeatureConfiguration {
 
     public static final Codec<RiftConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("target").forGetter(config -> config.target),
             BlockState.CODEC.fieldOf("block").forGetter(config -> config.block),
             Size.CODEC.fieldOf("size").forGetter(config -> config.size)
     ).apply(builder, RiftConfig::new));
-    private final Optional<Integer> target;
     private final BlockState block;
     private final Size size;
 
-    public RiftConfig(Optional<Integer> target, BlockState block, Size size) {
-        this.target = target;
+    public RiftConfig(BlockState block, Size size) {
         this.block = block;
         this.size = size;
     }
 
-    public static RiftConfig of(Optional<Integer> target, BlockState block) {
-        return new RiftConfig(target, block, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()));
-    }
-
-    public Optional<Integer> getTarget() {
-        return target;
+    public static RiftConfig of(BlockState block) {
+        return new RiftConfig(block, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()));
     }
 
     public BlockState getBlockState() {

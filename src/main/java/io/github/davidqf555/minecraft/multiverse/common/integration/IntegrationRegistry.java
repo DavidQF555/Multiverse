@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
-import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;

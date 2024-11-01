@@ -1,5 +1,6 @@
-package io.github.davidqf555.minecraft.multiverse.common;
+package io.github.davidqf555.minecraft.multiverse.common.events;
 
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.SubscribeEvent;

@@ -1,9 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.providers;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 
 import java.util.List;
 
@@ -25,6 +28,12 @@ public class ShapeDimensionProvider {
             }
         }
         throw new RuntimeException("Should never get here");
+    }
+
+    public LevelStem createDimension(RegistryAccess access, long base, int index) {
+        long seed = DimensionHelper.getSeed(base, index, false);
+        WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
+        return createDimension(access, seed, random);
     }
 
 }

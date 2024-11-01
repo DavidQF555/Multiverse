@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.common.ConfigHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeSourceProviderTypeRegistry;

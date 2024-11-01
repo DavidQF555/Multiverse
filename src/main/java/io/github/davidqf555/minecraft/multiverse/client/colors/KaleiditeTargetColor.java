@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalToolHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.MultiversalToolHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.multiplayer.ClientLevel;

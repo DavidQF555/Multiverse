@@ -22,8 +22,6 @@ import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.WorldOptions;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.phys.Vec3;
@@ -92,9 +90,10 @@ public final class DimensionHelper {
     private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
         ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, worldKey.location());
-        LevelStem dimension = createDimension(server, index);
         WorldData worldData = server.getWorldData();
         WorldOptions worldGenSettings = worldData.worldGenOptions();
+        long base = worldGenSettings.seed();
+        LevelStem dimension = createDimension(server, base, index);
         DerivedLevelData derivedLevelData = new DerivedLevelData(worldData, worldData.overworldData());
 
         LayeredRegistryAccess<RegistryLayer> registries = server.registries();
@@ -124,7 +123,7 @@ public final class DimensionHelper {
                 dimension,
                 server.progressListenerFactory.create(11),
                 worldData.isDebugWorld(),
-                BiomeManager.obfuscateSeed(worldGenSettings.seed()),
+                BiomeManager.obfuscateSeed(base),
                 ImmutableList.of(),
                 false,
                 null
@@ -137,12 +136,9 @@ public final class DimensionHelper {
         return newWorld;
     }
 
-    public static LevelStem createDimension(MinecraftServer server, int index) {
-        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-        long seed = getSeed(overworld.getSeed(), index, false);
-        WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
+    public static LevelStem createDimension(MinecraftServer server, long base, int index) {
         RegistryAccess access = server.registryAccess();
-        return ShapeDimensionProvider.INSTANCE.createDimension(access, seed, random);
+        return ShapeDimensionProvider.INSTANCE.createDimension(access, base, index);
     }
 
 }

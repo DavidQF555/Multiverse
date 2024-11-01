@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.ChatFormatting;

@@ -1,7 +1,9 @@
-package io.github.davidqf555.minecraft.multiverse.common;
+package io.github.davidqf555.minecraft.multiverse.common.events;
 
+import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.data.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
