@@ -3,12 +3,15 @@ package io.github.davidqf555.minecraft.multiverse.common.integration;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import terrablender.api.EndBiomeRegistry;
 import terrablender.api.RegionType;
 import terrablender.api.Regions;
 import terrablender.api.SurfaceRuleManager;
@@ -19,23 +22,25 @@ import java.util.stream.Collectors;
 
 public class TerraBlenderBiomes implements MultiverseBiomes {
 
-    private static final Climate.ParameterPoint ZERO = Climate.parameters(0, 0, 0, 0, 0, 0, 0);
-    private final List<SurfaceRules.RuleSource> overworld;
-    private final List<SurfaceRules.RuleSource> nether;
-    private final Set<ResourceKey<Biome>> overworldBiomes;
-    private final Set<ResourceKey<Biome>> netherBiomes;
+    private static final List<Climate.ParameterPoint> ZERO = List.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0));
+    private final List<SurfaceRules.RuleSource> overworld, nether, end;
+    private final Set<ResourceKey<Biome>> overworldBiomes, netherBiomes, endBiomes;
     private final Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> parameters = new HashMap<>();
 
     public TerraBlenderBiomes(Registry<Biome> registry) {
         super();
+        this.overworld = getSurface(SurfaceRuleManager.RuleCategory.OVERWORLD);
+        this.nether = getSurface(SurfaceRuleManager.RuleCategory.NETHER);
+        this.end = getSurface(SurfaceRuleManager.RuleCategory.END);
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> overworld = getBiomes(registry, RegionType.OVERWORLD);
         overworldBiomes = overworld.keySet();
-        this.overworld = getSurface(SurfaceRuleManager.RuleCategory.OVERWORLD);
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> nether = getBiomes(registry, RegionType.NETHER);
         netherBiomes = nether.keySet();
-        this.nether = getSurface(SurfaceRuleManager.RuleCategory.NETHER);
+        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> end = getEndBiomesParameters(0);
+        endBiomes = end.keySet();
         parameters.putAll(nether);
         parameters.putAll(overworld);
+        parameters.putAll(end);
     }
 
     private static Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> getBiomes(Registry<Biome> registry, RegionType type) {
@@ -51,6 +56,63 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
             }
             add.add(pair.getFirst());
         }));
+        return map;
+    }
+
+    private static Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> getEndBiomesParameters(long offset) {
+        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> map = new HashMap<>();
+        for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getIslandBiomes()) {
+            long seed = entry.data().location().hashCode() + offset;
+            RandomSource rand = new XoroshiroRandomSource(seed);
+            map.put(entry.data(), List.of(Climate.parameters(
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.span(-1, -0.21875f),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.point(0),
+                    0
+            )));
+        }
+        for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getEdgeBiomes()) {
+            long seed = entry.data().location().hashCode() + offset;
+            RandomSource rand = new XoroshiroRandomSource(seed);
+            map.put(entry.data(), List.of(Climate.parameters(
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.span(-0.21875f, -0.0625f),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.point(0),
+                    0
+            )));
+        }
+        for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getMidlandsBiomes()) {
+            long seed = entry.data().location().hashCode() + offset;
+            RandomSource rand = new XoroshiroRandomSource(seed);
+            map.put(entry.data(), List.of(Climate.parameters(
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.span(-0.0625f, 0.25f),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.point(0),
+                    0
+            )));
+        }
+        for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getHighlandsBiomes()) {
+            long seed = entry.data().location().hashCode() + offset;
+            RandomSource rand = new XoroshiroRandomSource(seed);
+            map.put(entry.data(), List.of(Climate.parameters(
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(rand.nextFloat()),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.span(0.25f, 1),
+                    Climate.Parameter.point(0),
+                    Climate.Parameter.point(0),
+                    0
+            )));
+        }
         return map;
     }
 
@@ -73,12 +135,12 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
 
     @Override
     public Set<ResourceKey<Biome>> getEndBiomes() {
-        return VanillaMultiverseBiomes.INSTANCE.getEndBiomes();
+        return endBiomes;
     }
 
     @Override
     public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome) {
-        return parameters.getOrDefault(biome, List.of(ZERO));
+        return parameters.getOrDefault(biome, ZERO);
     }
 
     @Override
@@ -86,7 +148,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         return switch (type) {
             case OVERWORLD -> MultiverseSurfaceRuleData.overworld(floor && !ceiling, ceiling, floor, overworld);
             case NETHER -> MultiverseSurfaceRuleData.nether(ceiling, floor, nether);
-            case END -> VanillaMultiverseBiomes.INSTANCE.createSurface(floor, ceiling, type);
+            case END -> MultiverseSurfaceRuleData.end(ceiling, floor, end);
         };
     }
 
