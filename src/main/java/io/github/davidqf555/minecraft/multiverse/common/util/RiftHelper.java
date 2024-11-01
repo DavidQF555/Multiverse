@@ -137,12 +137,12 @@ public final class RiftHelper {
             }
             int high = y + 1;
             while (i < allY.length && allY[i] < high) {
-                if (crit.isEmpty() || crit.get(crit.size() - 1) != allY[i]) {
+                if (crit.isEmpty() || crit.getLast() != allY[i]) {
                     crit.add(allY[i]);
                 }
                 i++;
             }
-            if (high <= maxY && (crit.isEmpty() || crit.get(crit.size() - 1) != high)) {
+            if (high <= maxY && (crit.isEmpty() || crit.getLast() != high)) {
                 crit.add((double) high);
             }
             List<Point2D> points = new ArrayList<>();
@@ -174,7 +174,7 @@ public final class RiftHelper {
         if (points.isEmpty()) {
             return;
         } else if (points.size() == 1) {
-            Point2D point = points.get(0);
+            Point2D point = points.getFirst();
             effect.accept(Mth.floor(point.x()), Mth.floor(point.y()));
             return;
         }
@@ -193,12 +193,12 @@ public final class RiftHelper {
             }
             int high = x + 1;
             while (i < xVals.length && xVals[i] < high) {
-                if (crit.isEmpty() || crit.get(crit.size() - 1) != xVals[i]) {
+                if (crit.isEmpty() || crit.getLast() != xVals[i]) {
                     crit.add(xVals[i]);
                 }
                 i++;
             }
-            if (high <= xVals[xVals.length - 1] && (crit.isEmpty() || crit.get(crit.size() - 1) != high)) {
+            if (high <= xVals[xVals.length - 1] && (crit.isEmpty() || crit.getLast() != high)) {
                 crit.add((double) high);
             }
             // for extra security in case of floating point calculation issues or less than 2 points

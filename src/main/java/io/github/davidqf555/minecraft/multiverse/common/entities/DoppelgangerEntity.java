@@ -103,16 +103,6 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     @Override
-    protected void populateDefaultEquipmentEnchantments(ServerLevelAccessor level, RandomSource random, DifficultyInstance difficulty) {
-        enchantSpawnedWeapon(level, random, difficulty);
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                enchantSpawnedArmor(level, random, slot, difficulty);
-            }
-        }
-    }
-
-    @Override
     protected float getEquipmentDropChance(EquipmentSlot slot) {
         return 0;
     }

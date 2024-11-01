@@ -24,7 +24,7 @@ public class CategoryAddSpawnsBiomeModifier implements BiomeModifier {
             Biome.LIST_CODEC.fieldOf("biomes").forGetter(modifier -> modifier.biomes),
             Codec.either(MobSpawnSettings.SpawnerData.CODEC.listOf(), MobSpawnSettings.SpawnerData.CODEC).xmap(
                     either -> either.map(Function.identity(), List::of),
-                    list -> list.size() == 1 ? Either.right(list.get(0)) : Either.left(list)
+                    list -> list.size() == 1 ? Either.right(list.getFirst()) : Either.left(list)
             ).fieldOf("spawners").forGetter(modifier -> modifier.spawners)
     ).apply(inst, CategoryAddSpawnsBiomeModifier::new));
     private final HolderSet<Biome> biomes;
