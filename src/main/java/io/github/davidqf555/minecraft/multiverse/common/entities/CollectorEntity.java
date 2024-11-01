@@ -112,11 +112,6 @@ public class CollectorEntity extends SpellcasterIllager {
     }
 
     @Override
-    public boolean hurt(DamageSource p_37849_, float p_37850_) {
-        return super.hurt(p_37849_, p_37850_);
-    }
-
-    @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new SpellcasterCastingSpellGoal());
