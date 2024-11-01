@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.entities;
+package io.github.davidqf555.minecraft.multiverse.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

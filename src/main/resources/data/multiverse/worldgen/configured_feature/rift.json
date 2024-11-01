@@ -13,14 +13,6 @@
       "maxWidth": 4,
       "minHeight": 16,
       "maxHeight": 48
-    },
-    "rotation": {
-      "minX": 0,
-      "maxX": 180,
-      "minY": 0,
-      "maxY": 180,
-      "minZ": 0,
-      "maxZ": 180
     }
   }
 }
