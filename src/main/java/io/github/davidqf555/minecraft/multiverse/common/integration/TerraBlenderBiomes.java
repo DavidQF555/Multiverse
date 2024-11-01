@@ -1,16 +1,17 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import terrablender.api.EndBiomeRegistry;
 import terrablender.api.RegionType;
 import terrablender.api.Regions;
@@ -36,7 +37,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         overworldBiomes = overworld.keySet();
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> nether = getBiomes(registry, RegionType.NETHER);
         netherBiomes = nether.keySet();
-        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> end = getEndBiomesParameters(0);
+        Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> end = getEndBiomesParameters();
         endBiomes = end.keySet();
         parameters.putAll(nether);
         parameters.putAll(overworld);
@@ -59,61 +60,33 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         return map;
     }
 
-    private static Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> getEndBiomesParameters(long offset) {
+    private static Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> getEndBiomesParameters() {
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> map = new HashMap<>();
         for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getIslandBiomes()) {
-            long seed = entry.data().location().hashCode() + offset;
-            RandomSource rand = new XoroshiroRandomSource(seed);
-            map.put(entry.data(), List.of(Climate.parameters(
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.span(-1, -0.21875f),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.point(0),
-                    0
-            )));
+            map.put(entry.data(), getEndParameters(-1, -0.21875f));
         }
         for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getEdgeBiomes()) {
-            long seed = entry.data().location().hashCode() + offset;
-            RandomSource rand = new XoroshiroRandomSource(seed);
-            map.put(entry.data(), List.of(Climate.parameters(
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.span(-0.21875f, -0.0625f),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.point(0),
-                    0
-            )));
+            map.put(entry.data(), getEndParameters(-0.21875f, -0.0625f));
         }
         for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getMidlandsBiomes()) {
-            long seed = entry.data().location().hashCode() + offset;
-            RandomSource rand = new XoroshiroRandomSource(seed);
-            map.put(entry.data(), List.of(Climate.parameters(
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.span(-0.0625f, 0.25f),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.point(0),
-                    0
-            )));
+            map.put(entry.data(), getEndParameters(-0.0625f, 0.25f));
         }
         for (WeightedEntry.Wrapper<ResourceKey<Biome>> entry : EndBiomeRegistry.getHighlandsBiomes()) {
-            long seed = entry.data().location().hashCode() + offset;
-            RandomSource rand = new XoroshiroRandomSource(seed);
-            map.put(entry.data(), List.of(Climate.parameters(
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(rand.nextFloat()),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.span(0.25f, 1),
-                    Climate.Parameter.point(0),
-                    Climate.Parameter.point(0),
-                    0
-            )));
+            map.put(entry.data(), getEndParameters(0.25f, 1));
         }
         return map;
+    }
+
+    private static List<Climate.ParameterPoint> getEndParameters(float min, float max) {
+        return List.of(Climate.parameters(
+                Climate.Parameter.point(0),
+                Climate.Parameter.point(0),
+                Climate.Parameter.point(0),
+                Climate.Parameter.span(min, max),
+                Climate.Parameter.point(0),
+                Climate.Parameter.point(0),
+                0
+        ));
     }
 
     private static List<SurfaceRules.RuleSource> getSurface(SurfaceRuleManager.RuleCategory category) {
@@ -138,9 +111,36 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         return endBiomes;
     }
 
+    private static Climate.ParameterPoint offset(Climate.ParameterPoint base, RandomSource random) {
+        float tOffset = (float) (random.nextGaussian() * ServerConfigs.INSTANCE.temperatureScale.get());
+        float hOffset = (float) (random.nextGaussian() * ServerConfigs.INSTANCE.humidityScale.get());
+        Climate.Parameter temperature = Climate.Parameter.span(
+                Mth.clamp(Climate.unquantizeCoord(base.temperature().min()) + tOffset, -2.0f, 2.0f),
+                Mth.clamp(Climate.unquantizeCoord(base.temperature().min()) + tOffset, -2.0f, 2.0f)
+        );
+        Climate.Parameter humidity = Climate.Parameter.span(
+                Mth.clamp(Climate.unquantizeCoord(base.humidity().min()) + hOffset, -2.0f, 2.0f),
+                Mth.clamp(Climate.unquantizeCoord(base.humidity().min()) + hOffset, -2.0f, 2.0f)
+        );
+        return new Climate.ParameterPoint(
+                temperature,
+                humidity,
+                base.continentalness(),
+                base.erosion(),
+                base.depth(),
+                base.weirdness(),
+                base.offset()
+        );
+    }
+
     @Override
-    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome) {
-        return parameters.getOrDefault(biome, ZERO);
+    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome, RandomSource random) {
+        List<Climate.ParameterPoint> original = parameters.getOrDefault(biome, ZERO);
+        List<Climate.ParameterPoint> offset = new ArrayList<>();
+        for (Climate.ParameterPoint base : original) {
+            offset.add(offset(base, random));
+        }
+        return offset;
     }
 
     @Override

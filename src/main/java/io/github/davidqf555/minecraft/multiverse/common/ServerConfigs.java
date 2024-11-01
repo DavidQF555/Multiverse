@@ -14,7 +14,7 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ModConfigSpec.DoubleValue travelerSpawnFactor, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
+    public final ModConfigSpec.DoubleValue travelerSpawnFactor, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, temperatureScale, humidityScale;
     public final ModConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling;
 
     public ServerConfigs(ModConfigSpec.Builder builder) {
@@ -56,7 +56,12 @@ public class ServerConfigs {
                 .defineInRange("boundlessBladeCooldown", 500, 0, Integer.MAX_VALUE);
         travelerSpawnFactor = builder.comment("This is the factor from the base that Travelers spawn")
                 .defineInRange("travelerSpawnFactor", 0.01, 0, 1);
-        builder.pop();
+        builder.push("Terrablender").comment("The following settings only apply if Terrablender is included. ");
+        temperatureScale = builder.comment("This is the scale of the Gaussian random temperature offset applied to biome parameters to mitigate collisions. ")
+                .defineInRange("temperatureScale", 0.15, 0.0, Double.MAX_VALUE);
+        humidityScale = builder.comment("This is the scale of the Gaussian random humidity offset applied to biome parameters to mitigate collisions. ")
+                .defineInRange("humidityScale", 0.15, 0.0, Double.MAX_VALUE);
+        builder.pop(2);
     }
 
 }

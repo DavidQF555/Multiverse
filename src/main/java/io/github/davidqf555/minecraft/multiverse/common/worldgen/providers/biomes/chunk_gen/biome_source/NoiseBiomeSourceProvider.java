@@ -39,17 +39,17 @@ public class NoiseBiomeSourceProvider implements BiomeSourceProvider<MultiNoiseB
 
     @Override
     public MultiNoiseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<ResourceKey<Biome>> biomes) {
-        return MultiNoiseBiomeSource.createFromList(getBiomeParameters(access, type, biomes));
+        return MultiNoiseBiomeSource.createFromList(getBiomeParameters(access, type, biomes, random));
     }
 
-    protected Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, Set<ResourceKey<Biome>> biomes) {
+    protected Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, Set<ResourceKey<Biome>> biomes, RandomSource random) {
         MultiverseBiomes ref = ConfigHelper.biomes;
         Registry<Biome> biomeReg = access.registryOrThrow(Registries.BIOME);
         Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registries.DIMENSION_TYPE);
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
         for (ResourceKey<Biome> biome : biomes) {
             Holder<Biome> holder = biomeReg.getHolderOrThrow(biome);
-            for (Climate.ParameterPoint orig : ref.getParameters(biome)) {
+            for (Climate.ParameterPoint orig : ref.getParameters(biome, random)) {
                 Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()));
                 Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
                 out.add(Pair.of(point, holder));

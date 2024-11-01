@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes;
 
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.SurfaceRules;
@@ -17,7 +18,7 @@ public interface MultiverseBiomes {
 
     Set<ResourceKey<Biome>> getEndBiomes();
 
-    List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome);
+    List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome, RandomSource random);
 
     default Set<ResourceKey<Biome>> getBiomes(MultiverseType type) {
         return switch (type) {
