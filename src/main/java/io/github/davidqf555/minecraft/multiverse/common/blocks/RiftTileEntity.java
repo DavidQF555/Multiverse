@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
@@ -15,9 +16,13 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.level.block.Portal;
@@ -41,6 +46,14 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class RiftTileEntity extends BlockEntity implements Portal {
 
+    public static final DimensionTransition.PostDimensionTransition SLOW_FALLING = entity -> {
+        if (entity instanceof LivingEntity) {
+            int duration = ServerConfigs.INSTANCE.slowFalling.get();
+            if (duration > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
+            }
+        }
+    };
     private Vec3 normal = new Vec3(0, 1, 0);
     private Vec3[][] vertices = new Vec3[2][0];
     private int target;
@@ -150,15 +163,21 @@ public class RiftTileEntity extends BlockEntity implements Portal {
 
     @Nullable
     @Override
-    public DimensionTransition getPortalDestination(ServerLevel destWorld, Entity entity, BlockPos pos) {
-        DimensionType target = destWorld.dimensionType();
-        DimensionType from = entity.level().dimensionType();
-        BlockPos rift = getBlockPos();
-        Vec3 scaled = DimensionHelper.translate(Vec3.atBottomCenterOf(rift), from, target, true);
-        WorldBorder border = destWorld.getWorldBorder();
-        BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
-        int current = DimensionHelper.getIndex(entity.level().dimension());
-        return new DimensionTransition(destWorld, getOrCreateRift(destWorld, destWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
+    public DimensionTransition getPortalDestination(ServerLevel fromWorld, Entity entity, BlockPos pos) {
+        MinecraftServer server = fromWorld.getServer();
+        int target = getTarget();
+        if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
+            ServerLevel toWorld = DimensionHelper.getOrCreateWorld(server, target);
+            DimensionType to = toWorld.dimensionType();
+            DimensionType from = fromWorld.dimensionType();
+            BlockPos rift = getBlockPos();
+            Vec3 scaled = DimensionHelper.translate(Vec3.atBottomCenterOf(rift), from, to, true);
+            WorldBorder border = toWorld.getWorldBorder();
+            BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
+            int current = DimensionHelper.getIndex(entity.level().dimension());
+            return new DimensionTransition(toWorld, getOrCreateRift(toWorld, toWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), SLOW_FALLING);
+        }
+        return null;
     }
 
     private Vec3 getOrCreateRift(ServerLevel dest, RandomSource rand, Vec3 center, int range, int current, BlockState state) {
