@@ -12,12 +12,13 @@ import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class DoppelgangerRenderer extends HumanoidMobRenderer<DoppelgangerEntity, PlayerModel<DoppelgangerEntity>> {
 
     public DoppelgangerRenderer(EntityRendererProvider.Context context) {
-        super(context, new AnimatedPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
+        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
         addLayer(new HumanoidArmorLayer<>(this, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)), new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), context.getModelManager()));
         addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         addLayer(new ArrowLayer<>(context, this));
@@ -27,6 +28,7 @@ public class DoppelgangerRenderer extends HumanoidMobRenderer<DoppelgangerEntity
         addLayer(new BeeStingerLayer<>(this));
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getTextureLocation(DoppelgangerEntity entity) {
         UUID id = entity.getOriginalId();
