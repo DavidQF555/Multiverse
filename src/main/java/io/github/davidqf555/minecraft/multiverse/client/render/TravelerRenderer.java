@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.entity.IllagerRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class TravelerRenderer extends IllagerRenderer<TravelerEntity> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/entity/traveler.png");
@@ -18,8 +20,9 @@ public class TravelerRenderer extends IllagerRenderer<TravelerEntity> {
         addLayer(new ItemInHandLayer<>(this, manager.getItemInHandRenderer()));
     }
 
+    @Nonnull
     @Override
-    public ResourceLocation getTextureLocation(TravelerEntity traveler) {
+    public ResourceLocation getTextureLocation(@Nonnull TravelerEntity traveler) {
         return TEXTURE;
     }
 

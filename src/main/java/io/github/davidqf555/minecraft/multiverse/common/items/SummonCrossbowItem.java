@@ -11,12 +11,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class SummonCrossbowItem extends CrossbowItem {
 
     public SummonCrossbowItem(Properties properties) {
         super(properties.stacksTo(1));
     }
 
+    @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack bow = player.getItemInHand(hand);
