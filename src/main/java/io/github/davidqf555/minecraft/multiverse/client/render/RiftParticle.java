@@ -8,6 +8,9 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class RiftParticle extends SimpleAnimatedParticle {
 
     public RiftParticle(ClientLevel world, double x, double y, double z, SpriteSet sprites) {

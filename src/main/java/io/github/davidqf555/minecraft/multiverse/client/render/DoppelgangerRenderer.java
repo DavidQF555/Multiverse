@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class DoppelgangerRenderer extends HumanoidMobRenderer<DoppelgangerEntity, PlayerRenderState, PlayerModel> {
@@ -28,6 +29,7 @@ public class DoppelgangerRenderer extends HumanoidMobRenderer<DoppelgangerEntity
         addLayer(new BeeStingerLayer<>(this, context));
     }
 
+    @Nonnull
     @Override
     public PlayerRenderState createRenderState() {
         return new PlayerRenderState();

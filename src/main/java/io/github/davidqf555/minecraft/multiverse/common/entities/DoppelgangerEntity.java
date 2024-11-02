@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtBy
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -34,9 +35,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class DoppelgangerEntity extends PathfinderMob {
 
     private static final EntityDataAccessor<Optional<UUID>> ORIGINAL = SynchedEntityData.defineId(DoppelgangerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -55,6 +59,7 @@ public class DoppelgangerEntity extends PathfinderMob {
                 .add(Attributes.MOVEMENT_SPEED, 0.35635);
     }
 
+    @Nullable
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
         T entity = EntityUtil.randomSpawn(type, player.serverLevel(), center, minOffset, maxOffset, EntitySpawnReason.REINFORCEMENT);
         if (entity != null) {

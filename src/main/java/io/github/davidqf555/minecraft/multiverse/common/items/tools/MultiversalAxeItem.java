@@ -15,8 +15,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class MultiversalAxeItem extends AxeItem {
 
     public MultiversalAxeItem(ToolMaterial tier, float damage, float speed, Properties properties) {
@@ -42,6 +45,7 @@ public class MultiversalAxeItem extends AxeItem {
         return false;
     }
 
+    @Nonnull
     @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);

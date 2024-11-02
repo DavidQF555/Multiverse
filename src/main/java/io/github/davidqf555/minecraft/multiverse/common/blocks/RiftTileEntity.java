@@ -46,6 +46,14 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class RiftTileEntity extends BlockEntity implements Portal {
 
+    public static final TeleportTransition.PostTeleportTransition SLOW_FALLING = entity -> {
+        if (entity instanceof LivingEntity) {
+            int duration = ServerConfigs.INSTANCE.slowFalling.get();
+            if (duration > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
+            }
+        }
+    };
     private Vec3 normal = new Vec3(0, 1, 0);
     private Vec3[][] vertices = new Vec3[2][0];
     private int target;
@@ -167,15 +175,7 @@ public class RiftTileEntity extends BlockEntity implements Portal {
             WorldBorder border = toWorld.getWorldBorder();
             BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
             int current = DimensionHelper.getIndex(entity.level().dimension());
-            TeleportTransition.PostTeleportTransition post = e -> {
-                if (e instanceof LivingEntity) {
-                    int duration = ServerConfigs.INSTANCE.slowFalling.get();
-                    if (duration > 0) {
-                        ((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
-                    }
-                }
-            };
-            return new TeleportTransition(toWorld, getOrCreateRift(toWorld, toWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), post);
+            return new TeleportTransition(toWorld, getOrCreateRift(toWorld, toWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), SLOW_FALLING);
         }
         return null;
     }
