@@ -7,19 +7,25 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IllagerRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.IllagerRenderState;
 import net.minecraft.resources.ResourceLocation;
 
-public class TravelerRenderer extends IllagerRenderer<TravelerEntity> {
+public class TravelerRenderer extends IllagerRenderer<TravelerEntity, IllagerRenderState> {
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "textures/entity/traveler.png");
 
     public TravelerRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.PILLAGER)), 0.5f);
-        addLayer(new ItemInHandLayer<>(this, manager.getItemInHandRenderer()));
+        addLayer(new ItemInHandLayer<>(this, manager.getItemRenderer()));
     }
 
     @Override
-    public ResourceLocation getTextureLocation(TravelerEntity traveler) {
+    public IllagerRenderState createRenderState() {
+        return new IllagerRenderState();
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(IllagerRenderState state) {
         return TEXTURE;
     }
 

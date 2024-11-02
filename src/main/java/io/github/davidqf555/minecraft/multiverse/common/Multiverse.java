@@ -47,7 +47,6 @@ public class Multiverse {
         FluidPickerTypeRegistry.TYPES.register(bus);
         SeaLevelProviderTypeRegistry.TYPES.register(bus);
         DataComponentTypeRegistry.TYPES.register(bus);
-        ArmorMaterialRegistry.MATERIALS.register(bus);
     }
 
 }

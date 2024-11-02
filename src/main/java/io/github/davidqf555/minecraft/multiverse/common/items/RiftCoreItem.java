@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
@@ -35,11 +35,11 @@ public class RiftCoreItem extends Item implements ProjectileItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!world.isClientSide()) {
-            KaleiditeCoreEntity proj = new KaleiditeCoreEntity(player, world);
+            KaleiditeCoreEntity proj = new KaleiditeCoreEntity(player, world, stack);
             proj.setOwner(player);
             proj.setItem(stack);
             proj.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5f, 1);
@@ -49,7 +49,7 @@ public class RiftCoreItem extends Item implements ProjectileItem {
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
         }
-        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+        return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
     }
 
     protected Component getLore() {
@@ -61,7 +61,7 @@ public class RiftCoreItem extends Item implements ProjectileItem {
 
     @Override
     public Projectile asProjectile(Level world, Position pos, ItemStack stack, Direction dir) {
-        KaleiditeCoreEntity core = new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world);
+        KaleiditeCoreEntity core = new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world, stack);
         core.setItem(stack);
         return core;
     }

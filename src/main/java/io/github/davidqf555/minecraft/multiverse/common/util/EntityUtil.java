@@ -36,7 +36,7 @@ public final class EntityUtil {
     }
 
     @Nullable
-    public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
+    public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, EntitySpawnReason spawn) {
         T entity = type.create(world, null, center, spawn, false, false);
         if (entity != null) {
             RandomSource rand = world.getRandom();

@@ -34,7 +34,7 @@ public class BiomeConfigDimensionProvider implements DimensionProvider {
     @Override
     public LevelStem createDimension(RegistryAccess access, long seed, RandomSource random) {
         BiomeConfig config = this.config.value();
-        Pair<MultiverseType, Set<ResourceKey<Biome>>> biomes = config.selectRandom(access.registryOrThrow(Registries.BIOME), random);
+        Pair<MultiverseType, Set<ResourceKey<Biome>>> biomes = config.selectRandom(access.lookupOrThrow(Registries.BIOME), random);
         return provider.provide(access, seed, random, biomes.getFirst(), biomes.getSecond());
     }
 

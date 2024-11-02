@@ -44,13 +44,13 @@ public class NoiseBiomeSourceProvider implements BiomeSourceProvider<MultiNoiseB
 
     protected Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, Set<ResourceKey<Biome>> biomes, RandomSource random) {
         MultiverseBiomes ref = ConfigHelper.biomes;
-        Registry<Biome> biomeReg = access.registryOrThrow(Registries.BIOME);
-        Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registries.DIMENSION_TYPE);
+        Registry<Biome> biomeReg = access.lookupOrThrow(Registries.BIOME);
+        Registry<DimensionType> dimTypeReg = access.lookupOrThrow(Registries.DIMENSION_TYPE);
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
         for (ResourceKey<Biome> biome : biomes) {
-            Holder<Biome> holder = biomeReg.getHolderOrThrow(biome);
+            Holder<Biome> holder = biomeReg.getOrThrow(biome);
             for (Climate.ParameterPoint orig : ref.getParameters(biome, random)) {
-                Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getOrThrow(type.getNormalType()));
+                Climate.Parameter depth = translateDepth(orig.depth(), dimTypeReg.getValue(type.getNormalType()));
                 Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
                 out.add(Pair.of(point, holder));
             }

@@ -1,30 +1,20 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import com.mojang.serialization.MapCodec;
-import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
@@ -37,7 +27,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -101,27 +90,8 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     @Override
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
-            if (!entity.isOnPortalCooldown()) {
-                MinecraftServer server = world.getServer();
-                int target = ((RiftTileEntity) tile).getTarget();
-                if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
-                    ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
-                    if (entity.canChangeDimensions(world, dim)) {
-                        DimensionTransition trans = ((RiftTileEntity) tile).getPortalDestination(dim, entity, entity.blockPosition());
-                        if (trans != null) {
-                            Entity transported = entity.changeDimension(trans);
-                            if (transported instanceof LivingEntity) {
-                                int duration = ServerConfigs.INSTANCE.slowFalling.get();
-                                if (duration > 0) {
-                                    ((LivingEntity) transported).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            entity.setPortalCooldown();
+        if (tile instanceof RiftTileEntity && entity.canUsePortal(false) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
+            entity.setAsInsidePortal((RiftTileEntity) tile, pos);
         }
     }
 
@@ -141,17 +111,15 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction dir, BlockState next, LevelAccessor world, BlockPos pos, BlockPos update) {
+    protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess tick, BlockPos pos, Direction dir, BlockPos update, BlockState next, RandomSource random) {
         LoggedFluid fluid = state.getValue(FLUID);
         if (fluid != LoggedFluid.AIR) {
-            world.scheduleTick(pos, fluid.getFluid(), fluid.getFluid().getTickDelay(world));
+            tick.scheduleTick(pos, fluid.getFluid(), fluid.getFluid().getTickDelay(world));
         }
-        return super.updateShape(state, dir, next, world, pos, update);
+        return super.updateShape(state, world, tick, pos, dir, update, next, random);
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
         return state.getValue(FLUID).getState();
     }

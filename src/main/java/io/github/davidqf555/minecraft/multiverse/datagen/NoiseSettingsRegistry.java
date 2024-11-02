@@ -71,7 +71,7 @@ public final class NoiseSettingsRegistry {
 
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
-        Registry<NoiseGeneratorSettings> registry = event.getServer().registryAccess().registryOrThrow(Registries.NOISE_SETTINGS);
+        Registry<NoiseGeneratorSettings> registry = event.getServer().registryAccess().lookupOrThrow(Registries.NOISE_SETTINGS);
         SETTINGS.forEach((loc, val) -> registry.getOptional(loc).ifPresent(settings -> ((IMultiverseNoiseGeneratorSettings) (Object) settings).setSettings(val.floor(), val.ceiling(), val.type())));
     }
 

@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
@@ -15,9 +16,13 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.level.block.Portal;
@@ -26,7 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -150,15 +155,29 @@ public class RiftTileEntity extends BlockEntity implements Portal {
 
     @Nullable
     @Override
-    public DimensionTransition getPortalDestination(ServerLevel destWorld, Entity entity, BlockPos pos) {
-        DimensionType target = destWorld.dimensionType();
-        DimensionType from = entity.level().dimensionType();
-        BlockPos rift = getBlockPos();
-        Vec3 scaled = DimensionHelper.translate(Vec3.atBottomCenterOf(rift), from, target, true);
-        WorldBorder border = destWorld.getWorldBorder();
-        BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
-        int current = DimensionHelper.getIndex(entity.level().dimension());
-        return new DimensionTransition(destWorld, getOrCreateRift(destWorld, destWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
+    public TeleportTransition getPortalDestination(ServerLevel fromWorld, Entity entity, BlockPos pos) {
+        MinecraftServer server = fromWorld.getServer();
+        int target = getTarget();
+        if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
+            ServerLevel toWorld = DimensionHelper.getOrCreateWorld(server, target);
+            DimensionType to = toWorld.dimensionType();
+            DimensionType from = fromWorld.dimensionType();
+            BlockPos rift = getBlockPos();
+            Vec3 scaled = DimensionHelper.translate(Vec3.atBottomCenterOf(rift), from, to, true);
+            WorldBorder border = toWorld.getWorldBorder();
+            BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
+            int current = DimensionHelper.getIndex(entity.level().dimension());
+            TeleportTransition.PostTeleportTransition post = e -> {
+                if (e instanceof LivingEntity) {
+                    int duration = ServerConfigs.INSTANCE.slowFalling.get();
+                    if (duration > 0) {
+                        ((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
+                    }
+                }
+            };
+            return new TeleportTransition(toWorld, getOrCreateRift(toWorld, toWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), post);
+        }
+        return null;
     }
 
     private Vec3 getOrCreateRift(ServerLevel dest, RandomSource rand, Vec3 center, int range, int current, BlockState state) {

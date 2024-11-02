@@ -15,6 +15,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -55,7 +56,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
-        T entity = EntityUtil.randomSpawn(type, player.serverLevel(), center, minOffset, maxOffset, MobSpawnType.REINFORCEMENT);
+        T entity = EntityUtil.randomSpawn(type, player.serverLevel(), center, minOffset, maxOffset, EntitySpawnReason.REINFORCEMENT);
         if (entity != null) {
             entity.doRiftEffect();
             entity.setOriginal(player);
@@ -63,8 +64,8 @@ public class DoppelgangerEntity extends PathfinderMob {
         return entity;
     }
 
-    public static boolean canSpawn(EntityType<? extends DoppelgangerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
-        return spawn == MobSpawnType.REINFORCEMENT;
+    public static boolean canSpawn(EntityType<? extends DoppelgangerEntity> type, ServerLevelAccessor level, EntitySpawnReason spawn, BlockPos pos, RandomSource rand) {
+        return spawn == EntitySpawnReason.REINFORCEMENT;
     }
 
     private static TagKey<Item> getEquipmentTag(EquipmentSlot slot) {
@@ -82,7 +83,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     @Nullable
     @SuppressWarnings("deprecation")
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawn, @Nullable SpawnGroupData data) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawn, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(random, difficulty);
         populateDefaultEquipmentEnchantments(level, random, difficulty);
         return super.finalizeSpawn(level, difficulty, spawn, data);
@@ -90,10 +91,10 @@ public class DoppelgangerEntity extends PathfinderMob {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
-        Registry<Item> registry = level().registryAccess().registryOrThrow(Registries.ITEM);
+        Registry<Item> registry = level().registryAccess().lookupOrThrow(Registries.ITEM);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (random.nextDouble() < GEAR_RATE) {
-                registry.getTag(getEquipmentTag(slot))
+                registry.get(getEquipmentTag(slot))
                         .flatMap(tag -> tag.getRandomElement(random))
                         .map(Holder::value)
                         .map(Item::getDefaultInstance)
@@ -128,19 +129,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         targetSelector.addGoal(0, new HurtByTargetGoal(this));
         targetSelector.addGoal(1, new EntityHurtByTargetGoal<>(this, DoppelgangerEntity::getOriginal));
         targetSelector.addGoal(2, new EntityHurtTargetGoal<>(this, DoppelgangerEntity::getOriginal));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, entity -> entity instanceof Enemy && !(entity instanceof Creeper)));
-    }
-
-    @Override
-    public boolean isAlliedTo(Entity entity) {
-        UUID original = getOriginalId();
-        if (entity.getUUID().equals(original)) {
-            return true;
-        }
-        if (entity instanceof DoppelgangerEntity && original != null && original.equals(((DoppelgangerEntity) entity).getOriginalId())) {
-            return true;
-        }
-        return super.isAlliedTo(entity);
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (entity, world) -> entity instanceof Enemy && !(entity instanceof Creeper)));
     }
 
     @Override
@@ -150,13 +139,13 @@ public class DoppelgangerEntity extends PathfinderMob {
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel world) {
+        super.customServerAiStep(world);
         Player original = getOriginal();
         if (original == null) {
-            kill();
+            kill(world);
         } else if (original.tickCount - Math.max(original.getLastHurtMobTimestamp(), original.getLastHurtByMobTimestamp()) >= TIMEOUT) {
-            kill();
+            kill(world);
         }
     }
 

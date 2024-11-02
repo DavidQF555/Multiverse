@@ -28,7 +28,7 @@ public class SolidPlacement extends PlacementModifier {
     protected SolidPlacement(Direction dir, int steps) {
         this.dir = dir;
         this.steps = steps;
-        solid = BlockPredicate.solid(dir.getNormal());
+        solid = BlockPredicate.solid(dir.getUnitVec3i());
     }
 
     public static SolidPlacement of(Direction dir, int steps) {

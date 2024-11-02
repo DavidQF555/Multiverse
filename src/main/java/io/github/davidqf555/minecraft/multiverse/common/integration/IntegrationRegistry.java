@@ -17,7 +17,7 @@ public final class IntegrationRegistry {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         if (ModList.get().isLoaded("terrablender")) {
-            ConfigHelper.biomes = new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME));
+            ConfigHelper.biomes = new TerraBlenderBiomes(event.getServer().registryAccess().lookupOrThrow(Registries.BIOME));
         }
     }
 

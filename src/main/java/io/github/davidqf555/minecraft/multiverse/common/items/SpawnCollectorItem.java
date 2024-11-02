@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -54,7 +54,7 @@ public class SpawnCollectorItem extends TimerItem {
     @Override
     protected void doTimerEffect(ItemStack stack, ItemEntity entity) {
         BlockPos center = entity.blockPosition();
-        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level(), center, MobSpawnType.MOB_SUMMONED);
+        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level(), center, EntitySpawnReason.MOB_SUMMONED);
         if (boss != null) {
             boss.setPortalCooldown();
             RiftHelper.placeExplosion((ServerLevel) entity.level(), entity.level().getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), Optional.empty(), Optional.empty(), entity.position(), true);

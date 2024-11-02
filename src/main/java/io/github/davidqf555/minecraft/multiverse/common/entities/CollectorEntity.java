@@ -37,7 +37,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -73,15 +73,15 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason type, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(random, difficulty);
         populateDefaultEquipmentEnchantments(level, random, difficulty);
         return super.finalizeSpawn(level, difficulty, type, data);
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource pSource) {
-        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
+    public boolean isInvulnerableTo(ServerLevel world, DamageSource pSource) {
+        return super.isInvulnerableTo(world, pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
     }
 
     @Override
@@ -150,8 +150,8 @@ public class CollectorEntity extends SpellcasterIllager {
 
     @Nullable
     @Override
-    public Entity changeDimension(DimensionTransition transition) {
-        Entity entity = super.changeDimension(transition);
+    public Entity teleport(TeleportTransition transition) {
+        Entity entity = super.teleport(transition);
         if (entity instanceof CollectorEntity) {
             ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level().dimension()));
             entity.setPortalCooldown();
@@ -160,8 +160,8 @@ public class CollectorEntity extends SpellcasterIllager {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
-        boolean ret = super.doHurtTarget(target);
+    public boolean doHurtTarget(ServerLevel world, Entity target) {
+        boolean ret = super.doHurtTarget(world, target);
         if (ret && target instanceof LivingEntity) {
             EntityUtil.randomTeleport((LivingEntity) target, target.position(), 2, 8, true);
         }
@@ -194,8 +194,8 @@ public class CollectorEntity extends SpellcasterIllager {
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel world) {
+        super.customServerAiStep(world);
         bar.setProgress(getHealthRatio());
     }
 

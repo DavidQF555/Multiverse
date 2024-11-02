@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.phys.HitResult;
@@ -28,20 +29,20 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
         super(pEntityType, pLevel);
     }
 
-    public KaleiditeCoreEntity(EntityType<? extends KaleiditeCoreEntity> pEntityType, LivingEntity owner, Level pLevel) {
-        super(pEntityType, owner, pLevel);
+    public KaleiditeCoreEntity(EntityType<? extends KaleiditeCoreEntity> pEntityType, LivingEntity owner, Level pLevel, ItemStack item) {
+        super(pEntityType, owner, pLevel, item);
     }
 
-    public KaleiditeCoreEntity(LivingEntity owner, Level pLevel) {
-        this(EntityRegistry.KALEIDITE_CORE.get(), owner, pLevel);
+    public KaleiditeCoreEntity(LivingEntity owner, Level pLevel, ItemStack item) {
+        this(EntityRegistry.KALEIDITE_CORE.get(), owner, pLevel, item);
     }
 
-    public KaleiditeCoreEntity(EntityType<? extends KaleiditeCoreEntity> type, double x, double y, double z, Level world) {
-        super(type, x, y, z, world);
+    public KaleiditeCoreEntity(EntityType<? extends KaleiditeCoreEntity> type, double x, double y, double z, Level world, ItemStack item) {
+        super(type, x, y, z, world, item);
     }
 
-    public KaleiditeCoreEntity(double x, double y, double z, Level world) {
-        this(EntityRegistry.KALEIDITE_CORE.get(), x, y, z, world);
+    public KaleiditeCoreEntity(double x, double y, double z, Level world, ItemStack item) {
+        this(EntityRegistry.KALEIDITE_CORE.get(), x, y, z, world, item);
     }
 
     @Override

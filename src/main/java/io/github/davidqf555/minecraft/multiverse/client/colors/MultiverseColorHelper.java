@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public final class MultiverseColorHelper {
     private static int getColor(Random rand) {
         int[] color = new int[]{rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)};
         applyTransformations(color, rand);
-        return FastColor.ARGB32.color(0xFF, color[0], color[1], color[2]);
+        return ARGB.color(0xFF, color[0], color[1], color[2]);
     }
 
     public static int getColor(Level world, int index) {

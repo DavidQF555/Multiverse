@@ -1,14 +1,18 @@
 package io.github.davidqf555.minecraft.multiverse.client;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.ShaderDefines;
+import net.minecraft.client.renderer.ShaderProgram;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,7 +20,7 @@ import java.util.Optional;
 
 public final class ClientHelper {
 
-    static ShaderInstance riftShader;
+    private static final ShaderProgram RIFT_SHADER = new ShaderProgram(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "core/rift"), DefaultVertexFormat.POSITION_COLOR, ShaderDefines.EMPTY);
 
     private ClientHelper() {
     }
@@ -36,12 +40,12 @@ public final class ClientHelper {
                 return i;
             });
             int color = MultiverseColorHelper.getColor(world, index);
-            world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
+            world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), ARGB.red(color) / 255.0, ARGB.green(color) / 255.0, ARGB.blue(color) / 255.0);
         }
     }
 
-    public static ShaderInstance getRiftShader() {
-        return riftShader;
+    public static ShaderProgram getRiftShader() {
+        return RIFT_SHADER;
     }
 
 }

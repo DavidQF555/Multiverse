@@ -6,6 +6,8 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.DoppelgangerEnt
 import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -32,7 +34,7 @@ public final class EntityRegistry {
     }
 
     private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> register(String name, EntityType.Builder<T> type) {
-        return TYPES.register(name, () -> type.build(name));
+        return TYPES.register(name, () -> type.build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, name))));
     }
 
     @SubscribeEvent

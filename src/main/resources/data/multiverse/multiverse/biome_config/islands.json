@@ -58,11 +58,15 @@
     },
     {
       "biomes": "#c:is_hot/end",
-      "weight": 3
+      "weight": 2
     },
     {
       "biomes": "#c:is_hot/overworld",
-      "weight": 3
+      "weight": 2
+    },
+    {
+      "biomes": "#c:is_hot/nether",
+      "weight": 2
     },
     {
       "biomes": "#c:is_mountain",

@@ -5,7 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ public class SummonCrossbowItem extends CrossbowItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack bow = player.getItemInHand(hand);
         if (world instanceof ServerLevel && isCharged(bow)) {
             ChargedProjectiles proj = bow.get(DataComponents.CHARGED_PROJECTILES);

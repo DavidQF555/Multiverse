@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.client;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeCurrentColor;
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeTargetColor;
 import io.github.davidqf555.minecraft.multiverse.client.render.*;
@@ -8,7 +7,6 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -18,8 +16,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
-
-import java.io.IOException;
 
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientEventBusSubscriber {
@@ -37,8 +33,8 @@ public final class ClientEventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
+    public static void onRegisterShaders(RegisterShadersEvent event) {
+        event.registerShader(ClientHelper.getRiftShader());
     }
 
     @SubscribeEvent

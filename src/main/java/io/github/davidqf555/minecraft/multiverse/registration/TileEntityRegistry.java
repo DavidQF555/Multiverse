@@ -20,7 +20,7 @@ public final class TileEntityRegistry {
         return TYPES.register(name, type);
     }
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RiftTileEntity>> RIFT = register("rift", () -> BlockEntityType.Builder.of(RiftTileEntity::new, BlockRegistry.RIFT.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RiftTileEntity>> RIFT = register("rift", () -> new BlockEntityType<>(RiftTileEntity::new, BlockRegistry.RIFT.get()));
 
 
 }

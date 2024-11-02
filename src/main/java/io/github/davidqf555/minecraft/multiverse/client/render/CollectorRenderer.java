@@ -8,33 +8,45 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IllagerRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.EvokerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.SpellcasterIllager;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class CollectorRenderer<T extends SpellcasterIllager> extends IllagerRenderer<T> {
+public class CollectorRenderer<T extends SpellcasterIllager> extends IllagerRenderer<T, EvokerRenderState> {
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "textures/entity/collector.png");
 
     public CollectorRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.ILLUSIONER)), 0.5f);
-        addLayer(new ItemInHandLayer<>(this, manager.getItemInHandRenderer()) {
+        addLayer(new ItemInHandLayer<>(this, manager.getItemRenderer()) {
             @Override
-            public void render(PoseStack matrix, MultiBufferSource buffer, int p_225628_3_, T entity, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
-                if (entity.isCastingSpell() || entity.isAggressive()) {
-                    super.render(matrix, buffer, p_225628_3_, entity, p_225628_5_, p_225628_6_, p_225628_7_, p_225628_8_, p_225628_9_, p_225628_10_);
+            public void render(PoseStack p_117193_, MultiBufferSource p_117194_, int p_117195_, EvokerRenderState state, float p_117197_, float p_117198_) {
+                if (state.isCastingSpell || state.isAggressive) {
+                    super.render(p_117193_, p_117194_, p_117195_, state, p_117197_, p_117198_);
                 }
             }
+
         });
         model.getHat().visible = true;
     }
 
-    @Nonnull
     @Override
-    public ResourceLocation getTextureLocation(T entity) {
+    public void extractRenderState(T entity, EvokerRenderState state, float partial) {
+        super.extractRenderState(entity, state, partial);
+        state.isCastingSpell = entity.isCastingSpell();
+    }
+
+    @Override
+    public EvokerRenderState createRenderState() {
+        return new EvokerRenderState();
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(EvokerRenderState state) {
         return TEXTURE;
     }
+
 }

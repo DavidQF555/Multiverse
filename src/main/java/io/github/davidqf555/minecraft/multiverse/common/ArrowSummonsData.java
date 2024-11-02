@@ -117,7 +117,7 @@ public class ArrowSummonsData extends SavedData {
 
     protected AbstractArrow randomArrow(ServerLevel world, LivingEntity shooter) {
         RandomSource random = world.getRandom();
-        ArrowItem item = (ArrowItem) BuiltInRegistries.ITEM.getTag(ItemTags.ARROWS)
+        ArrowItem item = (ArrowItem) BuiltInRegistries.ITEM.get(ItemTags.ARROWS)
                 .map(tag -> tag.getRandomElement(random))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -185,7 +185,7 @@ public class ArrowSummonsData extends SavedData {
             Vec3 rotate = perp.scale(Mth.cos(angle)).add(cross.scale(Mth.sin(angle) * perp.length()));
             Vec3 pos = center.add(rotate.add(parallel).scale(dist)).add(direction.scale(offset));
             BlockPos block = BlockPos.containing(pos);
-            if (!world.getBlockState(block).isSolidRender(world, block)) {
+            if (!world.getBlockState(block).isSolidRender()) {
                 return pos;
             }
         }

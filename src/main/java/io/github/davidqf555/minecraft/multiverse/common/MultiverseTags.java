@@ -15,6 +15,7 @@ public final class MultiverseTags {
     public static final TagKey<Item> DOPPELGANGER_BODY = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "doppelganger/body"));
     public static final TagKey<Item> DOPPELGANGER_MAIN_HAND = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "doppelganger/main_hand"));
     public static final TagKey<Item> DOPPELGANGER_OFF_HAND = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "doppelganger/off_hand"));
+    public static final TagKey<Item> KALEIDITE_TOOL_MATERIALS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "kaleidite_tool_materials"));
 
     public static final TagKey<EntityType<?>> GENERATE_MULTIVERSE = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "generate_multiverse"));
 

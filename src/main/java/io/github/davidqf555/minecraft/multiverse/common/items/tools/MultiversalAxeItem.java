@@ -5,12 +5,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,8 +19,8 @@ import java.util.List;
 
 public class MultiversalAxeItem extends AxeItem {
 
-    public MultiversalAxeItem(Tier tier, Properties properties) {
-        super(tier, properties);
+    public MultiversalAxeItem(ToolMaterial tier, float damage, float speed, Properties properties) {
+        super(tier, damage, speed, properties);
     }
 
     @Override
@@ -43,16 +43,16 @@ public class MultiversalAxeItem extends AxeItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!MultiversalToolHelper.setCurrent(world, stack)) {
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             }
         } else if (world instanceof ServerLevel) {
             MultiversalToolHelper.setRandomExistingTarget((ServerLevel) world, stack);
         }
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 
 }

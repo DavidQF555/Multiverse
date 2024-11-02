@@ -78,8 +78,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 .add(Attributes.GRAVITY, 0);
     }
 
-    public static boolean canSpawn(EntityType<? extends TravelerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
-        return spawn != MobSpawnType.NATURAL && (spawn != MobSpawnType.CHUNK_GENERATION || DimensionHelper.getIndex(level.getLevel().dimension()) != 0 && rand.nextDouble() < ServerConfigs.INSTANCE.travelerSpawnFactor.get());
+    public static boolean canSpawn(EntityType<? extends TravelerEntity> type, ServerLevelAccessor level, EntitySpawnReason spawn, BlockPos pos, RandomSource rand) {
+        return spawn != EntitySpawnReason.NATURAL && (spawn != EntitySpawnReason.CHUNK_GENERATION || DimensionHelper.getIndex(level.getLevel().dimension()) != 0 && rand.nextDouble() < ServerConfigs.INSTANCE.travelerSpawnFactor.get());
     }
 
     private void doRiftEffect() {
@@ -97,8 +97,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource pSource) {
-        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
+    public boolean isInvulnerableTo(ServerLevel world, DamageSource pSource) {
+        return super.isInvulnerableTo(world, pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
     }
 
     @Override
@@ -178,8 +178,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
-        if (super.hurt(source, damage) && getOriginalId() == null) {
+    public boolean hurtServer(ServerLevel world, DamageSource source, float damage) {
+        if (super.hurtServer(world, source, damage) && getOriginalId() == null) {
             EntityUtil.randomTeleport(this, position(), MIN_TP, MAX_TP, true);
             return true;
         }
@@ -218,13 +218,13 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel world) {
+        super.customServerAiStep(world);
         bar.setProgress(getHealthRatio());
         if (getOriginalId() == null) {
             LivingEntity target = getTarget();
             if (level().getGameTime() % SPAWN_PERIOD == 0 && target != null && getDoppelgangers().size() < MAX_DOPPELGANGERS) {
-                Entity clone = EntityUtil.randomSpawn(getType(), (ServerLevel) level(), target.blockPosition(), MIN_TP, MAX_TP, MobSpawnType.REINFORCEMENT);
+                Entity clone = EntityUtil.randomSpawn(getType(), (ServerLevel) level(), target.blockPosition(), MIN_TP, MAX_TP, EntitySpawnReason.REINFORCEMENT);
                 if (clone instanceof TravelerEntity) {
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
@@ -232,7 +232,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 }
             }
         } else if (getOriginal() == null) {
-            kill();
+            kill(world);
         }
     }
 
@@ -281,7 +281,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason type, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(getRandom(), difficulty);
         populateDefaultEquipmentEnchantments(level, getRandom(), difficulty);
         return super.finalizeSpawn(level, difficulty, type, data);
