@@ -16,8 +16,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class MultiversalShovelItem extends ShovelItem {
 
     public MultiversalShovelItem(Tier tier, float damage, float speed, Properties properties) {
@@ -43,6 +46,7 @@ public class MultiversalShovelItem extends ShovelItem {
         return false;
     }
 
+    @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);

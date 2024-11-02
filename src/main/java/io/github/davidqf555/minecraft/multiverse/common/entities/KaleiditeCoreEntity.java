@@ -16,10 +16,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.phys.HitResult;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@ParametersAreNonnullByDefault
 public class KaleiditeCoreEntity extends ThrowableItemProjectile {
 
     private static final double MAX_RANGE = 50;
@@ -44,6 +47,7 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
         this(EntityRegistry.KALEIDITE_CORE.get(), x, y, z, world);
     }
 
+    @Nonnull
     @Override
     protected Item getDefaultItem() {
         return ItemRegistry.KALEIDITE_CORE.get();

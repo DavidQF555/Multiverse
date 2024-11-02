@@ -7,6 +7,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Aquifer;
 
+import javax.annotation.Nonnull;
+
 public class WaveFluidPicker implements SerializableFluidPicker {
 
     public static final Codec<WaveFluidPicker> CODEC = RecordCodecBuilder.create(inst -> inst.group(
@@ -39,6 +41,7 @@ public class WaveFluidPicker implements SerializableFluidPicker {
         return FluidPickerTypeRegistry.WAVE.get();
     }
 
+    @Nonnull
     @Override
     public Aquifer.FluidStatus computeFluid(int x, int y, int z) {
         return states[Math.floorMod(x, states.length)][Math.floorMod(z, states.length)];

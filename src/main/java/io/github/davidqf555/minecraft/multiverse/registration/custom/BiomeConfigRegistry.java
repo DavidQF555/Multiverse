@@ -13,9 +13,6 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 public final class BiomeConfigRegistry {
 
     public static final ResourceKey<Registry<BiomeConfig>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_config"));
-    public static final ResourceKey<BiomeConfig> NORMAL = ResourceKey.create(LOCATION, new ResourceLocation(Multiverse.MOD_ID, "normal"));
-    public static final ResourceKey<BiomeConfig> ROOFED = ResourceKey.create(LOCATION, new ResourceLocation(Multiverse.MOD_ID, "roofed"));
-    public static final ResourceKey<BiomeConfig> ISLANDS = ResourceKey.create(LOCATION, new ResourceLocation(Multiverse.MOD_ID, "islands"));
 
     private BiomeConfigRegistry() {
     }

@@ -1,5 +1,6 @@
 {
   "values": [
-    "#forge:armors/chestplates"
+      "#forge:armors/chestplates",
+      "elytra"
   ]
 }
