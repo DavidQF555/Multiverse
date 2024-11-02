@@ -7,6 +7,8 @@ import io.github.davidqf555.minecraft.multiverse.registration.custom.FluidPicker
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Aquifer;
 
+import javax.annotation.Nonnull;
+
 public class FlatFluidPicker implements SerializableFluidPicker {
 
     public static final MapCodec<FlatFluidPicker> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
@@ -28,6 +30,7 @@ public class FlatFluidPicker implements SerializableFluidPicker {
         return FluidPickerTypeRegistry.FLAT.get();
     }
 
+    @Nonnull
     @Override
     public Aquifer.FluidStatus computeFluid(int i, int i1, int i2) {
         return fluid;
