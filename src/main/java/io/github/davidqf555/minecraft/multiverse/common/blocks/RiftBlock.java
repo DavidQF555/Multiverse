@@ -83,7 +83,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
         if (state.getValue(TEMPORARY)) {
             world.destroyBlock(pos, true);
         } else if (rand.nextDouble() < ServerConfigs.INSTANCE.travelerSpawnChance.get()) {
-            TravelerEntity entity = EntityUtil.randomSpawn(EntityRegistry.TRAVELER.get(), world, pos, 8, 8, MobSpawnType.NATURAL);
+            TravelerEntity entity = EntityUtil.randomSpawn(EntityRegistry.TRAVELER.get(), world, pos, 0, 8, MobSpawnType.NATURAL);
             if (entity != null) {
                 entity.setPortalCooldown();
             }
