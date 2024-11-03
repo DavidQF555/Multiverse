@@ -5,9 +5,7 @@
     "# #"
   ],
   "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_tool_materials"
-    }
+    "#": "#multiverse:kaleidite_tool_materials"
   },
   "result": {
     "id": "multiverse:kaleidite_helmet"

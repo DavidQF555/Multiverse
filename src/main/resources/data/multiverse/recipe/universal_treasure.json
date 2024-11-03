@@ -1,30 +1,14 @@
 {
   "type": "crafting_shapeless",
   "ingredients": [
-    {
-      "tag": "c:nether_stars"
-    },
-    {
-      "item": "totem_of_undying"
-    },
-    {
-      "tag": "c:ingots/netherite"
-    },
-    {
-      "tag": "c:gems/diamond"
-    },
-    {
-      "tag": "c:gems/emerald"
-    },
-    {
-      "item": "heart_of_the_sea"
-    },
-    {
-      "item": "shulker_shell"
-    },
-    {
-      "item": "dragon_breath"
-    }
+    "#c:nether_stars",
+    "totem_of_undying",
+    "#c:ingots/netherite",
+    "#c:gems/diamond",
+    "#c:gems/emerald",
+    "heart_of_the_sea",
+    "shulker_shell",
+    "dragon_breath"
   ],
   "result": {
     "id": "multiverse:universal_treasure"

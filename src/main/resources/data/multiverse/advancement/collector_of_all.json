@@ -2,7 +2,7 @@
   "parent": "nether/summon_wither",
   "display": {
     "icon": {
-      "item": "multiverse:universal_treasure"
+      "id": "multiverse:universal_treasure"
     },
     "title": {
       "translate": "advancements.multiverse.collector_of_all.title"
@@ -17,9 +17,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "multiverse:universal_treasure"
-            ]
+            "items": "multiverse:universal_treasure"
           }
         ]
       }

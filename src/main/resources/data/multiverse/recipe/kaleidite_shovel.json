@@ -6,12 +6,8 @@
     "S"
   ],
   "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_tool_materials"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "#": "#multiverse:kaleidite_tool_materials",
+    "S": "#c:rods/wooden"
   },
   "result": {
     "id": "multiverse:kaleidite_shovel"

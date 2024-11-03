@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_tool_materials"
-    },
-    "X": {
-      "item": "multiverse:multiversal_beacon"
-    }
+    "#": "#multiverse:kaleidite_tool_materials",
+    "X": "multiverse:multiversal_beacon"
   },
   "result": {
     "id": "multiverse:kaleidite_chestplate"

@@ -6,15 +6,9 @@
     "#S#"
   ],
   "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_tool_materials"
-    },
-    "X": {
-      "item": "multiverse:multiversal_beacon"
-    },
-    "S": {
-      "tag": "c:strings"
-    }
+    "#": "#multiverse:kaleidite_tool_materials",
+    "X": "multiverse:multiversal_beacon",
+    "S": "#c:strings"
   },
   "result": {
     "id": "multiverse:kaleidite_crossbow"

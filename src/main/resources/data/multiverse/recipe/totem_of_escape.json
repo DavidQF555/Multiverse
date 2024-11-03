@@ -6,12 +6,8 @@
     " G "
   ],
   "key": {
-    "G": {
-      "tag": "multiverse:kaleidite_tool_materials"
-    },
-    "X": {
-      "item": "multiverse:kaleidite_core"
-    }
+    "G": "#multiverse:kaleidite_tool_materials",
+    "X": "multiverse:kaleidite_core"
   },
   "result": {
     "id": "multiverse:totem_of_escape"

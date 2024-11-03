@@ -1,15 +1,9 @@
 {
   "type": "smithing_transform",
-  "addition": {
-    "tag": "c:ingots/iron"
-  },
-  "base": {
-    "item": "multiverse:kaleidite_axe"
-  },
+  "addition": "#c:ingots/iron",
+  "base": "multiverse:kaleidite_axe",
   "result": {
     "id": "multiverse:prismatic_axe"
   },
-  "template": {
-    "item": "multiverse:dimensional_prism"
-  }
+  "template": "multiverse:dimensional_prism"
 }

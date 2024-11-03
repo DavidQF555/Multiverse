@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_tool_materials"
-    },
-    "X": {
-      "tag": "c:ingots/iron"
-    }
+    "#": "#multiverse:kaleidite_tool_materials",
+    "X": "#c:ingots/iron"
   },
   "result": {
     "id": "multiverse:kaleidite_core"
