@@ -1,10 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -79,10 +77,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 .add(Attributes.FOLLOW_RANGE, 40)
                 .add(Attributes.ATTACK_DAMAGE, 5)
                 .add(ForgeMod.ENTITY_GRAVITY.get(), 0);
-    }
-
-    public static boolean canSpawn(EntityType<? extends TravelerEntity> type, ServerLevelAccessor level, MobSpawnType spawn, BlockPos pos, RandomSource rand) {
-        return spawn != MobSpawnType.NATURAL && (spawn != MobSpawnType.CHUNK_GENERATION || DimensionHelper.getIndex(level.getLevel().dimension()) != 0 && rand.nextDouble() < ServerConfigs.INSTANCE.travelerSpawnFactor.get());
     }
 
     private void doRiftEffect() {

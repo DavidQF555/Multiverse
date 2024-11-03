@@ -14,7 +14,7 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue travelerSpawnFactor, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
+    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset;
     public final ForgeConfigSpec.IntValue maxDimensions, boundlessBladeCooldown, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
@@ -54,8 +54,8 @@ public class ServerConfigs {
         builder.pop().push("Miscellaneous");
         boundlessBladeCooldown = builder.comment("This is the cooldown of the Boundless Blade item in ticks. ")
                 .defineInRange("boundlessBladeCooldown", 500, 0, Integer.MAX_VALUE);
-        travelerSpawnFactor = builder.comment("This is the factor from the base that Travelers spawn")
-                .defineInRange("travelerSpawnFactor", 0.01, 0, 1);
+        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
+                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
         builder.pop();
     }
 
