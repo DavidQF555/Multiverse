@@ -44,7 +44,6 @@ public final class EntityRegistry {
 
     @SubscribeEvent
     public static void onRegisterSpawnPlacement(RegisterSpawnPlacementsEvent event) {
-        event.register(TRAVELER.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, TravelerEntity::canSpawn, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(DOPPELGANGER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DoppelgangerEntity::canSpawn, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
