@@ -1,6 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import com.mojang.serialization.MapCodec;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
+import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -74,6 +79,11 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         if (state.getValue(TEMPORARY)) {
             world.destroyBlock(pos, true);
+        } else if (rand.nextDouble() < ServerConfigs.INSTANCE.travelerSpawnChance.get()) {
+            TravelerEntity entity = EntityUtil.randomSpawn(EntityRegistry.TRAVELER.get(), world, pos, 0, 8, EntitySpawnReason.NATURAL);
+            if (entity != null) {
+                entity.setPortalCooldown();
+            }
         }
     }
 
