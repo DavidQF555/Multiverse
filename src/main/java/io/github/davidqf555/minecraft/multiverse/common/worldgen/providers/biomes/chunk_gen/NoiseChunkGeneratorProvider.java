@@ -10,6 +10,7 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biome
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.chunk_gen.sea_level.fluid_pickers.SerializableFluidPicker;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeChunkGeneratorProviderTypeRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
@@ -42,6 +43,8 @@ public class NoiseChunkGeneratorProvider implements BiomeChunkGeneratorProvider<
         Holder<NoiseGeneratorSettings> noise = this.noise.value().provide(access, seed, random, type, biomes);
         SerializableFluidPicker fluid = sea.value().getSeaLevel(noise.value().defaultFluid(), random);
         return new MultiverseNoiseChunkGenerator(
+                access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY),
+                access.registryOrThrow(Registry.NOISE_REGISTRY),
                 source,
                 noise,
                 fluid

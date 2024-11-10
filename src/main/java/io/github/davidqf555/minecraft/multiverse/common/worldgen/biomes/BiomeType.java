@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
@@ -41,7 +40,7 @@ public class BiomeType {
         return biomes.stream()
                 .filter(Holder::isBound)
                 .map(Holder::value)
-                .map(biome -> ResourceKey.create(Registries.BIOME, registry.getKey(biome)))
+                .map(biome -> ResourceKey.create(Registry.BIOME_REGISTRY, registry.getKey(biome)))
                 .collect(Collectors.toSet());
     }
 

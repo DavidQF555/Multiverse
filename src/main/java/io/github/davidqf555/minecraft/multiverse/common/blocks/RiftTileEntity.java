@@ -185,7 +185,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     private Vec3 getOrCreateRift(ServerLevel dest, RandomSource rand, Vec3 center, int range, int current, BlockState state) {
         PoiManager manager = dest.getPoiManager();
         ResourceLocation poi = POIRegistry.RIFT.getId();
-        BlockPos pos = BlockPos.containing(center);
+        BlockPos pos = new BlockPos(center);
         manager.ensureLoadedAndValid(dest, pos, range);
         return manager.getInSquare(holder -> holder.is(poi), pos, range, PoiManager.Occupancy.ANY)
                 .map(PoiRecord::getPos)

@@ -11,7 +11,6 @@ import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.Biom
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -40,13 +39,13 @@ public class NoiseBiomeSourceProvider implements BiomeSourceProvider<MultiNoiseB
 
     @Override
     public MultiNoiseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<ResourceKey<Biome>> biomes) {
-        return MultiNoiseBiomeSource.createFromList(getBiomeParameters(access, type, biomes));
+        return new MultiNoiseBiomeSource(getBiomeParameters(access, type, biomes));
     }
 
     protected Climate.ParameterList<Holder<Biome>> getBiomeParameters(RegistryAccess access, MultiverseType type, Set<ResourceKey<Biome>> biomes) {
         MultiverseBiomes ref = ConfigHelper.biomes;
-        Registry<Biome> biomeReg = access.registryOrThrow(Registries.BIOME);
-        Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registries.DIMENSION_TYPE);
+        Registry<Biome> biomeReg = access.registryOrThrow(Registry.BIOME_REGISTRY);
+        Registry<DimensionType> dimTypeReg = access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> out = new ArrayList<>();
         for (ResourceKey<Biome> biome : biomes) {
             Holder<Biome> holder = biomeReg.getHolderOrThrow(biome);

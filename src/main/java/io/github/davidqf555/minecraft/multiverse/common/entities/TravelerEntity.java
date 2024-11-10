@@ -14,7 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -95,7 +94,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
-        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FIRE) || pSource.is(DamageTypeTags.IS_DROWNING);
+        return super.isInvulnerableTo(pSource) || pSource.isFire() || pSource == DamageSource.DROWN;
     }
 
     @Override

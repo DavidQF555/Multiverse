@@ -5,9 +5,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 public final class EntityUtil {
 
@@ -38,7 +38,8 @@ public final class EntityUtil {
 
     @Nullable
     public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
-        return Optional.ofNullable(type.create(world, null, entity -> {
+        T entity = type.create(world, null, null, null, center, spawn, false, false);
+        if (entity != null) {
             RandomSource rand = world.getRandom();
             for (int i = 0; i < 50; i++) {
                 int dX = rand.nextInt(min, max + 1);
@@ -56,10 +57,14 @@ public final class EntityUtil {
                 BlockPos pos = center.offset(dX, dY, dZ);
                 if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, pos, type) && world.noCollision(type.getAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5))) {
                     entity.setPos(Vec3.atBottomCenterOf(pos));
-                    world.addFreshEntityWithPassengers(entity);
+                    if (!(entity instanceof Mob) || !ForgeEventFactory.doSpecialSpawn((Mob) entity, world, (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), null, spawn)) {
+                        world.addFreshEntityWithPassengers(entity);
+                        return entity;
+                    }
                 }
             }
-        }, center, spawn, false, false)).filter(Entity::isAddedToWorld).orElse(null);
+        }
+        return null;
     }
 
 }

@@ -19,7 +19,7 @@ public class DoppelgangerRenderer extends HumanoidMobRenderer<DoppelgangerEntity
 
     public DoppelgangerRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
-        addLayer(new HumanoidArmorLayer<>(this, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)), new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), context.getModelManager()));
+        addLayer(new HumanoidArmorLayer<>(this, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)), new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
         addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         addLayer(new ArrowLayer<>(context, this));
         addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));

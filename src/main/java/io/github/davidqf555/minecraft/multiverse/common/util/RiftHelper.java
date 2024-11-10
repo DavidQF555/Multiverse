@@ -29,12 +29,12 @@ public final class RiftHelper {
     }
 
     public static void placeExplosion(WorldGenLevel world, RandomSource rand, BlockState state, Optional<Integer> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, boolean drop) {
-        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, BlockPos.containing(center), 0);
+        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, new BlockPos(center), 0);
         place(world, rand, state, target, rotation, center, drop);
     }
 
     public static void placeExplosion(WorldGenLevel world, RandomSource rand, BlockState state, Optional<Integer> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, double width, double height, boolean drop) {
-        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, BlockPos.containing(center), 0);
+        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, new BlockPos(center), 0);
         place(world, rand, state, target, rotation, center, width, height, drop);
     }
 

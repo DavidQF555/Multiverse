@@ -1,19 +1,14 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.packets.UpdateClientDimensionsPacket;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.ShapeDimensionProvider;
-import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -21,7 +16,7 @@ import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +24,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -76,7 +70,7 @@ public final class DimensionHelper {
     }
 
     public static ResourceKey<Level> getRegistryKey(int index) {
-        return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
     }
 
     public static int getIndex(ResourceKey<Level> world) {
@@ -89,40 +83,22 @@ public final class DimensionHelper {
     @SuppressWarnings("deprecation")
     private static ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map, ResourceKey<Level> worldKey, int index) {
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, worldKey.location());
-        WorldData worldData = server.getWorldData();
-        WorldOptions worldGenSettings = worldData.worldGenOptions();
-        long base = worldGenSettings.seed();
+        WorldData serverConfig = server.getWorldData();
+        WorldGenSettings settings = serverConfig.worldGenSettings();
+        long base = settings.seed();
         LevelStem dimension = createDimension(server, base, index);
-        DerivedLevelData derivedLevelData = new DerivedLevelData(worldData, worldData.overworldData());
-
-        LayeredRegistryAccess<RegistryLayer> registries = server.registries();
-        RegistryAccess.ImmutableRegistryAccess composite = (RegistryAccess.ImmutableRegistryAccess) registries.compositeAccess();
-        Map<ResourceKey<? extends Registry<?>>, Registry<?>> regmap = new HashMap<>(composite.registries);
-        MappedRegistry<LevelStem> oldRegistry = (MappedRegistry<LevelStem>) regmap.get(Registries.LEVEL_STEM);
-        Lifecycle oldLifecycle = oldRegistry.registryLifecycle();
-        MappedRegistry<LevelStem> newRegistry = new MappedRegistry<>(Registries.LEVEL_STEM, oldLifecycle, false);
-        for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : oldRegistry.entrySet()) {
-            ResourceKey<LevelStem> oldKey = entry.getKey();
-            ResourceKey<Level> oldLevelKey = ResourceKey.create(Registries.DIMENSION, oldKey.location());
-            LevelStem dim = entry.getValue();
-            if (dim != null && oldLevelKey != worldKey) {
-                Registry.register(newRegistry, oldKey, dim);
-            }
-        }
-        Registry.register(newRegistry, dimensionKey, dimension);
-        regmap.replace(Registries.LEVEL_STEM, newRegistry);
-        composite.registries = regmap;
-
+        ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
+        Registry.register(settings.dimensions(), dimensionKey.location(), dimension);
+        DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
         ServerLevel newWorld = new ServerLevel(
                 server,
                 server.executor,
                 server.storageSource,
-                derivedLevelData,
+                derivedWorldInfo,
                 worldKey,
                 dimension,
                 server.progressListenerFactory.create(11),
-                worldData.isDebugWorld(),
+                settings.isDebug(),
                 BiomeManager.obfuscateSeed(base),
                 ImmutableList.of(),
                 false

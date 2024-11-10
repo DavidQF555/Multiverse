@@ -75,7 +75,7 @@ public final class MultiverseCommand {
         }
         ServerLevel world = op.orElseGet(() -> DimensionHelper.getOrCreateWorld(stack.getServer(), index));
         Vec3 pos = DimensionHelper.translate(entity.position(), entity.level.dimensionType(), world.dimensionType(), true);
-        world.getChunkAt(BlockPos.containing(pos));
+        world.getChunkAt(new BlockPos(pos));
         entity.changeDimension(world, new ITeleporter() {
             @Override
             public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {

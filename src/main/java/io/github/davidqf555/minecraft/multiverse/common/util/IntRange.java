@@ -14,7 +14,7 @@ public class IntRange {
             Codec.INT.fieldOf("max").forGetter(IntRange::getMax)
     ).apply(inst, IntRange::of)).flatComapMap(Functions.identity(), range -> {
         if (range.getMin() > range.getMax()) {
-            return DataResult.error(() -> "Minimum cannot be greater than maximum");
+            return DataResult.error("Minimum cannot be greater than maximum");
         }
         return DataResult.success(range);
     });
@@ -23,7 +23,7 @@ public class IntRange {
             ExtraCodecs.POSITIVE_INT.fieldOf("max").forGetter(IntRange::getMax)
     ).apply(inst, IntRange::of)).flatComapMap(Functions.identity(), range -> {
         if (range.getMin() > range.getMax()) {
-            return DataResult.error(() -> "Minimum cannot be greater than maximum");
+            return DataResult.error("Minimum cannot be greater than maximum");
         }
         return DataResult.success(range);
     });

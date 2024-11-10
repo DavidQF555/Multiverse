@@ -79,7 +79,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(BlockPos.containing(start))), new RiftParticlesPacket(OptionalInt.empty(), start));
+        Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(new BlockPos(start))), new RiftParticlesPacket(OptionalInt.empty(), start));
     }
 
     protected ItemStack randomFirework(RandomSource random) {
@@ -165,7 +165,7 @@ public class ArrowSummonsData extends SavedData {
             float angle = random.nextFloat() * Mth.TWO_PI;
             Vec3 rotate = perp.scale(Mth.cos(angle)).add(cross.scale(Mth.sin(angle) * perp.length()));
             Vec3 pos = center.add(rotate.add(parallel).scale(dist)).add(direction.scale(offset));
-            BlockPos block = BlockPos.containing(pos);
+            BlockPos block = new BlockPos(pos);
             if (!world.getBlockState(block).isSolidRender(world, block)) {
                 return pos;
             }

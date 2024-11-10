@@ -6,7 +6,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -22,13 +22,13 @@ public class KaleiditeArmorMaterial implements ArmorMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorItem.Type slot) {
-        return durability[slot.getSlot().getIndex()] * 33;
+    public int getDurabilityForSlot(EquipmentSlot slot) {
+        return durability[slot.getIndex()] * 33;
     }
 
     @Override
-    public int getDefenseForType(ArmorItem.Type slot) {
-        return defense[slot.getSlot().getIndex()];
+    public int getDefenseForSlot(EquipmentSlot slot) {
+        return defense[slot.getIndex()];
     }
 
     @Override

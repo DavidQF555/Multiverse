@@ -57,7 +57,7 @@ public class SpawnCollectorItem extends TimerItem {
     @Override
     protected void doTimerEffect(ItemStack stack, ItemEntity entity) {
         BlockPos center = entity.blockPosition();
-        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, center, MobSpawnType.MOB_SUMMONED);
+        CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, center, MobSpawnType.MOB_SUMMONED, false, false);
         if (boss != null) {
             boss.setPortalCooldown();
             RiftHelper.placeExplosion((ServerLevel) entity.level, entity.level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), Optional.empty(), Optional.empty(), entity.position(), true);

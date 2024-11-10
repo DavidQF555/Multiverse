@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -17,7 +18,7 @@ public class BeaconArmorItem extends ArmorItem {
 
     private static final int MIN_OFFSET = 1, MAX_OFFSET = 8, LIMIT = 8, PERIOD = 40, TIMEOUT = 600;
 
-    public BeaconArmorItem(ArmorMaterial material, ArmorItem.Type slot, Properties properties) {
+    public BeaconArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties properties) {
         super(material, slot, properties);
     }
 

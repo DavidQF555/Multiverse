@@ -80,7 +80,7 @@ public final class MultiversalToolHelper {
         int current = DimensionHelper.getIndex(world.dimension());
         if (target != current) {
             DimensionHelper.getWorld(world.getServer(), target).ifPresent(w -> {
-                BlockPos block = BlockPos.containing(DimensionHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
+                BlockPos block = new BlockPos(DimensionHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
                     Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftParticlesPacket(OptionalInt.of(current), Vec3.atCenterOf(block)));
