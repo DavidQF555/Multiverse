@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
@@ -24,8 +25,6 @@ import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 public class KaleiditeCoreEntity extends ThrowableItemProjectile {
-
-    private static final double MAX_RANGE = 50;
 
     public KaleiditeCoreEntity(EntityType<? extends KaleiditeCoreEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -58,7 +57,7 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
         BlockPos pos = blockPosition();
         if (!level.isClientSide() && isAlive() && level.getBlockState(pos).getBlock() instanceof RiftBlock) {
             level.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
-            removeConnected(pos, MAX_RANGE);
+            removeConnected(pos, ServerConfigs.INSTANCE.coreRange.get());
             discard();
         }
         super.tick();

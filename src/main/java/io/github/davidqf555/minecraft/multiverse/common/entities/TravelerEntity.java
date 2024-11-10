@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import net.minecraft.core.BlockPos;
@@ -54,7 +55,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(TravelerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final byte RIFT_PARTICLES_EVENT = 50;
-    private static final int MAX_DOPPELGANGERS = 10, SPAWN_PERIOD = 20, MIN_TP = 8, MAX_TP = 16;
     private static final float CROSSBOW_POWER = 1.6f;
     private final ServerBossEvent bar;
     private UUID original;
@@ -176,7 +176,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public boolean hurt(DamageSource source, float damage) {
         if (super.hurt(source, damage) && getOriginalId() == null) {
-            EntityUtil.randomTeleport(this, position(), MIN_TP, MAX_TP, true);
+            EntityUtil.randomTeleport(this, position(), ServerConfigs.INSTANCE.travelerMinRange.get(), ServerConfigs.INSTANCE.travelerMaxRange.get(), true);
             return true;
         }
         return false;
@@ -219,8 +219,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         bar.setProgress(getHealthRatio());
         if (getOriginalId() == null) {
             LivingEntity target = getTarget();
-            if (level.getGameTime() % SPAWN_PERIOD == 0 && target != null && getDoppelgangers().size() < MAX_DOPPELGANGERS) {
-                Entity clone = EntityUtil.randomSpawn(getType(), (ServerLevel) level, target.blockPosition(), MIN_TP, MAX_TP, MobSpawnType.REINFORCEMENT);
+            if (level.getGameTime() % ServerConfigs.INSTANCE.travelerDoppelPeriod.get() == 0 && target != null && getDoppelgangers().size() < ServerConfigs.INSTANCE.travelerMaxDoppel.get()) {
+                Entity clone = EntityUtil.randomSpawn(getType(), (ServerLevel) level, target.blockPosition(), ServerConfigs.INSTANCE.travelerMinRange.get(), ServerConfigs.INSTANCE.travelerMaxRange.get(), MobSpawnType.REINFORCEMENT);
                 if (clone instanceof TravelerEntity) {
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
