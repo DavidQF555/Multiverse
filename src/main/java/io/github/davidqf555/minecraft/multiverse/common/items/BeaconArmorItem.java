@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.DoppelgangerEntity;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.core.Holder;
@@ -17,8 +18,6 @@ import java.util.UUID;
 
 public class BeaconArmorItem extends ArmorItem {
 
-    private static final int MIN_OFFSET = 1, MAX_OFFSET = 8, LIMIT = 8, PERIOD = 40, TIMEOUT = 600;
-
     public BeaconArmorItem(Holder<ArmorMaterial> material, ArmorItem.Type slot, Properties properties) {
         super(material, slot, properties);
     }
@@ -27,7 +26,7 @@ public class BeaconArmorItem extends ArmorItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotIndex, boolean selectedIndex) {
         super.inventoryTick(stack, level, entity, slotIndex, selectedIndex);
-        if (entity instanceof ServerPlayer && getEquipmentSlot().getIndex(Inventory.INVENTORY_SIZE) == slotIndex && ((Player) entity).getLastHurtByMob() != null && entity.tickCount - ((Player) entity).getLastHurtByMobTimestamp() < TIMEOUT && level.getGameTime() % PERIOD == 0) {
+        if (entity instanceof ServerPlayer && getEquipmentSlot().getIndex(Inventory.INVENTORY_SIZE) == slotIndex && ((Player) entity).getLastHurtByMob() != null && entity.tickCount - ((Player) entity).getLastHurtByMobTimestamp() < ServerConfigs.INSTANCE.doppelTimeout.get() && level.getGameTime() % ServerConfigs.INSTANCE.armorSpawnPeriod.get() == 0) {
             int count = 0;
             UUID id = entity.getUUID();
             for (Entity test : ((ServerLevel) level).getAllEntities()) {
@@ -35,8 +34,8 @@ public class BeaconArmorItem extends ArmorItem {
                     count++;
                 }
             }
-            if (count < LIMIT) {
-                DoppelgangerEntity.spawnRandom(EntityRegistry.DOPPELGANGER.get(), (ServerPlayer) entity, entity.blockPosition(), MIN_OFFSET, MAX_OFFSET);
+            if (count < ServerConfigs.INSTANCE.armorMaxSpawn.get()) {
+                DoppelgangerEntity.spawnRandom(EntityRegistry.DOPPELGANGER.get(), (ServerPlayer) entity, entity.blockPosition(), ServerConfigs.INSTANCE.travelerMinRange.get(), ServerConfigs.INSTANCE.travelerMaxRange.get());
             }
         }
     }
