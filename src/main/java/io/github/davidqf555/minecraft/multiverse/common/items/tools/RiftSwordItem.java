@@ -27,8 +27,6 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class RiftSwordItem extends SwordItem {
 
-    private static final int MIN_CHARGE = 20;
-
     public RiftSwordItem(ToolMaterial tier, float damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
     }
@@ -47,13 +45,11 @@ public class RiftSwordItem extends SwordItem {
 
     @Override
     public boolean releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
-            int duration = getUseDuration(stack, entity) - remaining;
-            if (duration >= MIN_CHARGE) {
-                if (world instanceof ServerLevel) {
-                    int count = Math.min(600, duration);
-                    int width = 1 + count / 150;
-                    int height = 16 + count / 10;
-                    HumanoidArm used = entity.getMainArm();
+        int duration = getUseDuration(stack, entity) - remaining - ServerConfigs.INSTANCE.swordMinCharge.get();
+        if (duration >= 0) {
+            double width = Math.min(ServerConfigs.INSTANCE.swordMinWidth.get() + ServerConfigs.INSTANCE.swordWidthRate.get() * duration, ServerConfigs.INSTANCE.swordMaxWidth.get());
+            double height = Math.min(ServerConfigs.INSTANCE.swordMinHeight.get() + ServerConfigs.INSTANCE.swordHeightRate.get() * duration, ServerConfigs.INSTANCE.swordMaxHeight.get());
+            HumanoidArm used = entity.getMainArm();
                     if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
                         used = used.getOpposite();
                     }
@@ -62,8 +58,7 @@ public class RiftSwordItem extends SwordItem {
                     Vec3 start = entity.getEyePosition();
                     slash((ServerLevel) world, start, look, 2.5, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack)));
                     if (entity instanceof Player && !((Player) entity).isCreative()) {
-                        ((Player) entity).getCooldowns().addCooldown(stack, ServerConfigs.INSTANCE.boundlessBladeCooldown.get());
-                    }
+                        ((Player) entity).getCooldowns().addCooldown(stack, ServerConfigs.INSTANCE.swordCooldown.get());
             }
                 return true;
         }

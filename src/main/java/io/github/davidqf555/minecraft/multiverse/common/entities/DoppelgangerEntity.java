@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
@@ -44,7 +45,6 @@ import java.util.UUID;
 public class DoppelgangerEntity extends PathfinderMob {
 
     private static final EntityDataAccessor<Optional<UUID>> ORIGINAL = SynchedEntityData.defineId(DoppelgangerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final int TIMEOUT = 600;
     private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final double GEAR_RATE = 0.8;
 
@@ -149,7 +149,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         Player original = getOriginal();
         if (original == null) {
             kill(world);
-        } else if (original.tickCount - Math.max(original.getLastHurtMobTimestamp(), original.getLastHurtByMobTimestamp()) >= TIMEOUT) {
+        } else if (original.tickCount - Math.max(original.getLastHurtMobTimestamp(), original.getLastHurtByMobTimestamp()) >= ServerConfigs.INSTANCE.doppelTimeout.get()) {
             kill(world);
         }
     }
