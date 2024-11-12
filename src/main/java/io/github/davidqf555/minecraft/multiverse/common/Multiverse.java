@@ -46,6 +46,7 @@ public class Multiverse {
         SeaLevelProviderTypeRegistry.TYPES.register(bus);
         DataComponentTypeRegistry.TYPES.register(bus);
         ArmorMaterialRegistry.MATERIALS.register(bus);
+        AdvancementTriggerRegistry.TRIGGERS.register(bus);
     }
 
 }
