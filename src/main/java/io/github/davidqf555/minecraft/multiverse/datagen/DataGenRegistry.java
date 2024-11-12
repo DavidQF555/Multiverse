@@ -28,12 +28,14 @@ public final class DataGenRegistry {
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
-        DataGenerator gen = event.getGenerator();
-        Map<ResourceLocation, NoiseGeneratorSettings> noise = new HashMap<>();
-        NoiseSettingsRegistry.SETTINGS.forEach((loc, val) -> noise.put(loc, val.settings().apply(BuiltinRegistries.DENSITY_FUNCTION)));
-        DynamicOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, BuiltinRegistries.ACCESS);
-        gen.addProvider(true, new JsonCodecProvider<>(gen, event.getExistingFileHelper(), Multiverse.MOD_ID, ops, PackType.SERVER_DATA, Registry.NOISE_GENERATOR_SETTINGS_REGISTRY.location().getPath(), NoiseGeneratorSettings.DIRECT_CODEC, noise));
-        gen.addProvider(true, new JsonCodecProvider<>(gen, event.getExistingFileHelper(), Multiverse.MOD_ID, ops, PackType.SERVER_DATA, Registry.DIMENSION_TYPE_REGISTRY.location().getPath(), DimensionType.DIRECT_CODEC, DimensionTypeRegistry.TYPES));
+        if (event.includeServer()) {
+            DataGenerator gen = event.getGenerator();
+            Map<ResourceLocation, NoiseGeneratorSettings> noise = new HashMap<>();
+            NoiseSettingsRegistry.SETTINGS.forEach((loc, val) -> noise.put(loc, val.settings().apply(BuiltinRegistries.DENSITY_FUNCTION)));
+            DynamicOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, BuiltinRegistries.ACCESS);
+            gen.addProvider(true, new JsonCodecProvider<>(gen, event.getExistingFileHelper(), Multiverse.MOD_ID, ops, PackType.SERVER_DATA, Registry.NOISE_GENERATOR_SETTINGS_REGISTRY.location().getPath(), NoiseGeneratorSettings.DIRECT_CODEC, noise));
+            gen.addProvider(true, new JsonCodecProvider<>(gen, event.getExistingFileHelper(), Multiverse.MOD_ID, ops, PackType.SERVER_DATA, Registry.DIMENSION_TYPE_REGISTRY.location().getPath(), DimensionType.DIRECT_CODEC, DimensionTypeRegistry.TYPES));
+        }
     }
 
 }
