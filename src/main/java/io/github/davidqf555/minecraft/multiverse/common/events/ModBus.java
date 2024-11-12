@@ -1,9 +1,11 @@
 package io.github.davidqf555.minecraft.multiverse.common.events;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.Util;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -26,13 +28,16 @@ public final class ModBus {
 
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> DispenserBlock.registerBehavior(ItemRegistry.KALEIDITE_CORE.get(), new AbstractProjectileDispenseBehavior() {
-            @Nonnull
-            @Override
-            protected Projectile getProjectile(Level world, Position pos, ItemStack stack) {
-                return Util.make(new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world), entity -> entity.setItem(stack));
-            }
-        }));
+        event.enqueueWork(() -> {
+            CriteriaTriggers.register(EnterRiftTrigger.INSTANCE);
+            DispenserBlock.registerBehavior(ItemRegistry.KALEIDITE_CORE.get(), new AbstractProjectileDispenseBehavior() {
+                @Nonnull
+                @Override
+                protected Projectile getProjectile(Level world, Position pos, ItemStack stack) {
+                    return Util.make(new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world), entity -> entity.setItem(stack));
+                }
+            });
+        });
     }
 
 }
