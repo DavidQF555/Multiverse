@@ -1,19 +1,19 @@
 {
-  "parent": "nether/summon_wither",
+  "parent": "multiverse:kaleidite",
   "display": {
     "icon": {
       "item": "multiverse:universal_treasure"
     },
     "title": {
-      "translate": "advancements.multiverse.collector_of_all.title"
+      "translate": "advancements.multiverse.hoarder.title"
     },
     "description": {
-      "translate": "advancements.multiverse.collector_of_all.description"
+      "translate": "advancements.multiverse.hoarder.description"
     }
   },
   "criteria": {
     "universal_treasure": {
-      "trigger": "minecraft:inventory_changed",
+      "trigger": "inventory_changed",
       "conditions": {
         "items": [
           {
