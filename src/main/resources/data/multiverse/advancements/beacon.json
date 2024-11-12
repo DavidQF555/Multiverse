@@ -1,0 +1,29 @@
+{
+  "parent": "multiverse:traveler",
+  "display": {
+    "icon": {
+      "item": "multiverse:kaleidite_crossbow"
+    },
+    "title": {
+      "translate": "advancements.multiverse.beacon.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.beacon.description"
+    }
+  },
+  "criteria": {
+    "boundless_blade": {
+      "trigger": "inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "multiverse:kaleidite_crossbow",
+              "multiverse:kaleidite_chestplate"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

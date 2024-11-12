@@ -1,0 +1,29 @@
+{
+  "parent": "multiverse:multiverse",
+  "display": {
+    "icon": {
+      "item": "multiverse:kaleidite_cluster"
+    },
+    "title": {
+      "translate": "advancements.multiverse.kaleidite.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.kaleidite.description"
+    }
+  },
+  "criteria": {
+    "obtain": {
+      "trigger": "inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "multiverse:kaleidite_shard",
+              "multiverse:kaleidite_cluster"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

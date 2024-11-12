@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "multiverse:kaleidite_shard"
+    },
+    "title": {
+      "translate": "advancements.multiverse.multiverse.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.multiverse.description"
+    },
+    "background": "multiverse:textures/gui/background.png"
+  },
+  "criteria": {
+    "rift": {
+      "trigger": "multiverse:enter_rift"
+    }
+  }
+}

@@ -260,6 +260,9 @@ public final class RiftHelper {
     }
 
     private static Vec3[] intersection(Vec3[][] vertices, Vec3 normal, Vec3 from, Vec3 to) {
+        if (vertices.length == 0) {
+            return new Vec3[0];
+        }
         Vec3 dir = to.subtract(from);
         double dot = normal.dot(dir);
         if (dot == 0) {
@@ -272,7 +275,7 @@ public final class RiftHelper {
             } else {
                 Vec3 closest = null;
                 double lowDist = Double.MAX_VALUE;
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < vertices[0].length; i++) {
                     Vec3[] all = getCoplanarIntersection(vertices[0][i], vertices[1][i], from, to);
                     for (Vec3 intersection : all) {
                         double dist = intersection.distanceToSqr(from);
@@ -291,7 +294,7 @@ public final class RiftHelper {
             } else {
                 Vec3 closest = null;
                 double lowDist = Double.MAX_VALUE;
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < vertices[0].length; i++) {
                     Vec3[] all = getCoplanarIntersection(vertices[0][i], vertices[1][i], to, from);
                     for (Vec3 intersection : all) {
                         double dist = intersection.distanceToSqr(to);
