@@ -1,25 +1,27 @@
 {
-  "parent": "multiverse:collector_of_all",
+  "parent": "multiverse:collector",
   "display": {
     "icon": {
-      "item": "multiverse:dimensional_prism"
+      "item": "multiverse:prismatic_sword"
     },
     "title": {
       "translate": "advancements.multiverse.boundless.title"
     },
     "description": {
       "translate": "advancements.multiverse.boundless.description"
-    },
-    "frame": "goal"
+    }
   },
   "criteria": {
     "boundless_blade": {
-      "trigger": "minecraft:inventory_changed",
+      "trigger": "inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "multiverse:dimensional_prism"
+              "multiverse:prismatic_sword",
+              "multiverse:prismatic_pickaxe",
+              "multiverse:prismatic_axe",
+              "multiverse:prismatic_shovel"
             ]
           }
         ]

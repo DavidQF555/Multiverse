@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
@@ -10,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -113,6 +115,9 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
                     ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
                     Entity transported = entity.changeDimension(dim, (RiftTileEntity) tile);
                     if (transported instanceof LivingEntity) {
+                        if (entity instanceof ServerPlayer) {
+                            EnterRiftTrigger.INSTANCE.trigger((ServerPlayer) entity);
+                        }
                         int duration = ServerConfigs.INSTANCE.slowFalling.get();
                         if (duration > 0) {
                             ((LivingEntity) transported).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
