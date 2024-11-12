@@ -23,16 +23,18 @@ public final class DataGenRegistry {
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
-        DataGenerator gen = event.getGenerator();
-        gen.addProvider(true, new DatapackBuiltinEntriesProvider(gen.getPackOutput(), event.getLookupProvider(),
-                        new RegistrySetBuilder().add(Registries.NOISE_SETTINGS, context -> {
-                            HolderGetter<DensityFunction> density = context.lookup(Registries.DENSITY_FUNCTION);
-                            HolderGetter<NormalNoise.NoiseParameters> parameters = context.lookup(Registries.NOISE);
-                            NoiseSettingsRegistry.SETTINGS.forEach((loc, val) -> context.register(ResourceKey.create(Registries.NOISE_SETTINGS, loc), val.settings().apply(density, parameters)));
-                        }).add(Registries.DIMENSION_TYPE, context -> DimensionTypeRegistry.TYPES.forEach((loc, type) -> context.register(ResourceKey.create(Registries.DIMENSION_TYPE, loc), type))),
-                        Set.of(Multiverse.MOD_ID)
-                )
-        );
+        if (event.includeServer()) {
+            DataGenerator gen = event.getGenerator();
+            gen.addProvider(true, new DatapackBuiltinEntriesProvider(gen.getPackOutput(), event.getLookupProvider(),
+                            new RegistrySetBuilder().add(Registries.NOISE_SETTINGS, context -> {
+                                HolderGetter<DensityFunction> density = context.lookup(Registries.DENSITY_FUNCTION);
+                                HolderGetter<NormalNoise.NoiseParameters> parameters = context.lookup(Registries.NOISE);
+                                NoiseSettingsRegistry.SETTINGS.forEach((loc, val) -> context.register(ResourceKey.create(Registries.NOISE_SETTINGS, loc), val.settings().apply(density, parameters)));
+                            }).add(Registries.DIMENSION_TYPE, context -> DimensionTypeRegistry.TYPES.forEach((loc, type) -> context.register(ResourceKey.create(Registries.DIMENSION_TYPE, loc), type))),
+                            Set.of(Multiverse.MOD_ID)
+                    )
+            );
+        }
     }
 
 }
