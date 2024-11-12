@@ -8,6 +8,7 @@ import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -29,7 +30,7 @@ public final class ModBus {
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            CriteriaTriggers.register(EnterRiftTrigger.INSTANCE);
+            CriteriaTriggers.register(new ResourceLocation(Multiverse.MOD_ID, "enter_rift").toString(), EnterRiftTrigger.INSTANCE);
             DispenserBlock.registerBehavior(ItemRegistry.KALEIDITE_CORE.get(), new AbstractProjectileDispenseBehavior() {
                 @Nonnull
                 @Override
