@@ -45,22 +45,24 @@ public class RiftSwordItem extends SwordItem {
 
     @Override
     public boolean releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
-        int duration = getUseDuration(stack, entity) - remaining - ServerConfigs.INSTANCE.swordMinCharge.get();
-        if (duration >= 0) {
-            double width = Math.min(ServerConfigs.INSTANCE.swordMinWidth.get() + ServerConfigs.INSTANCE.swordWidthRate.get() * duration, ServerConfigs.INSTANCE.swordMaxWidth.get());
-            double height = Math.min(ServerConfigs.INSTANCE.swordMinHeight.get() + ServerConfigs.INSTANCE.swordHeightRate.get() * duration, ServerConfigs.INSTANCE.swordMaxHeight.get());
-            HumanoidArm used = entity.getMainArm();
-                    if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
-                        used = used.getOpposite();
-                    }
-                    float angle = used == HumanoidArm.RIGHT ? 45 : -45;
-                    Vec3 look = entity.getLookAngle();
-                    Vec3 start = entity.getEyePosition();
-                    slash((ServerLevel) world, start, look, 2.5, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack)));
-                    if (entity instanceof Player && !((Player) entity).isCreative()) {
-                        ((Player) entity).getCooldowns().addCooldown(stack, ServerConfigs.INSTANCE.swordCooldown.get());
-            }
+        if (world instanceof ServerLevel) {
+            int duration = getUseDuration(stack, entity) - remaining - ServerConfigs.INSTANCE.swordMinCharge.get();
+            if (duration >= 0) {
+                double width = Math.min(ServerConfigs.INSTANCE.swordMinWidth.get() + ServerConfigs.INSTANCE.swordWidthRate.get() * duration, ServerConfigs.INSTANCE.swordMaxWidth.get());
+                double height = Math.min(ServerConfigs.INSTANCE.swordMinHeight.get() + ServerConfigs.INSTANCE.swordHeightRate.get() * duration, ServerConfigs.INSTANCE.swordMaxHeight.get());
+                HumanoidArm used = entity.getMainArm();
+                if (entity.getUsedItemHand() == InteractionHand.OFF_HAND) {
+                    used = used.getOpposite();
+                }
+                float angle = used == HumanoidArm.RIGHT ? 45 : -45;
+                Vec3 look = entity.getLookAngle();
+                Vec3 start = entity.getEyePosition();
+                slash((ServerLevel) world, start, look, 2.5, width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack)));
+                if (entity instanceof Player && !((Player) entity).isCreative()) {
+                    ((Player) entity).getCooldowns().addCooldown(stack, ServerConfigs.INSTANCE.swordCooldown.get());
+                }
                 return true;
+            }
         }
         return false;
     }
