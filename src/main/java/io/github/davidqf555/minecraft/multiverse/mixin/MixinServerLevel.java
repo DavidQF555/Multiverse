@@ -1,0 +1,116 @@
+package io.github.davidqf555.minecraft.multiverse.mixin;
+
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.progress.ChunkProgressListener;
+import net.minecraft.world.RandomSequences;
+import net.minecraft.world.level.CustomSpawner;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.structure.StructureCheck;
+import net.minecraft.world.level.storage.LevelStorageSource;
+import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraft.world.level.storage.WritableLevelData;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.OptionalLong;
+import java.util.concurrent.Executor;
+
+@Mixin(value = ServerLevel.class)
+public abstract class MixinServerLevel extends Level {
+
+    @Shadow
+    private StructureManager structureManager;
+    @Shadow
+    private StructureCheck structureCheck;
+    @Shadow
+    private RandomSequences randomSequences;
+    @Unique
+    private OptionalLong seed = OptionalLong.empty();
+
+    protected MixinServerLevel(WritableLevelData p_270739_, ResourceKey<Level> p_270683_, RegistryAccess p_270200_, Holder<DimensionType> p_270240_, boolean p_270904_, boolean p_270470_, long p_270248_, int p_270466_) {
+        super(p_270739_, p_270683_, p_270200_, p_270240_, p_270904_, p_270470_, p_270248_, p_270466_);
+    }
+
+    @Inject(method = "<init>", at = @At("CTOR_HEAD"))
+    private void initHead(
+            MinecraftServer server,
+            Executor dispatcher,
+            LevelStorageSource.LevelStorageAccess levelStorageAccess,
+            ServerLevelData serverLevelData,
+            ResourceKey<Level> dimension,
+            LevelStem levelStem,
+            ChunkProgressListener progressListener,
+            boolean isDebug,
+            long biomeZoomSeed,
+            List<CustomSpawner> customSpawners,
+            boolean tickTime,
+            @Nullable RandomSequences randomSequences,
+            CallbackInfo callback
+    ) {
+        int index = DimensionHelper.getIndex(dimension);
+        if (index > 0) {
+            long val = DimensionHelper.getSeed(biomeZoomSeed, index, true);
+            seed = OptionalLong.of(val);
+        }
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void initReturn(
+            MinecraftServer server,
+            Executor dispatcher,
+            LevelStorageSource.LevelStorageAccess levelStorageAccess,
+            ServerLevelData serverLevelData,
+            ResourceKey<Level> dimension,
+            LevelStem levelStem,
+            ChunkProgressListener progressListener,
+            boolean isDebug,
+            long biomeZoomSeed,
+            List<CustomSpawner> customSpawners,
+            boolean tickTime,
+            @Nullable RandomSequences randomSequences,
+            CallbackInfo callback
+    ) {
+        int index = DimensionHelper.getIndex(dimension);
+        if (index > 0) {
+            long seed = DimensionHelper.getSeed(biomeZoomSeed, index, true);
+            ServerChunkCache cache = (ServerChunkCache) getChunkSource();
+            structureCheck = new StructureCheck(
+                    cache.chunkScanner(),
+                    registryAccess(),
+                    getServer().getStructureManager(),
+                    dimension,
+                    cache.getGenerator(),
+                    cache.randomState(),
+                    this,
+                    cache.getGenerator().getBiomeSource(),
+                    seed,
+                    server.getFixerUpper()
+            );
+            structureManager = new StructureManager(this, server.getWorldData().worldGenOptions(), structureCheck);
+            this.randomSequences = cache.getDataStorage().computeIfAbsent(RandomSequences.factory(seed), Multiverse.MOD_ID + ".random_sequences_" + index);
+        }
+    }
+
+    @Inject(method = "getSeed", at = @At("HEAD"), cancellable = true)
+    private void getSeed(CallbackInfoReturnable<Long> callback) {
+        seed.ifPresent(callback::setReturnValue);
+    }
+
+}

@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.POIRegistry;
@@ -18,6 +19,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -46,7 +48,10 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class RiftTileEntity extends BlockEntity implements Portal {
 
-    public static final TeleportTransition.PostTeleportTransition SLOW_FALLING = entity -> {
+    public static final TeleportTransition.PostTeleportTransition POST = entity -> {
+        if (entity instanceof ServerPlayer) {
+            EnterRiftTrigger.INSTANCE.trigger((ServerPlayer) entity);
+        }
         if (entity instanceof LivingEntity) {
             int duration = ServerConfigs.INSTANCE.slowFalling.get();
             if (duration > 0) {
@@ -175,7 +180,7 @@ public class RiftTileEntity extends BlockEntity implements Portal {
             WorldBorder border = toWorld.getWorldBorder();
             BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
             int current = DimensionHelper.getIndex(entity.level().dimension());
-            return new TeleportTransition(toWorld, getOrCreateRift(toWorld, toWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), SLOW_FALLING);
+            return new TeleportTransition(toWorld, getOrCreateRift(toWorld, toWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), POST);
         }
         return null;
     }
