@@ -62,6 +62,10 @@ public class VanillaMultiverseBiomes implements MultiverseBiomes {
         ));
     }
 
+    public static Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> getParameters() {
+        return PARAMETERS;
+    }
+
     @Override
     public Set<ResourceKey<Biome>> getOverworldBiomes() {
         return OVERWORLD;
