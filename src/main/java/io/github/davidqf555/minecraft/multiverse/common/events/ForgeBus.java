@@ -1,20 +1,27 @@
 package io.github.davidqf555.minecraft.multiverse.common.events;
 
+import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -36,8 +43,16 @@ public final class ForgeBus {
     }
 
     @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event) {
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         ShapesManager.INSTANCE.load(event.getServer());
+        WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) event.getServer().getWorldData().worldGenSettings().dimensions();
+        long seed = event.getServer().getWorldData().worldGenSettings().seed();
+        for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
+            ResourceKey<LevelStem> key = DimensionHelper.getRegistryKey(Registry.LEVEL_STEM_REGISTRY, i);
+            if (!registry.containsKey(key)) {
+                registry.register(key, DimensionHelper.createDimension(event.getServer(), seed, i), Lifecycle.experimental());
+            }
+        }
     }
 
     @SubscribeEvent

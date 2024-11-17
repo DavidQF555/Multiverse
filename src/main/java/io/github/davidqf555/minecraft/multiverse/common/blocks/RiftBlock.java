@@ -4,8 +4,8 @@ import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -114,17 +114,18 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
                 MinecraftServer server = world.getServer();
                 int target = ((RiftTileEntity) tile).getTarget();
                 if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
-                    ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
-                    Entity transported = entity.changeDimension(dim, (RiftTileEntity) tile);
-                    if (transported instanceof LivingEntity) {
-                        if (entity instanceof ServerPlayer) {
-                            EnterRiftTrigger.INSTANCE.trigger((ServerPlayer) entity);
+                    DimensionHelper.getWorld(server, target).ifPresent(dim -> {
+                        Entity transported = entity.changeDimension(dim, (RiftTileEntity) tile);
+                        if (transported instanceof LivingEntity) {
+                            if (entity instanceof ServerPlayer) {
+                                EnterRiftTrigger.INSTANCE.trigger((ServerPlayer) entity);
+                            }
+                            int duration = ServerConfigs.INSTANCE.slowFalling.get();
+                            if (duration > 0) {
+                                ((LivingEntity) transported).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
+                            }
                         }
-                        int duration = ServerConfigs.INSTANCE.slowFalling.get();
-                        if (duration > 0) {
-                            ((LivingEntity) transported).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
-                        }
-                    }
+                    });
                 }
             }
             entity.setPortalCooldown();

@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement;
 
 import com.mojang.serialization.Codec;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

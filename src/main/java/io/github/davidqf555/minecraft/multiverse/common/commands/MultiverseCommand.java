@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -70,11 +70,11 @@ public final class MultiverseCommand {
     private static int teleport(CommandSourceStack stack, int index) throws CommandSyntaxException {
         Entity entity = stack.getEntityOrException();
         Optional<ServerLevel> op = DimensionHelper.getWorld(stack.getServer(), index);
-        if (op.isEmpty() && index > ServerConfigs.INSTANCE.maxDimensions.get()) {
+        if (op.isEmpty()) {
             stack.sendFailure(new TranslatableComponent(OUT_OF_BOUNDS, index, ServerConfigs.INSTANCE.maxDimensions.get()));
             return 0;
         }
-        ServerLevel world = op.orElseGet(() -> DimensionHelper.getOrCreateWorld(stack.getServer(), index));
+        ServerLevel world = op.get();
         Vec3 pos = DimensionHelper.translate(entity.position(), entity.level.dimensionType(), world.dimensionType(), true);
         world.getChunkAt(new BlockPos(pos));
         entity.changeDimension(world, new ITeleporter() {

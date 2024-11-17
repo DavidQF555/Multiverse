@@ -3,7 +3,6 @@ package io.github.davidqf555.minecraft.multiverse.common.util;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
