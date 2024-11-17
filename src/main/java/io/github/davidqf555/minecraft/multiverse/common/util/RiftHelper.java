@@ -93,7 +93,7 @@ public final class RiftHelper {
         });
     }
 
-    private static boolean canReplace(LevelReader reader, BlockPos pos) {
+    public static boolean canReplace(LevelReader reader, BlockPos pos) {
         return !reader.isOutsideBuildHeight(pos) && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
     }
 
