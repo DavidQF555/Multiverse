@@ -19,7 +19,7 @@ public class ServerConfigs {
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
-        maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
+        maxDimensions = builder.comment("This is the number of Multiverse dimensions that will be loaded and rifts will generate for. Changing does not modify existing rifts or existing multiverse dimensions. Note: all dimensions will still be registered, so setting too high may negatively impact memory. ")
                 .defineInRange("max", 25, 1, Integer.MAX_VALUE);
         builder.pop().push("Rifts");
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")

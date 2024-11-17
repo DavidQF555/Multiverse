@@ -9,6 +9,7 @@ import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.ShapeDimensionProvider;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -66,7 +67,7 @@ public final class ForgeBus {
             for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
                 ResourceKey<LevelStem> key = DimensionHelper.getRegistryKey(Registry.LEVEL_STEM_REGISTRY, i);
                 if (!registry.containsKey(key)) {
-                    registry.register(key, DimensionHelper.createDimension(world.getServer(), seed, i), Lifecycle.experimental());
+                    registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(world.registryAccess(), seed, i), Lifecycle.experimental());
                 }
             }
         }

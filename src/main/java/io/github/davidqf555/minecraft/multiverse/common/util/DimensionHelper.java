@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.util;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.ShapeDimensionProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +10,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -55,10 +53,6 @@ public final class DimensionHelper {
             return Integer.parseInt(world.location().getPath());
         }
         return 0;
-    }
-
-    public static LevelStem createDimension(MinecraftServer server, long seed, int index) {
-        return ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, index);
     }
 
 }

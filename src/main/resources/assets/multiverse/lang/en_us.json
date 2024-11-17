@@ -48,8 +48,5 @@
   "advancements.multiverse.tear.description": "Obtain a Kaleidite core",
   "advancements.multiverse.traveler.title": "Traveler",
   "advancements.multiverse.traveler.description": "Defeat the Traveler",
-  "command.multiverse.multiverse.no_dimensions": "No multiverse dimensions present.",
-  "command.multiverse.multiverse.indices_header": "Multiverse dimension indices:",
-  "command.multiverse.multiverse.index": "  %s",
   "command.multiverse.multiverse.out_of_bounds": "Index %s is outside allowed range (max of %s)."
 }
