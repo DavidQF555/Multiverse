@@ -5,10 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.registration.custom.DimensionPr
 import io.github.davidqf555.minecraft.multiverse.registration.custom.FluidPickerTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelProviderTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.*;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.BiomeSourceRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -49,6 +46,7 @@ public class Multiverse {
         FeatureRegistry.PLACED.register(bus);
         ChunkGeneratorRegistry.GENERATORS.register(bus);
         BiomeSourceRegistry.SOURCES.register(bus);
+        SurfaceRuleSourceRegistry.SOURCES.register(bus);
 
         BiomeChunkGeneratorProviderTypeRegistry.TYPES.register(bus);
         BiomeDimensionProviderTypeRegistry.TYPES.register(bus);

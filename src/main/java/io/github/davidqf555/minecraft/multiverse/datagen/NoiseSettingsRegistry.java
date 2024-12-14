@@ -3,22 +3,16 @@ package io.github.davidqf555.minecraft.multiverse.datagen;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.IMultiverseNoiseGeneratorSettings;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.LazyMultiverseSurfaceRuleSource;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.*;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-@Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class NoiseSettingsRegistry {
 
     public static final Map<ResourceLocation, NoiseSettingsEntry> SETTINGS;
@@ -47,7 +41,7 @@ public final class NoiseSettingsRegistry {
                 builder.put(loc, new NoiseSettingsEntry(
                         new NoiseGeneratorSettings(noise, type.getDefaultBlock(), type.getDefaultFluid(),
                                 router,
-                                SurfaceRules.state(Blocks.AIR.defaultBlockState()),
+                                new LazyMultiverseSurfaceRuleSource(floor, ceiling, type),
                                 0,
                                 false,
                                 val.aquifers(),
@@ -61,12 +55,6 @@ public final class NoiseSettingsRegistry {
             }
         }
         SETTINGS = builder.build();
-    }
-
-    @SubscribeEvent
-    public static void onServerStarting(ServerStartingEvent event) {
-        Registry<NoiseGeneratorSettings> registry = event.getServer().registryAccess().registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY);
-        SETTINGS.forEach((loc, val) -> registry.getOptional(loc).ifPresent(settings -> ((IMultiverseNoiseGeneratorSettings) (Object) settings).setSettings(val.floor(), val.ceiling(), val.type())));
     }
 
     private NoiseSettingsRegistry() {
