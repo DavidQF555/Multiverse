@@ -4,9 +4,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.integration.TerraBlenderBiomes;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
-import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.ShapeDimensionProvider;
@@ -16,21 +14,18 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -51,24 +46,14 @@ public final class ForgeBus {
 
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        ShapesManager.INSTANCE.load(event.getServer());
-    }
-
-    // a bit hacky, but needs to register after TerraBlender and before levels are created
-    @SubscribeEvent
-    public static void onWorldLoad(WorldEvent.Load event) {
-        LevelAccessor world = event.getWorld();
-        if (world instanceof ServerLevel && ((ServerLevel) world).dimension().equals(Level.OVERWORLD)) {
-            if (ModList.get().isLoaded("terrablender")) {
-                ConfigHelper.biomes = new TerraBlenderBiomes(world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY));
-            }
-            WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) world.getServer().getWorldData().worldGenSettings().dimensions();
-            long seed = world.getServer().getWorldData().worldGenSettings().seed();
-            for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
-                ResourceKey<LevelStem> key = DimensionHelper.getRegistryKey(Registry.LEVEL_STEM_REGISTRY, i);
-                if (!registry.containsKey(key)) {
-                    registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(world.registryAccess(), seed, i), Lifecycle.experimental());
-                }
+        MinecraftServer server = event.getServer();
+        ShapesManager.INSTANCE.load(server);
+        WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
+        long seed = server.getWorldData().worldGenSettings().seed();
+        for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
+            ResourceKey<LevelStem> key = DimensionHelper.getRegistryKey(Registry.LEVEL_STEM_REGISTRY, i);
+            if (!registry.containsKey(key)) {
+                registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
             }
         }
     }

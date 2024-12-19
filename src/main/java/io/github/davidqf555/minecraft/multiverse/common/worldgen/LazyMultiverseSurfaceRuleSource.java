@@ -13,7 +13,7 @@ public class LazyMultiverseSurfaceRuleSource implements SurfaceRules.RuleSource 
     public static final Codec<LazyMultiverseSurfaceRuleSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Codec.BOOL.fieldOf("floor").forGetter(source -> source.floor),
             Codec.BOOL.fieldOf("ceiling").forGetter(source -> source.ceiling),
-            Codec.STRING.fieldOf("multiverse_type").xmap(MultiverseType::byName, MultiverseType::getName).forGetter(source -> source.type)
+            MultiverseType.CODEC.fieldOf("multiverse_type").forGetter(source -> source.type)
     ).apply(inst, LazyMultiverseSurfaceRuleSource::new));
     private final boolean floor, ceiling;
     private final MultiverseType type;
@@ -23,7 +23,7 @@ public class LazyMultiverseSurfaceRuleSource implements SurfaceRules.RuleSource 
         this.floor = floor;
         this.ceiling = ceiling;
         this.type = type;
-        rule = Suppliers.memoize(() -> ConfigHelper.biomes.createSurface(floor, ceiling, type));
+        rule = Suppliers.memoize(() -> ConfigHelper.getBiomesManager().createSurface(floor, ceiling, type));
     }
 
     @Override

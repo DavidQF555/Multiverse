@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.LazyMultiverseBiomeSource;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomeSource;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -13,6 +14,7 @@ public final class BiomeSourceRegistry {
     public static final DeferredRegister<Codec<? extends BiomeSource>> SOURCES = DeferredRegister.create(Registry.BIOME_SOURCE_REGISTRY, Multiverse.MOD_ID);
 
     public static final RegistryObject<Codec<MultiverseBiomeSource>> MULTIVERSE = register("multiverse", MultiverseBiomeSource.CODEC);
+    public static final RegistryObject<Codec<LazyMultiverseBiomeSource>> LAZY_MULTIVERSE = register("lazy_multiverse", LazyMultiverseBiomeSource.CODEC);
 
     private BiomeSourceRegistry() {
     }

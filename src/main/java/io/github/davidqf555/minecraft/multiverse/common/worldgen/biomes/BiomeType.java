@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
@@ -15,14 +16,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BiomeType {
+public record BiomeType(HolderSet<Biome> biomes, int weight) {
 
     public static final Codec<BiomeType> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            Biome.LIST_CODEC.fieldOf("biomes").forGetter(type -> type.biomes),
+            RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY, true).fieldOf("biomes").forGetter(type -> type.biomes),
             ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("weight", 1).forGetter(type -> type.weight)
     ).apply(inst, BiomeType::new));
-    private final HolderSet<Biome> biomes;
-    private final int weight;
 
     public BiomeType(HolderSet<Biome> biomes, int weight) {
         this.biomes = biomes;
@@ -42,10 +41,6 @@ public class BiomeType {
                 .map(Holder::value)
                 .map(biome -> ResourceKey.create(Registry.BIOME_REGISTRY, biome.getRegistryName()))
                 .collect(Collectors.toSet());
-    }
-
-    public int getWeight() {
-        return weight;
     }
 
 }

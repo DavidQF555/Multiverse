@@ -7,8 +7,8 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biome
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.dim_type.BiomeDimensionTypeProvider;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeDimensionProviderTypeRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -32,7 +32,7 @@ public class DualBiomeDimensionProvider implements BiomeDimensionProvider {
     }
 
     @Override
-    public LevelStem provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<ResourceKey<Biome>> biomes) {
+    public LevelStem provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
         ChunkGenerator gen = chunk.provide(access, seed, random, type, biomes);
         Holder<DimensionType> holder = this.type.value().provide(access, seed, random, type, biomes);
         return new LevelStem(holder, gen);
