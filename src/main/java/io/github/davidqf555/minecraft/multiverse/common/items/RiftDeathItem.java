@@ -4,9 +4,10 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.portal.PortalInfo;
@@ -24,7 +26,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.OptionalInt;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class RiftDeathItem extends Item implements IDeathEffect, ITeleporter {
@@ -45,18 +47,16 @@ public class RiftDeathItem extends Item implements IDeathEffect, ITeleporter {
             if (duration > 0) {
                 entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
             }
-            int current = DimensionHelper.getIndex(entity.level.dimension());
-            int target = entity.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-            if (target >= current) {
-                target++;
-            }
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new RiftParticlesPacket(OptionalInt.of(target), entity.getEyePosition()));
-            DimensionHelper.getWorld(entity.getServer(), target).ifPresent(world -> {
+            ResourceKey<Level> current = entity.level.dimension();
+            ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(entity.getRandom(), Optional.of(current));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new RiftParticlesPacket(Optional.of(target), entity.getEyePosition()));
+            ServerLevel world = entity.getServer().getLevel(target);
+            if (world != null) {
                 Entity copy = entity.changeDimension(world, this);
                 if (copy != null) {
-                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(OptionalInt.of(current), copy.position()));
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(Optional.of(current), copy.position()));
                 }
-            });
+            }
             if (entity instanceof ServerPlayer) {
                 CriteriaTriggers.USED_TOTEM.trigger((ServerPlayer) entity, stack);
             }
@@ -79,7 +79,7 @@ public class RiftDeathItem extends Item implements IDeathEffect, ITeleporter {
         Vec3 to = Vec3.atBottomCenterOf(clamped);
         AABB box = AABB.ofSize(to.add(0, entity.getBbHeight() / 2, 0), entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
         BlockPos.betweenClosedStream(box)
-                .filter(pos -> RiftHelper.canReplace(destWorld, pos))
+                .filter(pos -> RiftPlacementHelper.canReplace(destWorld, pos))
                 .forEach(pos -> destWorld.destroyBlock(pos, true));
         return new PortalInfo(to, Vec3.ZERO, entity.getYRot(), entity.getXRot());
     }

@@ -8,8 +8,11 @@ import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -48,7 +51,7 @@ import java.util.Optional;
 public class CollectorEntity extends SpellcasterIllager {
 
     private final ServerBossEvent bar;
-    private int from;
+    private ResourceKey<Level> from;
 
     public CollectorEntity(EntityType<? extends CollectorEntity> type, Level world) {
         super(type, world);
@@ -142,7 +145,7 @@ public class CollectorEntity extends SpellcasterIllager {
         return false;
     }
 
-    public void setFrom(int from) {
+    public void setFrom(@Nullable ResourceKey<Level> from) {
         this.from = from;
     }
 
@@ -151,7 +154,7 @@ public class CollectorEntity extends SpellcasterIllager {
     public Entity changeDimension(ServerLevel world, ITeleporter teleporter) {
         Entity entity = super.changeDimension(world, teleporter);
         if (entity instanceof CollectorEntity) {
-            ((CollectorEntity) entity).setFrom(DimensionHelper.getIndex(level.dimension()));
+            ((CollectorEntity) entity).setFrom(level.dimension());
             entity.setPortalCooldown();
         }
         return entity;
@@ -205,8 +208,8 @@ public class CollectorEntity extends SpellcasterIllager {
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if (nbt.contains("From", CompoundTag.TAG_INT)) {
-            setFrom(nbt.getInt("From"));
+        if (nbt.contains("From", CompoundTag.TAG_STRING)) {
+            setFrom(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("From"))));
         }
         if (hasCustomName()) {
             bar.setName(getDisplayName());
@@ -216,7 +219,9 @@ public class CollectorEntity extends SpellcasterIllager {
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putInt("From", from);
+        if (from != null) {
+            nbt.putString("From", from.location().toString());
+        }
     }
 
     private class CreateRiftGoal extends SpellcasterUseSpellGoal {
@@ -235,7 +240,7 @@ public class CollectorEntity extends SpellcasterIllager {
             float angle = getMainArm() == HumanoidArm.RIGHT ? 45 : -45;
             Vec3 look = getLookAngle();
             Vec3 start = getEyePosition().add(look);
-            RiftSwordItem.slash((ServerLevel) level, start, look, 4, 3, 15, angle, Optional.empty());
+            RiftSwordItem.slash((ServerLevel) level, start, look, 4, 3, 15, angle, DimensionHelper.randomMultiverseDimension(getRandom(), Optional.of(level.dimension())));
         }
 
         @Override
@@ -270,7 +275,7 @@ public class CollectorEntity extends SpellcasterIllager {
         protected boolean isValidTarget(LevelReader world, BlockPos pos) {
             if (world.getBlockState(pos).getBlock().equals(BlockRegistry.RIFT.get())) {
                 BlockEntity tile = world.getBlockEntity(pos);
-                return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() != from;
+                return tile instanceof RiftTileEntity && !((RiftTileEntity) tile).getTarget().equals(from);
             }
             return false;
         }

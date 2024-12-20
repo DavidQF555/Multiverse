@@ -10,6 +10,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -22,7 +23,8 @@ public class MultiverseDimensionPlacement extends PlacementModifier {
 
     @Override
     public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
-        return DimensionHelper.getIndex(context.getLevel().getLevel().dimension()) == 0 ? Stream.empty() : Stream.of(pos);
+        Optional<Integer> index = DimensionHelper.getIndex(context.getLevel().getLevel().dimension());
+        return index.isEmpty() || index.get() == 0 ? Stream.empty() : Stream.of(pos);
     }
 
     @Override

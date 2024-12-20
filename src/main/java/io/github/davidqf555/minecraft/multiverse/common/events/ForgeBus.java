@@ -51,7 +51,7 @@ public final class ForgeBus {
         WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
         long seed = server.getWorldData().worldGenSettings().seed();
         for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
-            ResourceKey<LevelStem> key = DimensionHelper.getRegistryKey(Registry.LEVEL_STEM_REGISTRY, i);
+            ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, DimensionHelper.getResourceLocation(i));
             if (!registry.containsKey(key)) {
                 registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
             }

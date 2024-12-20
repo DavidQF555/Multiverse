@@ -34,7 +34,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Random;
 import java.util.UUID;
 
@@ -185,7 +184,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            ClientHelper.addRiftParticles(OptionalInt.empty(), getEyePosition());
+            ClientHelper.addRiftParticles(Optional.empty(), getEyePosition());
         }
         super.handleEntityEvent(b);
     }

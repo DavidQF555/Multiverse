@@ -4,7 +4,8 @@ import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.ChatFormatting;
@@ -24,7 +25,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
@@ -61,7 +61,7 @@ public class SpawnCollectorItem extends TimerItem {
         CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, center, MobSpawnType.MOB_SUMMONED, false, false);
         if (boss != null) {
             boss.setPortalCooldown();
-            RiftHelper.placeExplosion((ServerLevel) entity.level, entity.level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), Optional.empty(), Optional.empty(), entity.position(), true);
+            RiftPlacementHelper.placeExplosion((ServerLevel) entity.level, entity.level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), DimensionHelper.randomMultiverseDimension(entity.level.getRandom(), Optional.of(entity.level.dimension())), Optional.empty(), entity.position(), true);
             BlockEntity tile = entity.level.getBlockEntity(center);
             if (tile instanceof RiftTileEntity) {
                 boss.setFrom(((RiftTileEntity) tile).getTarget());
@@ -75,7 +75,7 @@ public class SpawnCollectorItem extends TimerItem {
         if (entity.level.getGameTime() % period == 0) {
             Random random = entity.level.getRandom();
             Vec3 pos = entity.position().add(random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE, random.nextGaussian() * PARTICLE_RANGE);
-            ClientHelper.addRiftParticles(OptionalInt.empty(), pos);
+            ClientHelper.addRiftParticles(Optional.empty(), pos);
         }
     }
 

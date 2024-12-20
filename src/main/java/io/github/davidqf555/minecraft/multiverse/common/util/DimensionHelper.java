@@ -1,11 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.util;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
@@ -13,19 +12,24 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.Random;
 
 public final class DimensionHelper {
 
     private DimensionHelper() {
     }
 
-    @SuppressWarnings("deprecation")
-    public static Optional<ServerLevel> getWorld(MinecraftServer server, int index) {
-        if (index <= 0) {
-            return Optional.of(server.overworld());
+    public static ResourceKey<Level> randomMultiverseDimension(Random random, Optional<ResourceKey<Level>> exclude) {
+        Optional<Integer> multiverse = exclude.flatMap(DimensionHelper::getIndex);
+        int size = ServerConfigs.INSTANCE.maxDimensions.get() + 1;
+        if (multiverse.isPresent()) {
+            size--;
         }
-        ResourceKey<Level> world = getRegistryKey(Registry.DIMENSION_REGISTRY, index);
-        return Optional.ofNullable(server.forgeGetWorldMap().get(world));
+        int rand = random.nextInt(size);
+        if (multiverse.isPresent() && rand >= multiverse.get()) {
+            rand++;
+        }
+        return DimensionHelper.getRegistryKey(rand);
     }
 
     public static long getSeed(long overworld, int index, boolean obfuscated) {
@@ -44,15 +48,27 @@ public final class DimensionHelper {
         return new Vec3(pos.x() * scale, y, pos.z() * scale);
     }
 
-    public static <T> ResourceKey<T> getRegistryKey(ResourceKey<Registry<T>> registry, int index) {
-        return ResourceKey.create(registry, new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index)));
+    public static ResourceKey<Level> getRegistryKey(int index) {
+        if (index == 0) {
+            return Level.OVERWORLD;
+        }
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, getResourceLocation(index));
     }
 
-    public static int getIndex(ResourceKey<Level> world) {
-        if (world.location().getNamespace().equals(Multiverse.MOD_ID)) {
-            return Integer.parseInt(world.location().getPath());
+    public static ResourceLocation getResourceLocation(int index) {
+        return new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index));
+    }
+
+    public static Optional<Integer> getIndex(ResourceKey<Level> world) {
+        if (world.equals(Level.OVERWORLD)) {
+            return Optional.of(0);
+        } else if (world.location().getNamespace().equals(Multiverse.MOD_ID)) {
+            try {
+                return Optional.of(Integer.parseInt(world.location().getPath()));
+            } catch (NumberFormatException ignored) {
+            }
         }
-        return 0;
+        return Optional.empty();
     }
 
 }

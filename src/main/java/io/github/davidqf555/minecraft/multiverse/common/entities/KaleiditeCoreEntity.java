@@ -2,7 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
@@ -83,7 +84,7 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
         if (level instanceof ServerLevel && isAlive()) {
-            RiftHelper.placeExplosion((ServerLevel) level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), Optional.empty(), Optional.empty(), position(), true);
+            RiftPlacementHelper.placeExplosion((ServerLevel) level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), DimensionHelper.randomMultiverseDimension(level.getRandom(), Optional.of(level.dimension())), Optional.empty(), position(), true);
             discard();
         }
     }

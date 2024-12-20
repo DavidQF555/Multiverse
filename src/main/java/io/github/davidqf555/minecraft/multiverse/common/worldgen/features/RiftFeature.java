@@ -1,7 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 
 import com.mojang.serialization.Codec;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -29,7 +30,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         RiftConfig.Size size = config.getSize();
         double width = size.getWidth(rand);
         double height = size.getHeight(rand);
-        RiftHelper.place(reader, rand, rift, Optional.empty(), Optional.empty(), center, width, height, false);
+        RiftPlacementHelper.place(reader, rand, rift, DimensionHelper.randomMultiverseDimension(rand, Optional.of(reader.getLevel().dimension())), Optional.empty(), center, width, height, false);
         return true;
     }
 

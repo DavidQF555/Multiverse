@@ -2,11 +2,12 @@ package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.POIRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -14,11 +15,11 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.entity.ai.village.poi.PoiRecord;
-import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,7 +32,9 @@ import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
@@ -40,7 +43,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     private Vec3 normal = new Vec3(0, 1, 0);
     private Vec3[][] vertices = new Vec3[2][0];
-    private int target;
+    private ResourceKey<Level> target;
     private AABB bounds;
 
     protected RiftTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -51,11 +54,11 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         this(TileEntityRegistry.RIFT.get(), pos, state);
     }
 
-    public int getTarget() {
+    public ResourceKey<Level> getTarget() {
         return target;
     }
 
-    public void setTarget(int target) {
+    public void setTarget(ResourceKey<Level> target) {
         this.target = target;
     }
 
@@ -103,13 +106,13 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     }
 
     public boolean isColliding(AABB bounds) {
-        return RiftHelper.intersects(getVertices(), getNormal(), bounds);
+        return RiftPlacementHelper.intersects(getVertices(), getNormal(), bounds);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putInt("Target", getTarget());
+        tag.putString("Target", getTarget().location().toString());
         ListTag vertices = new ListTag();
         for (Vec3 point : getVertices()[0]) {
             CompoundTag com = new CompoundTag();
@@ -130,8 +133,8 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (tag.contains("Target", CompoundTag.TAG_INT)) {
-            setTarget(tag.getInt("Target"));
+        if (tag.contains("Target", CompoundTag.TAG_STRING)) {
+            setTarget(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString("Target"))));
         }
         if (tag.contains("Vertices", Tag.TAG_LIST)) {
             ListTag list = tag.getList("Vertices", Tag.TAG_COMPOUND);
@@ -173,31 +176,11 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         DimensionType target = destWorld.dimensionType();
         DimensionType from = entity.level.dimensionType();
         BlockPos rift = getBlockPos();
-        Vec3 scaled = DimensionHelper.translate(Vec3.atBottomCenterOf(rift), from, target, true);
+        Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(rift), from, target, true);
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
-        int current = DimensionHelper.getIndex(entity.level.dimension());
-        return new PortalInfo(getOrCreateRift(destWorld, destWorld.getRandom(), Vec3.atBottomCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get(), current, level.getBlockState(rift)), entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
-
-    }
-
-    private Vec3 getOrCreateRift(ServerLevel dest, Random rand, Vec3 center, int range, int current, BlockState state) {
-        PoiManager manager = dest.getPoiManager();
-        PoiType poi = POIRegistry.RIFT.get();
-        BlockPos pos = new BlockPos(center);
-        manager.ensureLoadedAndValid(dest, pos, range);
-        return manager.getInSquare(poi::equals, pos, range, PoiManager.Occupancy.ANY)
-                .map(PoiRecord::getPos)
-                .filter(block -> {
-                    BlockEntity tile = dest.getBlockEntity(block);
-                    return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget() == current;
-                })
-                .min(Comparator.comparingDouble(pos::distSqr))
-                .map(Vec3::atBottomCenterOf)
-                .orElseGet(() -> {
-                    RiftHelper.place(dest, rand, state, Optional.of(current), Optional.empty(), center, true);
-                    return center;
-                });
+        Vec3 pos = RiftCoordinationHelper.getOrCreateRift(destWorld, entity.level.dimension(), level.getBlockState(rift), Vec3.atCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get());
+        return new PortalInfo(pos, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
     }
 
 }

@@ -3,12 +3,12 @@ package io.github.davidqf555.minecraft.multiverse.common.items.tools;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.MultiversalToolHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -32,10 +32,10 @@ public class RiftSwordItem extends SwordItem {
         super(tier, damage, speed, properties);
     }
 
-    public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, Optional<Integer> target) {
+    public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, ResourceKey<Level> target) {
         look = look.normalize();
         Vec3 center = start.add(look.scale(dist));
-        RiftHelper.placeExplosion(level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), target, Optional.of(Pair.of(look, angle)), center, width, height, true);
+        RiftPlacementHelper.placeExplosion(level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), target, Optional.of(Pair.of(look, angle)), center, width, height, true);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RiftSwordItem extends SwordItem {
                 float angle = used == HumanoidArm.RIGHT ? 45 : -45;
                 Vec3 look = entity.getLookAngle();
                 Vec3 start = entity.getEyePosition();
-                slash((ServerLevel) world, start, look, ServerConfigs.INSTANCE.swordSpawnDistance.get(), width, height, angle, Optional.of(MultiversalToolHelper.getTarget(stack)));
+                slash((ServerLevel) world, start, look, ServerConfigs.INSTANCE.swordSpawnDistance.get(), width, height, angle, MultiversalToolHelper.getTarget(stack));
                 if (entity instanceof Player && !((Player) entity).isCreative()) {
                     ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.swordCooldown.get());
                 }
@@ -83,7 +83,7 @@ public class RiftSwordItem extends SwordItem {
             if (!world.isClientSide()) {
                 MultiversalToolHelper.setRandomTarget(world, stack);
             }
-        } else if (MultiversalToolHelper.getTarget(stack) == DimensionHelper.getIndex(world.dimension())) {
+        } else if (MultiversalToolHelper.getTarget(stack).equals(world.dimension())) {
             return InteractionResultHolder.pass(stack);
         } else {
             player.startUsingItem(hand);

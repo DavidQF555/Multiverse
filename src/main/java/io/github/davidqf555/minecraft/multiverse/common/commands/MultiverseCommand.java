@@ -18,7 +18,6 @@ import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 public final class MultiverseCommand {
@@ -39,12 +38,11 @@ public final class MultiverseCommand {
 
     private static int teleport(CommandSourceStack stack, int index) throws CommandSyntaxException {
         Entity entity = stack.getEntityOrException();
-        Optional<ServerLevel> op = DimensionHelper.getWorld(stack.getServer(), index);
-        if (op.isEmpty()) {
+        ServerLevel world = stack.getServer().getLevel(DimensionHelper.getRegistryKey(index));
+        if (world == null) {
             stack.sendFailure(new TranslatableComponent(OUT_OF_BOUNDS, index, ServerConfigs.INSTANCE.maxDimensions.get()));
             return 0;
         }
-        ServerLevel world = op.get();
         Vec3 pos = DimensionHelper.translate(entity.position(), entity.level.dimensionType(), world.dimensionType(), true);
         world.getChunkAt(new BlockPos(pos));
         entity.changeDimension(world, new ITeleporter() {

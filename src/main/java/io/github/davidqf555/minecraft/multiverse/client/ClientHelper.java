@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.client;
 
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.client.Minecraft;
@@ -12,7 +11,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.OptionalInt;
+import java.util.Optional;
 
 public final class ClientHelper {
 
@@ -21,21 +20,11 @@ public final class ClientHelper {
     private ClientHelper() {
     }
 
-    public static void addDimension(ResourceKey<Level> key) {
-        Minecraft.getInstance().player.connection.levels().add(key);
-    }
-
-    public static void addRiftParticles(OptionalInt from, Vec3 center) {
+    public static void addRiftParticles(Optional<ResourceKey<Level>> dim, Vec3 center) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
-            int index = from.orElseGet(() -> {
-                int i = world.getRandom().nextInt(ServerConfigs.INSTANCE.maxDimensions.get());
-                if (i >= DimensionHelper.getIndex(world.dimension())) {
-                    i++;
-                }
-                return i;
-            });
-            int color = MultiverseColorHelper.getColor(world, index);
+            ResourceKey<Level> from = dim.orElseGet(() -> DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())));
+            int color = MultiverseColorHelper.getColor(world, from);
             world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }

@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Optional;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
@@ -103,7 +103,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public void handleEntityEvent(byte b) {
         if (b == RIFT_PARTICLES_EVENT) {
-            ClientHelper.addRiftParticles(OptionalInt.empty(), getEyePosition());
+            ClientHelper.addRiftParticles(Optional.empty(), getEyePosition());
         }
         super.handleEntityEvent(b);
     }
