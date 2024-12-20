@@ -2,13 +2,16 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +19,9 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -58,26 +63,42 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
         BlockPos pos = blockPosition();
         if (!level.isClientSide() && isAlive() && level.getBlockState(pos).getBlock() instanceof RiftBlock) {
             level.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
-            removeConnected(pos, ServerConfigs.INSTANCE.coreRange.get());
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof RiftTileEntity) {
+                ResourceKey<Level> target = ((RiftTileEntity) be).getTarget();
+                ServerLevel w = level.getServer().getLevel(target);
+                if (w != null) {
+                    removeConnectedRifts(w, pos);
+                }
+            }
+            removeConnectedBlocks(level, pos, ServerConfigs.INSTANCE.coreRange.get());
             discard();
         }
         super.tick();
     }
 
-    private void removeConnected(BlockPos start, double distance) {
+    private void removeConnectedBlocks(Level world, BlockPos start, double distance) {
         int index = 0;
         List<BlockPos> list = new LinkedList<>();
         list.add(start);
         while (index < list.size()) {
             BlockPos pos = list.get(index++);
-            if (pos.distSqr(start) <= distance * distance && level.getBlockState(pos).getBlock() instanceof RiftBlock) {
+            if (pos.distSqr(start) <= distance * distance && world.getBlockState(pos).getBlock() instanceof RiftBlock) {
                 BlockPos.betweenClosedStream(pos.relative(Direction.DOWN).relative(Direction.WEST).relative(Direction.SOUTH), pos.relative(Direction.UP).relative(Direction.EAST).relative(Direction.NORTH))
                         .filter(p -> !list.contains(p))
                         .map(BlockPos::immutable)
                         .forEach(list::add);
-                level.destroyBlock(pos, true, this);
+                world.destroyBlock(pos, true, this);
             }
         }
+    }
+
+    private void removeConnectedRifts(ServerLevel target, BlockPos start) {
+        Vec3 pos = DimensionHelper.translate(Vec3.atCenterOf(start), level.dimensionType(), target.dimensionType(), true);
+        RiftCoordinationHelper.getClosestRift(target, level.dimension(), new BlockPos(pos), ServerConfigs.INSTANCE.riftRange.get()).ifPresent(b -> {
+            target.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, b, 0);
+            removeConnectedBlocks(target, b, ServerConfigs.INSTANCE.coreRange.get());
+        });
     }
 
     @Override

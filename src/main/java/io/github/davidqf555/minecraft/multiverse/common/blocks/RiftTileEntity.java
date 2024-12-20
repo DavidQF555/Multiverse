@@ -43,7 +43,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     private Vec3 normal = new Vec3(0, 1, 0);
     private Vec3[][] vertices = new Vec3[2][0];
-    private ResourceKey<Level> target;
+    private ResourceKey<Level> target = Level.OVERWORLD;
     private AABB bounds;
 
     protected RiftTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
