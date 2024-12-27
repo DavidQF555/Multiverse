@@ -1,7 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.util;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import net.minecraft.core.BlockPos;
@@ -10,8 +9,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelWriter;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -28,45 +25,16 @@ public final class RiftPlacementHelper {
     private RiftPlacementHelper() {
     }
 
-    public static void placeExplosion(WorldGenLevel world, Random rand, BlockState state, ResourceKey<Level> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, boolean drop) {
-        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, new BlockPos(center), 0);
-        place(world, rand, state, target, rotation, center, drop);
-    }
-
-    public static void placeExplosion(WorldGenLevel world, Random rand, BlockState state, ResourceKey<Level> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, double width, double height, boolean drop) {
-        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, new BlockPos(center), 0);
-        place(world, rand, state, target, rotation, center, width, height, drop);
-    }
-
-    public static void place(WorldGenLevel world, Random rand, BlockState state, ResourceKey<Level> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, boolean drop) {
-        place(world, rand, state, target, rotation, center, ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get(), drop);
-    }
-
-    public static void place(WorldGenLevel world, Random rand, BlockState state, ResourceKey<Level> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, double minWidth, double maxWidth, double minHeight, double maxHeight, boolean drop) {
-        double width = minWidth + rand.nextDouble(maxWidth - minWidth);
-        double height = minHeight + rand.nextDouble(maxHeight - minHeight);
-        place(world, rand, state, target, rotation, center, width, height, drop);
-    }
-
-    public static void place(WorldGenLevel world, Random rand, BlockState state, ResourceKey<Level> target, Optional<Pair<Vec3, Float>> rotation, Vec3 center, double width, double height, boolean drop) {
-        Pair<Vec3, Float> r = rotation.orElseGet(() -> {
-            Vec3 normal = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()).normalize();
-            float angle = rand.nextFloat(180);
-            return Pair.of(normal, angle);
-        });
-        Vec3 normal = r.getFirst();
+    public static void place(LevelWriter writer, LevelReader reader, BlockState state, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, boolean drop, Consumer<BlockPos> effect) {
+        normal = normal.normalize();
         if (normal.lengthSqr() == 0) {
             normal = new Vec3(0, 1, 0);
         }
-        float angle = r.getSecond();
-        place(world, world, state, target, center, normal, angle, width, height, drop);
-    }
-
-    public static void place(LevelWriter writer, LevelReader reader, BlockState state, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, boolean drop) {
-        Vec3[][] vertices = calculateVertices(center, normal, angle, width, height);
+        Vec3 n = normal;
+        Vec3[][] vertices = calculateVertices(center, n, angle, width, height);
         iterate(vertices, pos -> {
             if (canReplace(reader, pos)) {
-                Vec3[] polygon = calculateSectionPolygon(vertices, normal, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
+                Vec3[] polygon = calculateSectionPolygon(vertices, n, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
                 if (polygon.length >= 3) {
                     BlockState base = state;
                     Fluid fluid = reader.getFluidState(pos).getType();
@@ -83,8 +51,9 @@ public final class RiftPlacementHelper {
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
                         ((RiftTileEntity) tile).setVertices(polygon);
-                        ((RiftTileEntity) tile).setNormal(normal);
+                        ((RiftTileEntity) tile).setNormal(n);
                     }
+                    effect.accept(pos);
                 }
             }
         });

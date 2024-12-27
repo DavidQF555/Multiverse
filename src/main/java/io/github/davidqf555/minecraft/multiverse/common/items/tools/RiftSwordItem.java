@@ -1,11 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.items.tools;
 
-import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.util.MultiversalToolHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -22,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -35,7 +31,8 @@ public class RiftSwordItem extends SwordItem {
     public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, ResourceKey<Level> target) {
         look = look.normalize();
         Vec3 center = start.add(look.scale(dist));
-        RiftPlacementHelper.placeExplosion(level, level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), target, Optional.of(Pair.of(look, angle)), center, width, height, true);
+        RiftCoordinationHelper.placeRandomRift(level, target, true, center, look, angle, block -> {
+        });
     }
 
     @Override

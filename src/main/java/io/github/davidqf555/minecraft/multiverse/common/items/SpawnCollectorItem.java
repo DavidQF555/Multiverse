@@ -1,12 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -61,7 +58,7 @@ public class SpawnCollectorItem extends TimerItem {
         CollectorEntity boss = EntityRegistry.COLLECTOR.get().spawn((ServerLevel) entity.level, null, null, null, center, MobSpawnType.MOB_SUMMONED, false, false);
         if (boss != null) {
             boss.setPortalCooldown();
-            RiftPlacementHelper.placeExplosion((ServerLevel) entity.level, entity.level.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, true), DimensionHelper.randomMultiverseDimension(entity.level.getRandom(), Optional.of(entity.level.dimension())), Optional.empty(), entity.position(), true);
+            RiftCoordinationHelper.placeRandomRift((ServerLevel) entity.level, true, entity.position());
             BlockEntity tile = entity.level.getBlockEntity(center);
             if (tile instanceof RiftTileEntity) {
                 boss.setFrom(((RiftTileEntity) tile).getTarget());

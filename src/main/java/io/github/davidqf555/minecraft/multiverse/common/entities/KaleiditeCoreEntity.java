@@ -59,7 +59,7 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
         if (level instanceof ServerLevel && isAlive()) {
-            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, position());
+            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, position());
             discard();
         }
     }

@@ -15,22 +15,40 @@ public final class EntityUtil {
     private EntityUtil() {
     }
 
+    public static Vec3 randomAround(Random rand, Vec3 center, double min, double max) {
+        double dX = rand.nextDouble(min, max);
+        double dY = rand.nextDouble(min, max);
+        double dZ = rand.nextDouble(min, max);
+        if (rand.nextBoolean()) {
+            dX *= -1;
+        }
+        if (rand.nextBoolean()) {
+            dY *= -1;
+        }
+        if (rand.nextBoolean()) {
+            dZ *= -1;
+        }
+        return center.add(dX, dY, dZ);
+    }
+
+    public static Vec3 randomAroundAbove(Random rand, Vec3 center, double min, double max) {
+        double dX = rand.nextDouble(min, max);
+        double dY = rand.nextDouble(min, max);
+        double dZ = rand.nextDouble(min, max);
+        if (rand.nextBoolean()) {
+            dX *= -1;
+        }
+        if (rand.nextBoolean()) {
+            dZ *= -1;
+        }
+        return center.add(dX, dY, dZ);
+    }
+
     public static boolean randomTeleport(LivingEntity entity, Vec3 center, double min, double max, boolean effect) {
         Random rand = entity.getRandom();
         for (int i = 0; i < 16; i++) {
-            double dX = rand.nextDouble(min, max);
-            double dY = rand.nextDouble(min, max);
-            double dZ = rand.nextDouble(min, max);
-            if (rand.nextBoolean()) {
-                dX *= -1;
-            }
-            if (rand.nextBoolean()) {
-                dY *= -1;
-            }
-            if (rand.nextBoolean()) {
-                dZ *= -1;
-            }
-            if (entity.randomTeleport(center.x() + dX, center.y() + dY, center.z() + dZ, effect)) {
+            Vec3 pos = randomAround(rand, center, min, max);
+            if (entity.randomTeleport(pos.x(), pos.y(), pos.z(), effect)) {
                 return true;
             }
         }

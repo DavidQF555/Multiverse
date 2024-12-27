@@ -3,6 +3,8 @@ package io.github.davidqf555.minecraft.multiverse.common.worldgen.features;
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -25,12 +27,16 @@ public class RiftFeature extends Feature<RiftConfig> {
         WorldGenLevel reader = context.level();
         RiftConfig config = context.config();
         Random rand = context.random();
-        BlockState rift = config.getBlockState();
+        BlockState state = config.getBlockState();
         Vec3 center = Vec3.atLowerCornerOf(context.origin()).add(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         RiftConfig.Size size = config.getSize();
         double width = size.getWidth(rand);
         double height = size.getHeight(rand);
-        RiftPlacementHelper.place(reader, rand, rift, DimensionHelper.randomMultiverseDimension(rand, Optional.of(reader.getLevel().dimension())), Optional.empty(), center, width, height, false);
+        Vec3 normal = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
+        float angle = rand.nextFloat(180);
+        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(rand, Optional.of(reader.getLevel().dimension()));
+        RiftPlacementHelper.place(reader, reader, state, target, center, normal, angle, width, height, false, pos -> {
+        });
         return true;
     }
 

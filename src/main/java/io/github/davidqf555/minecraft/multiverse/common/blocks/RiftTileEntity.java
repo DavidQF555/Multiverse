@@ -179,7 +179,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(rift), from, target, true);
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
-        Vec3 pos = RiftCoordinationHelper.getOrCreateRift(destWorld, entity.level.dimension(), level.getBlockState(rift), Vec3.atCenterOf(clamped), ServerConfigs.INSTANCE.riftRange.get());
+        Vec3 pos = RiftCoordinationHelper.getOrCreateRift(destWorld, entity.level.dimension(), Vec3.atCenterOf(clamped), level.getBlockState(rift).getValue(RiftBlock.TEMPORARY), ServerConfigs.INSTANCE.riftRange.get());
         return new PortalInfo(pos, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
     }
 

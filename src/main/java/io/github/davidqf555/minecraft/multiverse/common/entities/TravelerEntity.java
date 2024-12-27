@@ -123,6 +123,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     protected void registerGoals() {
+        super.registerGoals();
         goalSelector.addGoal(0, new RangedCrossbowAttackGoal<>(this, 1, 16));
         goalSelector.addGoal(1, new MeleeAttackGoal(this, 1, true));
         goalSelector.addGoal(2, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));

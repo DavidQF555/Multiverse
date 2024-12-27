@@ -16,14 +16,11 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
 
 public final class RiftCoordinationHelper {
 
@@ -43,17 +40,46 @@ public final class RiftCoordinationHelper {
                 .min(Comparator.comparingDouble(center::distSqr));
     }
 
-    public static Vec3 getOrCreateRift(ServerLevel world, ResourceKey<Level> target, BlockState state, Vec3 center, int distance) {
+    public static Vec3 getOrCreateRift(ServerLevel world, ResourceKey<Level> target, Vec3 center, boolean temporary, int distance, Consumer<BlockPos> effect) {
         return getClosestRift(world, target, new BlockPos(center), distance)
                 .map(Vec3::atCenterOf)
                 .orElseGet(() -> {
-                    RiftPlacementHelper.place(world, world.getRandom(), state, target, Optional.empty(), center, true);
+                    placeRandomRift(world, target, temporary, center, effect);
                     return center;
                 });
     }
 
-    public static void placeRandomRift(ServerLevel world, Vec3 center) {
-        RiftPlacementHelper.placeExplosion(world, world.getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())), Optional.empty(), center, true);
+    public static Vec3 getOrCreateRift(ServerLevel world, ResourceKey<Level> target, Vec3 center, boolean temporary, int distance) {
+        return getOrCreateRift(world, target, center, temporary, distance, pos -> {
+        });
+    }
+
+    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center, Vec3 normal, float angle, Consumer<BlockPos> effect) {
+        Random rand = world.getRandom();
+        double minWidth = ServerConfigs.INSTANCE.minRiftWidth.get();
+        double maxWidth = ServerConfigs.INSTANCE.maxRiftWidth.get();
+        double minHeight = ServerConfigs.INSTANCE.minRiftHeight.get();
+        double maxHeight = ServerConfigs.INSTANCE.maxRiftHeight.get();
+        double width = minWidth + rand.nextDouble(maxWidth - minWidth);
+        double height = minHeight + rand.nextDouble(maxHeight - minHeight);
+        doRiftSpawnEffect(world, new BlockPos(center));
+        RiftPlacementHelper.place(world, world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, true, effect);
+    }
+
+    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center, Consumer<BlockPos> effect) {
+        Random rand = world.getRandom();
+        Vec3 normal = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
+        float angle = rand.nextFloat(180);
+        placeRandomRift(world, target, temporary, center, normal, angle, effect);
+    }
+
+    public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center, Consumer<BlockPos> effect) {
+        placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())), temporary, center, effect);
+    }
+
+    public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center) {
+        placeRandomRift(world, temporary, center, pos -> {
+        });
     }
 
     public static void doRiftSpawnEffect(Level world, BlockPos pos) {
