@@ -4,6 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
+import io.github.davidqf555.minecraft.multiverse.registration.EffectRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +21,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -39,6 +41,7 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -56,6 +59,7 @@ import java.util.UUID;
 @MethodsReturnNonnullByDefault
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
 
+    private static final double BOUNTY_RATE = 0.2;
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(TravelerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final float CROSSBOW_POWER = 1.6f;
@@ -92,6 +96,27 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         } else {
             doRiftEffect();
             discard();
+        }
+    }
+
+    @Override
+    public void die(DamageSource pCause) {
+        super.die(pCause);
+        if (!level.isClientSide() && getOriginalId() == null) {
+            Entity entity = pCause.getEntity();
+            Player player = null;
+            if (entity instanceof Player) {
+                player = (Player) entity;
+            } else if (entity instanceof TamableAnimal) {
+                LivingEntity owner = ((TamableAnimal) entity).getOwner();
+                if (((TamableAnimal) entity).isTame() && owner instanceof Player) {
+                    player = (Player) owner;
+                }
+            }
+            if (player != null && !level.getGameRules().getBoolean(GameRules.RULE_DISABLE_RAIDS) && player.getRandom().nextDouble() < BOUNTY_RATE) {
+                MobEffectInstance effect = new MobEffectInstance(EffectRegistry.BOUNTY.get(), 120000, 0, false, false, true);
+                player.addEffect(effect);
+            }
         }
     }
 

@@ -47,6 +47,7 @@ public class Multiverse {
         ChunkGeneratorRegistry.GENERATORS.register(bus);
         BiomeSourceRegistry.SOURCES.register(bus);
         SurfaceRuleSourceRegistry.SOURCES.register(bus);
+        EffectRegistry.EFFECTS.register(bus);
 
         BiomeChunkGeneratorProviderTypeRegistry.TYPES.register(bus);
         BiomeDimensionProviderTypeRegistry.TYPES.register(bus);
