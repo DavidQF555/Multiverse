@@ -5,7 +5,6 @@ import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeCurrentC
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeTargetColor;
 import io.github.davidqf555.minecraft.multiverse.client.render.*;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.Minecraft;
@@ -39,7 +38,6 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(TileEntityRegistry.RIFT.get(), dispatcher -> new RiftTileEntityRenderer());
-        event.registerEntityRenderer(EntityRegistry.COLLECTOR.get(), CollectorRenderer<CollectorEntity>::new);
         event.registerEntityRenderer(EntityRegistry.TRAVELER.get(), TravelerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DOPPELGANGER.get(), DoppelgangerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KALEIDITE_CORE.get(), ThrownItemRenderer::new);

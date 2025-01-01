@@ -1,11 +1,8 @@
 {
   "itemGroup.multiverse": "Multiverse",
-  "entity.multiverse.collector": "Collector",
   "entity.multiverse.traveler": "Traveler",
   "entity.multiverse.doppelganger": "Doppelganger",
   "entity.multiverse.kaleidite_core": "Kaleidite Core",
-  "item.multiverse.universal_treasure": "Universal Treasure",
-  "item.multiverse.universal_treasure.lore": "A treasure so immense it attracts entities from other universes",
   "item.multiverse.kaleidite_shard": "Kaleidite Shard",
   "item.multiverse.kaleidite_core": "Kaleidite Core",
   "item.multiverse.dimensional_prism": "Dimensional Prism",
