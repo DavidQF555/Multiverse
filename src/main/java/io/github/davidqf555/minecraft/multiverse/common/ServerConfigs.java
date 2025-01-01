@@ -14,8 +14,8 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange;
-    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange;
+    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorSpawnChance, conquerorDistanceThreshold;
+    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
@@ -89,6 +89,27 @@ public class ServerConfigs {
                 .defineInRange("travelerMaxDoppel", 10, 0, Integer.MAX_VALUE);
         travelerDoppelPeriod = builder.comment("This is the period in ticks that the traveler spawns doppelgangers. ")
                 .defineInRange("travelerDoppelPeriod", 20, 1, Integer.MAX_VALUE);
+        bountyRate = builder.comment("This is the chance that killing a traveler gives the bounty effect.")
+                .defineInRange("bountyRate", 0.3, 0, 1);
+        builder.pop().push("Conqueror");
+        conquerorMinSpawnDist = builder.comment("This is the minimum distance in blocks that a conqueror will spawn a rift above its target. ")
+                .defineInRange("conquerorMinSpawnDist", 8, 0, Double.MAX_VALUE);
+        conquerorMaxSpawnDist = builder.comment("This is the minimum distance in blocks that a conqueror will spawn a rift above its target. Must at least conquerorMinSpawnDist. ")
+                .defineInRange("conquerorMaxSpawnDist", 32, 0, Double.MAX_VALUE);
+        conquerorSpawnChance = builder.comment("This is the chance that a raider will spawn for each individual rift block summoned by the conqueror. ")
+                .defineInRange("conquerorSpawnChance", 0.2, 0, 1);
+        conquerorMobThreshold = builder.comment("This is the number of raiders near (within the same raid or within targeting range) the conqueror before it stops spawning rifts. ")
+                .defineInRange("conquerorMobThreshold", 16, 0, Integer.MAX_VALUE);
+        conquerorDistanceThreshold = builder.comment("This is the minimum distance in blocks that the conqueror will summon rifts. ")
+                .defineInRange("conquerorDistanceThreshold", 8, 0, Double.MAX_VALUE);
+        conquerorCastTime = builder.comment("This is the time in ticks that it takes for a conqueror to summon a rift. ")
+                .defineInRange("conquerorCastTime", 100, 0, Integer.MAX_VALUE);
+        conquerorCooldown = builder.comment("This is the cooldown of a conquerors summoning rifts in ticks. ")
+                .defineInRange("conquerorCooldown", 40, 0, Integer.MAX_VALUE);
+        conquerorSlowFallingDuration = builder.comment("This is the duration in ticks of the slow falling effect given to raiders spawned by a conqueror. Set to 0 to not give any effect.")
+                .defineInRange("conquerorSlowFallingDuration", 100, 0, Integer.MAX_VALUE);
+        conquerorSlowFallingAmplifier = builder.comment("This is the level of the slow falling effect given to raiders spawned by a conqueror. Set to 0 to not give any effect.")
+                .defineInRange("conquerorSlowFallingDuration", 1, 0, Integer.MAX_VALUE);
         builder.pop().push("Miscellaneous");
         travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
                 .defineInRange("travelerSpawnChance", 0.0001, 0, 1);

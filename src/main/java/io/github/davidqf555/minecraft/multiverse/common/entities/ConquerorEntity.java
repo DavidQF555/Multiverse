@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
+import com.mojang.datafixers.util.Pair;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
@@ -37,9 +38,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ConquerorEntity extends SpellcasterIllager {
 
@@ -119,14 +122,15 @@ public class ConquerorEntity extends SpellcasterIllager {
 
     public class SpawnRiftGoal extends SpellcasterUseSpellGoal {
 
-        private static final int MOB_THRESHOLD = 16;
-        private static final double DISTANCE_THRESHOLD = 16;
-        private static final double MIN_DIST = 10;
-        private static final double MAX_DIST = 32;
-        private static final double SPAWN_CHANCE = 0.1;
-        private static final int CAST_TIME = 100;
-        private static final int COOLDOWN = 40;
-        private static final MobEffectInstance SLOW_FALLING = new MobEffectInstance(MobEffects.SLOW_FALLING, 100, 2);
+        private final MobEffectInstance effect;
+
+        public SpawnRiftGoal() {
+            if (ServerConfigs.INSTANCE.conquerorSlowFallingAmplifier.get() <= 0 || ServerConfigs.INSTANCE.conquerorSlowFallingDuration.get() <= 0) {
+                effect = null;
+            } else {
+                effect = new MobEffectInstance(MobEffects.SLOW_FALLING, ServerConfigs.INSTANCE.conquerorSlowFallingDuration.get(), ServerConfigs.INSTANCE.conquerorSlowFallingAmplifier.get() - 1);
+            }
+        }
 
         @Override
         public boolean canUse() {
@@ -138,11 +142,11 @@ public class ConquerorEntity extends SpellcasterIllager {
                 if (raid == null) {
                     return false;
                 }
-                return raid.getTotalRaidersAlive() < MOB_THRESHOLD;
-            } else if (target.distanceToSqr(position()) > DISTANCE_THRESHOLD * DISTANCE_THRESHOLD) {
+                return raid.getTotalRaidersAlive() < ServerConfigs.INSTANCE.conquerorMobThreshold.get();
+            } else if (target.distanceToSqr(position()) > ServerConfigs.INSTANCE.conquerorDistanceThreshold.get() * ServerConfigs.INSTANCE.conquerorDistanceThreshold.get()) {
                 double range = getAttributeValue(Attributes.FOLLOW_RANGE);
                 AABB bounds = AABB.ofSize(getEyePosition(), range * 2, range * 2, range * 2);
-                return level.getEntitiesOfClass(Raider.class, bounds).size() < MOB_THRESHOLD;
+                return level.getEntitiesOfClass(Raider.class, bounds).size() < ServerConfigs.INSTANCE.conquerorMobThreshold.get();
             }
             return false;
         }
@@ -151,7 +155,7 @@ public class ConquerorEntity extends SpellcasterIllager {
         protected void performSpellCasting() {
             Vec3 pos = getRiftTarget();
             RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, pos, block -> {
-                if (getRandom().nextDouble() < SPAWN_CHANCE) {
+                if (getRandom().nextDouble() < ServerConfigs.INSTANCE.conquerorSpawnChance.get()) {
                     spawnAlly(block);
                 }
             });
@@ -163,7 +167,9 @@ public class ConquerorEntity extends SpellcasterIllager {
                 Raider entity = (Raider) type.spawn((ServerLevel) level, null, null, pos, MobSpawnType.REINFORCEMENT, false, false);
                 if (entity != null) {
                     entity.setPortalCooldown();
-                    entity.addEffect(SLOW_FALLING);
+                    if (effect != null) {
+                        entity.addEffect(effect);
+                    }
                     entity.setTarget(getTarget());
                     Raid raid = getCurrentRaid();
                     if (Raids.canJoinRaid(entity, raid)) {
@@ -175,23 +181,39 @@ public class ConquerorEntity extends SpellcasterIllager {
 
         @Nullable
         protected EntityType<?> selectEntityType() {
-            ITag<EntityType<?>> tag = ForgeRegistries.ENTITIES.tags().getTag(MultiverseTags.CONQUEROR_SUMMON);
-            return tag.getRandomElement(getRandom()).orElse(null);
+            List<Pair<Raid.RaiderType, Integer>> weights = new ArrayList<>();
+            int total = 0;
+            for (Raid.RaiderType type : Raid.RaiderType.values()) {
+                int amt = Arrays.stream(type.spawnsPerWaveBeforeBonus).reduce(0, Integer::sum);
+                weights.add(Pair.of(type, amt));
+                total += amt;
+            }
+            if (total <= 0) {
+                return null;
+            }
+            int rand = getRandom().nextInt(total);
+            for (Pair<Raid.RaiderType, Integer> pair : weights) {
+                total -= pair.getSecond();
+                if (rand >= total) {
+                    return pair.getFirst().entityType;
+                }
+            }
+            throw new RuntimeException("should not ever get here");
         }
 
         protected Vec3 getRiftTarget() {
             Vec3 center = getTarget() == null ? getEyePosition() : getTarget().getEyePosition();
-            return EntityUtil.randomAroundAbove(getRandom(), center, MIN_DIST, MAX_DIST);
+            return EntityUtil.randomAroundAbove(getRandom(), center, ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get());
         }
 
         @Override
         protected int getCastingTime() {
-            return CAST_TIME;
+            return ServerConfigs.INSTANCE.conquerorCastTime.get();
         }
 
         @Override
         protected int getCastingInterval() {
-            return COOLDOWN;
+            return ServerConfigs.INSTANCE.conquerorCooldown.get();
         }
 
         @Nullable

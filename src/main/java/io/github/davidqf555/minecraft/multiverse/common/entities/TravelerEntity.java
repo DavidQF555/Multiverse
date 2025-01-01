@@ -59,7 +59,6 @@ import java.util.UUID;
 @MethodsReturnNonnullByDefault
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
 
-    private static final double BOUNTY_RATE = 0.2;
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(TravelerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final float CROSSBOW_POWER = 1.6f;
@@ -113,7 +112,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                     player = (Player) owner;
                 }
             }
-            if (player != null && !level.getGameRules().getBoolean(GameRules.RULE_DISABLE_RAIDS) && player.getRandom().nextDouble() < BOUNTY_RATE) {
+            if (player != null && !level.getGameRules().getBoolean(GameRules.RULE_DISABLE_RAIDS) && player.getRandom().nextDouble() < ServerConfigs.INSTANCE.bountyRate.get()) {
                 MobEffectInstance effect = new MobEffectInstance(EffectRegistry.BOUNTY.get(), 120000, 0, false, false, true);
                 player.addEffect(effect);
             }
