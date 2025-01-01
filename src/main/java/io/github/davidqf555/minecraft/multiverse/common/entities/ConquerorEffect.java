@@ -31,7 +31,7 @@ public class ConquerorEffect extends MobEffect {
                 if (entity != null) {
                     Raid raid = world.getRaids().createOrExtendRaid((ServerPlayer) pLivingEntity);
                     if (raid != null) {
-                        Vec3 pos = EntityUtil.randomAroundAbove(pLivingEntity.getRandom(), Vec3.atBottomCenterOf(raid.getCenter()), 0, 10);
+                        Vec3 pos = EntityUtil.randomAroundAbove(pLivingEntity.getRandom(), Vec3.atBottomCenterOf(raid.getCenter()), 10, 8, 32);
                         entity.setPortalCooldown();
                         RiftCoordinationHelper.placeRandomRift(world, false, pos);
                         raid.joinRaid(raid.getGroupsSpawned(), entity, new BlockPos(pos), false);

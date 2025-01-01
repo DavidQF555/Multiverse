@@ -64,6 +64,11 @@ public class ConquerorEntity extends SpellcasterIllager {
     }
 
     @Override
+    public boolean canChangeDimensions() {
+        return false;
+    }
+
+    @Override
     public IllagerArmPose getArmPose() {
         if (isCastingSpell()) {
             return IllagerArmPose.SPELLCASTING;
@@ -203,7 +208,7 @@ public class ConquerorEntity extends SpellcasterIllager {
 
         protected Vec3 getRiftTarget() {
             Vec3 center = getTarget() == null ? getEyePosition() : getTarget().getEyePosition();
-            return EntityUtil.randomAroundAbove(getRandom(), center, ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get());
+            return EntityUtil.randomAroundAbove(getRandom(), center, ServerConfigs.INSTANCE.conquerorMaxSpawnHDist.get(), ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get());
         }
 
         @Override
