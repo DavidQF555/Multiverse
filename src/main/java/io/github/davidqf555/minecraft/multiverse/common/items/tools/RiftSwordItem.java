@@ -31,8 +31,7 @@ public class RiftSwordItem extends SwordItem {
     public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, ResourceKey<Level> target) {
         look = look.normalize();
         Vec3 center = start.add(look.scale(dist));
-        RiftCoordinationHelper.placeRandomRift(level, target, true, center, look, angle, block -> {
-        });
+        RiftCoordinationHelper.placeRandomRift(level, target, true, width, height, center, look, angle);
     }
 
     @Override

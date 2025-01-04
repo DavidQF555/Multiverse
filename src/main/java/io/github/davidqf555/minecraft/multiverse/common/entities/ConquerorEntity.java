@@ -50,17 +50,26 @@ public class ConquerorEntity extends SpellcasterIllager {
         super(pEntityType, pLevel);
         moveControl = new FlyingMoveControl(this, 90, true);
         setNoGravity(true);
-        setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.KALEIDITE_AXE.get().getDefaultInstance());
+        setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.PRISMATIC_AXE.get().getDefaultInstance());
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 150)
-                .add(Attributes.FLYING_SPEED, 3)
+                .add(Attributes.MAX_HEALTH, 80)
+                .add(Attributes.FLYING_SPEED, 0.4)
+                .add(Attributes.MOVEMENT_SPEED, 0.4)
+                .add(Attributes.ARMOR, 11)
                 .add(Attributes.FOLLOW_RANGE, 64)
-                .add(Attributes.ATTACK_DAMAGE, 5)
-                .add(Attributes.ATTACK_KNOCKBACK, 10)
+                .add(Attributes.ATTACK_DAMAGE, 1)
+                .add(Attributes.ATTACK_KNOCKBACK, 5)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(ForgeMod.ENTITY_GRAVITY.get(), 0);
+    }
+
+    @Override
+    public void setSpeed(float pSpeed) {
+        super.setSpeed(pSpeed);
+        flyingSpeed = pSpeed;
     }
 
     @Override
@@ -75,14 +84,14 @@ public class ConquerorEntity extends SpellcasterIllager {
         } else if (isAggressive()) {
             return IllagerArmPose.ATTACKING;
         } else {
-            return isCelebrating() ? IllagerArmPose.CELEBRATING : IllagerArmPose.CROSSED;
+            return isCelebrating() ? IllagerArmPose.CELEBRATING : IllagerArmPose.NEUTRAL;
         }
     }
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         FlyingPathNavigation navigator = new FlyingPathNavigation(this, pLevel);
-        navigator.setCanFloat(true);
+        navigator.setCanFloat(false);
         return navigator;
     }
 
@@ -159,33 +168,33 @@ public class ConquerorEntity extends SpellcasterIllager {
         @Override
         protected void performSpellCasting() {
             Vec3 pos = getRiftTarget();
-            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, pos, block -> {
-                if (getRandom().nextDouble() < ServerConfigs.INSTANCE.conquerorSpawnChance.get()) {
-                    spawnAlly(block);
-                }
-            });
+            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, pos);
+            BlockPos block = new BlockPos(pos);
+            for (int i = 0; i < ServerConfigs.INSTANCE.conquerorSpawnCount.get(); i++) {
+                spawnAlly(block);
+            }
         }
 
         protected void spawnAlly(BlockPos pos) {
-            EntityType<?> type = selectEntityType();
-            if (type != null && type.getBaseClass().isAssignableFrom(Raider.class)) {
+            EntityType<? extends Raider> type = selectEntityType();
+            if (type != null) {
                 Raider entity = (Raider) type.spawn((ServerLevel) level, null, null, pos, MobSpawnType.REINFORCEMENT, false, false);
                 if (entity != null) {
+                    Raid raid = getCurrentRaid();
+                    if (Raids.canJoinRaid(entity, raid)) {
+                        raid.joinRaid(raid.getGroupsSpawned(), entity, null, true);
+                    }
                     entity.setPortalCooldown();
                     if (effect != null) {
                         entity.addEffect(effect);
                     }
                     entity.setTarget(getTarget());
-                    Raid raid = getCurrentRaid();
-                    if (Raids.canJoinRaid(entity, raid)) {
-                        raid.joinRaid(raid.getGroupsSpawned(), entity, null, true);
-                    }
                 }
             }
         }
 
         @Nullable
-        protected EntityType<?> selectEntityType() {
+        protected EntityType<? extends Raider> selectEntityType() {
             List<Pair<Raid.RaiderType, Integer>> weights = new ArrayList<>();
             int total = 0;
             for (Raid.RaiderType type : Raid.RaiderType.values()) {

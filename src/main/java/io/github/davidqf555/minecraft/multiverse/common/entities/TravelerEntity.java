@@ -78,10 +78,17 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     public static AttributeSupplier.Builder createAttributes() {
         return createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 150)
-                .add(Attributes.FLYING_SPEED, 2)
+                .add(Attributes.FLYING_SPEED, 0.35)
+                .add(Attributes.MOVEMENT_SPEED, 0.35)
                 .add(Attributes.FOLLOW_RANGE, 40)
                 .add(Attributes.ATTACK_DAMAGE, 5)
                 .add(ForgeMod.ENTITY_GRAVITY.get(), 0);
+    }
+
+    @Override
+    public void setSpeed(float pSpeed) {
+        super.setSpeed(pSpeed);
+        flyingSpeed = pSpeed;
     }
 
     private void doRiftEffect() {
@@ -141,7 +148,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     protected PathNavigation createNavigation(Level world) {
         FlyingPathNavigation navigator = new FlyingPathNavigation(this, world);
-        navigator.setCanFloat(true);
+        navigator.setCanFloat(false);
         return navigator;
     }
 

@@ -22,11 +22,12 @@ public class ConquerorRenderer extends IllagerRenderer<ConquerorEntity> {
         addLayer(new ItemInHandLayer<>(this) {
             @Override
             public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, ConquerorEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-                if (pLivingEntity.isAggressive()) {
+                if (!pLivingEntity.isCastingSpell()) {
                     super.render(pMatrixStack, pBuffer, pPackedLight, pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks, pAgeInTicks, pNetHeadYaw, pHeadPitch);
                 }
             }
         });
+        getModel().getHat().visible = true;
     }
 
     @Nonnull

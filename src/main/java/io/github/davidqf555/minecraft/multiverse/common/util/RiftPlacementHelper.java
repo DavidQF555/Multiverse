@@ -25,7 +25,7 @@ public final class RiftPlacementHelper {
     private RiftPlacementHelper() {
     }
 
-    public static void place(LevelWriter writer, LevelReader reader, BlockState state, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, boolean drop, Consumer<BlockPos> effect) {
+    public static void place(LevelWriter writer, LevelReader reader, BlockState state, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, boolean drop) {
         normal = normal.normalize();
         if (normal.lengthSqr() == 0) {
             normal = new Vec3(0, 1, 0);
@@ -53,7 +53,6 @@ public final class RiftPlacementHelper {
                         ((RiftTileEntity) tile).setVertices(polygon);
                         ((RiftTileEntity) tile).setNormal(n);
                     }
-                    effect.accept(pos);
                 }
             }
         });
