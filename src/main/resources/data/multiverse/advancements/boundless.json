@@ -1,5 +1,5 @@
 {
-  "parent": "multiverse:collector",
+  "parent": "multiverse:traveler",
   "display": {
     "icon": {
       "item": "multiverse:prismatic_sword"

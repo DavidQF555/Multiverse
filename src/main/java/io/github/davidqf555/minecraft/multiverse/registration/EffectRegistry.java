@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.ConquerorEffect;
+import io.github.davidqf555.minecraft.multiverse.common.effects.ConquerorEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,7 +14,7 @@ public final class EffectRegistry {
 
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Multiverse.MOD_ID);
 
-    public static final RegistryObject<ConquerorEffect> BOUNTY = register("bounty", () -> new ConquerorEffect(MobEffectCategory.NEUTRAL, 0xFFFFFF));
+    public static final RegistryObject<ConquerorEffect> BOUNTY = register("bounty", () -> new ConquerorEffect(MobEffectCategory.NEUTRAL, 0x00D5FF));
 
     private EffectRegistry() {
     }

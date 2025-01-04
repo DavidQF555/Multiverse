@@ -5,10 +5,10 @@
       "item": "multiverse:kaleidite_core"
     },
     "title": {
-      "translate": "advancements.multiverse.tear.title"
+      "translate": "advancements.multiverse.rupture.title"
     },
     "description": {
-      "translate": "advancements.multiverse.tear.description"
+      "translate": "advancements.multiverse.rupture.description"
     }
   },
   "criteria": {

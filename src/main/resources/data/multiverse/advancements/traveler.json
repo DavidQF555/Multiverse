@@ -1,8 +1,8 @@
 {
-  "parent": "multiverse:kaleidite",
+  "parent": "multiverse:multiverse",
   "display": {
     "icon": {
-      "item": "multiverse:multiversal_beacon"
+      "item": "multiverse:dimensional_prism"
     },
     "title": {
       "translate": "advancements.multiverse.traveler.title"

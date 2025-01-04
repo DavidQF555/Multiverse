@@ -1,5 +1,5 @@
 {
-  "parent": "multiverse:traveler",
+  "parent": "multiverse:conquest",
   "display": {
     "icon": {
       "item": "multiverse:kaleidite_crossbow"

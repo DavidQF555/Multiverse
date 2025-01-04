@@ -1,5 +1,6 @@
-package io.github.davidqf555.minecraft.multiverse.common.entities;
+package io.github.davidqf555.minecraft.multiverse.common.effects;
 
+import io.github.davidqf555.minecraft.multiverse.common.entities.ConquerorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;

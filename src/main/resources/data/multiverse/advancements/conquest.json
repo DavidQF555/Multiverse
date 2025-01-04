@@ -1,14 +1,14 @@
 {
-  "parent": "multiverse:hoarder",
+  "parent": "multiverse:bounty",
   "display": {
     "icon": {
-      "item": "multiverse:dimensional_prism"
+      "item": "multiverse:multiversal_beacon"
     },
     "title": {
-      "translate": "advancements.multiverse.collector.title"
+      "translate": "advancements.multiverse.conquest.title"
     },
     "description": {
-      "translate": "advancements.multiverse.collector.description"
+      "translate": "advancements.multiverse.conquest.description"
     },
     "frame": "challenge"
   },
@@ -20,7 +20,7 @@
           {
             "condition": "entity_properties",
             "predicate": {
-              "type": "multiverse:collector"
+              "type": "multiverse:conqueror"
             },
             "entity": "this"
           }
