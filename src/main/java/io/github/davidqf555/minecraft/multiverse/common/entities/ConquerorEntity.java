@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNavigator;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.SpellcasterIllager;
@@ -53,11 +53,10 @@ public class ConquerorEntity extends SpellcasterIllager {
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 80)
+                .add(Attributes.MAX_HEALTH, 200)
                 .add(Attributes.FLYING_SPEED, 0.4)
                 .add(Attributes.MOVEMENT_SPEED, 0.4)
                 .add(Attributes.ARMOR, 11)
-                .add(Attributes.FOLLOW_RANGE, 64)
                 .add(Attributes.ATTACK_DAMAGE, 1)
                 .add(Attributes.ATTACK_KNOCKBACK, 5)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
@@ -88,7 +87,7 @@ public class ConquerorEntity extends SpellcasterIllager {
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
-        FlyingPathNavigation navigator = new FlyingPathNavigation(this, pLevel);
+        NoGravityNavigator navigator = new NoGravityNavigator(this, pLevel);
         navigator.setCanFloat(false);
         return navigator;
     }
@@ -99,9 +98,9 @@ public class ConquerorEntity extends SpellcasterIllager {
         goalSelector.addGoal(0, new SpellcasterCastingSpellGoal());
         goalSelector.addGoal(1, new SpawnRiftGoal());
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 1, false));
-        goalSelector.addGoal(3, new RandomStrollGoal(this, 0.6));
-        goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 3, 1));
-        goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8));
+        goalSelector.addGoal(6, new RandomStrollGoal(this, 0.6));
+        goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 3, 1));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8));
         targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(300));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false).setUnseenMemoryTicks(300));

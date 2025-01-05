@@ -105,11 +105,11 @@ public class ServerConfigs {
         conquerorCastTime = builder.comment("This is the time in ticks that it takes for a conqueror to summon a rift. ")
                 .defineInRange("conquerorCastTime", 100, 0, Integer.MAX_VALUE);
         conquerorCooldown = builder.comment("This is the cooldown of a conquerors summoning rifts in ticks. ")
-                .defineInRange("conquerorCooldown", 300, 0, Integer.MAX_VALUE);
+                .defineInRange("conquerorCooldown", 100, 0, Integer.MAX_VALUE);
         conquerorSlowFallingDuration = builder.comment("This is the duration in ticks of the slow falling effect given to raiders spawned by a conqueror. Set to 0 to not give any effect.")
                 .defineInRange("conquerorSlowFallingDuration", 200, 0, Integer.MAX_VALUE);
         conquerorSlowFallingAmplifier = builder.comment("This is the level of the slow falling effect given to raiders spawned by a conqueror. Set to 0 to not give any effect.")
-                .defineInRange("conquerorSlowFallingDuration", 2, 0, Integer.MAX_VALUE);
+                .defineInRange("conquerorSlowFallingAmplifier", 1, 0, Integer.MAX_VALUE);
         conquerorSpawnCount = builder.comment("This is the number of raiders that spawn from every rift the conqueror summons. ")
                 .defineInRange("conquerorSpawnCount", 3, 0, Integer.MAX_VALUE);
         builder.pop().push("Miscellaneous");

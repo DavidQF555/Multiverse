@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNavigator;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.registration.EffectRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -30,7 +31,6 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.AbstractIllager;
@@ -147,7 +147,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     protected PathNavigation createNavigation(Level world) {
-        FlyingPathNavigation navigator = new FlyingPathNavigation(this, world);
+        NoGravityNavigator navigator = new NoGravityNavigator(this, world);
         navigator.setCanFloat(false);
         return navigator;
     }
@@ -158,9 +158,9 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         goalSelector.addGoal(0, new RangedCrossbowAttackGoal<>(this, 1, 16));
         goalSelector.addGoal(1, new MeleeAttackGoal(this, 1, true));
         goalSelector.addGoal(2, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));
-        goalSelector.addGoal(3, new WaterAvoidingRandomFlyingGoal(this, 1));
-        goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8));
-        goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+        goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
+        goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8));
+        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         targetSelector.addGoal(0, new HurtByTargetGoal(this));
         targetSelector.addGoal(1, new CopyOriginalGoal(TargetingConditions.forCombat()));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, true));
