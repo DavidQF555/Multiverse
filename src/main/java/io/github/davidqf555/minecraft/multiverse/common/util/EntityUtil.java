@@ -4,15 +4,31 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.Set;
 
 public final class EntityUtil {
 
     private EntityUtil() {
+    }
+
+    public static Vec3 getRandomSpawnAbove(ServerLevel world, Random rand, Vec3 center, double max, double minY, double maxY, Set<EntityType<?>> types) {
+        again:
+        for (int i = 0; i < 50; i++) {
+            Vec3 pos = randomAroundAbove(rand, center, max, minY, maxY);
+            for (EntityType<?> type : types) {
+                if (!canSpawnPosition(world, pos, type)) {
+                    continue again;
+                }
+            }
+            return pos;
+        }
+        return randomAroundAbove(rand, center, max, minY, maxY);
     }
 
     public static Vec3 randomAround(Random rand, Vec3 center, double min, double max) {
@@ -53,7 +69,7 @@ public final class EntityUtil {
             for (int i = 0; i < 50; i++) {
                 BlockPos block = new BlockPos(randomAround(rand, Vec3.atBottomCenterOf(center), min, max));
                 Vec3 pos = Vec3.atBottomCenterOf(block);
-                if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, block, type) && world.noCollision(type.getAABB(pos.x(), pos.y(), pos.z()))) {
+                if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, block, type) && canSpawnPosition(world, pos, type)) {
                     entity.setPos(pos);
                     if (!(entity instanceof Mob) || !ForgeEventFactory.doSpecialSpawn((Mob) entity, (LevelAccessor) world, (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), null, spawn)) {
                         world.addFreshEntityWithPassengers(entity);
@@ -63,6 +79,11 @@ public final class EntityUtil {
             }
         }
         return null;
+    }
+
+    public static boolean canSpawnPosition(ServerLevel world, Vec3 pos, EntityType<?> type) {
+        AABB bounds = type.getAABB(pos.x(), pos.y(), pos.z());
+        return world.noCollision(bounds);
     }
 
 }

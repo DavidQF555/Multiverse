@@ -6,8 +6,10 @@ import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -59,7 +61,8 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
         if (level instanceof ServerLevel && isAlive()) {
-            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, position());
+            Entity owner = getOwner();
+            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, position(), owner instanceof Mob);
             discard();
         }
     }

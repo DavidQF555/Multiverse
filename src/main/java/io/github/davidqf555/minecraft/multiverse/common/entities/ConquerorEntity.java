@@ -40,9 +40,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ConquerorEntity extends SpellcasterIllager {
 
@@ -167,18 +165,15 @@ public class ConquerorEntity extends SpellcasterIllager {
 
         @Override
         protected void performSpellCasting() {
-            Vec3 pos = getRiftTarget();
-            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, pos);
-            BlockPos block = new BlockPos(pos);
+            Map<EntityType<?>, Integer> entities = new HashMap<>();
             for (int i = 0; i < ServerConfigs.INSTANCE.conquerorSpawnCount.get(); i++) {
-                spawnAlly(block);
+                entities.compute(selectEntityType(), (k, v) -> v == null ? 1 : v + 1);
             }
-        }
-
-        protected void spawnAlly(BlockPos pos) {
-            EntityType<? extends Raider> type = selectEntityType();
-            if (type != null) {
-                Raider entity = (Raider) type.spawn((ServerLevel) level, null, null, pos, MobSpawnType.REINFORCEMENT, false, false);
+            Vec3 pos = getRiftTarget(entities.keySet());
+            RiftCoordinationHelper.placeRandomRift((ServerLevel) level, false, pos, true);
+            BlockPos block = new BlockPos(pos);
+            entities.forEach((type, n) -> {
+                Raider entity = (Raider) type.spawn((ServerLevel) level, null, null, block, MobSpawnType.REINFORCEMENT, false, false);
                 if (entity != null) {
                     Raid raid = getCurrentRaid();
                     if (Raids.canJoinRaid(entity, raid)) {
@@ -190,7 +185,7 @@ public class ConquerorEntity extends SpellcasterIllager {
                     }
                     entity.setTarget(getTarget());
                 }
-            }
+            });
         }
 
         @Nullable
@@ -215,9 +210,9 @@ public class ConquerorEntity extends SpellcasterIllager {
             throw new RuntimeException("should not ever get here");
         }
 
-        protected Vec3 getRiftTarget() {
+        protected Vec3 getRiftTarget(Set<EntityType<?>> types) {
             Vec3 center = getTarget() == null ? getEyePosition() : getTarget().getEyePosition();
-            return EntityUtil.randomAroundAbove(getRandom(), center, ServerConfigs.INSTANCE.conquerorMaxSpawnHDist.get(), ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get());
+            return EntityUtil.getRandomSpawnAbove((ServerLevel) level, getRandom(), center, ServerConfigs.INSTANCE.conquerorMaxSpawnHDist.get(), ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get(), types);
         }
 
         @Override

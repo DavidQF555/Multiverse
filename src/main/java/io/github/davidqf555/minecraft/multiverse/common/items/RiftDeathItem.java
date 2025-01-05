@@ -79,7 +79,7 @@ public class RiftDeathItem extends Item implements IDeathEffect, ITeleporter {
         Vec3 to = Vec3.atBottomCenterOf(clamped);
         AABB box = AABB.ofSize(to.add(0, entity.getBbHeight() / 2, 0), entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
         BlockPos.betweenClosedStream(box)
-                .filter(pos -> RiftPlacementHelper.canReplace(destWorld, pos))
+                .filter(pos -> !destWorld.isOutsideBuildHeight(pos) && RiftPlacementHelper.canDestroy(destWorld, pos, destWorld.getBlockState(pos)))
                 .forEach(pos -> destWorld.destroyBlock(pos, true));
         return new PortalInfo(to, Vec3.ZERO, entity.getYRot(), entity.getXRot());
     }

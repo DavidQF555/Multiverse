@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,21 +40,21 @@ public final class RiftCoordinationHelper {
                 .min(Comparator.comparingDouble(center::distSqr));
     }
 
-    public static Vec3 getOrCreateRift(ServerLevel world, ResourceKey<Level> target, Vec3 center, boolean temporary, int distance) {
+    public static Vec3 getOrCreateRift(ServerLevel world, ResourceKey<Level> target, Vec3 center, boolean temporary, int distance, RiftPlacementHelper.ReplacementType replacement) {
         return getClosestRift(world, target, new BlockPos(center), distance)
                 .map(Vec3::atCenterOf)
                 .orElseGet(() -> {
-                    placeRandomRift(world, target, temporary, center);
+                    placeRandomRift(world, target, temporary, center, replacement);
                     return center;
                 });
     }
 
-    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, double width, double height, Vec3 center, Vec3 normal, float angle) {
+    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, double width, double height, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
         doRiftSpawnEffect(world, new BlockPos(center));
-        RiftPlacementHelper.place(world, world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, true);
+        RiftPlacementHelper.place(world, world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, replacement);
     }
 
-    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center, Vec3 normal, float angle) {
+    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
         Random rand = world.getRandom();
         double minWidth = ServerConfigs.INSTANCE.minRiftWidth.get();
         double maxWidth = ServerConfigs.INSTANCE.maxRiftWidth.get();
@@ -61,18 +62,19 @@ public final class RiftCoordinationHelper {
         double maxHeight = ServerConfigs.INSTANCE.maxRiftHeight.get();
         double width = minWidth + rand.nextDouble(maxWidth - minWidth);
         double height = minHeight + rand.nextDouble(maxHeight - minHeight);
-        placeRandomRift(world, target, temporary, width, height, center, normal, angle);
+        placeRandomRift(world, target, temporary, width, height, center, normal, angle, replacement);
     }
 
-    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center) {
+    public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center, RiftPlacementHelper.ReplacementType replacement) {
         Random rand = world.getRandom();
         Vec3 normal = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         float angle = rand.nextFloat(180);
-        placeRandomRift(world, target, temporary, center, normal, angle);
+        placeRandomRift(world, target, temporary, center, normal, angle, replacement);
     }
 
-    public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center) {
-        placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())), temporary, center);
+    public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center, boolean mob) {
+        RiftPlacementHelper.ReplacementType replacement = !mob || world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? RiftPlacementHelper.ReplacementType.DESTROY : RiftPlacementHelper.ReplacementType.NONE;
+        placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())), temporary, center, replacement);
     }
 
     public static void doRiftSpawnEffect(Level world, BlockPos pos) {

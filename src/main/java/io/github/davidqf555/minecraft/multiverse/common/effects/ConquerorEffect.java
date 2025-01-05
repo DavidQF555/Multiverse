@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.effects;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ConquerorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
@@ -13,6 +14,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Set;
 
 public class ConquerorEffect extends MobEffect {
 
@@ -32,9 +35,9 @@ public class ConquerorEffect extends MobEffect {
                 if (entity != null) {
                     Raid raid = world.getRaids().createOrExtendRaid((ServerPlayer) pLivingEntity);
                     if (raid != null) {
-                        Vec3 pos = EntityUtil.randomAroundAbove(pLivingEntity.getRandom(), Vec3.atBottomCenterOf(raid.getCenter()), 10, 8, 32);
+                        Vec3 pos = EntityUtil.getRandomSpawnAbove(world, pLivingEntity.getRandom(), Vec3.atBottomCenterOf(raid.getCenter()), ServerConfigs.INSTANCE.conquerorMaxSpawnHDist.get(), ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get(), Set.of(EntityRegistry.CONQUEROR.get()));
                         entity.setPortalCooldown();
-                        RiftCoordinationHelper.placeRandomRift(world, false, pos);
+                        RiftCoordinationHelper.placeRandomRift(world, false, pos, true);
                         raid.joinRaid(raid.getGroupsSpawned(), entity, new BlockPos(pos), false);
                         raid.setLeader(raid.getGroupsSpawned(), entity);
                         pLivingEntity.removeEffect(this);

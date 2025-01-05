@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.items.tools;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.MultiversalToolHelper;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -31,7 +32,7 @@ public class RiftSwordItem extends SwordItem {
     public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, ResourceKey<Level> target) {
         look = look.normalize();
         Vec3 center = start.add(look.scale(dist));
-        RiftCoordinationHelper.placeRandomRift(level, target, true, width, height, center, look, angle);
+        RiftCoordinationHelper.placeRandomRift(level, target, true, width, height, center, look, angle, RiftPlacementHelper.ReplacementType.DESTROY);
     }
 
     @Override

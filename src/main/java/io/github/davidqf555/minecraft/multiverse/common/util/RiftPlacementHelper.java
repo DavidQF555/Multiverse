@@ -25,20 +25,21 @@ public final class RiftPlacementHelper {
     private RiftPlacementHelper() {
     }
 
-    public static void place(LevelWriter writer, LevelReader reader, BlockState state, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, boolean drop) {
+    public static void place(LevelWriter writer, LevelReader reader, BlockState rift, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, ReplacementType replacement) {
         normal = normal.normalize();
         if (normal.lengthSqr() == 0) {
             normal = new Vec3(0, 1, 0);
         }
         Vec3 n = normal;
         Vec3[][] vertices = calculateVertices(center, n, angle, width, height);
-        iterate(vertices, pos -> {
-            if (canReplace(reader, pos)) {
+        iterate(vertices, reader.getMinBuildHeight(), reader.getMaxBuildHeight(), pos -> {
+            BlockState state = reader.getBlockState(pos);
+            if (canDestroy(reader, pos, state) && (replacement != ReplacementType.NONE || canReplace(state))) {
                 Vec3[] polygon = calculateSectionPolygon(vertices, n, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
                 if (polygon.length >= 3) {
-                    BlockState base = state;
+                    BlockState base = rift;
                     Fluid fluid = reader.getFluidState(pos).getType();
-                    if (drop) {
+                    if (replacement == ReplacementType.DESTROY) {
                         writer.destroyBlock(pos, true);
                     }
                     if (fluid == Fluids.WATER) {
@@ -58,8 +59,12 @@ public final class RiftPlacementHelper {
         });
     }
 
-    public static boolean canReplace(LevelReader reader, BlockPos pos) {
-        return !reader.isOutsideBuildHeight(pos) && reader.getBlockState(pos).getDestroySpeed(reader, pos) != -1;
+    public static boolean canDestroy(LevelReader reader, BlockPos pos, BlockState state) {
+        return state.getDestroySpeed(reader, pos) != -1;
+    }
+
+    public static boolean canReplace(BlockState state) {
+        return state.isAir();
     }
 
     private static Vec3[][] calculateVertices(Vec3 center, Vec3 normal, float angle, double width, double height) {
@@ -88,12 +93,20 @@ public final class RiftPlacementHelper {
         return vertices;
     }
 
-    private static void iterate(Vec3[][] vertices, Consumer<BlockPos> effect) {
+    private static void iterate(Vec3[][] vertices, int minBuild, int maxBuild, Consumer<BlockPos> effect) {
         double[] allY = Arrays.stream(vertices[0]).mapToDouble(Vec3::y).sorted().toArray();
-        int i = 0;
+        int i;
+        for (i = 0; i < allY.length; i++) {
+            if (allY[i] > minBuild) {
+                break;
+            }
+        }
         double minY = allY[0];
         double maxY = allY[allY.length - 1];
-        for (int y = Mth.floor(minY); y <= maxY; y++) {
+        int iMin = Math.max(Mth.floor(minY), minBuild);
+        int iMax = Math.min(Mth.floor(maxY), maxBuild - 1);
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int y = iMin; y <= iMax; y++) {
             List<Double> crit = new ArrayList<>();
             if (y >= minY) {
                 crit.add((double) y);
@@ -123,7 +136,6 @@ public final class RiftPlacementHelper {
                     }
                 }
             }
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             pos.setY(y);
             iterate2D(points, (x, z) -> {
                 pos.setX(x);
@@ -439,6 +451,14 @@ public final class RiftPlacementHelper {
     }
 
     private record Point2D(double x, double y) {
+    }
+
+    public enum ReplacementType {
+
+        DESTROY,
+        REMOVE,
+        NONE
+
     }
 
 }

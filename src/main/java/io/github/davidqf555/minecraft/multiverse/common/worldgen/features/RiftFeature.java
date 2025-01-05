@@ -35,7 +35,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         Vec3 normal = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         float angle = rand.nextFloat(180);
         ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(rand, Optional.of(reader.getLevel().dimension()));
-        RiftPlacementHelper.place(reader, reader, state, target, center, normal, angle, width, height, false);
+        RiftPlacementHelper.place(reader, reader, state, target, center, normal, angle, width, height, RiftPlacementHelper.ReplacementType.REMOVE);
         return true;
     }
 
