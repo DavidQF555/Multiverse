@@ -46,16 +46,15 @@ public class ConquerorEntity extends SpellcasterIllager {
 
     public ConquerorEntity(EntityType<? extends ConquerorEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        moveControl = new FlyingMoveControl(this, 90, true);
-        setNoGravity(true);
+        moveControl = new FlyingMoveControl(this, 20, true);
         setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.PRISMATIC_AXE.get().getDefaultInstance());
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 200)
-                .add(Attributes.FLYING_SPEED, 0.4)
-                .add(Attributes.MOVEMENT_SPEED, 0.4)
+                .add(Attributes.FLYING_SPEED, 0.2)
+                .add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.ARMOR, 11)
                 .add(Attributes.ATTACK_DAMAGE, 1)
                 .add(Attributes.ATTACK_KNOCKBACK, 5)
@@ -88,7 +87,7 @@ public class ConquerorEntity extends SpellcasterIllager {
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         NoGravityNavigator navigator = new NoGravityNavigator(this, pLevel);
-        navigator.setCanFloat(false);
+        navigator.setCanFloat(true);
         return navigator;
     }
 
@@ -97,8 +96,8 @@ public class ConquerorEntity extends SpellcasterIllager {
         super.registerGoals();
         goalSelector.addGoal(0, new SpellcasterCastingSpellGoal());
         goalSelector.addGoal(1, new SpawnRiftGoal());
-        goalSelector.addGoal(2, new MeleeAttackGoal(this, 1, false));
-        goalSelector.addGoal(6, new RandomStrollGoal(this, 0.6));
+        goalSelector.addGoal(2, new MeleeAttackGoal(this, 3, false));
+        goalSelector.addGoal(6, new RandomStrollGoal(this, 1));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 3, 1));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8));
         targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());

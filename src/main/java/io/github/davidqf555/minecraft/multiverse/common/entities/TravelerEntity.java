@@ -67,9 +67,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     public TravelerEntity(EntityType<? extends TravelerEntity> type, Level world) {
         super(type, world);
-        moveControl = new FlyingMoveControl(this, 90, true);
+        moveControl = new FlyingMoveControl(this, 20, true);
         bar = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.PROGRESS);
-        setNoGravity(true);
         setPathfindingMalus(BlockPathTypes.LAVA, 8);
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0);
@@ -78,9 +77,9 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     public static AttributeSupplier.Builder createAttributes() {
         return createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 150)
-                .add(Attributes.FLYING_SPEED, 0.35)
-                .add(Attributes.MOVEMENT_SPEED, 0.35)
-                .add(Attributes.FOLLOW_RANGE, 40)
+                .add(Attributes.FLYING_SPEED, 0.2)
+                .add(Attributes.MOVEMENT_SPEED, 0.2)
+                .add(Attributes.FOLLOW_RANGE, 48)
                 .add(Attributes.ATTACK_DAMAGE, 5)
                 .add(ForgeMod.ENTITY_GRAVITY.get(), 0);
     }
@@ -148,7 +147,8 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     protected PathNavigation createNavigation(Level world) {
         NoGravityNavigator navigator = new NoGravityNavigator(this, world);
-        navigator.setCanFloat(false);
+        navigator.setCanFloat(true);
+        navigator.setCanPassDoors(true);
         return navigator;
     }
 
