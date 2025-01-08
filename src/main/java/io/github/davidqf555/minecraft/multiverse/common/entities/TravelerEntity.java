@@ -1,9 +1,11 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNavigator;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.registration.EffectRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -47,6 +49,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -60,7 +63,6 @@ import java.util.UUID;
 public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob {
 
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(TravelerEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final float CROSSBOW_POWER = 1.6f;
     private final ServerBossEvent bar;
     private UUID original;
@@ -90,20 +92,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         flyingSpeed = pSpeed;
     }
 
-    private void doRiftEffect() {
-        level.broadcastEntityEvent(this, RIFT_PARTICLES_EVENT);
-    }
-
-    @Override
-    protected void tickDeath() {
-        if (level.isClientSide() || getOriginalId() == null) {
-            super.tickDeath();
-        } else {
-            doRiftEffect();
-            discard();
-        }
-    }
-
     @Override
     public void die(DamageSource pCause) {
         super.die(pCause);
@@ -128,14 +116,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
         return super.isInvulnerableTo(pSource) || pSource.isFire() || pSource == DamageSource.DROWN;
-    }
-
-    @Override
-    public void handleEntityEvent(byte b) {
-        if (b == RIFT_PARTICLES_EVENT) {
-            ClientHelper.addRiftParticles(Optional.empty(), getEyePosition());
-        }
-        super.handleEntityEvent(b);
     }
 
     @Override
@@ -194,16 +174,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    protected boolean shouldDropExperience() {
-        return getOriginalId() == null;
-    }
-
-    @Override
-    protected boolean shouldDropLoot() {
-        return getOriginalId() == null;
-    }
-
-    @Override
     public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
         return false;
     }
@@ -257,9 +227,10 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
             if (level.getGameTime() % ServerConfigs.INSTANCE.travelerDoppelPeriod.get() == 0 && target != null && getDoppelgangers().size() < ServerConfigs.INSTANCE.travelerMaxDoppel.get()) {
                 Entity clone = EntityUtil.randomSpawn(getType(), (ServerLevel) level, target.blockPosition(), ServerConfigs.INSTANCE.travelerMinRange.get(), ServerConfigs.INSTANCE.travelerMaxRange.get(), MobSpawnType.REINFORCEMENT);
                 if (clone instanceof TravelerEntity) {
+                    SummonedData.setSummoned((Mob) clone, true);
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
-                    ((TravelerEntity) clone).doRiftEffect();
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> clone), new RiftParticlesPacket(Optional.empty(), clone.getEyePosition()));
                 }
             }
         } else if (getOriginal() == null) {

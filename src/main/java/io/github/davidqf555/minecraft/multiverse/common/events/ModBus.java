@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.events;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
+import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.Util;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -24,6 +26,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class ModBus {
 
     private ModBus() {
+    }
+
+    @SubscribeEvent
+    public static void onRegistryCapability(RegisterCapabilitiesEvent event) {
+        event.register(SummonedData.class);
     }
 
     @SubscribeEvent

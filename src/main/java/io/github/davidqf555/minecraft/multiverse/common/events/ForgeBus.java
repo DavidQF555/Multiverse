@@ -4,7 +4,10 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.capabilities.NBTCapabilityProvider;
+import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.ShapeDimensionProvider;
@@ -14,28 +17,47 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ForgeBus {
 
+    private static final ResourceLocation SUMMONED_DATA = new ResourceLocation(Multiverse.MOD_ID, "summoned");
+
     private ForgeBus() {
+    }
+
+    @SubscribeEvent
+    public static void onRaiderAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Raider) {
+            event.addCapability(SUMMONED_DATA, new NBTCapabilityProvider<>(SummonedData.CAPABILITY, new SummonedData()));
+        }
     }
 
     @SubscribeEvent
@@ -82,6 +104,31 @@ public final class ForgeBus {
                 event.setCanceled(true);
             }
             off.split(1);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLateLivingDeath(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (!event.isCanceled() && entity instanceof Mob && !entity.level.isClientSide() && SummonedData.isSummoned((Mob) entity)) {
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()));
+            entity.discard();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingExperienceDrop(LivingExperienceDropEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (entity instanceof Mob && !entity.level.isClientSide() && SummonedData.isSummoned((Mob) entity)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDrops(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (entity instanceof Mob && !entity.level.isClientSide() && SummonedData.isSummoned((Mob) entity)) {
+            event.setCanceled(true);
         }
     }
 

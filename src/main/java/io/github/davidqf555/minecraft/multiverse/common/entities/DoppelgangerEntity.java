@@ -1,11 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -42,7 +44,6 @@ import java.util.UUID;
 public class DoppelgangerEntity extends PathfinderMob {
 
     private static final EntityDataAccessor<Optional<UUID>> ORIGINAL = SynchedEntityData.defineId(DoppelgangerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final byte RIFT_PARTICLES_EVENT = 50;
     private static final double GEAR_RATE = 0.8;
     private static final float ENCHANT_RATE = 0.5f;
 
@@ -61,7 +62,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
         T entity = EntityUtil.randomSpawn(type, player.getLevel(), center, minOffset, maxOffset, MobSpawnType.REINFORCEMENT);
         if (entity != null) {
-            entity.doRiftEffect();
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()));
             entity.setOriginal(player);
         }
         return entity;
@@ -167,28 +168,15 @@ public class DoppelgangerEntity extends PathfinderMob {
         }
     }
 
-    protected void doRiftEffect() {
-        level.broadcastEntityEvent(this, RIFT_PARTICLES_EVENT);
-    }
-
     @Override
     protected void tickDeath() {
         if (level.isClientSide()) {
             super.tickDeath();
         } else {
-            doRiftEffect();
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new RiftParticlesPacket(Optional.empty(), getEyePosition()));
             discard();
         }
     }
-
-    @Override
-    public void handleEntityEvent(byte b) {
-        if (b == RIFT_PARTICLES_EVENT) {
-            ClientHelper.addRiftParticles(Optional.empty(), getEyePosition());
-        }
-        super.handleEntityEvent(b);
-    }
-
 
     @Nullable
     public Player getOriginal() {

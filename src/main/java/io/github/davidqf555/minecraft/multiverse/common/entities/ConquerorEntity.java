@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNavigator;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
@@ -182,6 +183,7 @@ public class ConquerorEntity extends SpellcasterIllager {
                         entity.addEffect(effect);
                     }
                     entity.setTarget(getTarget());
+                    SummonedData.setSummoned(entity, true);
                 }
             });
         }
