@@ -10,9 +10,13 @@ import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,7 +30,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -38,6 +42,7 @@ import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.entity.raid.Raids;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -47,10 +52,17 @@ import java.util.*;
 
 public class ConquerorEntity extends SpellcasterIllager {
 
+    private final ServerBossEvent bar;
+
     public ConquerorEntity(EntityType<? extends ConquerorEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        bar = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
         moveControl = new FlyingMoveControl(this, 20, true);
+        setPathfindingMalus(BlockPathTypes.LAVA, 8);
+        setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0);
+        setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0);
         setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.PRISMATIC_AXE.get().getDefaultInstance());
+        xpReward = 50;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -89,6 +101,30 @@ public class ConquerorEntity extends SpellcasterIllager {
     }
 
     @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        bar.setProgress(getHealth() / getMaxHealth());
+    }
+
+    @Override
+    public void setCustomName(@javax.annotation.Nullable Component name) {
+        super.setCustomName(name);
+        bar.setName(getDisplayName());
+    }
+
+    @Override
+    public void startSeenByPlayer(ServerPlayer player) {
+        super.startSeenByPlayer(player);
+        bar.addPlayer(player);
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer player) {
+        super.stopSeenByPlayer(player);
+        bar.removePlayer(player);
+    }
+
+    @Override
     protected PathNavigation createNavigation(Level pLevel) {
         NoGravityNavigator navigator = new NoGravityNavigator(this, pLevel);
         navigator.setCanFloat(true);
@@ -98,7 +134,7 @@ public class ConquerorEntity extends SpellcasterIllager {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(4, new LongDistancePatrolGoal<>(this, 0.7, 0.595));
-        goalSelector.addGoal(1, new ObtainRaidLeaderBannerGoal<>(this));
+        goalSelector.addGoal(3, new ObtainRaidLeaderBannerGoal<>(this));
         goalSelector.addGoal(3, new FlyingPathfindToRaidGoal(this, 1));
         goalSelector.addGoal(4, new FlyingMoveThroughVillageGoal(this, 1.05, 1));
         goalSelector.addGoal(5, new RaiderCelebration(this));
@@ -106,7 +142,7 @@ public class ConquerorEntity extends SpellcasterIllager {
         goalSelector.addGoal(0, new SpellcasterCastingSpellGoal());
         goalSelector.addGoal(1, new SpawnRiftGoal());
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 3, false));
-        goalSelector.addGoal(6, new RandomStrollGoal(this, 1));
+        goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 3, 1));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8));
         targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
@@ -147,11 +183,10 @@ public class ConquerorEntity extends SpellcasterIllager {
             if (!super.canUse()) {
                 return false;
             } else if (target == null) {
-                Raid raid = getCurrentRaid();
-                if (raid == null) {
+                if (!hasActiveRaid()) {
                     return false;
                 }
-                return raid.getTotalRaidersAlive() < ServerConfigs.INSTANCE.conquerorMobThreshold.get();
+                return getCurrentRaid().getTotalRaidersAlive() < ServerConfigs.INSTANCE.conquerorMobThreshold.get();
             } else if (target.distanceToSqr(position()) > ServerConfigs.INSTANCE.conquerorDistanceThreshold.get() * ServerConfigs.INSTANCE.conquerorDistanceThreshold.get()) {
                 double range = getAttributeValue(Attributes.FOLLOW_RANGE);
                 AABB bounds = AABB.ofSize(getEyePosition(), range * 2, range * 2, range * 2);
@@ -210,7 +245,15 @@ public class ConquerorEntity extends SpellcasterIllager {
         }
 
         protected Vec3 getRiftTarget(Set<EntityType<?>> types) {
-            Vec3 center = getTarget() == null ? getEyePosition() : getTarget().getEyePosition();
+            Vec3 center;
+            LivingEntity target = getTarget();
+            if (target != null) {
+                center = target.getEyePosition();
+            } else if (hasActiveRaid()) {
+                center = Vec3.atCenterOf(getCurrentRaid().getCenter());
+            } else {
+                center = getEyePosition();
+            }
             return EntityUtil.getRandomSpawnAbove((ServerLevel) level, getRandom(), center, ServerConfigs.INSTANCE.conquerorMaxSpawnHDist.get(), ServerConfigs.INSTANCE.conquerorMinSpawnDist.get(), ServerConfigs.INSTANCE.conquerorMaxSpawnDist.get(), types);
         }
 

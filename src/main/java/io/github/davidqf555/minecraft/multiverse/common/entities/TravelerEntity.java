@@ -11,7 +11,6 @@ import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPac
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.registration.EffectRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -47,7 +46,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.ForgeMod;
@@ -76,6 +74,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         setPathfindingMalus(BlockPathTypes.LAVA, 8);
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0);
+        xpReward = 10;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -137,7 +136,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(4, new LongDistancePatrolGoal<>(this, 0.7, 0.595));
-        goalSelector.addGoal(1, new ObtainRaidLeaderBannerGoal<>(this));
+        goalSelector.addGoal(3, new ObtainRaidLeaderBannerGoal<>(this));
         goalSelector.addGoal(3, new FlyingPathfindToRaidGoal(this, 1));
         goalSelector.addGoal(4, new FlyingMoveThroughVillageGoal(this, 1.05, 1));
         goalSelector.addGoal(5, new RaiderCelebration(this));
@@ -173,11 +172,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     public void setOriginal(@Nullable UUID original) {
         this.original = original;
         bar.setVisible(this.original == null);
-    }
-
-    @Override
-    public boolean requiresCustomPersistence() {
-        return getOriginalId() == null;
     }
 
     @Override
@@ -228,7 +222,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        bar.setProgress(getHealthRatio());
+        bar.setProgress(getHealth() / getMaxHealth());
         if (getOriginalId() == null) {
             LivingEntity target = getTarget();
             if (level.getGameTime() % ServerConfigs.INSTANCE.travelerDoppelPeriod.get() == 0 && target != null && getDoppelgangers().size() < ServerConfigs.INSTANCE.travelerMaxDoppel.get()) {
@@ -243,10 +237,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         } else if (getOriginal() == null) {
             kill();
         }
-    }
-
-    private float getHealthRatio() {
-        return getHealth() / getMaxHealth();
     }
 
     @Override
@@ -283,11 +273,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         return AbstractIllager.IllagerArmPose.NEUTRAL;
     }
 
-    @Override
-    public float getWalkTargetValue(BlockPos pos, LevelReader reader) {
-        return 0;
-    }
-
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
@@ -300,11 +285,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(difficulty);
         setItemInHand(InteractionHand.MAIN_HAND, (random.nextBoolean() ? Items.IRON_AXE : Items.CROSSBOW).getDefaultInstance());
-    }
-
-    @Override
-    public int getMaxSpawnClusterSize() {
-        return 1;
     }
 
     @Override
