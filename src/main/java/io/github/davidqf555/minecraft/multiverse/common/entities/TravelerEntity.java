@@ -3,6 +3,8 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FlyingMoveThroughVillageGoal;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FlyingPathfindToRaidGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FollowEntityGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNavigator;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
@@ -81,7 +83,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                 .add(Attributes.MAX_HEALTH, 150)
                 .add(Attributes.FLYING_SPEED, 0.2)
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
-                .add(Attributes.FOLLOW_RANGE, 48)
+                .add(Attributes.FOLLOW_RANGE, 64)
                 .add(Attributes.ATTACK_DAMAGE, 5)
                 .add(ForgeMod.ENTITY_GRAVITY.get(), 0);
     }
@@ -134,7 +136,12 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
 
     @Override
     protected void registerGoals() {
-        super.registerGoals();
+        goalSelector.addGoal(4, new LongDistancePatrolGoal<>(this, 0.7, 0.595));
+        goalSelector.addGoal(1, new ObtainRaidLeaderBannerGoal<>(this));
+        goalSelector.addGoal(3, new FlyingPathfindToRaidGoal(this, 1));
+        goalSelector.addGoal(4, new FlyingMoveThroughVillageGoal(this, 1.05, 1));
+        goalSelector.addGoal(5, new RaiderCelebration(this));
+
         goalSelector.addGoal(0, new RangedCrossbowAttackGoal<>(this, 1, 16));
         goalSelector.addGoal(1, new MeleeAttackGoal(this, 1, true));
         goalSelector.addGoal(2, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));

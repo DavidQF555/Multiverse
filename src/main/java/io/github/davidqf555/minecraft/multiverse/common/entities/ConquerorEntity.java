@@ -3,6 +3,8 @@ package io.github.davidqf555.minecraft.multiverse.common.entities;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FlyingMoveThroughVillageGoal;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ai.FlyingPathfindToRaidGoal;
 import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNavigator;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
@@ -57,6 +59,7 @@ public class ConquerorEntity extends SpellcasterIllager {
                 .add(Attributes.FLYING_SPEED, 0.2)
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.ARMOR, 11)
+                .add(Attributes.FOLLOW_RANGE, 64)
                 .add(Attributes.ATTACK_DAMAGE, 1)
                 .add(Attributes.ATTACK_KNOCKBACK, 5)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
@@ -94,7 +97,12 @@ public class ConquerorEntity extends SpellcasterIllager {
 
     @Override
     protected void registerGoals() {
-        super.registerGoals();
+        goalSelector.addGoal(4, new LongDistancePatrolGoal<>(this, 0.7, 0.595));
+        goalSelector.addGoal(1, new ObtainRaidLeaderBannerGoal<>(this));
+        goalSelector.addGoal(3, new FlyingPathfindToRaidGoal(this, 1));
+        goalSelector.addGoal(4, new FlyingMoveThroughVillageGoal(this, 1.05, 1));
+        goalSelector.addGoal(5, new RaiderCelebration(this));
+
         goalSelector.addGoal(0, new SpellcasterCastingSpellGoal());
         goalSelector.addGoal(1, new SpawnRiftGoal());
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 3, false));
@@ -133,16 +141,6 @@ public class ConquerorEntity extends SpellcasterIllager {
 
     public class SpawnRiftGoal extends SpellcasterUseSpellGoal {
 
-        private final MobEffectInstance effect;
-
-        public SpawnRiftGoal() {
-            if (ServerConfigs.INSTANCE.conquerorSlowFallingAmplifier.get() <= 0 || ServerConfigs.INSTANCE.conquerorSlowFallingDuration.get() <= 0) {
-                effect = null;
-            } else {
-                effect = new MobEffectInstance(MobEffects.SLOW_FALLING, ServerConfigs.INSTANCE.conquerorSlowFallingDuration.get(), ServerConfigs.INSTANCE.conquerorSlowFallingAmplifier.get() - 1);
-            }
-        }
-
         @Override
         public boolean canUse() {
             LivingEntity target = getTarget();
@@ -179,8 +177,9 @@ public class ConquerorEntity extends SpellcasterIllager {
                         raid.joinRaid(raid.getGroupsSpawned(), entity, null, true);
                     }
                     entity.setPortalCooldown();
-                    if (effect != null) {
-                        entity.addEffect(effect);
+
+                    if (ServerConfigs.INSTANCE.conquerorSlowFallingAmplifier.get() > 0 && ServerConfigs.INSTANCE.conquerorSlowFallingDuration.get() > 0) {
+                        entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, ServerConfigs.INSTANCE.conquerorSlowFallingDuration.get(), ServerConfigs.INSTANCE.conquerorSlowFallingAmplifier.get() - 1));
                     }
                     entity.setTarget(getTarget());
                     SummonedData.setSummoned(entity, true);

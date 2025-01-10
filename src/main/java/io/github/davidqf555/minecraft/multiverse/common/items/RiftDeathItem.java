@@ -31,18 +31,18 @@ import java.util.function.Function;
 
 public class RiftDeathItem extends Item implements IDeathEffect, ITeleporter {
 
-    private final MobEffectInstance effect;
+    private final int amp;
 
     public RiftDeathItem(Properties properties, int amp) {
         super(properties);
-        effect = new MobEffectInstance(MobEffects.ABSORPTION, 400, amp - 1);
+        this.amp = amp;
     }
 
     @Override
     public boolean onDeath(LivingEntity entity, ItemStack stack) {
         if (!entity.level.isClientSide()) {
             entity.setHealth(2);
-            entity.addEffect(effect);
+            entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 400, amp - 1));
             int duration = ServerConfigs.INSTANCE.slowFalling.get();
             if (duration > 0) {
                 entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration, 1, false, true));
