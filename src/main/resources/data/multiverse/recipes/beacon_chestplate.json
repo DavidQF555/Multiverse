@@ -1,17 +1,10 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "# #",
-    "#X#",
-    "###"
-  ],
-  "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_materials"
-    },
-    "X": {
-      "item": "multiverse:multiversal_beacon"
-    }
+  "type": "smithing",
+  "base": {
+    "item": "multiverse:kaleidite_chestplate"
+  },
+  "addition": {
+    "item": "multiverse:multiversal_beacon"
   },
   "result": {
     "item": "multiverse:beacon_chestplate"

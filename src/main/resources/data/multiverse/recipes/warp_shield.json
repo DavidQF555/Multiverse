@@ -1,17 +1,10 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "#X#",
-    "###",
-    " # "
-  ],
-  "key": {
-    "#": {
-      "tag": "multiverse:kaleidite_materials"
-    },
-    "X": {
-      "item": "multiverse:multiversal_beacon"
-    }
+  "type": "smithing",
+  "base": {
+    "item": "shield"
+  },
+  "addition": {
+    "item": "multiverse:multiversal_beacon"
   },
   "result": {
     "item": "multiverse:warp_shield"
