@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 public class WarpShieldRenderer extends BlockEntityWithoutLevelRenderer {
 
     public static final WarpShieldRenderer INSTANCE = new WarpShieldRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/models/warp_shield.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Multiverse.MOD_ID, "textures/item/warp_shield.png");
     private ShieldModel model;
 
     protected WarpShieldRenderer(BlockEntityRenderDispatcher pBlockEntityRenderDispatcher, EntityModelSet pEntityModelSet) {
@@ -36,7 +36,7 @@ public class WarpShieldRenderer extends BlockEntityWithoutLevelRenderer {
         pPoseStack.pushPose();
         pPoseStack.scale(1, -1, -1);
         VertexConsumer vertexconsumer = ItemRenderer.getFoilBufferDirect(pBuffer, model.renderType(TEXTURE), true, pStack.hasFoil());
-        model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay, 1, 1, 1, 1);
         pPoseStack.popPose();
     }
 
