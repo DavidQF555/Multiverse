@@ -14,7 +14,7 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold;
+    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
     public final ForgeConfigSpec.IntValue maxDimensions, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
@@ -119,6 +119,8 @@ public class ServerConfigs {
                 .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
         coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
                 .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
+        shieldRange = builder.comment("This is the range in blocks that the warp shield item warps projectiles. ")
+                .defineInRange("shieldRange", 3, 0, Double.MAX_VALUE);
         builder.pop();
     }
 

@@ -1,15 +1,19 @@
 {
   "type": "crafting_shaped",
   "pattern": [
-    "# #",
-    "# #"
+    "#X#",
+    "###",
+    " # "
   ],
   "key": {
     "#": {
       "tag": "multiverse:kaleidite_materials"
+    },
+    "X": {
+      "item": "multiverse:multiversal_beacon"
     }
   },
   "result": {
-    "item": "multiverse:kaleidite_boots"
+    "item": "multiverse:warp_shield"
   }
 }

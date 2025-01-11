@@ -13,6 +13,7 @@ public final class MultiverseTags {
     public static final TagKey<Item> DOPPELGANGER_FEET = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, "doppelganger/feet"));
     public static final TagKey<Item> DOPPELGANGER_MAIN_HAND = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, "doppelganger/main_hand"));
     public static final TagKey<Item> DOPPELGANGER_OFF_HAND = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, "doppelganger/off_hand"));
+    public static final TagKey<Item> KALEIDITE_MATERIALS = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, "kaleidite_materials"));
 
     private MultiverseTags() {
     }

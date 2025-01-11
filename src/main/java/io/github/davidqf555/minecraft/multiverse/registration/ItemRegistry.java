@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.items.*;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalAxeItem;
 import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalPickaxeItem;
@@ -45,6 +46,7 @@ public final class ItemRegistry {
     public static final RegistryObject<MultiversalShovelItem> PRISMATIC_SHOVEL = register("prismatic_shovel", () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 2.5f, -3, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
     public static final RegistryObject<MultiversalAxeItem> PRISMATIC_AXE = register("prismatic_axe", () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -2.1f, new Item.Properties().rarity(Rarity.EPIC).tab(TAB)));
     public static final RegistryObject<SimpleLoreItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().tab(TAB).rarity(Rarity.RARE)));
+    public static final RegistryObject<WarpShieldItem> WARP_SHIELD = register("warp_shield", () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().durability(336).tab(TAB).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 
