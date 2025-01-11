@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -13,22 +13,24 @@ import net.minecraft.world.item.crafting.Ingredient;
 @MethodsReturnNonnullByDefault
 public class KaleiditeArmorMaterial implements ArmorMaterial {
 
-    public static final KaleiditeArmorMaterial INSTANCE = new KaleiditeArmorMaterial();
-    private final String name = new ResourceLocation(Multiverse.MOD_ID, "kaleidite").toString();
-    private final int[] defense = new int[]{3, 6, 8, 3};
-    private final int[] durability = new int[]{13, 15, 16, 11};
+    public static final KaleiditeArmorMaterial KALEIDITE = new KaleiditeArmorMaterial("kaleidite");
+    public static final KaleiditeArmorMaterial BEACON = new KaleiditeArmorMaterial("beacon");
+    private static final int[] DEFENSE = new int[]{3, 6, 8, 3};
+    private static final int[] DURABILITY = new int[]{13, 15, 16, 11};
+    private final String name;
 
-    protected KaleiditeArmorMaterial() {
+    protected KaleiditeArmorMaterial(String name) {
+        this.name = new ResourceLocation(Multiverse.MOD_ID, name).toString();
     }
 
     @Override
     public int getDurabilityForSlot(EquipmentSlot slot) {
-        return durability[slot.getIndex()] * 33;
+        return DURABILITY[slot.getIndex()] * 33;
     }
 
     @Override
     public int getDefenseForSlot(EquipmentSlot slot) {
-        return defense[slot.getIndex()];
+        return DEFENSE[slot.getIndex()];
     }
 
     @Override
@@ -43,7 +45,7 @@ public class KaleiditeArmorMaterial implements ArmorMaterial {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(ItemRegistry.KALEIDITE_SHARD.get());
+        return Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS);
     }
 
     @Override
