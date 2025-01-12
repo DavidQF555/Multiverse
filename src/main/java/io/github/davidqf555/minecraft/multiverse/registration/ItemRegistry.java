@@ -25,7 +25,6 @@ public final class ItemRegistry {
         }
     };
 
-    public static final RegistryObject<RiftDeathItem> TOTEM_OF_ESCAPE = register("totem_of_escape", () -> new RiftDeathItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.UNCOMMON), 5));
     public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> new RiftCoreItem(new Item.Properties().tab(TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDITE_SHARD = register("kaleidite_shard", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<SimpleLoreItem> MULTIVERSAL_BEACON = register("multiversal_beacon", () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().tab(TAB).rarity(Rarity.RARE)));

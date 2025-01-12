@@ -6,7 +6,6 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.capabilities.NBTCapabilityProvider;
 import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
-import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
@@ -20,12 +19,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -85,28 +82,8 @@ public final class ForgeBus {
         }
     }
 
-    @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntityLiving();
-        ItemStack main = entity.getItemInHand(InteractionHand.MAIN_HAND);
-        ItemStack off = entity.getItemInHand(InteractionHand.OFF_HAND);
-        if (!main.isEmpty() && main.getItem() instanceof IDeathEffect) {
-            if (((IDeathEffect) main.getItem()).onDeath(entity, main)) {
-                event.setCanceled(true);
-            }
-            main.split(1);
-            return;
-        }
-        if (!off.isEmpty() && off.getItem() instanceof IDeathEffect) {
-            if (((IDeathEffect) off.getItem()).onDeath(entity, off)) {
-                event.setCanceled(true);
-            }
-            off.split(1);
-        }
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onLateLivingDeath(LivingDeathEvent event) {
+    public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntityLiving();
         if (!event.isCanceled() && entity instanceof Mob && !entity.level.isClientSide() && SummonedData.isSummoned((Mob) entity)) {
             Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()));
