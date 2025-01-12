@@ -45,7 +45,7 @@ public final class ItemRegistry {
     public static final RegistryObject<SimpleLoreItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().tab(TAB).rarity(Rarity.RARE)));
     public static final RegistryObject<WarpShieldItem> WARP_SHIELD = register("warp_shield", () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().durability(336).tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", () -> new BeaconArmorItem(KaleiditeArmorMaterial.BEACON, EquipmentSlot.CHEST, new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
-    public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> new WarpToolItem(new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
+    public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> new WarpToolItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> new WarpStickItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));

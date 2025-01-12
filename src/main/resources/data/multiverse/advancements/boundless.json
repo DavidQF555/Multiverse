@@ -21,7 +21,9 @@
               "multiverse:prismatic_sword",
               "multiverse:prismatic_pickaxe",
               "multiverse:prismatic_axe",
-              "multiverse:prismatic_shovel"
+              "multiverse:prismatic_shovel",
+              "multiverse:warp_stick",
+              "multiverse:warp_ring"
             ]
           }
         ]
