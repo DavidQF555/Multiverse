@@ -3,10 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.items.*;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalAxeItem;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalPickaxeItem;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalShovelItem;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.RiftSwordItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
@@ -49,6 +46,7 @@ public final class ItemRegistry {
     public static final RegistryObject<WarpShieldItem> WARP_SHIELD = register("warp_shield", () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().durability(336).tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", () -> new BeaconArmorItem(KaleiditeArmorMaterial.BEACON, EquipmentSlot.CHEST, new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> new WarpToolItem(new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
+    public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> new WarpStickItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 

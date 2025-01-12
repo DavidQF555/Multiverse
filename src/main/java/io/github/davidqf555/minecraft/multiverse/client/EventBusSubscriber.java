@@ -68,6 +68,7 @@ public final class EventBusSubscriber {
         colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SHOVEL.get());
         colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_AXE.get());
         colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SWORD.get());
+        colors.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.WARP_STICK.get());
     }
 
     @SubscribeEvent
