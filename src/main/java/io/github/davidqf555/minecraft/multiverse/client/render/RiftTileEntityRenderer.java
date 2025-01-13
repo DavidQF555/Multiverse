@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
@@ -37,21 +38,27 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         VertexConsumer consumer = buffer.getBuffer(TYPE);
         Vec3[][] visual = entity.getVisual();
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
+        double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
+        double max = ClientConfigs.INSTANCE.riftMaxOpacity.get();
         matrixStack.pushPose();
-        for (Vec3[] layer : visual) {
-            double alpha = 1.0 / visual.length;
+        for (int i = 0; i < visual.length; i++) {
+            double alpha = getAlphaFactor(i, visual.length, min, max);
             int color = base | ((int) (alpha * 0xFF) << 24);
-            drawPolygon(consumer, matrixStack, layer, offset, color, true);
+            drawPolygon(consumer, matrixStack, visual[i], offset, color, true);
         }
         matrixStack.popPose();
         matrixStack.pushPose();
-        for (Vec3[] layer : visual) {
-            double alpha = 1.0 / visual.length;
+        for (int i = 0; i < visual.length; i++) {
+            double alpha = getAlphaFactor(i, visual.length, min, max);
             int color = base | ((int) (alpha * 0xFF) << 24);
-            drawPolygon(consumer, matrixStack, layer, offset, color, false);
+            drawPolygon(consumer, matrixStack, visual[i], offset, color, false);
         }
         matrixStack.popPose();
         matrixStack.popPose();
+    }
+
+    protected double getAlphaFactor(int layer, int layers, double min, double max) {
+        return layers <= 1 ? (min + max) / 2 : Mth.lerp(layer / (layers - 1.0), max, min);
     }
 
     private void drawPolygon(VertexConsumer consumer, PoseStack pose, Vec3[] vertices, Vec3 offset, int color, boolean forward) {

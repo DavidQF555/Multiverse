@@ -4,6 +4,7 @@ import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,10 +41,10 @@ public record RiftPlacement(Vec3 center, double width, double height, Vec3 norma
         double start = ClientConfigs.INSTANCE.riftLayerStart.get();
         double denom = 1 - Math.pow(rate, layers - 1);
         if (denom == 0) {
-            return start + (1 - start) * layer / (layers - 1);
+            return Mth.lerp(layer / (layers - 1.0), start, 1);
         }
         double inter = (1 - start * Math.pow(rate, layers - 1)) / denom;
-        return -(inter - start) * Math.pow(rate, layer) + inter;
+        return (start - inter) * Math.pow(rate, layer) + inter;
     }
 
     public Vec3[][] calculateLayers(BlockPos pos) {
