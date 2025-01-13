@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
+import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.DimensionProviderTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.FluidPickerTypeRegistry;
@@ -30,6 +31,7 @@ public class Multiverse {
 
     public Multiverse() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC);
         addRegistries(FMLJavaModLoadingContext.get().getModEventBus());
         MinecraftForge.EVENT_BUS.register(this);
     }

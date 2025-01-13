@@ -1,9 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
+import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftPlacementHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.*;
 import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -41,10 +40,12 @@ import java.util.function.Function;
 @MethodsReturnNonnullByDefault
 public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
-    private Vec3 normal = new Vec3(0, 1, 0);
-    private Vec3[][] vertices = new Vec3[2][0];
+    private static final RiftPlacement DEFAULT = new RiftPlacement(new Vec3(0, 0, 0), 0, 0, new Vec3(0, 1, 0), 0);
     private ResourceKey<Level> target = Level.OVERWORLD;
+    private Vec3[][] collision = new Vec3[2][0];
+    private RiftPlacement parent = DEFAULT;
     private AABB bounds;
+    private Vec3[][] visual;
 
     protected RiftTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -74,60 +75,65 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     }
 
     public Vec3 getNormal() {
-        return normal;
+        return getParent().normal();
     }
 
-    public void setNormal(Vec3 normal) {
-        this.normal = normal.lengthSqr() == 0 ? new Vec3(0, 1, 0) : normal;
+    public Vec3[][] getCollision() {
+        return collision;
     }
 
-    public Vec3[][] getVertices() {
-        return vertices;
+    public void setCollision(Vec3[] collision) {
+        this.collision = convert(collision);
     }
 
-    public void setVertices(Vec3[] vertices) {
-        this.vertices = convert(vertices);
+    public RiftPlacement getParent() {
+        return parent;
+    }
+
+    public void setParent(RiftPlacement parent) {
+        this.parent = parent;
+        visual = null;
         bounds = null;
+    }
+
+    public Vec3[][] getVisual() {
+        if (visual == null) {
+            RiftPlacement parent = getParent();
+            visual = parent.calculateLayers(getBlockPos(), ClientConfigs.INSTANCE.riftLayers.get());
+        }
+        return visual;
     }
 
     @Override
     public AABB getRenderBoundingBox() {
         if (bounds == null) {
-            Vec3[][] vertices = getVertices();
-            double minX = Arrays.stream(vertices[0]).mapToDouble(Vec3::x).min().orElse(0);
-            double maxX = Arrays.stream(vertices[0]).mapToDouble(Vec3::x).max().orElse(0);
-            double minY = Arrays.stream(vertices[0]).mapToDouble(Vec3::y).min().orElse(0);
-            double maxY = Arrays.stream(vertices[0]).mapToDouble(Vec3::y).max().orElse(0);
-            double minZ = Arrays.stream(vertices[0]).mapToDouble(Vec3::z).min().orElse(0);
-            double maxZ = Arrays.stream(vertices[0]).mapToDouble(Vec3::z).max().orElse(0);
+            Vec3[][] vertices = getVisual();
+            double minX = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::x).min().orElse(0);
+            double maxX = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::x).max().orElse(0);
+            double minY = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::y).min().orElse(0);
+            double maxY = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::y).max().orElse(0);
+            double minZ = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::z).min().orElse(0);
+            double maxZ = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::z).max().orElse(0);
             bounds = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
         }
         return bounds;
     }
 
     public boolean isColliding(AABB bounds) {
-        return RiftPlacementHelper.intersects(getVertices(), getNormal(), bounds);
+        return RiftPlacementHelper.intersects(getCollision(), getNormal(), bounds);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putString("Target", getTarget().location().toString());
-        ListTag vertices = new ListTag();
-        for (Vec3 point : getVertices()[0]) {
-            CompoundTag com = new CompoundTag();
-            com.putDouble("X", point.x());
-            com.putDouble("Y", point.y());
-            com.putDouble("Z", point.z());
-            vertices.add(com);
+        ListTag collision = new ListTag();
+        for (Vec3 point : getCollision()[0]) {
+            collision.add(TagUtil.writeVec(point));
         }
-        tag.put("Vertices", vertices);
-        CompoundTag normal = new CompoundTag();
-        Vec3 val = getNormal();
-        normal.putDouble("X", val.x());
-        normal.putDouble("Y", val.y());
-        normal.putDouble("Z", val.z());
-        tag.put("Normal", normal);
+        tag.put("Vertices", collision);
+        CompoundTag parent = getParent().serialize();
+        tag.put("Parent", parent);
     }
 
     @Override
@@ -140,16 +146,17 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
             ListTag list = tag.getList("Vertices", Tag.TAG_COMPOUND);
             List<Vec3> vertices = new ArrayList<>();
             for (Tag val : list) {
-                if (((CompoundTag) val).contains("X", Tag.TAG_DOUBLE) && ((CompoundTag) val).contains("Y", Tag.TAG_DOUBLE) && ((CompoundTag) val).contains("Z", Tag.TAG_DOUBLE)) {
-                    vertices.add(new Vec3(((CompoundTag) val).getDouble("X"), ((CompoundTag) val).getDouble("Y"), ((CompoundTag) val).getDouble("Z")));
+                Vec3 point = TagUtil.readVec((CompoundTag) val);
+                if (point != null) {
+                    vertices.add(point);
                 }
             }
-            setVertices(vertices.toArray(Vec3[]::new));
+            setCollision(vertices.toArray(Vec3[]::new));
         }
-        if (tag.contains("Normal", Tag.TAG_COMPOUND)) {
-            CompoundTag normal = tag.getCompound("Normal");
-            if (normal.contains("X", Tag.TAG_DOUBLE) && normal.contains("Y", Tag.TAG_DOUBLE) && normal.contains("Z", Tag.TAG_DOUBLE)) {
-                setNormal(new Vec3(normal.getDouble("X"), normal.getDouble("Y"), normal.getDouble("Z")));
+        if (tag.contains("Parent", Tag.TAG_COMPOUND)) {
+            RiftPlacement placement = RiftPlacement.deserialize(tag.getCompound("Parent"));
+            if (placement != null) {
+                setParent(placement);
             }
         }
     }

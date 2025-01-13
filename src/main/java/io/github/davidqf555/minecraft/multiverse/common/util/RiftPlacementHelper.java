@@ -32,6 +32,7 @@ public final class RiftPlacementHelper {
         }
         Vec3 n = normal;
         Vec3[][] vertices = calculateVertices(center, n, angle, width, height);
+        RiftPlacement parent = new RiftPlacement(center, width, height, n, angle);
         iterate(vertices, reader.getMinBuildHeight(), reader.getMaxBuildHeight(), pos -> {
             BlockState state = reader.getBlockState(pos);
             if (canDestroy(reader, pos, state) && (replacement != ReplacementType.NONE || canReplace(state))) {
@@ -51,12 +52,16 @@ public final class RiftPlacementHelper {
                     BlockEntity tile = reader.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
-                        ((RiftTileEntity) tile).setVertices(polygon);
-                        ((RiftTileEntity) tile).setNormal(n);
+                        ((RiftTileEntity) tile).setCollision(polygon);
+                        ((RiftTileEntity) tile).setParent(parent);
                     }
                 }
             }
         });
+    }
+
+    public static Vec3[] calculateVerticesAt(RiftPlacement placement, BlockPos pos) {
+        return calculateSectionPolygon(calculateVertices(placement.center(), placement.normal(), placement.angle(), placement.width(), placement.height()), placement.normal(), AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
     }
 
     public static boolean canDestroy(LevelReader reader, BlockPos pos, BlockState state) {
