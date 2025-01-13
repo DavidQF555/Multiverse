@@ -3,11 +3,9 @@
 #moj_import <matrix.glsl>
 
 uniform sampler2D Sampler0;
-uniform sampler2D Sampler1;
 uniform vec4 ColorModulator;
 
 uniform float GameTime;
-uniform int RiftLayers;
 
 in vec4 texProj0;
 in vec4 vertexColor;
@@ -46,9 +44,9 @@ mat4 rift_layer(float layer) {
 out vec4 fragColor;
 
 void main() {
-    vec3 color = textureProj(Sampler0, texProj0).rgb * COLORS[0];
-    for (int i = 1; i <= RiftLayers; i++) {
-        color += textureProj(Sampler1, texProj0 * rift_layer(float(i))).rgb * COLORS[i];
+    vec3 color = COLORS[0];
+    for (int i = 1; i < 9; i++) {
+        color += textureProj(Sampler0, texProj0 * rift_layer(float(i))).rgb * COLORS[i];
     }
     fragColor = vec4(color, 1.0) * vertexColor * ColorModulator;
 }

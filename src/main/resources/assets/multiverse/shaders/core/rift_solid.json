@@ -4,17 +4,14 @@
     "srcrgb": "srcalpha",
     "dstrgb": "1-srcalpha"
   },
-  "vertex": "multiverse:rift",
-  "fragment": "multiverse:rift",
+  "vertex": "multiverse:rift_solid",
+  "fragment": "multiverse:rift_solid",
   "attributes": [
     "Color"
   ],
   "samplers": [
     {
       "name": "Sampler0"
-    },
-    {
-      "name": "Sampler1"
     }
   ],
   "uniforms": [
@@ -70,14 +67,6 @@
       "count": 1,
       "values": [
         0.0
-      ]
-    },
-    {
-      "name": "RiftLayers",
-      "type": "int",
-      "count": 1,
-      "values": [
-        8
       ]
     },
     {

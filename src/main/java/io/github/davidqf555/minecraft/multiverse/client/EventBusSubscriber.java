@@ -43,7 +43,7 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
+        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation(Multiverse.MOD_ID, "rift_solid"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
     }
 
     @SubscribeEvent
