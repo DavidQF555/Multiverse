@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
-import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.*;
 import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;
@@ -99,7 +98,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     public Vec3[][] getVisual() {
         if (visual == null) {
             RiftPlacement parent = getParent();
-            visual = parent.calculateLayers(getBlockPos(), ClientConfigs.INSTANCE.riftLayers.get());
+            visual = parent.calculateLayers(getBlockPos());
         }
         return visual;
     }

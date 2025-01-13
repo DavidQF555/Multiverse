@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.util;
 
+import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,12 +32,26 @@ public record RiftPlacement(Vec3 center, double width, double height, Vec3 norma
         return null;
     }
 
-    public Vec3[][] calculateLayers(BlockPos pos, int layers) {
+    private static double getSizeFactor(int layer, int layers) {
+        if (layers <= 1) {
+            return 1;
+        }
+        double rate = ClientConfigs.INSTANCE.riftLayerGrowth.get();
+        double start = ClientConfigs.INSTANCE.riftLayerStart.get();
+        double denom = 1 - Math.pow(rate, layers - 1);
+        if (denom == 0) {
+            return start + (1 - start) * layer / (layers - 1);
+        }
+        double inter = (1 - start * Math.pow(rate, layers - 1)) / denom;
+        return -(inter - start) * Math.pow(rate, layer) + inter;
+    }
+
+    public Vec3[][] calculateLayers(BlockPos pos) {
+        int layers = ClientConfigs.INSTANCE.riftLayers.get();
         Vec3[][] out = new Vec3[layers][];
         for (int i = 0; i < layers; i++) {
-            double width = (i + 1) * width() / layers;
-            double height = (i + 1) * height() / layers;
-            RiftPlacement child = new RiftPlacement(center(), width, height, normal(), angle());
+            double factor = getSizeFactor(i, layers);
+            RiftPlacement child = new RiftPlacement(center(), width() * factor, height() * factor, normal(), angle());
             out[i] = RiftPlacementHelper.calculateVerticesAt(child, pos);
         }
         return out;
