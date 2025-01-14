@@ -41,15 +41,31 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
         double max = ClientConfigs.INSTANCE.riftMaxOpacity.get();
         matrixStack.pushPose();
-        for (int i = 0; i < visual.length; i++) {
-            double alpha = getAlphaFactor(i, visual.length, min, max);
+        double destA = 0;
+        for (int i = visual.length - 1; i >= 0; i--) {
+            double alpha;
+            if (destA >= 1) {
+                alpha = 1;
+            } else {
+                double target = getAlphaFactor(i, visual.length, min, max);
+                alpha = (target - destA) / (1 - destA);
+                destA = target;
+            }
             int color = base | ((int) (alpha * 0xFF) << 24);
             drawPolygon(consumer, matrixStack, visual[i], offset, color, true);
         }
         matrixStack.popPose();
         matrixStack.pushPose();
-        for (int i = 0; i < visual.length; i++) {
-            double alpha = getAlphaFactor(i, visual.length, min, max);
+        destA = 0;
+        for (int i = visual.length - 1; i >= 0; i--) {
+            double alpha;
+            if (destA >= 1) {
+                alpha = 1;
+            } else {
+                double target = getAlphaFactor(i, visual.length, min, max);
+                alpha = (target - destA) / (1 - destA);
+                destA = target;
+            }
             int color = base | ((int) (alpha * 0xFF) << 24);
             drawPolygon(consumer, matrixStack, visual[i], offset, color, false);
         }
