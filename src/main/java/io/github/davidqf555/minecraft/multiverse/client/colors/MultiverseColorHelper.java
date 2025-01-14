@@ -4,11 +4,11 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public final class MultiverseColorHelper {
 
+    private static final long FACTOR = 55555;
     private static final Random RANDOM = new Random(0);
 
     private MultiverseColorHelper() {
@@ -29,9 +29,22 @@ public final class MultiverseColorHelper {
     }
 
     private static long getSeed(long base, ResourceKey<Level> dim) {
-        byte[] arr = (dim.location().getNamespace() + dim.location().getPath()).getBytes(StandardCharsets.UTF_8);
-        for (byte b : arr) {
-            base += b * 555555;
+        String loc = dim.location().getNamespace();
+        String path = dim.location().getPath();
+        int i = 0;
+        int j = 0;
+        while (i < loc.length() || j < path.length()) {
+            char c;
+            if (i >= loc.length()) {
+                c = path.charAt(j++);
+            } else if (j >= path.length()) {
+                c = loc.charAt(i++);
+            } else if ((i + j) % 2 == 0) {
+                c = path.charAt(j++);
+            } else {
+                c = loc.charAt(i++);
+            }
+            base += FACTOR * c * (i + j);
         }
         return base;
     }
