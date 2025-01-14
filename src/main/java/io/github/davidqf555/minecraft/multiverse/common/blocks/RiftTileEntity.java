@@ -98,7 +98,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     public Vec3[][] getVisual() {
         if (visual == null) {
             RiftPlacement parent = getParent();
-            visual = parent.calculateLayers(getBlockPos());
+            visual = parent.calculateLayers(BlockPos.ZERO);
         }
         return visual;
     }
@@ -113,7 +113,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
             double maxY = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::y).max().orElse(0);
             double minZ = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::z).min().orElse(0);
             double maxZ = Arrays.stream(vertices).flatMap(Arrays::stream).mapToDouble(Vec3::z).max().orElse(0);
-            bounds = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+            bounds = new AABB(minX, minY, minZ, maxX, maxY, maxZ).move(getBlockPos());
         }
         return bounds;
     }
@@ -126,9 +126,10 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putString("Target", getTarget().location().toString());
+        Vec3 offset = Vec3.atLowerCornerOf(getBlockPos());
         ListTag collision = new ListTag();
         for (Vec3 point : getCollision()[0]) {
-            collision.add(TagUtil.writeVec(point));
+            collision.add(TagUtil.writeVec(point.subtract(offset)));
         }
         tag.put("Vertices", collision);
         CompoundTag parent = getParent().serialize();
@@ -142,12 +143,13 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
             setTarget(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString("Target"))));
         }
         if (tag.contains("Vertices", Tag.TAG_LIST)) {
+            Vec3 offset = Vec3.atLowerCornerOf(getBlockPos());
             ListTag list = tag.getList("Vertices", Tag.TAG_COMPOUND);
             List<Vec3> vertices = new ArrayList<>();
             for (Tag val : list) {
                 Vec3 point = TagUtil.readVec((CompoundTag) val);
                 if (point != null) {
-                    vertices.add(point);
+                    vertices.add(point.add(offset));
                 }
             }
             setCollision(vertices.toArray(Vec3[]::new));

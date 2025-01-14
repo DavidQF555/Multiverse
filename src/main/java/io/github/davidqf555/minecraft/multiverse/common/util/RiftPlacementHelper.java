@@ -32,11 +32,11 @@ public final class RiftPlacementHelper {
         }
         Vec3 n = normal;
         Vec3[][] vertices = calculateVertices(center, n, angle, width, height);
-        RiftPlacement parent = new RiftPlacement(center, width, height, n, angle);
         iterate(vertices, reader.getMinBuildHeight(), reader.getMaxBuildHeight(), pos -> {
             BlockState state = reader.getBlockState(pos);
             if (canDestroy(reader, pos, state) && (replacement != ReplacementType.NONE || canReplace(state))) {
-                Vec3[] polygon = calculateSectionPolygon(vertices, n, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
+                Vec3 corner = Vec3.atLowerCornerOf(pos);
+                Vec3[] polygon = calculateSectionPolygon(vertices, n, AABB.unitCubeFromLowerCorner(corner));
                 if (polygon.length >= 3) {
                     BlockState base = rift;
                     Fluid fluid = reader.getFluidState(pos).getType();
@@ -53,7 +53,7 @@ public final class RiftPlacementHelper {
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
                         ((RiftTileEntity) tile).setCollision(polygon);
-                        ((RiftTileEntity) tile).setParent(parent);
+                        ((RiftTileEntity) tile).setParent(new RiftPlacement(center.subtract(corner), width, height, n, angle));
                     }
                 }
             }

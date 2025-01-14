@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,9 +31,6 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
         int base = entity.hasLevel() ? MultiverseColorHelper.getColor(entity.getLevel(), entity.getTarget()) : 0xFFFFFF;
-        matrixStack.pushPose();
-        BlockPos pos = entity.getBlockPos();
-        matrixStack.translate(-pos.getX(), -pos.getY(), -pos.getZ());
         VertexConsumer consumer = buffer.getBuffer(TYPE);
         Vec3[][] visual = entity.getVisual();
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
@@ -69,7 +65,6 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
             int color = base | ((int) (alpha * 0xFF) << 24);
             drawPolygon(consumer, matrixStack, visual[i], offset, color, false);
         }
-        matrixStack.popPose();
         matrixStack.popPose();
     }
 
