@@ -2,11 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.items.*;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalAxeItem;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalPickaxeItem;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.MultiversalShovelItem;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.RiftSwordItem;
+import io.github.davidqf555.minecraft.multiverse.common.items.tools.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,15 +28,13 @@ public final class ItemRegistry {
 
     private static CreativeModeTab tab;
 
-    public static final RegistryObject<SpawnCollectorItem> UNIVERSAL_TREASURE = register("universal_treasure", () -> List.of(ItemRegistry.getTab()), () -> new SpawnCollectorItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant(), 300));
-    public static final RegistryObject<RiftDeathItem> TOTEM_OF_ESCAPE = register("totem_of_escape", () -> List.of(ItemRegistry.getTab()), () -> new RiftDeathItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), 5));
     public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> List.of(ItemRegistry.getTab()), () -> new RiftCoreItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDITE_SHARD = register("kaleidite_shard", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.INGREDIENTS), () -> new Item(new Item.Properties()));
     public static final RegistryObject<SimpleLoreItem> MULTIVERSAL_BEACON = register("multiversal_beacon", () -> List.of(ItemRegistry.getTab()), () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().rarity(Rarity.RARE)));
-    public static final RegistryObject<ArmorItem> KALEIDITE_HELMET = register("kaleidite_helmet", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, new Item.Properties()));
-    public static final RegistryObject<BeaconArmorItem> KALEIDITE_CHESTPLATE = register("kaleidite_chestplate", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new BeaconArmorItem(KaleiditeArmorMaterial.INSTANCE, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC)));
-    public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, ArmorItem.Type.LEGGINGS, new Item.Properties()));
-    public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, new Item.Properties()));
+    public static final RegistryObject<ArmorItem> KALEIDITE_HELMET = register("kaleidite_helmet", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.HELMET, new Item.Properties()));
+    public static final RegistryObject<BeaconArmorItem> KALEIDITE_CHESTPLATE = register("kaleidite_chestplate", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new BeaconArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.LEGGINGS, new Item.Properties()));
+    public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.BOOTS, new Item.Properties()));
     public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new SummonCrossbowItem(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new SwordItem(KaleiditeItemTier.INSTANCE, 3, -2.4f, new Item.Properties()));
     public static final RegistryObject<PickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new PickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties()));
@@ -49,6 +45,10 @@ public final class ItemRegistry {
     public static final RegistryObject<MultiversalShovelItem> PRISMATIC_SHOVEL = register("prismatic_shovel", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 2.5f, -3, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<MultiversalAxeItem> PRISMATIC_AXE = register("prismatic_axe", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -2.1f, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<SimpleLoreItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> List.of(ItemRegistry.getTab()), () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<WarpShieldItem> WARP_SHIELD = register("warp_shield", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().durability(336).rarity(Rarity.EPIC)));
+    public static final RegistryObject<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new BeaconArmorItem(KaleiditeArmorMaterial.BEACON, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> List.of(ItemRegistry.getTab()), () -> new WarpToolItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> List.of(ItemRegistry.getTab()), () -> new WarpStickItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.NATURAL_BLOCKS), () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties()));
 

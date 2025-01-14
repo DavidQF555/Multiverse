@@ -1,0 +1,12 @@
+{
+  "type": "smithing",
+  "base": {
+    "tag": "forge:rods/wooden"
+  },
+  "addition": {
+    "item": "multiverse:dimensional_prism"
+  },
+  "result": {
+    "item": "multiverse:warp_stick"
+  }
+}

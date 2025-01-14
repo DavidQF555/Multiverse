@@ -5,7 +5,15 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaM
 
 public final class ConfigHelper {
 
-    public static MultiverseBiomes biomes = VanillaMultiverseBiomes.INSTANCE;
+    private static MultiverseBiomes biomes = VanillaMultiverseBiomes.INSTANCE;
+
+    public static MultiverseBiomes getBiomesManager() {
+        return biomes;
+    }
+
+    public static void setBiomesManager(MultiverseBiomes biomes) {
+        ConfigHelper.biomes = biomes;
+    }
 
     private ConfigHelper() {
     }

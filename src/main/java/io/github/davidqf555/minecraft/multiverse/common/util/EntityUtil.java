@@ -4,32 +4,56 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
+import java.util.Set;
 
 public final class EntityUtil {
 
     private EntityUtil() {
     }
 
+    public static Vec3 getRandomSpawnAbove(ServerLevel world, RandomSource rand, Vec3 center, double max, double minY, double maxY, Set<EntityType<?>> types) {
+        again:
+        for (int i = 0; i < 50; i++) {
+            Vec3 pos = randomAroundAbove(rand, center, max, minY, maxY);
+            for (EntityType<?> type : types) {
+                if (!canSpawnPosition(world, pos, type)) {
+                    continue again;
+                }
+            }
+            return pos;
+        }
+        return randomAroundAbove(rand, center, max, minY, maxY);
+    }
+
+    public static Vec3 randomAround(RandomSource rand, Vec3 center, double min, double max) {
+        double a = rand.nextDouble() * 2 * Math.PI;
+        double b = rand.nextDouble() * Math.PI - Math.PI / 2;
+        double dist = rand.nextDouble() * (max - min) + min;
+        double dX = Math.sin(a) * Math.cos(b) * dist;
+        double dZ = Math.cos(a) * Math.cos(b) * dist;
+        double dY = Math.sin(b) * dist;
+        return center.add(dX, dY, dZ);
+    }
+
+    public static Vec3 randomAroundAbove(RandomSource rand, Vec3 center, double max, double minY, double maxY) {
+        double dY = rand.nextDouble() * (maxY - minY) + minY;
+        double angle = rand.nextDouble() * 2 * Math.PI;
+        double dist = rand.nextDouble() * max;
+        double dX = Math.cos(angle) * dist;
+        double dZ = Math.sin(angle) * dist;
+        return center.add(dX, dY, dZ);
+    }
+
     public static boolean randomTeleport(LivingEntity entity, Vec3 center, double min, double max, boolean effect) {
         RandomSource rand = entity.getRandom();
         for (int i = 0; i < 16; i++) {
-            double dX = rand.nextDouble() * (max - min) + min;
-            double dY = rand.nextDouble() * (max - min) + min;
-            double dZ = rand.nextDouble() * (max - min) + min;
-            if (rand.nextBoolean()) {
-                dX *= -1;
-            }
-            if (rand.nextBoolean()) {
-                dY *= -1;
-            }
-            if (rand.nextBoolean()) {
-                dZ *= -1;
-            }
-            if (entity.randomTeleport(center.x() + dX, center.y() + dY, center.z() + dZ, effect)) {
+            Vec3 pos = randomAround(rand, center, min, max);
+            if (entity.randomTeleport(pos.x(), pos.y(), pos.z(), effect)) {
                 return true;
             }
         }
@@ -38,28 +62,27 @@ public final class EntityUtil {
 
     @Nullable
     public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
-        return Optional.ofNullable(type.create(world, null, entity -> {
+        T entity = type.create(world);
+        if (entity != null) {
             RandomSource rand = world.getRandom();
             for (int i = 0; i < 50; i++) {
-                int dX = rand.nextInt(min, max + 1);
-                if (rand.nextBoolean()) {
-                    dX *= -1;
-                }
-                int dY = rand.nextInt(min, max + 1);
-                if (rand.nextBoolean()) {
-                    dY *= -1;
-                }
-                int dZ = rand.nextInt(min, max + 1);
-                if (rand.nextBoolean()) {
-                    dZ *= -1;
-                }
-                BlockPos pos = center.offset(dX, dY, dZ);
-                if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, pos, type) && world.noCollision(type.getAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5))) {
-                    entity.setPos(Vec3.atBottomCenterOf(pos));
-                    world.addFreshEntityWithPassengers(entity);
+                BlockPos block = BlockPos.containing(randomAround(rand, Vec3.atBottomCenterOf(center), min, max));
+                Vec3 pos = Vec3.atBottomCenterOf(block);
+                if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, block, type) && canSpawnPosition(world, pos, type)) {
+                    entity.setPos(pos);
+                    if (!(entity instanceof Mob) || ForgeEventFactory.onFinalizeSpawn((Mob) entity, world, world.getCurrentDifficultyAt(block), spawn, null, null) != null) {
+                        world.addFreshEntityWithPassengers(entity);
+                        return entity;
+                    }
                 }
             }
-        }, center, spawn, false, false)).filter(Entity::isAddedToWorld).orElse(null);
+        }
+        return null;
+    }
+
+    public static boolean canSpawnPosition(ServerLevel world, Vec3 pos, EntityType<?> type) {
+        AABB bounds = type.getAABB(pos.x(), pos.y(), pos.z());
+        return world.noCollision(bounds);
     }
 
 }

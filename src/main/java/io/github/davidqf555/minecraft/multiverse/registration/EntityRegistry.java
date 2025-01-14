@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
+import io.github.davidqf555.minecraft.multiverse.common.entities.ConquerorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.DoppelgangerEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
 import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
@@ -23,10 +23,10 @@ public final class EntityRegistry {
 
     public static final DeferredRegister<EntityType<?>> TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Multiverse.MOD_ID);
 
-    public static final RegistryObject<EntityType<CollectorEntity>> COLLECTOR = register("collector", EntityType.Builder.of(CollectorEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f));
     public static final RegistryObject<EntityType<TravelerEntity>> TRAVELER = register("traveler", EntityType.Builder.of(TravelerEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f));
     public static final RegistryObject<EntityType<DoppelgangerEntity>> DOPPELGANGER = register("doppelganger", EntityType.Builder.of(DoppelgangerEntity::new, MobCategory.MISC).sized(0.6f, 1.95f));
     public static final RegistryObject<EntityType<KaleiditeCoreEntity>> KALEIDITE_CORE = register("kaleidite_core", EntityType.Builder.<KaleiditeCoreEntity>of(KaleiditeCoreEntity::new, MobCategory.MISC).sized(0.25f, 0.25f));
+    public static final RegistryObject<EntityType<ConquerorEntity>> CONQUEROR = register("conqueror", EntityType.Builder.of(ConquerorEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f));
 
     private EntityRegistry() {
     }
@@ -37,9 +37,9 @@ public final class EntityRegistry {
 
     @SubscribeEvent
     public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
-        event.put(COLLECTOR.get(), CollectorEntity.createAttributes().build());
         event.put(TRAVELER.get(), TravelerEntity.createAttributes().build());
         event.put(DOPPELGANGER.get(), DoppelgangerEntity.createAttributes().build());
+        event.put(CONQUEROR.get(), ConquerorEntity.createAttributes().build());
     }
 
     @SubscribeEvent

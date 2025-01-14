@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.items;
 
-import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -41,6 +41,6 @@ public class KaleiditeItemTier implements Tier {
     @Nonnull
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(ItemRegistry.KALEIDITE_SHARD.get());
+        return Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS);
     }
 }

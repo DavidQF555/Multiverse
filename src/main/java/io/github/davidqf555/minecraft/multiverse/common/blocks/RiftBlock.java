@@ -1,14 +1,13 @@
 package io.github.davidqf555.minecraft.multiverse.common.blocks;
 
-import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,9 +109,9 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
         if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
             if (!entity.isOnPortalCooldown()) {
                 MinecraftServer server = world.getServer();
-                int target = ((RiftTileEntity) tile).getTarget();
-                if (DimensionHelper.getWorld(server, target).isPresent() || entity.getType().is(MultiverseTags.GENERATE_MULTIVERSE)) {
-                    ServerLevel dim = DimensionHelper.getOrCreateWorld(server, target);
+                ResourceKey<Level> target = ((RiftTileEntity) tile).getTarget();
+                ServerLevel dim = server.getLevel(target);
+                if (dim != null) {
                     Entity transported = entity.changeDimension(dim, (RiftTileEntity) tile);
                     if (transported instanceof LivingEntity) {
                         if (entity instanceof ServerPlayer) {

@@ -55,7 +55,7 @@ public class MultiversalPickaxeItem extends PickaxeItem {
                 return InteractionResultHolder.pass(stack);
             }
         } else if (world instanceof ServerLevel) {
-            MultiversalToolHelper.setRandomExistingTarget((ServerLevel) world, stack);
+            MultiversalToolHelper.setRandomTarget(world, stack);
         }
         return InteractionResultHolder.consume(stack);
     }

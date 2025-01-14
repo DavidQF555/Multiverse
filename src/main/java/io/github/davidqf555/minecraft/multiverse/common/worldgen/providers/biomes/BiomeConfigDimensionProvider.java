@@ -8,9 +8,9 @@ import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.BiomeCon
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.DimensionProvider;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.DimensionProviderTypeRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -34,7 +34,7 @@ public class BiomeConfigDimensionProvider implements DimensionProvider {
     @Override
     public LevelStem createDimension(RegistryAccess access, long seed, RandomSource random) {
         BiomeConfig config = this.config.value();
-        Pair<MultiverseType, Set<ResourceKey<Biome>>> biomes = config.selectRandom(access.registryOrThrow(Registries.BIOME), random);
+        Pair<MultiverseType, Set<HolderSet<Biome>>> biomes = config.selectRandom(access.registryOrThrow(Registries.BIOME), random);
         return provider.provide(access, seed, random, biomes.getFirst(), biomes.getSecond());
     }
 
