@@ -27,6 +27,10 @@ public interface MultiverseBiomes {
         };
     }
 
+    default boolean is(MultiverseType type, ResourceKey<Biome> biome) {
+        return getBiomes(type).contains(biome);
+    }
+
     SurfaceRules.RuleSource createSurface(boolean floor, boolean ceiling, MultiverseType type);
 
 }

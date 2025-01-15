@@ -1,27 +1,22 @@
 package io.github.davidqf555.minecraft.multiverse.common.entities;
 
-import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
-import io.github.davidqf555.minecraft.multiverse.common.util.RiftHelper;
-import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.util.RiftCoordinationHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 public class KaleiditeCoreEntity extends ThrowableItemProjectile {
@@ -56,34 +51,18 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     public void tick() {
         BlockPos pos = blockPosition();
         if (!level().isClientSide() && isAlive() && level().getBlockState(pos).getBlock() instanceof RiftBlock) {
-            level().levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
-            removeConnected(pos, ServerConfigs.INSTANCE.coreRange.get());
+            RiftCoordinationHelper.destroyRift((ServerLevel) level(), pos, this);
             discard();
         }
         super.tick();
-    }
-
-    private void removeConnected(BlockPos start, double distance) {
-        int index = 0;
-        List<BlockPos> list = new LinkedList<>();
-        list.add(start);
-        while (index < list.size()) {
-            BlockPos pos = list.get(index++);
-            if (pos.distSqr(start) <= distance * distance && level().getBlockState(pos).getBlock() instanceof RiftBlock) {
-                BlockPos.betweenClosedStream(pos.relative(Direction.DOWN).relative(Direction.WEST).relative(Direction.SOUTH), pos.relative(Direction.UP).relative(Direction.EAST).relative(Direction.NORTH))
-                        .filter(p -> !list.contains(p))
-                        .map(BlockPos::immutable)
-                        .forEach(list::add);
-                level().destroyBlock(pos, true, this);
-            }
-        }
     }
 
     @Override
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
         if (level() instanceof ServerLevel && isAlive()) {
-            RiftHelper.placeExplosion((ServerLevel) level(), level().getRandom(), BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false), Optional.empty(), Optional.empty(), position(), true);
+            Entity owner = getOwner();
+            RiftCoordinationHelper.placeRandomRift((ServerLevel) level(), false, position(), owner instanceof Mob);
             discard();
         }
     }

@@ -1,20 +1,13 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "###",
-    "SX#",
-    "#S#"
-  ],
-  "key": {
-    "#": {
-      "item": "multiverse:kaleidite_shard"
-    },
-    "X": {
-      "item": "multiverse:multiversal_beacon"
-    },
-    "S": {
-      "tag": "forge:string"
-    }
+  "type": "smithing_transform",
+  "base": {
+    "item": "crossbow"
+  },
+  "addition": {
+    "tag": "multiverse:kaleidite_materials"
+  },
+  "template": {
+    "item": "multiverse:multiversal_beacon"
   },
   "result": {
     "item": "multiverse:kaleidite_crossbow"

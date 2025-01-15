@@ -1,0 +1,15 @@
+{
+  "type": "smithing_transform",
+  "base": {
+    "item": "shield"
+  },
+  "addition": {
+    "tag": "multiverse:kaleidite_materials"
+  },
+  "template": {
+    "item": "multiverse:multiversal_beacon"
+  },
+  "result": {
+    "item": "multiverse:warp_shield"
+  }
+}

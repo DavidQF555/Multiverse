@@ -5,7 +5,6 @@ import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeCurrentC
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeTargetColor;
 import io.github.davidqf555.minecraft.multiverse.client.render.*;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.CollectorEntity;
 import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -30,15 +29,15 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(TileEntityRegistry.RIFT.get(), dispatcher -> new RiftTileEntityRenderer());
-        event.registerEntityRenderer(EntityRegistry.COLLECTOR.get(), CollectorRenderer<CollectorEntity>::new);
         event.registerEntityRenderer(EntityRegistry.TRAVELER.get(), TravelerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DOPPELGANGER.get(), DoppelgangerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KALEIDITE_CORE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.CONQUEROR.get(), ConquerorRenderer::new);
     }
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift_solid"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
     }
 
     @SubscribeEvent
@@ -52,6 +51,11 @@ public final class EventBusSubscriber {
     }
 
     @SubscribeEvent
+    public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(WarpShieldRenderer.INSTANCE);
+    }
+
+    @SubscribeEvent
     public static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
         event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_CLUSTER.get());
         event.register(KaleiditeCurrentColor.Item.INSTANCE, ItemRegistry.KALEIDITE_PICKAXE.get());
@@ -62,6 +66,8 @@ public final class EventBusSubscriber {
         event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SHOVEL.get());
         event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_AXE.get());
         event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.PRISMATIC_SWORD.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.WARP_STICK.get());
+        event.register(KaleiditeTargetColor.INSTANCE, ItemRegistry.WARP_RING.get());
     }
 
     @SubscribeEvent
@@ -76,6 +82,7 @@ public final class EventBusSubscriber {
             ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pulling"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pulling")));
             ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "charged"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("charged")));
             ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "firework"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("firework")));
+            ItemProperties.register(ItemRegistry.WARP_SHIELD.get(), new ResourceLocation(Multiverse.MOD_ID, "blocking"), ItemProperties.getProperty(Items.SHIELD, new ResourceLocation("blocking")));
         });
     }
 

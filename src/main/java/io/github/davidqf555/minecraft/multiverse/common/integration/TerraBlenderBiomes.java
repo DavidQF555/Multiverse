@@ -27,7 +27,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     private final Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> parameters = new HashMap<>();
 
     public TerraBlenderBiomes(Registry<Biome> registry) {
-        super();
+        parameters.putAll(VanillaMultiverseBiomes.getParameters());
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> overworld = getBiomes(registry, RegionType.OVERWORLD);
         overworldBiomes = overworld.keySet();
         this.overworld = getSurface(SurfaceRuleManager.RuleCategory.OVERWORLD);
