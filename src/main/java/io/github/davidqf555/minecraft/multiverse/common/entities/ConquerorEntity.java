@@ -80,6 +80,11 @@ public class ConquerorEntity extends SpellcasterIllager {
     }
 
     @Override
+    protected float getFlyingSpeed() {
+        return getSpeed();
+    }
+
+    @Override
     public boolean canChangeDimensions() {
         return false;
     }

@@ -93,6 +93,11 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
+    protected float getFlyingSpeed() {
+        return getSpeed();
+    }
+
+    @Override
     public void die(DamageSource pCause) {
         super.die(pCause);
         if (!level.isClientSide() && getOriginalId() == null) {
