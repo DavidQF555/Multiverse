@@ -5,12 +5,14 @@ import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelWriter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -19,8 +21,11 @@ import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public final class RiftPlacementHelper {
+
+    private static final Predicate<BlockState> REPLACE = Feature.isReplaceable(BlockTags.FEATURES_CANNOT_REPLACE);
 
     private RiftPlacementHelper() {
     }
@@ -34,13 +39,13 @@ public final class RiftPlacementHelper {
         Vec3[][] vertices = calculateVertices(center, n, angle, width, height);
         iterate(vertices, reader.getMinBuildHeight(), reader.getMaxBuildHeight(), pos -> {
             BlockState state = reader.getBlockState(pos);
-            if (canDestroy(reader, pos, state) && (replacement != ReplacementType.NONE || canReplace(state))) {
+            if (replacement.canReplace(reader, pos, state)) {
                 Vec3 corner = Vec3.atLowerCornerOf(pos);
                 Vec3[] polygon = calculateSectionPolygon(vertices, n, AABB.unitCubeFromLowerCorner(corner));
                 if (polygon.length >= 3) {
                     BlockState base = rift;
                     Fluid fluid = reader.getFluidState(pos).getType();
-                    if (replacement == ReplacementType.DESTROY) {
+                    if (replacement.hasDrops()) {
                         writer.destroyBlock(pos, true);
                     }
                     if (fluid == Fluids.WATER) {
@@ -62,14 +67,6 @@ public final class RiftPlacementHelper {
 
     public static Vec3[] calculateVerticesAt(RiftPlacement placement, BlockPos pos) {
         return calculateSectionPolygon(calculateVertices(placement.center(), placement.normal(), placement.angle(), placement.width(), placement.height()), placement.normal(), AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
-    }
-
-    public static boolean canDestroy(LevelReader reader, BlockPos pos, BlockState state) {
-        return state.getDestroySpeed(reader, pos) != -1;
-    }
-
-    public static boolean canReplace(BlockState state) {
-        return state.isAir();
     }
 
     private static Vec3[][] calculateVertices(Vec3 center, Vec3 normal, float angle, double width, double height) {
@@ -413,14 +410,61 @@ public final class RiftPlacementHelper {
         Arrays.sort(points, (p1, p2) -> {
             Vec3 v1 = p1.subtract(center).normalize();
             Vec3 v2 = p2.subtract(center).normalize();
-            double dot1 = v1.dot(dir);
-            double dot2 = v2.dot(dir);
-            double det1 = v1.cross(dir).dot(n);
-            double det2 = v2.cross(dir).dot(n);
-            // TODO: don't use atan2 to compare angles
-            double angle1 = Mth.atan2(det1, dot1);
-            double angle2 = Mth.atan2(det2, dot2);
-            return Double.compare(angle1, angle2);
+            double x1 = v1.dot(dir);
+            double x2 = v2.dot(dir);
+            double y1 = v1.cross(dir).dot(n);
+            double y2 = v2.cross(dir).dot(n);
+            if (y1 == 0) {
+                if (y2 == 0) {
+                    if (x1 >= 0) {
+                        return x2 >= 0 ? 0 : -1;
+                    } else {
+                        return x2 >= 0 ? 1 : 0;
+                    }
+                } else if (x1 >= 0) {
+                    return -1;
+                }
+                return y2 < 0 ? -1 : 1;
+            } else if (y2 == 0) {
+                if (x2 >= 0) {
+                    return 1;
+                }
+                return y1 < 0 ? 1 : -1;
+            } else if (x1 == 0) {
+                if (x2 == 0) {
+                    if (y1 < 0) {
+                        return y2 < 0 ? 0 : 1;
+                    }
+                    return y2 < 0 ? -1 : 0;
+                } else if (x2 < 0) {
+                    return y1 < 0 ? 1 : -1;
+                }
+                return y2 < 0 ? -1 : 1;
+            } else if (x2 == 0) {
+                if (x1 < 0) {
+                    return y2 < 0 ? -1 : 1;
+                }
+                return y1 < 0 ? 1 : -1;
+            } else {
+                int slope = Double.compare(y1 * x2, y2 * x1);
+                if (y1 > 0) {
+                    if (y2 > 0) {
+                        if (x1 * x2 > 0) {
+                            return slope;
+                        } else if (x1 < 0) {
+                            return 1;
+                        }
+                    }
+                    return -1;
+                } else if (y2 > 0) {
+                    return 1;
+                } else if (x1 * x2 > 0) {
+                    return slope;
+                } else if (x1 < 0) {
+                    return -1;
+                }
+            }
+            return 1;
         });
     }
 
@@ -460,9 +504,32 @@ public final class RiftPlacementHelper {
 
     public enum ReplacementType {
 
-        DESTROY,
-        REMOVE,
-        NONE
+        DESTROY((world, pos, state) -> state.getDestroySpeed(world, pos) != -1, true),
+        FEATURE_REMOVE((world, pos, state) -> REPLACE.test(state), false),
+        NONE((world, pos, state) -> state.isAir(), false);
+
+        private final ReplacementPolicy policy;
+        private final boolean drop;
+
+        ReplacementType(ReplacementPolicy policy, boolean drop) {
+            this.policy = policy;
+            this.drop = drop;
+        }
+
+        public boolean canReplace(LevelReader world, BlockPos pos, BlockState state) {
+            return policy.canReplace(world, pos, state);
+        }
+
+        public boolean hasDrops() {
+            return drop;
+        }
+
+    }
+
+    @FunctionalInterface
+    private interface ReplacementPolicy {
+
+        boolean canReplace(LevelReader world, BlockPos pos, BlockState state);
 
     }
 

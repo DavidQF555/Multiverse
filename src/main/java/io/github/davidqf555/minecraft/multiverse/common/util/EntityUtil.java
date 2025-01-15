@@ -6,19 +6,20 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
 import java.util.Set;
 
 public final class EntityUtil {
 
+    private static final int TRIES = 32;
+
     private EntityUtil() {
     }
 
     public static Vec3 getRandomSpawnAbove(ServerLevel world, RandomSource rand, Vec3 center, double max, double minY, double maxY, Set<EntityType<?>> types) {
         again:
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < TRIES; i++) {
             Vec3 pos = randomAroundAbove(rand, center, max, minY, maxY);
             for (EntityType<?> type : types) {
                 if (!canSpawnPosition(world, pos, type)) {
@@ -51,7 +52,7 @@ public final class EntityUtil {
 
     public static boolean randomTeleport(LivingEntity entity, Vec3 center, double min, double max, boolean effect) {
         RandomSource rand = entity.getRandom();
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < TRIES; i++) {
             Vec3 pos = randomAround(rand, center, min, max);
             if (entity.randomTeleport(pos.x(), pos.y(), pos.z(), effect)) {
                 return true;
@@ -62,18 +63,14 @@ public final class EntityUtil {
 
     @Nullable
     public static <T extends Entity> T randomSpawn(EntityType<T> type, ServerLevel world, BlockPos center, int min, int max, MobSpawnType spawn) {
-        T entity = type.create(world);
-        if (entity != null) {
-            RandomSource rand = world.getRandom();
-            for (int i = 0; i < 50; i++) {
-                BlockPos block = BlockPos.containing(randomAround(rand, Vec3.atBottomCenterOf(center), min, max));
-                Vec3 pos = Vec3.atBottomCenterOf(block);
-                if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, block, type) && canSpawnPosition(world, pos, type)) {
-                    entity.setPos(pos);
-                    if (!(entity instanceof Mob) || ForgeEventFactory.onFinalizeSpawn((Mob) entity, world, world.getCurrentDifficultyAt(block), spawn, null, null) != null) {
-                        world.addFreshEntityWithPassengers(entity);
-                        return entity;
-                    }
+        RandomSource rand = world.getRandom();
+        for (int i = 0; i < TRIES; i++) {
+            BlockPos block = BlockPos.containing(randomAround(rand, Vec3.atBottomCenterOf(center), min, max));
+            if (SpawnPlacements.getPlacementType(type).canSpawnAt(world, block, type) && canSpawnPosition(world, Vec3.atBottomCenterOf(block), type)) {
+                T entity = type.create(world, null, null, block, spawn, false, false);
+                if (entity != null) {
+                    world.addFreshEntityWithPassengers(entity);
+                    return entity;
                 }
             }
         }
