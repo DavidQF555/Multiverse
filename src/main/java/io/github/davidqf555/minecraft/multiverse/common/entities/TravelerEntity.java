@@ -10,6 +10,7 @@ import io.github.davidqf555.minecraft.multiverse.common.entities.ai.NoGravityNav
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.EntityUtil;
 import io.github.davidqf555.minecraft.multiverse.registration.EffectRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -288,7 +289,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(difficulty);
-        setItemInHand(InteractionHand.MAIN_HAND, (random.nextBoolean() ? Items.IRON_AXE : Items.CROSSBOW).getDefaultInstance());
+        setItemInHand(InteractionHand.MAIN_HAND, (random.nextBoolean() ? ItemRegistry.KALEIDITE_AXE.get() : Items.CROSSBOW).getDefaultInstance());
     }
 
     @Override

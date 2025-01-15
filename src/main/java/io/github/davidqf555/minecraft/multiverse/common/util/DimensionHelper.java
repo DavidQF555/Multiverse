@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,10 +31,7 @@ public final class DimensionHelper {
         return DimensionHelper.getRegistryKey(rand);
     }
 
-    public static long getSeed(long overworld, int index, boolean obfuscated) {
-        if (!obfuscated) {
-            overworld = BiomeManager.obfuscateSeed(overworld);
-        }
+    public static long getSeed(long overworld, int index) {
         return overworld + 80000L * index;
     }
 
