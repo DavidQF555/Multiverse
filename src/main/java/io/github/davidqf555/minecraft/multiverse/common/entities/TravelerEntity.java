@@ -175,11 +175,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     }
 
     @Override
-    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
-        return false;
-    }
-
-    @Override
     public boolean hurt(DamageSource source, float damage) {
         if (super.hurt(source, damage) && getOriginalId() == null) {
             EntityUtil.randomTeleport(this, position(), ServerConfigs.INSTANCE.travelerMinRange.get(), ServerConfigs.INSTANCE.travelerMaxRange.get(), true);

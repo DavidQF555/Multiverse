@@ -153,11 +153,6 @@ public class ConquerorEntity extends SpellcasterIllager {
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
-        return false;
-    }
-
-    @Override
     protected SoundEvent getCastingSoundEvent() {
         return SoundEvents.EVOKER_CAST_SPELL;
     }
