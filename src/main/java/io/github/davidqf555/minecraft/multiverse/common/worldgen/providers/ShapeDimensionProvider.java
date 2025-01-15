@@ -31,7 +31,7 @@ public class ShapeDimensionProvider {
     }
 
     public LevelStem createDimension(RegistryAccess access, long base, int index) {
-        long seed = DimensionHelper.getSeed(base, index, false);
+        long seed = DimensionHelper.getSeed(base, index);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         return createDimension(access, seed, random);
     }

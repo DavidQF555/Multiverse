@@ -142,7 +142,7 @@ public class ConquerorEntity extends SpellcasterIllager {
 
         goalSelector.addGoal(0, new SpellcasterCastingSpellGoal());
         goalSelector.addGoal(1, new SpawnRiftGoal());
-        goalSelector.addGoal(2, new MeleeAttackGoal(this, 3, false));
+        goalSelector.addGoal(2, new MeleeAttackGoal(this, 2, false));
         goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 3, 1));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8));
