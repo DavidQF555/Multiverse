@@ -128,6 +128,7 @@ public class ConquerorEntity extends SpellcasterIllager {
     protected PathNavigation createNavigation(Level pLevel) {
         NoGravityNavigator navigator = new NoGravityNavigator(this, pLevel);
         navigator.setCanFloat(true);
+        navigator.setCanPassDoors(true);
         return navigator;
     }
 
@@ -145,10 +146,10 @@ public class ConquerorEntity extends SpellcasterIllager {
         goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 3, 1));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8));
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(300));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false).setUnseenMemoryTicks(300));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
+        targetSelector.addGoal(0, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
+        targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(300));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false).setUnseenMemoryTicks(300));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
     }
 
     @Override

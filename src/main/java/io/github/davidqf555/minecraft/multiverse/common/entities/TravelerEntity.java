@@ -36,10 +36,13 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -140,16 +143,17 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
         goalSelector.addGoal(3, new FlyingPathfindToRaidGoal(this, 1));
         goalSelector.addGoal(4, new FlyingMoveThroughVillageGoal(this, 1.05, 1));
         goalSelector.addGoal(5, new RaiderCelebration(this));
-
         goalSelector.addGoal(0, new RangedCrossbowAttackGoal<>(this, 1, 16));
         goalSelector.addGoal(1, new MeleeAttackGoal(this, 1, true));
         goalSelector.addGoal(2, new FollowEntityGoal<>(this, TravelerEntity::getOriginal, 12, 8, 1));
         goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        targetSelector.addGoal(0, new HurtByTargetGoal(this));
+        targetSelector.addGoal(0, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
         targetSelector.addGoal(1, new CopyOriginalGoal(TargetingConditions.forCombat()));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, true));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(300));
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false).setUnseenMemoryTicks(300));
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
     }
 
     @Nullable
