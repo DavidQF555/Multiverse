@@ -12,7 +12,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -173,12 +172,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return serializeNBT();
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        deserializeNBT(pkt.getTag());
+        return saveWithoutMetadata();
     }
 
     @Nullable
