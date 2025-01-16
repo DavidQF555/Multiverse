@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseNoiseChunkGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseNoiseChunkGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraftforge.registries.DeferredRegister;

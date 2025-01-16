@@ -2,8 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
-import io.github.davidqf555.minecraft.multiverse.common.items.*;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.*;
+import io.github.davidqf555.minecraft.multiverse.common.world.items.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
@@ -32,7 +31,7 @@ public final class ItemRegistry {
     public static final RegistryObject<ArmorItem> KALEIDITE_CHESTPLATE = register("kaleidite_chestplate", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.CHEST, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.LEGS, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.FEET, new Item.Properties().tab(TAB)));
-    public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> new SummonCrossbowItem(new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
+    public static final RegistryObject<SummonCrossbowItem> BEACON_CROSSBOW = register("beacon_crossbow", () -> new SummonCrossbowItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().stacksTo(1).durability(465).tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", () -> new SwordItem(KaleiditeItemTier.INSTANCE, 3, -2.4f, new Item.Properties().tab(TAB)));
     public static final RegistryObject<PickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> new PickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> new ShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties().tab(TAB)));

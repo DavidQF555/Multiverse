@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client;
 
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;

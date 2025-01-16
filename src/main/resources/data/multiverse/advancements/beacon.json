@@ -2,7 +2,7 @@
   "parent": "multiverse:conquest",
   "display": {
     "icon": {
-      "item": "multiverse:kaleidite_crossbow"
+      "item": "multiverse:beacon_crossbow"
     },
     "title": {
       "translate": "advancements.multiverse.beacon.title"
@@ -18,7 +18,7 @@
         "items": [
           {
             "items": [
-              "multiverse:kaleidite_crossbow",
+              "multiverse:beacon_crossbow",
               "multiverse:beacon_chestplate",
               "multiverse:warp_shield"
             ]

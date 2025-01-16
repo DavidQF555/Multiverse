@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.LazyMultiverseSurfaceRuleSource;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.LazyMultiverseSurfaceRuleSource;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraftforge.registries.DeferredRegister;

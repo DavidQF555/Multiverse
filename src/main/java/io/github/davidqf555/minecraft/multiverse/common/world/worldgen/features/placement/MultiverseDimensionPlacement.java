@@ -1,0 +1,35 @@
+package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement;
+
+import com.mojang.serialization.Codec;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class MultiverseDimensionPlacement extends PlacementModifier {
+
+    public static final MultiverseDimensionPlacement INSTANCE = new MultiverseDimensionPlacement();
+    public static final Codec<MultiverseDimensionPlacement> CODEC = Codec.unit(INSTANCE);
+
+    @Override
+    public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
+        Optional<Integer> index = DimensionHelper.getIndex(context.getLevel().getLevel().dimension());
+        return index.isEmpty() || index.get() == 0 ? Stream.empty() : Stream.of(pos);
+    }
+
+    @Override
+    public PlacementModifierType<?> type() {
+        return PlacementRegistry.MULTIVERSE.get();
+    }
+
+}

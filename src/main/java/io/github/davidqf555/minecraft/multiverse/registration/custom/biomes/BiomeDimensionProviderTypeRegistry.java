@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.BiomeDimensionProvider;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.BiomeDimensionProviderType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.DualBiomeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.BiomeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.BiomeDimensionProviderType;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.DualBiomeDimensionProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

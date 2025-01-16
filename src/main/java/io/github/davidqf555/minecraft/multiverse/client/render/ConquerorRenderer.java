@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.ConquerorEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.ConquerorEntity;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
