@@ -19,9 +19,17 @@ import net.minecraft.world.phys.Vec3;
 
 public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
 
-    private static final RenderType TYPE = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+    private static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftSolidShader))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
+                    .createCompositeState(false)
+    );
+    private static final RenderType VANILLA = RenderType.create("rift_vanilla", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
                             .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
@@ -31,7 +39,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
         int base = entity.hasLevel() ? MultiverseColorHelper.getColor(entity.getLevel(), entity.getTarget()) : 0xFFFFFF;
-        VertexConsumer consumer = buffer.getBuffer(TYPE);
+        VertexConsumer consumer = buffer.getBuffer(ClientConfigs.INSTANCE.vanillaOnly.get() ? VANILLA : RIFT);
         Vec3[][] visual = entity.getVisual();
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();

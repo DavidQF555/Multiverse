@@ -16,6 +16,7 @@ public class ClientConfigs {
 
     public final ForgeConfigSpec.IntValue riftLayers;
     public final ForgeConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity;
+    public final ForgeConfigSpec.BooleanValue vanillaOnly;
 
     public ClientConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse client-side configuration");
@@ -31,6 +32,8 @@ public class ClientConfigs {
                 .defineInRange("riftMinOpacity", 0.5, 0, 1);
         riftMaxOpacity = builder.comment("This is the maximum opacity of a rift's layers as a fraction. Must be at least riftMinOpacity. ")
                 .defineInRange("riftMaxOpacity", 1.0, 0, 1);
+        vanillaOnly = builder.comment("This is whether only vanilla shaders are used to render. Try setting to true if rifts are invisible due to custom shaders. ")
+                .define("vanillaOnly", false);
     }
 
 }

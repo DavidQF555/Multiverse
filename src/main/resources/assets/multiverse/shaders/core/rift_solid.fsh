@@ -44,9 +44,13 @@ mat4 rift_layer(float layer) {
 out vec4 fragColor;
 
 void main() {
+    vec4 base = vertexColor * ColorModulator;
+    if(base.a == 0.0) {
+        discard;
+    }
     vec3 color = COLORS[0];
     for (int i = 1; i < 9; i++) {
         color += textureProj(Sampler0, texProj0 * rift_layer(float(i))).rgb * COLORS[i];
     }
-    fragColor = vec4(color, 1.0) * vertexColor * ColorModulator;
+    fragColor = base * vec4(color, 1.0);
 }
