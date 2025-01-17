@@ -43,7 +43,7 @@ public class WarpTeleporter implements ITeleporter {
         Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new RiftParticlesPacket(Optional.of(target), entity.getEyePosition()));
         Entity copy = entity.changeDimension(world, INSTANCE);
         if (copy != null) {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(Optional.of(current), copy.position()));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(Optional.of(current), copy.getEyePosition()));
             if (copy instanceof LivingEntity) {
                 int duration = ServerConfigs.INSTANCE.slowFalling.get();
                 if (duration > 0) {
