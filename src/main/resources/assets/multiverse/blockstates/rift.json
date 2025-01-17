@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "multiverse:block/rift"
+      "model": "block/air"
     }
   }
 }
