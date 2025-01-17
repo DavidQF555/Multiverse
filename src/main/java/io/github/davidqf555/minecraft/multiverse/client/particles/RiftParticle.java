@@ -8,9 +8,9 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
+import io.github.davidqf555.minecraft.multiverse.client.render.RiftTileEntityRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +25,7 @@ public class RiftParticle extends SimpleAnimatedParticle {
         public void begin(BufferBuilder pBuilder, TextureManager pTextureManager) {
             RenderSystem.depthMask(true);
             RenderSystem.setShader(ClientHelper::getRiftParticleShader);
-            RenderSystem.setShaderTexture(1, TheEndPortalRenderer.END_PORTAL_LOCATION);
+            RenderSystem.setShaderTexture(1, RiftTileEntityRenderer.PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             pBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);

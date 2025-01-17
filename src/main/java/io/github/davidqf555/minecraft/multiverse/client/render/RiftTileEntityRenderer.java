@@ -8,23 +8,25 @@ import com.mojang.math.Matrix4f;
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
 
+    public static final ResourceLocation PARTICLES = new ResourceLocation(Multiverse.MOD_ID, "textures/block/rift.png");
     private static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftShader))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
+                            .add(PARTICLES, false, false).build())
                     .createCompositeState(false)
     );
     private static final RenderType VANILLA = RenderType.create("rift_vanilla", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
@@ -32,7 +34,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
+                            .add(PARTICLES, false, false).build())
                     .createCompositeState(false)
     );
 
