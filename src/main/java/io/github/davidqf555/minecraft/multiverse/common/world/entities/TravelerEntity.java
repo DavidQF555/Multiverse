@@ -232,6 +232,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
                     Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> clone), new RiftParticlesPacket(Optional.empty(), clone.getEyePosition()));
+                    clone.level.playSound(null, clone.getX(), clone.getY(), clone.getZ(), SoundEvents.ENDERMAN_TELEPORT, clone.getSoundSource(), 1, 1);
                 }
             }
         } else if (getOriginal() == null) {

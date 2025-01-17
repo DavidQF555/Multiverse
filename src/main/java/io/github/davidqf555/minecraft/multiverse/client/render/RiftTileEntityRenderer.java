@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -24,7 +23,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                     .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftShader))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
+                            .add(ClientHelper.RIFT, false, false).build())
                     .createCompositeState(false)
     );
     private static final RenderType VANILLA = RenderType.create("rift_vanilla", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
@@ -32,7 +31,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
+                            .add(ClientHelper.RIFT, false, false).build())
                     .createCompositeState(false)
     );
 

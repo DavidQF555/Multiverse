@@ -7,21 +7,18 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-public class RiftParticle extends TextureSheetParticle {
+public class RiftExplosionParticle extends TextureSheetParticle {
 
     private final SpriteSet sprites;
 
-    protected RiftParticle(ClientLevel world, double x, double y, double z, SpriteSet sprites) {
-        super(world, x, y, z);
-        lifetime = 10 + random.nextInt(6);
+    protected RiftExplosionParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet pSprites) {
+        super(pLevel, pX, pY, pZ);
+        sprites = pSprites;
         hasPhysics = false;
-        this.sprites = sprites;
-        scale(10);
         setAlpha((float) (double) ClientConfigs.INSTANCE.riftMaxOpacity.get());
-        setSpriteFromAge(sprites);
+        lifetime = 6 + random.nextInt(4);
+        quadSize = 2 - random.nextFloat();
+        setSpriteFromAge(pSprites);
     }
 
     @Override
@@ -51,7 +48,7 @@ public class RiftParticle extends TextureSheetParticle {
         @Nullable
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double dX, double dY, double dZ) {
-            RiftParticle particle = new RiftParticle(level, x, y, z, sprites);
+            RiftExplosionParticle particle = new RiftExplosionParticle(level, x, y, z, sprites);
             particle.setColor((float) dX, (float) dY, (float) dZ);
             return particle;
         }
