@@ -49,7 +49,9 @@ public class WarpToolItem extends Item {
             Entity copy = WarpTeleporter.warp(player, target);
             if (copy != null) {
                 MultiversalToolHelper.setTarget(stack, current);
-                player.getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.warpRingCooldown.get());
+                if (!player.isCreative()) {
+                    player.getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.warpRingCooldown.get());
+                }
             }
         }
         return InteractionResultHolder.consume(stack);

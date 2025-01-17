@@ -33,7 +33,7 @@ public class SimpleLoreItem extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return foiled;
+        return foiled || super.isFoil(stack);
     }
 
     public Component getLore() {

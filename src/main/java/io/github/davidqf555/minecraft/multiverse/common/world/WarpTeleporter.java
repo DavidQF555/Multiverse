@@ -29,7 +29,7 @@ public class WarpTeleporter implements ITeleporter {
 
     @Nullable
     public static Entity warp(Entity entity, ResourceKey<Level> target) {
-        if (entity.level.isClientSide()) {
+        if (entity.level.isClientSide() || !entity.canChangeDimensions()) {
             return null;
         }
         ResourceKey<Level> current = entity.level.dimension();
