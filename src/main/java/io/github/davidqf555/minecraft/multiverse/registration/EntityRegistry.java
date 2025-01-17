@@ -1,10 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.ConquerorEntity;
-import io.github.davidqf555.minecraft.multiverse.common.entities.DoppelgangerEntity;
-import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
-import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.ConquerorEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.DoppelgangerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.KaleiditeCoreEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;

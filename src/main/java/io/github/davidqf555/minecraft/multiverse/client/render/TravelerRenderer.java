@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client.render;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.entities.TravelerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

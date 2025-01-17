@@ -7,31 +7,38 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
 
-    private static final RenderType TYPE = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+    private static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftSolidShader))
+                    .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftShader))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
+                            .add(ClientHelper.RIFT, false, false).build())
+                    .createCompositeState(false)
+    );
+    private static final RenderType VANILLA = RenderType.create("rift_vanilla", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                            .add(ClientHelper.RIFT, false, false).build())
                     .createCompositeState(false)
     );
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
         int base = entity.hasLevel() ? MultiverseColorHelper.getColor(entity.getLevel(), entity.getTarget()) : 0xFFFFFF;
-        VertexConsumer consumer = buffer.getBuffer(TYPE);
+        VertexConsumer consumer = buffer.getBuffer(ClientConfigs.INSTANCE.vanillaOnly.get() ? VANILLA : RIFT);
         Vec3[][] visual = entity.getVisual();
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
@@ -69,7 +76,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
     }
 
     protected double getAlphaFactor(int layer, int layers, double min, double max) {
-        return layers <= 1 ? (min + max) / 2 : Mth.lerp(layer / (layers - 1.0), max, min);
+        return layers <= 1 ? max : Mth.lerp(layer / (layers - 1.0), max, min);
     }
 
     private void drawPolygon(VertexConsumer consumer, PoseStack pose, Vec3[] vertices, Vec3 offset, int color, boolean forward) {
@@ -126,7 +133,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     @Override
     public int getViewDistance() {
-        return 256;
+        return ClientConfigs.INSTANCE.riftRenderDistance.get();
     }
 
 }

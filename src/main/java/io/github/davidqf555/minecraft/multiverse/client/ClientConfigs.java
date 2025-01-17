@@ -14,8 +14,9 @@ public class ClientConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.IntValue riftLayers;
-    public final ForgeConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity;
+    public final ForgeConfigSpec.IntValue riftLayers, riftRenderDistance, riftExplosionParticles;
+    public final ForgeConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity, riftExplosionParticleRange;
+    public final ForgeConfigSpec.BooleanValue vanillaOnly;
 
     public ClientConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse client-side configuration");
@@ -31,6 +32,14 @@ public class ClientConfigs {
                 .defineInRange("riftMinOpacity", 0.5, 0, 1);
         riftMaxOpacity = builder.comment("This is the maximum opacity of a rift's layers as a fraction. Must be at least riftMinOpacity. ")
                 .defineInRange("riftMaxOpacity", 1.0, 0, 1);
+        riftRenderDistance = builder.comment("This is the distance in blocks that rift blocks are rendered. ")
+                .defineInRange("riftRenderDistance", 256, 0, Integer.MAX_VALUE);
+        riftExplosionParticleRange = builder.comment("This is the max distance in blocks that rift explosion particles will spawn from the center. ")
+                .defineInRange("riftExplosionParticleRange", 4, 0, Double.MAX_VALUE);
+        riftExplosionParticles = builder.comment("This is the number of rift explosion particles spawned per tick. ")
+                .defineInRange("riftExplosionParticles", 6, 0, Integer.MAX_VALUE);
+        vanillaOnly = builder.comment("This is whether only vanilla shaders are used to render. Try setting to true if rifts are invisible due to custom shaders. ")
+                .define("vanillaOnly", false);
     }
 
 }

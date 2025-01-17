@@ -1,15 +1,15 @@
 package io.github.davidqf555.minecraft.multiverse.common.events;
 
 import com.mojang.serialization.Lifecycle;
-import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.capabilities.NBTCapabilityProvider;
 import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
-import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.ShapeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.ShapeDimensionProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;

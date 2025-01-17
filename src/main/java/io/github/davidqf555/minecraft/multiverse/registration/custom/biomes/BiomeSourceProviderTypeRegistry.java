@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.chunk_gen.biome_source.BiomeSourceProvider;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.providers.biomes.chunk_gen.biome_source.NoiseBiomeSourceProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.BiomeSourceProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.NoiseBiomeSourceProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
