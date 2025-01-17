@@ -21,7 +21,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     private static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftSolidShader))
+                    .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftShader))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
                             .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
@@ -77,7 +77,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
     }
 
     protected double getAlphaFactor(int layer, int layers, double min, double max) {
-        return layers <= 1 ? (min + max) / 2 : Mth.lerp(layer / (layers - 1.0), max, min);
+        return layers <= 1 ? max : Mth.lerp(layer / (layers - 1.0), max, min);
     }
 
     private void drawPolygon(VertexConsumer consumer, PoseStack pose, Vec3[] vertices, Vec3 offset, int color, boolean forward) {

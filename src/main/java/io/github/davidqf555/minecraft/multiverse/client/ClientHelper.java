@@ -29,7 +29,7 @@ public final class ClientHelper {
         }
     }
 
-    public static ShaderInstance getRiftSolidShader() {
+    public static ShaderInstance getRiftShader() {
         return riftShader;
     }
 

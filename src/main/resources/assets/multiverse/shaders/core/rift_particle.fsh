@@ -47,7 +47,7 @@ out vec4 fragColor;
 
 void main() {
     vec4 base = vertexColor * ColorModulator * texture(Sampler0, texCoord0);
-    if(base.a == 0.0) {
+    if(base.a < 0.1) {
         discard;
     }
     vec3 color = COLORS[0];

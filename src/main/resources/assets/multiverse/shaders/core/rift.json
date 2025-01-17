@@ -4,8 +4,8 @@
     "srcrgb": "srcalpha",
     "dstrgb": "1-srcalpha"
   },
-  "vertex": "multiverse:rift_solid",
-  "fragment": "multiverse:rift_solid",
+  "vertex": "multiverse:rift",
+  "fragment": "multiverse:rift",
   "attributes": [
     "Color"
   ],
