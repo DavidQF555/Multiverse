@@ -1,7 +1,7 @@
 {
   "type": "smithing",
   "base": {
-    "item": "shield"
+    "tag": "forge:tools/shields"
   },
   "addition": {
     "item": "multiverse:multiversal_beacon"
