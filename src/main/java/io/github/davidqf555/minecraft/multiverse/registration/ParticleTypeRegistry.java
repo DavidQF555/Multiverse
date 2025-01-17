@@ -13,7 +13,9 @@ public final class ParticleTypeRegistry {
 
     public static final DeferredRegister<ParticleType<?>> TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Multiverse.MOD_ID);
 
-    public static final RegistryObject<SimpleParticleType> RIFT = register("rift", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> RIFT = register("rift", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> RIFT_EXPLOSION = register("rift_explosion", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> RIFT_EXPLOSION_EMITTER = register("rift_explosion_emitter", () -> new SimpleParticleType(true));
 
     private ParticleTypeRegistry() {
     }

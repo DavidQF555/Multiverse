@@ -1,6 +1,8 @@
 package io.github.davidqf555.minecraft.multiverse.common.world;
 
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftExplosionParticlesPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftBlock;
 import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftTileEntity;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
@@ -9,15 +11,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -50,7 +54,7 @@ public final class RiftHelper {
     }
 
     public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, double width, double height, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
-        doRiftSpawnEffect(world, new BlockPos(center));
+        doRiftSpawnEffect(world, new BlockPos(center), Optional.of(target));
         RiftPlacementHelper.place(world, world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, replacement);
     }
 
@@ -77,15 +81,17 @@ public final class RiftHelper {
         placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())), temporary, center, replacement);
     }
 
-    public static void doRiftSpawnEffect(Level world, BlockPos pos) {
-        world.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, pos, 0);
+    public static void doRiftSpawnEffect(ServerLevel world, BlockPos pos, Optional<ResourceKey<Level>> target) {
+        Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftExplosionParticlesPacket(target, Vec3.atCenterOf(pos)));
+        world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.END_GATEWAY_SPAWN, SoundSource.BLOCKS, 10, 0.7f + (world.random.nextFloat() - world.random.nextFloat()) * 0.14f);
+        world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 6, 0.8f + (world.random.nextFloat() - world.random.nextFloat()) * 0.14f);
     }
 
     public static void destroyRift(ServerLevel world, BlockPos pos, @Nullable Entity entity) {
-        doRiftSpawnEffect(world, pos);
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof RiftTileEntity) {
             ResourceKey<Level> target = ((RiftTileEntity) be).getTarget();
+            doRiftSpawnEffect(world, pos, Optional.of(target));
             ServerLevel w = world.getServer().getLevel(target);
             if (w != null) {
                 destroyConnectedRifts(world, w, pos, entity);
@@ -113,7 +119,7 @@ public final class RiftHelper {
     private static void destroyConnectedRifts(Level from, ServerLevel target, BlockPos start, @Nullable Entity entity) {
         Vec3 pos = DimensionHelper.translate(Vec3.atCenterOf(start), from.dimensionType(), target.dimensionType(), true);
         RiftHelper.getClosestRift(target, from.dimension(), new BlockPos(pos), ServerConfigs.INSTANCE.riftRange.get()).ifPresent(b -> {
-            target.levelEvent(LevelEvent.ANIMATION_END_GATEWAY_SPAWN, b, 0);
+            doRiftSpawnEffect(target, b, Optional.of(from.dimension()));
             destroyConnectedBlocks(target, b, ServerConfigs.INSTANCE.coreRange.get(), entity);
         });
     }
