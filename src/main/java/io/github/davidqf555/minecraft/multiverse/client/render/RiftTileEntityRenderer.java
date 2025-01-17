@@ -134,7 +134,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     @Override
     public int getViewDistance() {
-        return 256;
+        return ClientConfigs.INSTANCE.riftRenderDistance.get();
     }
 
 }
