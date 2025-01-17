@@ -8,18 +8,21 @@ import com.mojang.math.Matrix4f;
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftTileEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntity> {
 
-    private static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+    private static final RenderType RIFT = RenderType.create(new ResourceLocation(Multiverse.MOD_ID, "rift").toString(), DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(new RenderStateShard.ShaderStateShard(ClientHelper::getRiftShader))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -27,7 +30,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                             .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
                     .createCompositeState(false)
     );
-    private static final RenderType VANILLA = RenderType.create("rift_vanilla", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+    private static final RenderType VANILLA = RenderType.create(new ResourceLocation(Multiverse.MOD_ID, "rift_vanilla").toString(), DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -38,46 +41,64 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
-        int base = entity.hasLevel() ? MultiverseColorHelper.getColor(entity.getLevel(), entity.getTarget()) : 0xFFFFFF;
+        int[] base = entity.hasLevel() ? MultiverseColorHelper.getColors(entity.getLevel(), entity.getTarget(), 2) : new int[]{0xFFFFFF, 0xFFFFFF};
         VertexConsumer consumer = buffer.getBuffer(ClientConfigs.INSTANCE.vanillaOnly.get() ? VANILLA : RIFT);
         Vec3[][] visual = entity.getVisual();
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
         double max = ClientConfigs.INSTANCE.riftMaxOpacity.get();
+        int[] colors = calculateColors(visual.length, min, max, base[0], base[1]);
         matrixStack.pushPose();
-        double destA = 0;
         for (int i = visual.length - 1; i >= 0; i--) {
-            double alpha;
-            if (destA >= 1) {
-                alpha = 1;
-            } else {
-                double target = getAlphaFactor(i, visual.length, min, max);
-                alpha = (target - destA) / (1 - destA);
-                destA = target;
-            }
-            int color = base | ((int) (alpha * 0xFF) << 24);
-            drawPolygon(consumer, matrixStack, visual[i], offset, color, true);
+            drawPolygon(consumer, matrixStack, visual[i], offset, colors[i], true);
         }
         matrixStack.popPose();
         matrixStack.pushPose();
-        destA = 0;
         for (int i = visual.length - 1; i >= 0; i--) {
-            double alpha;
-            if (destA >= 1) {
-                alpha = 1;
-            } else {
-                double target = getAlphaFactor(i, visual.length, min, max);
-                alpha = (target - destA) / (1 - destA);
-                destA = target;
-            }
-            int color = base | ((int) (alpha * 0xFF) << 24);
-            drawPolygon(consumer, matrixStack, visual[i], offset, color, false);
+            drawPolygon(consumer, matrixStack, visual[i], offset, colors[i], false);
         }
         matrixStack.popPose();
     }
 
-    protected double getAlphaFactor(int layer, int layers, double min, double max) {
-        return layers <= 1 ? max : Mth.lerp(layer / (layers - 1.0), max, min);
+    protected int[] calculateColors(int layers, double minA, double maxA, int base, int edge) {
+        int[] colors = new int[layers];
+        double destA = 0;
+        double destR = 0;
+        double destG = 0;
+        double destB = 0;
+        for (int i = layers - 1; i >= 0; i--) {
+            int alpha;
+            if (destA >= 1) {
+                alpha = 0xFF;
+            } else {
+                double target = Mth.lerp(getAlphaFactor(i, layers), minA, maxA);
+                alpha = (int) ((target - destA) * 0xFF / (1 - destA));
+                if (alpha == 0) {
+                    continue;
+                }
+                destA += alpha * (1 - destA) / 0xFF;
+            }
+            double factor = getColorFactor(i, layers);
+            double targetR = Mth.lerp(factor, FastColor.ARGB32.red(base) / 255.0, FastColor.ARGB32.red(edge) / 255.0);
+            double targetG = Mth.lerp(factor, FastColor.ARGB32.green(base) / 255.0, FastColor.ARGB32.green(edge) / 255.0);
+            double targetB = Mth.lerp(factor, FastColor.ARGB32.blue(base) / 255.0, FastColor.ARGB32.blue(edge) / 255.0);
+            int red = (int) (((targetR - destR) * 0xFF / alpha + destR) * 0xFF);
+            int green = (int) (((targetG - destG) * 0xFF / alpha + destG) * 0xFF);
+            int blue = (int) (((targetB - destB) * 0xFF / alpha + destB) * 0xFF);
+            colors[i] = FastColor.ARGB32.color(alpha, red, green, blue);
+            destR = red * alpha / 65025.0 + (0xFF - alpha) * destR / 0xFF;
+            destG = green * alpha / 65025.0 + (0xFF - alpha) * destG / 0xFF;
+            destB = blue * alpha / 65025.0 + (0xFF - alpha) * destB / 0xFF;
+        }
+        return colors;
+    }
+
+    protected double getAlphaFactor(int layer, int layers) {
+        return layers <= 1 ? 1 : 1 - layer / (layers - 1.0);
+    }
+
+    protected double getColorFactor(int layer, int layers) {
+        return layers <= 1 ? 0 : layer / (layers - 1.0);
     }
 
     private void drawPolygon(VertexConsumer consumer, PoseStack pose, Vec3[] vertices, Vec3 offset, int color, boolean forward) {
@@ -85,12 +106,10 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
             case 3:
                 drawQuad(consumer, pose, vertices[0], vertices[0], vertices[1], vertices[2], offset, color, forward);
                 break;
+            case 5:
+                drawQuad(consumer, pose, vertices[0], vertices[0], vertices[3], vertices[4], offset, color, forward);
             case 4:
                 drawQuad(consumer, pose, vertices[0], vertices[1], vertices[2], vertices[3], offset, color, forward);
-                break;
-            case 5:
-                drawQuad(consumer, pose, vertices[0], vertices[1], vertices[2], vertices[3], offset, color, forward);
-                drawQuad(consumer, pose, vertices[0], vertices[0], vertices[3], vertices[4], offset, color, forward);
                 break;
             case 6:
                 drawQuad(consumer, pose, vertices[0], vertices[1], vertices[2], vertices[3], offset, color, forward);
