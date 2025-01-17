@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client;
 
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
-import io.github.davidqf555.minecraft.multiverse.common.util.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public final class ClientHelper {
 
-    static ShaderInstance riftShader;
+    static ShaderInstance riftShader, riftParticleShader;
 
     private ClientHelper() {
     }
@@ -29,8 +29,12 @@ public final class ClientHelper {
         }
     }
 
-    public static ShaderInstance getRiftSolidShader() {
+    public static ShaderInstance getRiftShader() {
         return riftShader;
+    }
+
+    public static ShaderInstance getRiftParticleShader() {
+        return riftParticleShader;
     }
 
 }

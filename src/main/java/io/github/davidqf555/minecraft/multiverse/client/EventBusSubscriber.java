@@ -3,9 +3,10 @@ package io.github.davidqf555.minecraft.multiverse.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeCurrentColor;
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeTargetColor;
+import io.github.davidqf555.minecraft.multiverse.client.particles.RiftParticle;
 import io.github.davidqf555.minecraft.multiverse.client.render.*;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionEffectsRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.DimensionEffectsRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -37,7 +38,8 @@ public final class EventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift_solid"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift"), DefaultVertexFormat.POSITION_COLOR), shader -> ClientHelper.riftShader = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Multiverse.MOD_ID, "rift_particle"), DefaultVertexFormat.PARTICLE), shader -> ClientHelper.riftParticleShader = shader);
     }
 
     @SubscribeEvent
@@ -78,10 +80,10 @@ public final class EventBusSubscriber {
     @SubscribeEvent
     public static void onFMLClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pull"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pull")));
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pulling"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pulling")));
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "charged"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("charged")));
-            ItemProperties.register(ItemRegistry.KALEIDITE_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "firework"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("firework")));
+            ItemProperties.register(ItemRegistry.BEACON_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pull"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pull")));
+            ItemProperties.register(ItemRegistry.BEACON_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "pulling"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("pulling")));
+            ItemProperties.register(ItemRegistry.BEACON_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "charged"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("charged")));
+            ItemProperties.register(ItemRegistry.BEACON_CROSSBOW.get(), new ResourceLocation(Multiverse.MOD_ID, "firework"), ItemProperties.getProperty(Items.CROSSBOW, new ResourceLocation("firework")));
             ItemProperties.register(ItemRegistry.WARP_SHIELD.get(), new ResourceLocation(Multiverse.MOD_ID, "blocking"), ItemProperties.getProperty(Items.SHIELD, new ResourceLocation("blocking")));
         });
     }

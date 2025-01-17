@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftBlock;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;

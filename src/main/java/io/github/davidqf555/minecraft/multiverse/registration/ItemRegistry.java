@@ -3,8 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 import com.mojang.datafixers.util.Pair;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
-import io.github.davidqf555.minecraft.multiverse.common.items.*;
-import io.github.davidqf555.minecraft.multiverse.common.items.tools.*;
+import io.github.davidqf555.minecraft.multiverse.common.world.items.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +34,7 @@ public final class ItemRegistry {
     public static final RegistryObject<BeaconArmorItem> KALEIDITE_CHESTPLATE = register("kaleidite_chestplate", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new BeaconArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.LEGGINGS, new Item.Properties()));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.BOOTS, new Item.Properties()));
-    public static final RegistryObject<SummonCrossbowItem> KALEIDITE_CROSSBOW = register("kaleidite_crossbow", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new SummonCrossbowItem(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<SummonCrossbowItem> BEACON_CROSSBOW = register("beacon_crossbow", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new SummonCrossbowItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().stacksTo(1).durability(465).rarity(Rarity.EPIC)));
     public static final RegistryObject<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new SwordItem(KaleiditeItemTier.INSTANCE, 3, -2.4f, new Item.Properties()));
     public static final RegistryObject<PickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new PickaxeItem(KaleiditeItemTier.INSTANCE, 1, -2.8f, new Item.Properties()));
     public static final RegistryObject<ShovelItem> KALEIDITE_SHOVEL = register("kaleidite_shovel", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new ShovelItem(KaleiditeItemTier.INSTANCE, 1.5f, -3, new Item.Properties()));
