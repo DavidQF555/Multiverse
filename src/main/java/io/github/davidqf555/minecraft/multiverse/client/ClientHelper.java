@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public final class ClientHelper {
 
-    static ShaderInstance riftShader;
+    static ShaderInstance riftShader, riftParticleShader;
 
     private ClientHelper() {
     }
@@ -31,6 +31,10 @@ public final class ClientHelper {
 
     public static ShaderInstance getRiftSolidShader() {
         return riftShader;
+    }
+
+    public static ShaderInstance getRiftParticleShader() {
+        return riftParticleShader;
     }
 
 }
