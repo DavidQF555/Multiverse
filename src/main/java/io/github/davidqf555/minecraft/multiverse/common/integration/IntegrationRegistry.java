@@ -1,9 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.util.ConfigHelper;
+import io.github.davidqf555.minecraft.multiverse.common.util.MultiverseConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.biomes.LazyMultiverseBiomes;
 import net.minecraft.core.registries.Registries;
-import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -15,9 +16,9 @@ public final class IntegrationRegistry {
     }
 
     @SubscribeEvent
-    public static void onServerStarting(ServerStartingEvent event) {
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (ModList.get().isLoaded("terrablender")) {
-            ConfigHelper.biomes = new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME));
+            MultiverseConfig.setBiomesManager(new LazyMultiverseBiomes(() -> new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME))));
         }
     }
 

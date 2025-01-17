@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.blocks.RiftTileEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftTileEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

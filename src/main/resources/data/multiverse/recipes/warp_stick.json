@@ -1,0 +1,15 @@
+{
+  "type": "smithing_transform",
+  "base": {
+    "tag": "forge:rods"
+  },
+  "addition": {
+    "tag": "multiverse:kaleidite_materials"
+  },
+  "template": {
+    "item": "multiverse:dimensional_prism"
+  },
+  "result": {
+    "item": "multiverse:warp_stick"
+  }
+}

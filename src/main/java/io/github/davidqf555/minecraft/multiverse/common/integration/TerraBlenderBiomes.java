@@ -1,9 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.VanillaMultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseSurfaceRuleData;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
@@ -27,7 +27,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     private final Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> parameters = new HashMap<>();
 
     public TerraBlenderBiomes(Registry<Biome> registry) {
-        super();
+        parameters.putAll(VanillaMultiverseBiomes.getParameters());
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> overworld = getBiomes(registry, RegionType.OVERWORLD);
         overworldBiomes = overworld.keySet();
         this.overworld = getSurface(SurfaceRuleManager.RuleCategory.OVERWORLD);
