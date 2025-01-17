@@ -2,22 +2,14 @@ package io.github.davidqf555.minecraft.multiverse.common.events;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
-import io.github.davidqf555.minecraft.multiverse.common.entities.KaleiditeCoreEntity;
-import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
-import net.minecraft.Util;
+import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -28,17 +20,13 @@ public final class ModBus {
     }
 
     @SubscribeEvent
+    public static void onRegistryCapability(RegisterCapabilitiesEvent event) {
+        event.register(SummonedData.class);
+    }
+
+    @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            CriteriaTriggers.register(new ResourceLocation(Multiverse.MOD_ID, "enter_rift").toString(), EnterRiftTrigger.INSTANCE);
-            DispenserBlock.registerBehavior(ItemRegistry.KALEIDITE_CORE.get(), new AbstractProjectileDispenseBehavior() {
-                @Nonnull
-                @Override
-                protected Projectile getProjectile(Level world, Position pos, ItemStack stack) {
-                    return Util.make(new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world), entity -> entity.setItem(stack));
-                }
-            });
-        });
+        event.enqueueWork(() -> CriteriaTriggers.register(new ResourceLocation(Multiverse.MOD_ID, "enter_rift").toString(), EnterRiftTrigger.INSTANCE));
     }
 
 }
