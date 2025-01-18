@@ -23,6 +23,6 @@ public class KaleiditeTargetColor implements ItemColor {
                 return MultiverseColorHelper.getColor(world, MultiversalToolHelper.getTarget(stack));
             }
         }
-        return 0xFFFFFF;
+        return 0xFFFFFFFF;
     }
 }
