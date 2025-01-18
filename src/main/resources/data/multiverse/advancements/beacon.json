@@ -12,7 +12,7 @@
     }
   },
   "criteria": {
-    "boundless_blade": {
+    "obtain": {
       "trigger": "inventory_changed",
       "conditions": {
         "items": [
