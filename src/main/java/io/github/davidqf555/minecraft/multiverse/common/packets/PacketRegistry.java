@@ -11,7 +11,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 public final class PacketRegistry {
 
     public static final CustomPacketPayload.Type<RiftParticlesPacket> RIFT_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_particles"));
-    public static final CustomPacketPayload.Type<UpdateClientDimensionsPacket> UPDATE_DIM = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "update_dimensions"));
+    public static final CustomPacketPayload.Type<RiftExplosionParticlesPacket> RIFT_EXPLOSION_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_explosion_particles"));
 
     private PacketRegistry() {
     }
@@ -25,9 +25,9 @@ public final class PacketRegistry {
                         RiftParticlesPacket.HANDLER
                 )
                 .playToClient(
-                        UPDATE_DIM,
-                        UpdateClientDimensionsPacket.CODEC,
-                        UpdateClientDimensionsPacket.HANDLER
+                        RIFT_EXPLOSION_PARTICLES,
+                        RiftExplosionParticlesPacket.CODEC,
+                        RiftExplosionParticlesPacket.HANDLER
                 );
     }
 

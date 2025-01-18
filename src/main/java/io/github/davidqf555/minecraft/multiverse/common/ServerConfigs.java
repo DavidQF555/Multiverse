@@ -14,8 +14,8 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ModConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, temperatureScale, humidityScale, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange;
-    public final ModConfigSpec.IntValue maxDimensions, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange;
+    public final ModConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, temperatureScale, humidityScale, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
+    public final ModConfigSpec.IntValue maxDimensions, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
 
     public ServerConfigs(ModConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
@@ -79,6 +79,8 @@ public class ServerConfigs {
         armorSpawnPeriod = builder.comment("This is the period in ticks that the wearer spawns doppelgangers when in combat. ")
                 .defineInRange("armorSpawnPeriod", 40, 1, Integer.MAX_VALUE);
         builder.pop().push("Traveler");
+        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
+                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
         travelerMinRange = builder.comment("This is the minimum distance in blocks that the traveler spawns doppelgangers and teleports when hurt. ")
                 .defineInRange("travelerMinRange", 8, 0, Integer.MAX_VALUE);
         travelerMaxRange = builder.comment("This is the maximum distance in blocks that the traveler spawns doppelgangers and teleports when hurt. This should be at least travelerMinRange. ")
@@ -87,18 +89,43 @@ public class ServerConfigs {
                 .defineInRange("travelerMaxDoppel", 10, 0, Integer.MAX_VALUE);
         travelerDoppelPeriod = builder.comment("This is the period in ticks that the traveler spawns doppelgangers. ")
                 .defineInRange("travelerDoppelPeriod", 20, 1, Integer.MAX_VALUE);
+        bountyRate = builder.comment("This is the chance that killing a traveler gives the bounty effect.")
+                .defineInRange("bountyRate", 0.3, 0, 1);
+        builder.pop().push("Conqueror");
+        conquerorMinSpawnDist = builder.comment("This is the minimum vertical distance in blocks that a conqueror will spawn a rift above its target. ")
+                .defineInRange("conquerorMinSpawnDist", 8, 0, Double.MAX_VALUE);
+        conquerorMaxSpawnDist = builder.comment("This is the maximum vertical distance in blocks that a conqueror will spawn a rift above its target. Must at least conquerorMinSpawnDist. ")
+                .defineInRange("conquerorMaxSpawnDist", 32, 0, Double.MAX_VALUE);
+        conquerorMaxSpawnHDist = builder.comment("This is the maximum horizontal distance in blocks that a conqueror will spawn a rift above its target. ")
+                .defineInRange("conquerorMaxSpawnHDist", 32, 0, Double.MAX_VALUE);
+        conquerorMobThreshold = builder.comment("This is the number of raiders near (within the same raid or within targeting range) the conqueror before it stops spawning rifts. ")
+                .defineInRange("conquerorMobThreshold", 16, 0, Integer.MAX_VALUE);
+        conquerorDistanceThreshold = builder.comment("This is the minimum distance in blocks that the conqueror will summon rifts. ")
+                .defineInRange("conquerorDistanceThreshold", 6, 0, Double.MAX_VALUE);
+        conquerorCastTime = builder.comment("This is the time in ticks that it takes for a conqueror to summon a rift. ")
+                .defineInRange("conquerorCastTime", 100, 0, Integer.MAX_VALUE);
+        conquerorCooldown = builder.comment("This is the cooldown of a conquerors summoning rifts in ticks. ")
+                .defineInRange("conquerorCooldown", 100, 0, Integer.MAX_VALUE);
+        conquerorSlowFallingDuration = builder.comment("This is the duration in ticks of the slow falling effect given to raiders spawned by a conqueror. Set to 0 to not give any effect.")
+                .defineInRange("conquerorSlowFallingDuration", 200, 0, Integer.MAX_VALUE);
+        conquerorSlowFallingAmplifier = builder.comment("This is the level of the slow falling effect given to raiders spawned by a conqueror. Set to 0 to not give any effect.")
+                .defineInRange("conquerorSlowFallingAmplifier", 1, 0, Integer.MAX_VALUE);
+        conquerorSpawnCount = builder.comment("This is the number of raiders that spawn from every rift the conqueror summons. ")
+                .defineInRange("conquerorSpawnCount", 3, 0, Integer.MAX_VALUE);
         builder.pop().push("Terrablender").comment("The following settings only apply if Terrablender is included. ");
         temperatureScale = builder.comment("This is the scale of the Gaussian random temperature offset applied to biome parameters to mitigate collisions. ")
                 .defineInRange("temperatureScale", 0.15, 0.0, Double.MAX_VALUE);
         humidityScale = builder.comment("This is the scale of the Gaussian random humidity offset applied to biome parameters to mitigate collisions. ")
                 .defineInRange("humidityScale", 0.15, 0.0, Double.MAX_VALUE);
         builder.pop().push("Miscellaneous");
-        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
-                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
         doppelTimeout = builder.comment("This is the time in ticks after exiting combat that before doppelgangers despawn. ")
                 .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
         coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
                 .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
+        shieldRange = builder.comment("This is the range in blocks that the warp shield item warps projectiles. ")
+                .defineInRange("shieldRange", 3, 0, Double.MAX_VALUE);
+        warpRingCooldown = builder.comment("This is the cooldown of the warp ring in ticks. ")
+                .defineInRange("warpRingCooldown", 600, 0, Integer.MAX_VALUE);
         builder.pop();
     }
 

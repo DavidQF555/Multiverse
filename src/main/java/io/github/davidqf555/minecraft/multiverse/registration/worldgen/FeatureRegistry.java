@@ -1,9 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftConfig;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.RiftFeature;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.WaterLoggedBlockFeature;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.RiftConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.RiftFeature;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.WaterLoggedBlockFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;

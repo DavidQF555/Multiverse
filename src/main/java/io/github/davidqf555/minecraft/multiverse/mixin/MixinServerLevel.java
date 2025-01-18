@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.mixin;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -66,11 +66,9 @@ public abstract class MixinServerLevel extends Level {
             @Nullable RandomSequences randomSequences,
             CallbackInfo callback
     ) {
-        int index = DimensionHelper.getIndex(dimension);
-        if (index > 0) {
-            long val = DimensionHelper.getSeed(biomeZoomSeed, index, true);
-            seed = OptionalLong.of(val);
-        }
+        DimensionHelper.getIndex(dimension)
+                .filter(index -> index > 0)
+                .ifPresent(index -> seed = OptionalLong.of(DimensionHelper.getSeed(server.getWorldData().worldGenOptions().seed(), index)));
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -89,25 +87,26 @@ public abstract class MixinServerLevel extends Level {
             @Nullable RandomSequences randomSequences,
             CallbackInfo callback
     ) {
-        int index = DimensionHelper.getIndex(dimension);
-        if (index > 0) {
-            long seed = DimensionHelper.getSeed(biomeZoomSeed, index, true);
-            ServerChunkCache cache = (ServerChunkCache) getChunkSource();
-            structureCheck = new StructureCheck(
-                    cache.chunkScanner(),
-                    registryAccess(),
-                    getServer().getStructureManager(),
-                    dimension,
-                    cache.getGenerator(),
-                    cache.randomState(),
-                    this,
-                    cache.getGenerator().getBiomeSource(),
-                    seed,
-                    server.getFixerUpper()
-            );
-            structureManager = new StructureManager(this, server.getWorldData().worldGenOptions(), structureCheck);
-            this.randomSequences = cache.getDataStorage().computeIfAbsent(RandomSequences.factory(seed), Multiverse.MOD_ID + ".random_sequences_" + index);
-        }
+        DimensionHelper.getIndex(dimension)
+                .filter(index -> index > 0)
+                .ifPresent(index -> {
+                    long seed = DimensionHelper.getSeed(server.getWorldData().worldGenOptions().seed(), index);
+                    ServerChunkCache cache = (ServerChunkCache) getChunkSource();
+                    structureCheck = new StructureCheck(
+                            cache.chunkScanner(),
+                            registryAccess(),
+                            getServer().getStructureManager(),
+                            dimension,
+                            cache.getGenerator(),
+                            cache.randomState(),
+                            this,
+                            cache.getGenerator().getBiomeSource(),
+                            seed,
+                            server.getFixerUpper()
+                    );
+                    structureManager = new StructureManager(this, server.getWorldData().worldGenOptions(), structureCheck);
+                    this.randomSequences = cache.getDataStorage().computeIfAbsent(RandomSequences.factory(seed), Multiverse.MOD_ID + ".random_sequences_" + seed);
+                });
     }
 
     @Inject(method = "getSeed", at = @At("HEAD"), cancellable = true)

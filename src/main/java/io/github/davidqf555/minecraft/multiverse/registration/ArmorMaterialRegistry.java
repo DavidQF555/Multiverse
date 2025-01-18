@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -25,9 +26,13 @@ public final class ArmorMaterialRegistry {
                         map.put(ArmorItem.Type.LEGGINGS, 6);
                         map.put(ArmorItem.Type.CHESTPLATE, 8);
                         map.put(ArmorItem.Type.HELMET, 3);
-                        map.put(ArmorItem.Type.BODY, 11);
                     }
-            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(ItemRegistry.KALEIDITE_SHARD::get), List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "kaleidite"))), 2, 0));
+            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS), List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "kaleidite"))), 2, 0));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BEACON = register("beacon", () -> new ArmorMaterial(
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                        map.put(ArmorItem.Type.CHESTPLATE, 8);
+                    }
+            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS), List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "beacon"))), 2, 0));
 
     private ArmorMaterialRegistry() {
     }

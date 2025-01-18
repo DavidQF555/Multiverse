@@ -1,0 +1,28 @@
+{
+  "parent": "multiverse:kaleidite",
+  "display": {
+    "icon": {
+      "id": "multiverse:kaleidite_core"
+    },
+    "title": {
+      "translate": "advancements.multiverse.rupture.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.rupture.description"
+    }
+  },
+  "criteria": {
+    "obtain": {
+      "trigger": "inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "multiverse:kaleidite_core"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

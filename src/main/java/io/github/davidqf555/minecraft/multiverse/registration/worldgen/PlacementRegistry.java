@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.MultiverseDimensionPlacement;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.RiftDimensionPlacement;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.features.placement.SolidPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.MultiverseDimensionPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.RiftDimensionPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.SolidPlacement;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;

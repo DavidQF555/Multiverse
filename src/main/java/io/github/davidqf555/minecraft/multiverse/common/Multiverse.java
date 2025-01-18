@@ -1,13 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common;
 
+import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.DimensionProviderTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.FluidPickerTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelProviderTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.*;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.ChunkGeneratorRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.PlacementRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
@@ -22,6 +21,7 @@ public class Multiverse {
     public Multiverse() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
         container.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC);
         addRegistries(container.getEventBus());
     }
 
@@ -36,6 +36,11 @@ public class Multiverse {
         PlacementRegistry.TYPES.register(bus);
         ChunkGeneratorRegistry.GENERATORS.register(bus);
         CreativeModeTabRegistry.TABS.register(bus);
+        BiomeSourceRegistry.SOURCES.register(bus);
+        SurfaceRuleSourceRegistry.SOURCES.register(bus);
+        EffectRegistry.EFFECTS.register(bus);
+        AttachmentTypeRegistry.TYPES.register(bus);
+
         BiomeChunkGeneratorProviderTypeRegistry.TYPES.register(bus);
         BiomeDimensionProviderTypeRegistry.TYPES.register(bus);
         BiomeDimensionTypeProviderTypeRegistry.TYPES.register(bus);

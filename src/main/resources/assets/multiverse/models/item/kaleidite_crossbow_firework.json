@@ -1,6 +1,0 @@
-{
-  "parent": "multiverse:item/kaleidite_crossbow",
-  "textures": {
-    "layer0": "multiverse:item/kaleidite_crossbow_firework"
-  }
-}

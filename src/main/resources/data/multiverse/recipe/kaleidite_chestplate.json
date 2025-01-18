@@ -2,15 +2,12 @@
   "type": "crafting_shaped",
   "pattern": [
     "# #",
-    "#X#",
+    "###",
     "###"
   ],
   "key": {
     "#": {
-      "item": "multiverse:kaleidite_shard"
-    },
-    "X": {
-      "item": "multiverse:multiversal_beacon"
+      "tag": "multiverse:kaleidite_materials"
     }
   },
   "result": {
