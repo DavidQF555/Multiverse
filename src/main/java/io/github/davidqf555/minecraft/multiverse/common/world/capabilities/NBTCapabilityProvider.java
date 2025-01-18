@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.capabilities;
+package io.github.davidqf555.minecraft.multiverse.common.world.capabilities;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
