@@ -17,7 +17,7 @@ public final class MultiverseColorHelper {
     private static int getColor(Random rand) {
         int[] color = new int[]{rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)};
         shift(color, rand);
-        return FastColor.ARGB32.color(0, color[0], color[1], color[2]);
+        return FastColor.ARGB32.color(0xFF, color[0], color[1], color[2]);
     }
 
     public static int getColor(Level world, ResourceKey<Level> dim) {
