@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.common.world.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FlyingMoveThroughVillageGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FlyingPathfindToRaidGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FollowEntityGoal;
