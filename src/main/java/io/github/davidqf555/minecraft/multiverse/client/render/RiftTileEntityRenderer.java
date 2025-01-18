@@ -43,34 +43,27 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
         double max = ClientConfigs.INSTANCE.riftMaxOpacity.get();
-        matrixStack.pushPose();
+        int[] colors = new int[visual.length];
         double destA = 0;
         for (int i = visual.length - 1; i >= 0; i--) {
-            double alpha;
+            int alpha;
             if (destA >= 1) {
-                alpha = 1;
+                alpha = 0xFF;
             } else {
                 double target = getAlphaFactor(i, visual.length, min, max);
-                alpha = (target - destA) / (1 - destA);
-                destA = target;
+                alpha = (int) ((target - destA) / (1 - destA));
+                destA += alpha * (1 - destA) / 0xFF;
             }
-            int color = base | ((int) (alpha * 0xFF) << 24);
-            drawPolygon(consumer, matrixStack, visual[i], offset, color, true);
+            colors[i] = (base & ~(0xFF << 24)) | (alpha << 24);
+        }
+        matrixStack.pushPose();
+        for (int i = visual.length - 1; i >= 0; i--) {
+            drawPolygon(consumer, matrixStack, visual[i], offset, colors[i], true);
         }
         matrixStack.popPose();
         matrixStack.pushPose();
-        destA = 0;
         for (int i = visual.length - 1; i >= 0; i--) {
-            double alpha;
-            if (destA >= 1) {
-                alpha = 1;
-            } else {
-                double target = getAlphaFactor(i, visual.length, min, max);
-                alpha = (target - destA) / (1 - destA);
-                destA = target;
-            }
-            int color = base | ((int) (alpha * 0xFF) << 24);
-            drawPolygon(consumer, matrixStack, visual[i], offset, color, false);
+            drawPolygon(consumer, matrixStack, visual[i], offset, colors[i], false);
         }
         matrixStack.popPose();
     }
@@ -84,12 +77,10 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
             case 3:
                 drawQuad(consumer, pose, vertices[0], vertices[0], vertices[1], vertices[2], offset, color, forward);
                 break;
+            case 5:
+                drawQuad(consumer, pose, vertices[0], vertices[0], vertices[3], vertices[4], offset, color, forward);
             case 4:
                 drawQuad(consumer, pose, vertices[0], vertices[1], vertices[2], vertices[3], offset, color, forward);
-                break;
-            case 5:
-                drawQuad(consumer, pose, vertices[0], vertices[1], vertices[2], vertices[3], offset, color, forward);
-                drawQuad(consumer, pose, vertices[0], vertices[0], vertices[3], vertices[4], offset, color, forward);
                 break;
             case 6:
                 drawQuad(consumer, pose, vertices[0], vertices[1], vertices[2], vertices[3], offset, color, forward);
