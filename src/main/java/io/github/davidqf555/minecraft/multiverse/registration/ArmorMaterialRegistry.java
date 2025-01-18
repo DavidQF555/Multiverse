@@ -29,9 +29,7 @@ public final class ArmorMaterialRegistry {
                     }
             ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS), List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "kaleidite"))), 2, 0));
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BEACON = register("beacon", () -> new ArmorMaterial(
-            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                        map.put(ArmorItem.Type.CHESTPLATE, 8);
-                    }
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> map.put(ArmorItem.Type.CHESTPLATE, 8)
             ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS), List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "beacon"))), 2, 0));
 
     private ArmorMaterialRegistry() {
