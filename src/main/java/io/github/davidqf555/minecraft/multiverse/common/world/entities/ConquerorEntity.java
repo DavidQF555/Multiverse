@@ -9,6 +9,7 @@ import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.Flying
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.NoGravityNavigator;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -173,6 +174,14 @@ public class ConquerorEntity extends SpellcasterIllager {
     @Override
     public SoundEvent getCelebrateSound() {
         return SoundEvents.EVOKER_CELEBRATE;
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        if (hasCustomName()) {
+            bar.setName(getDisplayName());
+        }
     }
 
     public class SpawnRiftGoal extends SpellcasterUseSpellGoal {
