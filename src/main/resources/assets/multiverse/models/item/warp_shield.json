@@ -1,7 +1,7 @@
 {
   "parent": "item/shield",
   "textures": {
-    "particle": "multiverse:block/blank"
+    "particle": "multiverse:item/blank"
   },
   "overrides": [
     {
