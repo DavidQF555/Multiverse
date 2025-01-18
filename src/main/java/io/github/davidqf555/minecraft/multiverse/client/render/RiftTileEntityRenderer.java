@@ -51,7 +51,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                 alpha = 0xFF;
             } else {
                 double target = getAlphaFactor(i, visual.length, min, max);
-                alpha = (int) ((target - destA) / (1 - destA));
+                alpha = (int) ((target - destA) * 0xFF / (1 - destA));
                 destA += alpha * (1 - destA) / 0xFF;
             }
             colors[i] = (base & ~(0xFF << 24)) | (alpha << 24);
