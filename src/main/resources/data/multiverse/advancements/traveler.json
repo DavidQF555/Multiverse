@@ -13,7 +13,7 @@
     "frame": "challenge"
   },
   "criteria": {
-    "killed_traveler": {
+    "kill_traveler": {
       "trigger": "player_killed_entity",
       "conditions": {
         "entity": [

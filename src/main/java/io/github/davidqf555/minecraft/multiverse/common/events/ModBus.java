@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.events;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
-import io.github.davidqf555.minecraft.multiverse.common.capabilities.SummonedData;
+import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.SummonedData;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
