@@ -1,0 +1,6 @@
+{
+  "parent": "multiverse:item/beacon_crossbow",
+  "textures": {
+    "layer0": "multiverse:item/beacon_crossbow_pulling_1"
+  }
+}

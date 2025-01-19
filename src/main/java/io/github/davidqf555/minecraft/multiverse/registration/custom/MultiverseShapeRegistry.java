@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration.custom;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseShape;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseShape;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

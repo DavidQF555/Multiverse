@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "multiverse:item/warp_stick_inner",
+    "layer1": "multiverse:item/warp_stick_outer"
+  }
+}

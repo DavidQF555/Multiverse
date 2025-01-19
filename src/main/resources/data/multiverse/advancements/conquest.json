@@ -1,0 +1,31 @@
+{
+  "parent": "multiverse:bounty",
+  "display": {
+    "icon": {
+      "item": "multiverse:multiversal_beacon"
+    },
+    "title": {
+      "translate": "advancements.multiverse.conquest.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.conquest.description"
+    },
+    "frame": "challenge"
+  },
+  "criteria": {
+    "kill_conqueror": {
+      "trigger": "player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "entity_properties",
+            "predicate": {
+              "type": "multiverse:conqueror"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    }
+  }
+}

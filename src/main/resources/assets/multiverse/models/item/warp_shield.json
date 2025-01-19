@@ -1,0 +1,14 @@
+{
+  "parent": "item/shield",
+  "textures": {
+    "particle": "multiverse:item/blank"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "multiverse:blocking": 1
+      },
+      "model": "multiverse:item/warp_shield_blocking"
+    }
+  ]
+}

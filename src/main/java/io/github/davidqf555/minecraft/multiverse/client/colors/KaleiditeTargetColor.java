@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
-import io.github.davidqf555.minecraft.multiverse.common.util.MultiversalToolHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.items.MultiversalToolHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -23,6 +23,6 @@ public class KaleiditeTargetColor implements ItemColor {
                 return MultiverseColorHelper.getColor(world, MultiversalToolHelper.getTarget(stack));
             }
         }
-        return 0xFFFFFF;
+        return 0xFFFFFFFF;
     }
 }

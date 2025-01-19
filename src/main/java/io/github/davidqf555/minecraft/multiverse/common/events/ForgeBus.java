@@ -1,33 +1,68 @@
 package io.github.davidqf555.minecraft.multiverse.common.events;
 
-import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
+import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.NBTCapabilityProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.SummonedData;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.ShapeDimensionProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ForgeBus {
 
+    private static final ResourceLocation SUMMONED_DATA = new ResourceLocation(Multiverse.MOD_ID, "summoned");
+
     private ForgeBus() {
     }
 
     @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event) {
-        ShapesManager.INSTANCE.load(event.getServer());
+    public static void onRaiderAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Raider) {
+            event.addCapability(SUMMONED_DATA, new NBTCapabilityProvider<>(SummonedData.CAPABILITY, new SummonedData()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        MinecraftServer server = event.getServer();
+        ShapesManager.INSTANCE.load(server);
+        WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
+        long seed = server.getWorldData().worldGenSettings().seed();
+        for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
+            ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, DimensionHelper.getResourceLocation(i));
+            if (!registry.containsKey(key)) {
+                registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
+            }
+        }
     }
 
     @SubscribeEvent
@@ -37,23 +72,12 @@ public final class ForgeBus {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        ItemStack main = entity.getItemInHand(InteractionHand.MAIN_HAND);
-        ItemStack off = entity.getItemInHand(InteractionHand.OFF_HAND);
-        if (!main.isEmpty() && main.getItem() instanceof IDeathEffect) {
-            if (((IDeathEffect) main.getItem()).onDeath(entity, main)) {
-                event.setCanceled(true);
-            }
-            main.split(1);
-            return;
-        }
-        if (!off.isEmpty() && off.getItem() instanceof IDeathEffect) {
-            if (((IDeathEffect) off.getItem()).onDeath(entity, off)) {
-                event.setCanceled(true);
-            }
-            off.split(1);
+        if (!event.isCanceled() && entity instanceof Mob && !entity.level.isClientSide() && SummonedData.isSummoned((Mob) entity)) {
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()));
+            entity.discard();
         }
     }
 

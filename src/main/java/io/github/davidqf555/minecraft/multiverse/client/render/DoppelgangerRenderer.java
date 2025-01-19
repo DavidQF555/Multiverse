@@ -1,6 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.client.render;
 
-import io.github.davidqf555.minecraft.multiverse.common.entities.DoppelgangerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.entities.DoppelgangerEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;

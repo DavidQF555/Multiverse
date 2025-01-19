@@ -1,0 +1,12 @@
+{
+  "type": "smithing",
+  "base": {
+    "item": "crossbow"
+  },
+  "addition": {
+    "item": "multiverse:multiversal_beacon"
+  },
+  "result": {
+    "item": "multiverse:beacon_crossbow"
+  }
+}
