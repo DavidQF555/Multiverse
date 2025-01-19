@@ -17,7 +17,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
-import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,15 +36,16 @@ public final class RiftHelper {
 
     public static Optional<BlockPos> getClosestRift(ServerLevel world, ResourceKey<Level> target, BlockPos center, int distance) {
         PoiManager manager = world.getPoiManager();
-        PoiType poi = POIRegistry.RIFT.get();
-        manager.ensureLoadedAndValid(world, center, distance);
-        return manager.getInSquare(poi::equals, center, distance, PoiManager.Occupancy.ANY)
-                .map(PoiRecord::getPos)
-                .filter(block -> {
-                    BlockEntity tile = world.getBlockEntity(block);
-                    return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget().equals(target);
-                })
-                .min(Comparator.comparingDouble(center::distSqr));
+        return POIRegistry.RIFT.getHolder().flatMap(holder -> {
+            manager.ensureLoadedAndValid(world, center, distance);
+            return manager.getInSquare(holder::equals, center, distance, PoiManager.Occupancy.ANY)
+                    .map(PoiRecord::getPos)
+                    .filter(block -> {
+                        BlockEntity tile = world.getBlockEntity(block);
+                        return tile instanceof RiftTileEntity && ((RiftTileEntity) tile).getTarget().equals(target);
+                    })
+                    .min(Comparator.comparingDouble(center::distSqr));
+        });
     }
 
     public static Vec3 getOrCreateRift(ServerLevel world, ResourceKey<Level> target, Vec3 center, boolean temporary, int distance, RiftPlacementHelper.ReplacementType replacement) {
