@@ -22,7 +22,7 @@ import java.util.List;
 
 public class WarpToolItem extends Item {
 
-    private static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "warp_ring")) + ".instructions").withStyle(ChatFormatting.BLUE);
+    private static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "warp_ring")) + ".instructions").withStyle(ChatFormatting.AQUA);
 
     public WarpToolItem(Properties pProperties) {
         super(pProperties);

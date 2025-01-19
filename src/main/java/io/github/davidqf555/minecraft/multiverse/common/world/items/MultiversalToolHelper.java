@@ -27,8 +27,8 @@ import java.util.Optional;
 public final class MultiversalToolHelper {
 
     public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
-    public static final Component CROUCH_INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.BLUE);
-    public static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.BLUE);
+    public static final Component CROUCH_INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.AQUA);
+    public static final Component INSTRUCTIONS = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.AQUA);
 
     private MultiversalToolHelper() {
     }
