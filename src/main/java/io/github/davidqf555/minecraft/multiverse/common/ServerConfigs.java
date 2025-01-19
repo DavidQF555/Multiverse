@@ -28,13 +28,13 @@ public class ServerConfigs {
                 .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
         builder.comment("Only for artificially placed rifts (Modify configured/placed feature for naturally generated rifts)").push("Size");
         minRiftWidth = builder.comment("This is the minimum width of artificially placed rifts. ")
-                .defineInRange("minWidth", 1, 0, Double.MAX_VALUE);
-        maxRiftWidth = builder.comment("This is the maximum width of artificially placed rifts. This should be greater or equal to minWidth. ")
-                .defineInRange("maxWidth", 4, 0, Double.MAX_VALUE);
+                .defineInRange("minRiftWidth", 1, 0, Double.MAX_VALUE);
+        maxRiftWidth = builder.comment("This is the maximum width of artificially placed rifts. This should be greater or equal to minRiftWidth. ")
+                .defineInRange("maxRiftWidth", 4, 0, Double.MAX_VALUE);
         minRiftHeight = builder.comment("This is the minimum height of artificially placed rifts. ")
-                .defineInRange("minHeight", 16, 0, Integer.MAX_VALUE);
-        maxRiftHeight = builder.comment("This is the maximum height of artificially placed rifts. This should be greater or equal to minHeight. ")
-                .defineInRange("maxHeight", 48, 0, Integer.MAX_VALUE);
+                .defineInRange("minRiftHeight", 16, 0, Integer.MAX_VALUE);
+        maxRiftHeight = builder.comment("This is the maximum height of artificially placed rifts. This should be greater or equal to minRiftHeight. ")
+                .defineInRange("maxRiftHeight", 48, 0, Integer.MAX_VALUE);
         builder.pop(2).push("PrismaticSword");
         swordCooldown = builder.comment("This is the cooldown of the sword's rift spawning in ticks. ")
                 .defineInRange("swordCooldown", 500, 0, Integer.MAX_VALUE);
