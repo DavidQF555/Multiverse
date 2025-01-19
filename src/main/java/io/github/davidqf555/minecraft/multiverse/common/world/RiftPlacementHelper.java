@@ -70,7 +70,7 @@ public final class RiftPlacementHelper {
         return calculateSectionPolygon(calculateVertices(placement.center(), placement.normal(), placement.angle(), placement.width(), placement.height()), placement.normal(), AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(pos)));
     }
 
-    private static Vec3[][] calculateVertices(Vec3 center, Vec3 normal, float angle, double width, double height) {
+    public static Vec3[][] calculateVertices(Vec3 center, Vec3 normal, float angle, double width, double height) {
         Vec3[] axis = new Vec3[2];
         axis[0] = normal.cross(new Vec3(0, 1, 0)).normalize();
         if (axis[0].lengthSqr() == 0) {

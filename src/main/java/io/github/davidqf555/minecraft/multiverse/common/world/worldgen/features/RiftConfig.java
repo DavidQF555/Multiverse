@@ -12,54 +12,36 @@ public class RiftConfig implements FeatureConfiguration {
 
     public static final Codec<RiftConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             BlockState.CODEC.fieldOf("block").forGetter(config -> config.block),
-            Size.CODEC.fieldOf("size").forGetter(config -> config.size)
+            Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("min_width").forGetter(size -> size.minWidth),
+            Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("max_width").forGetter(size -> size.maxWidth),
+            Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("min_height").forGetter(size -> size.minHeight),
+            Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("max_height").forGetter(size -> size.maxHeight)
     ).apply(builder, RiftConfig::new));
     private final BlockState block;
-    private final Size size;
+    private final double minWidth, maxWidth, minHeight, maxHeight;
 
-    public RiftConfig(BlockState block, Size size) {
+    public RiftConfig(BlockState block, double minWidth, double maxWidth, double minHeight, double maxHeight) {
         this.block = block;
-        this.size = size;
+        this.minWidth = minWidth;
+        this.maxWidth = maxWidth;
+        this.minHeight = minHeight;
+        this.maxHeight = maxHeight;
     }
 
     public static RiftConfig of(BlockState block) {
-        return new RiftConfig(block, new Size(ServerConfigs.INSTANCE.minRiftWidth.get(), ServerConfigs.INSTANCE.maxRiftWidth.get(), ServerConfigs.INSTANCE.minRiftHeight.get(), ServerConfigs.INSTANCE.maxRiftHeight.get()));
+        return new RiftConfig(block, ServerConfigs.INSTANCE.minFeatRiftWidth.get(), ServerConfigs.INSTANCE.maxFeatRiftWidth.get(), ServerConfigs.INSTANCE.minFeatRiftHeight.get(), ServerConfigs.INSTANCE.maxFeatRiftHeight.get());
     }
 
     public BlockState getBlockState() {
         return block;
     }
 
-    public Size getSize() {
-        return size;
+    public double getWidth(Random random) {
+        return random.nextDouble() * (maxWidth - minWidth) + minWidth;
     }
 
-    public static class Size {
-
-        public static final Codec<Size> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("minWidth").forGetter(size -> size.minWidth),
-                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("maxWidth").forGetter(size -> size.maxWidth),
-                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("minHeight").forGetter(size -> size.minHeight),
-                Codec.doubleRange(0, Double.MAX_VALUE).fieldOf("maxHeight").forGetter(size -> size.maxHeight)
-        ).apply(builder, Size::new));
-
-        private final double minWidth, maxWidth, minHeight, maxHeight;
-
-        public Size(double minWidth, double maxWidth, double minHeight, double maxHeight) {
-            this.minWidth = minWidth;
-            this.maxWidth = maxWidth;
-            this.minHeight = minHeight;
-            this.maxHeight = maxHeight;
-        }
-
-        public double getWidth(Random random) {
-            return random.nextDouble() * (maxWidth - minWidth) + minWidth;
-        }
-
-        public double getHeight(Random random) {
-            return random.nextDouble() * (maxHeight - minHeight) + minHeight;
-        }
-
+    public double getHeight(Random random) {
+        return random.nextDouble() * (maxHeight - minHeight) + minHeight;
     }
 
 }

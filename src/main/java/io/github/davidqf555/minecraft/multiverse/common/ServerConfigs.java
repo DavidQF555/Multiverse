@@ -14,7 +14,7 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
+    public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, minFeatRiftWidth, maxFeatRiftWidth, minFeatRiftHeight, maxFeatRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
     public final ForgeConfigSpec.IntValue maxDimensions, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
@@ -29,14 +29,22 @@ public class ServerConfigs {
         slowFalling = builder.comment("This is the number of ticks that players get slow falling after exiting a rift or warping. Set to 0 if don't want slow falling. ")
                 .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
         builder.push("Size");
-        minRiftWidth = builder.comment("This is the minimum width of rifts placed both naturally and artificially. ")
-                .defineInRange("minWidth", 1, 0, Double.MAX_VALUE);
-        maxRiftWidth = builder.comment("This is the maximum width of rifts placed both naturally and artificially. This should be greater or equal to minWidth. ")
-                .defineInRange("maxWidth", 4, 0, Double.MAX_VALUE);
-        minRiftHeight = builder.comment("This is the minimum height of rifts placed both naturally and artificially. ")
-                .defineInRange("minHeight", 16, 0, Double.MAX_VALUE);
-        maxRiftHeight = builder.comment("This is the maximum height of rifts placed both naturally and artificially. This should be greater or equal to minHeight. ")
-                .defineInRange("maxHeight", 48, 0, Double.MAX_VALUE);
+        minFeatRiftWidth = builder.comment("This is the minimum width of rifts placed naturally through features. ")
+                .defineInRange("minFeatRiftWidth", 1.0, 0, 30);
+        maxFeatRiftWidth = builder.comment("This is the maximum width of rifts placed naturally through features. This should be at least minFeatRiftWidth. ")
+                .defineInRange("maxFeatRiftWidth", 4.0, 0, 30);
+        minFeatRiftHeight = builder.comment("This is the minimum height of rifts placed naturally through features. ")
+                .defineInRange("minFeatRiftHeight", 16.0, 0, 30);
+        maxFeatRiftHeight = builder.comment("This is the maximum height of rifts placed naturally through features. This should be at least minFeatRiftHeight. ")
+                .defineInRange("maxFeatRiftHeight", 30.0, 0, 30);
+        minRiftWidth = builder.comment("This is the minimum width of rifts placed artificially. ")
+                .defineInRange("minRiftWidth", 1, 0, Double.MAX_VALUE);
+        maxRiftWidth = builder.comment("This is the maximum width of rifts placed artificially. This should be at least minRiftWidth. ")
+                .defineInRange("maxRiftWidth", 4, 0, Double.MAX_VALUE);
+        minRiftHeight = builder.comment("This is the minimum height of rifts placed artificially. ")
+                .defineInRange("minRiftHeight", 16, 0, Double.MAX_VALUE);
+        maxRiftHeight = builder.comment("This is the maximum height of rifts placed artificially. This should be at least minRiftHeight. ")
+                .defineInRange("maxRiftHeight", 30, 0, Double.MAX_VALUE);
         builder.pop(2).push("PrismaticSword");
         swordCooldown = builder.comment("This is the cooldown of the sword's rift spawning in ticks. ")
                 .defineInRange("swordCooldown", 500, 0, Integer.MAX_VALUE);
