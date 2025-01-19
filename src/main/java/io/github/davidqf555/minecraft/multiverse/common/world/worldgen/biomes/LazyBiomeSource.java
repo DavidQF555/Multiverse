@@ -19,8 +19,8 @@ public abstract class LazyBiomeSource extends BiomeSource {
     }
 
     @Override
-    protected Stream<Holder<Biome>> collectPossibleBiomes() {
-        return source.get().possibleBiomes().stream();
+    public Stream<Holder<Biome>> collectPossibleBiomes() {
+        return source.get().collectPossibleBiomes();
     }
 
     @Override

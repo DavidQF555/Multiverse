@@ -105,7 +105,7 @@ public abstract class MixinServerLevel extends Level {
                             server.getFixerUpper()
                     );
                     structureManager = new StructureManager(this, server.getWorldData().worldGenOptions(), structureCheck);
-                    this.randomSequences = cache.getDataStorage().computeIfAbsent(RandomSequences.factory(seed), Multiverse.MOD_ID + ".random_sequences_" + seed);
+                    this.randomSequences = cache.getDataStorage().computeIfAbsent(RandomSequences.factory(seed), Multiverse.MOD_ID + ".random_sequences_" + index);
                 });
     }
 
