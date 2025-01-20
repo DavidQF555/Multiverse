@@ -107,9 +107,9 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     @Override
     protected void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && tile instanceof RiftTileEntity && !entity.getType().is(MultiverseTags.IGNORE_RIFT) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
-                        entity.setAsInsidePortal(this, pos);
-                }
+        if (world instanceof ServerLevel && tile instanceof RiftTileEntity && entity.canUsePortal(false) && !entity.getType().is(MultiverseTags.IGNORE_RIFT) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
+            entity.setAsInsidePortal(this, pos);
+        }
     }
 
     @Nullable
