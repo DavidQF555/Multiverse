@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client.particles;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
-import io.github.davidqf555.minecraft.multiverse.client.ClientHelper;
+import io.github.davidqf555.minecraft.multiverse.client.ShaderHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -23,7 +23,7 @@ public class RiftExplosionParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ClientConfigs.INSTANCE.vanillaOnly.get() ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ClientHelper.RIFT_PARTICLE;
+        return ClientConfigs.INSTANCE.vanillaOnly.get() ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ShaderHelper.RIFT_PARTICLE_TYPE;
     }
 
     @Override

@@ -85,11 +85,6 @@ public class ConquerorEntity extends SpellcasterIllager {
     }
 
     @Override
-    public boolean canChangeDimensions() {
-        return false;
-    }
-
-    @Override
     public IllagerArmPose getArmPose() {
         if (isCastingSpell()) {
             return IllagerArmPose.SPELLCASTING;
