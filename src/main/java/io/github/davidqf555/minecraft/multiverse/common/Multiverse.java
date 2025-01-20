@@ -17,7 +17,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-@Mod("multiverse")
+@Mod(Multiverse.MOD_ID)
 public class Multiverse {
 
     public static final String MOD_ID = "multiverse";
