@@ -22,7 +22,6 @@ public class BeaconArmorItem extends ArmorItem {
         super(material, slot, properties);
     }
 
-
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotIndex, boolean selectedIndex) {
         super.inventoryTick(stack, level, entity, slotIndex, selectedIndex);

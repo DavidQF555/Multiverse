@@ -5,13 +5,11 @@ import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPac
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.phys.AABB;
@@ -21,7 +19,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
 
-public class WarpShieldItem extends Item {
+public class WarpShieldItem extends Item implements Equipable {
 
     private final TagKey<Item> repair;
 
@@ -68,6 +66,11 @@ public class WarpShieldItem extends Item {
     @Override
     public boolean canPerformAction(ItemStack stack, ItemAbility toolAction) {
         return ItemAbilities.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+    }
+
+    @Override
+    public EquipmentSlot getEquipmentSlot() {
+        return EquipmentSlot.OFFHAND;
     }
 
 }

@@ -9,19 +9,19 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public final class DataComponentTypeRegistry {
 
-    public static final DeferredRegister<DataComponentType<?>> TYPES = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, Multiverse.MOD_ID);
+    public static final DeferredRegister.DataComponents TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Multiverse.MOD_ID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<Level>>> TARGET = register("target", () -> DataComponentType.<ResourceKey<Level>>builder().persistent(ResourceKey.codec(Registries.DIMENSION)).networkSynchronized(TagUtil.WORLD_CODEC).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<Level>>> TARGET = register("target", builder -> builder.persistent(ResourceKey.codec(Registries.DIMENSION)).networkSynchronized(TagUtil.WORLD_CODEC));
 
     private DataComponentTypeRegistry() {
     }
 
-    private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, Supplier<DataComponentType<T>> type) {
-        return TYPES.register(name, type);
+    private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> type) {
+        return TYPES.registerComponentType(name, type);
     }
 
 }
