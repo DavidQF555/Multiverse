@@ -25,7 +25,7 @@ public class ClientConfigs {
         riftZOffset = builder.comment("This is the offset in blocks for each rift layer to combat Z-fighting. ")
                 .defineInRange("riftZOffset", 0.0005, 0, Double.MAX_VALUE);
         riftLayerStart = builder.comment("This is the fraction of the width/height of the rift that the first layer starts. ")
-                .defineInRange("riftLayerStart", 0.85, 0, 1);
+                .defineInRange("riftLayerStart", 0.75, 0, 1);
         riftLayerGrowth = builder.comment("This is the rate that the distance between rift layer grows using an exponential function. ")
                 .defineInRange("riftLayerGrowth", 0.5, 0, Double.MAX_VALUE);
         riftMinOpacity = builder.comment("This is the minimum opacity of a rift's layers as a fraction. ")
