@@ -13,31 +13,23 @@ import java.util.List;
 public class SimpleLoreItem extends Item {
 
     private final boolean foiled;
-    private final ChatFormatting formatting;
-    private Component lore;
+    private final Component lore;
 
     public SimpleLoreItem(boolean foiled, ChatFormatting formatting, Properties properties) {
         super(properties);
         this.foiled = foiled;
-        this.formatting = formatting;
+        lore = Component.translatable(getDescriptionId() + ".lore").withStyle(formatting);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, context, text, flag);
-        text.add(getLore());
+        text.add(lore);
     }
 
     @Override
     public boolean isFoil(ItemStack stack) {
         return foiled || super.isFoil(stack);
-    }
-
-    public Component getLore() {
-        if (lore == null) {
-            lore = Component.translatable(getDescriptionId() + ".lore").withStyle(formatting);
-        }
-        return lore;
     }
 
 }
