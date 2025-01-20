@@ -35,8 +35,8 @@ public final class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) {
-        event.registerShader(ClientHelper.RIFT_SHADER);
-        event.registerShader(ClientHelper.RIFT_PARTICLE_SHADER);
+        event.registerShader(ShaderHelper.RIFT_SHADER);
+        event.registerShader(ShaderHelper.RIFT_PARTICLE_SHADER);
     }
 
     @SubscribeEvent

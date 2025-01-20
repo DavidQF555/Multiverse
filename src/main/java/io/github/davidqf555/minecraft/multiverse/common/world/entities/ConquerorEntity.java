@@ -84,12 +84,6 @@ public class ConquerorEntity extends SpellcasterIllager {
         return getSpeed();
     }
 
-    @Override
-    public boolean canTeleport(Level oldLevel, Level newLevel) {
-        return false;
-    }
-
-    @Override
     public IllagerArmPose getArmPose() {
         if (isCastingSpell()) {
             return IllagerArmPose.SPELLCASTING;
