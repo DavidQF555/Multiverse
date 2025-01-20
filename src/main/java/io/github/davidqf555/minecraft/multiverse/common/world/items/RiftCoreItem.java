@@ -24,17 +24,18 @@ import java.util.List;
 
 public class RiftCoreItem extends Item implements ProjectileItem {
 
-    private Component lore;
+    private final Component lore;
 
     public RiftCoreItem(Properties properties) {
         super(properties);
+        lore = Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.LIGHT_PURPLE);
         DispenserBlock.registerBehavior(this, new ProjectileDispenseBehavior(this));
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
         super.appendHoverText(stack, context, lines, flag);
-        lines.add(getLore());
+        lines.add(lore);
     }
 
     @Override
@@ -53,13 +54,6 @@ public class RiftCoreItem extends Item implements ProjectileItem {
             stack.shrink(1);
         }
         return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
-    }
-
-    protected Component getLore() {
-        if (lore == null) {
-            lore = Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.LIGHT_PURPLE);
-        }
-        return lore;
     }
 
     @Override
