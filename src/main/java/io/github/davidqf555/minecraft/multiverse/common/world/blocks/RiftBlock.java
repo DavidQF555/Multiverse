@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.blocks;
 
 import com.mojang.serialization.MapCodec;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
@@ -104,7 +105,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     @Override
     protected void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && tile instanceof RiftTileEntity && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
+        if (world instanceof ServerLevel && tile instanceof RiftTileEntity && !entity.getType().is(MultiverseTags.IGNORE_RIFT) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
                         entity.setAsInsidePortal(this, pos);
                 }
     }
