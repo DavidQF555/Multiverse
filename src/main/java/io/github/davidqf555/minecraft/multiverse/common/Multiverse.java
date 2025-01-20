@@ -13,7 +13,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 
-@Mod("multiverse")
+@Mod(Multiverse.MOD_ID)
 public class Multiverse {
 
     public static final String MOD_ID = "multiverse";

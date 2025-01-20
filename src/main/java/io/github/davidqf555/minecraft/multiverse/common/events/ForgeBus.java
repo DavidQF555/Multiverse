@@ -11,7 +11,6 @@ import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers
 import io.github.davidqf555.minecraft.multiverse.registration.AttachmentTypeRegistry;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -29,8 +28,6 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
@@ -39,35 +36,26 @@ public final class ForgeBus {
     private ForgeBus() {
     }
 
+    // dynamic registering dimensions
+    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
         ShapesManager.INSTANCE.load(server);
 
-        RegistryAccess.ImmutableRegistryAccess composite = (RegistryAccess.ImmutableRegistryAccess) server.registries().compositeAccess();
-        Map<ResourceKey<? extends Registry<?>>, Registry<?>> regmap = new HashMap<>(composite.registries);
-        MappedRegistry<LevelStem> old = (MappedRegistry<LevelStem>) regmap.get(Registries.LEVEL_STEM);
-        Lifecycle lifecycle = old.registryLifecycle();
-
-        MappedRegistry<LevelStem> newMap = new MappedRegistry<>(Registries.LEVEL_STEM, lifecycle, false);
-        for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : old.entrySet()) {
-            ResourceKey<LevelStem> oldKey = entry.getKey();
-            LevelStem dim = entry.getValue();
-            if (dim != null) {
-                Registry.register(newMap, oldKey, dim);
-            }
-        }
-
+        RegistryAccess.Frozen composite = server.registries().compositeAccess();
+        MappedRegistry<LevelStem> registry = (MappedRegistry<LevelStem>) composite.registryOrThrow(Registries.LEVEL_STEM);
+        registry.unfreeze();
         long seed = server.getWorldData().worldGenOptions().seed();
         for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
             ResourceKey<LevelStem> key = ResourceKey.create(Registries.LEVEL_STEM, DimensionHelper.getResourceLocation(i));
-            if (!newMap.containsKey(key)) {
-                newMap.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), new RegistrationInfo(Optional.empty(), Lifecycle.experimental()));
+            if (!registry.containsKey(key)) {
+                registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), new RegistrationInfo(Optional.empty(), Lifecycle.experimental()));
             }
         }
-        regmap.replace(Registries.LEVEL_STEM, newMap);
-        composite.registries = regmap;
+        registry.freeze();
     }
+
 
     @SubscribeEvent
     public static void onLevelTick(LevelTickEvent.Pre event) {
