@@ -22,8 +22,7 @@ public final class DataGenRegistry {
     }
 
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event) {
-        if (event.includeServer()) {
+    public static void onGatherServerData(GatherDataEvent.Server event) {
             DataGenerator gen = event.getGenerator();
             gen.addProvider(true, new DatapackBuiltinEntriesProvider(gen.getPackOutput(), event.getLookupProvider(),
                             new RegistrySetBuilder().add(Registries.NOISE_SETTINGS, context -> {
@@ -34,7 +33,6 @@ public final class DataGenRegistry {
                             Set.of(Multiverse.MOD_ID)
                     )
             );
-        }
     }
 
 }

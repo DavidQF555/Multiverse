@@ -1,0 +1,54 @@
+{
+  "model": {
+    "type": "condition",
+    "on_false": {
+      "type": "select",
+      "cases": [
+        {
+          "model": {
+            "type": "model",
+            "model": "multiverse:item/beacon_crossbow_arrow"
+          },
+          "when": "arrow"
+        },
+        {
+          "model": {
+            "type": "model",
+            "model": "multiverse:item/beacon_crossbow_firework"
+          },
+          "when": "rocket"
+        }
+      ],
+      "fallback": {
+        "type": "model",
+        "model": "multiverse:item/beacon_crossbow"
+      },
+      "property": "charge_type"
+    },
+    "on_true": {
+      "type": "range_dispatch",
+      "entries": [
+        {
+          "model": {
+            "type": "model",
+            "model": "multiverse:item/beacon_crossbow_pulling_1"
+          },
+          "threshold": 0.58
+        },
+        {
+          "model": {
+            "type": "model",
+            "model": "multiverse:item/beacon_crossbow_pulling_2"
+          },
+          "threshold": 1.0
+        }
+      ],
+      "fallback": {
+        "type": "model",
+        "model": "multiverse:item/beacon_crossbow_pulling_0"
+      },
+      "property": "crossbow/pull"
+    },
+    "property": "using_item"
+  }
+}

@@ -128,7 +128,6 @@ public class ConquerorEntity extends SpellcasterIllager {
     protected PathNavigation createNavigation(Level pLevel) {
         NoGravityNavigator navigator = new NoGravityNavigator(this, pLevel);
         navigator.setCanFloat(true);
-        navigator.setCanPassDoors(true);
         return navigator;
     }
 

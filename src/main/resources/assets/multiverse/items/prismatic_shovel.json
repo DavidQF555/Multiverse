@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "model",
+    "model": "multiverse:item/prismatic_shovel",
+    "tints": [
+      {
+        "type": "multiverse:kaleidite_target",
+        "default": 4294967295
+      }
+    ]
+  }
+}

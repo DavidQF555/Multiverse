@@ -18,7 +18,7 @@ public class ConquerorRenderer extends IllagerRenderer<ConquerorEntity, EvokerRe
 
     public ConquerorRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.VINDICATOR)), 0.5f);
-        addLayer(new ItemInHandLayer<>(this, manager.getItemRenderer()) {
+        addLayer(new ItemInHandLayer<>(this) {
             @Override
             public void render(PoseStack p_117193_, MultiBufferSource p_117194_, int p_117195_, EvokerRenderState p_365089_, float p_117197_, float p_117198_) {
                 if (!p_365089_.isCastingSpell) {

@@ -18,7 +18,7 @@ public class TravelerRenderer extends IllagerRenderer<TravelerEntity, IllagerRen
 
     public TravelerRenderer(EntityRendererProvider.Context manager) {
         super(manager, new IllagerModel<>(manager.bakeLayer(ModelLayers.PILLAGER)), 0.5f);
-        addLayer(new ItemInHandLayer<>(this, manager.getItemRenderer()));
+        addLayer(new ItemInHandLayer<>(this));
     }
 
     @Nonnull

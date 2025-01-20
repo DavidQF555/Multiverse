@@ -2,36 +2,23 @@ package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.List;
 import java.util.Optional;
 
-public class WarpShieldItem extends Item {
+public class WarpShieldItem extends ShieldItem {
 
     public WarpShieldItem(Properties pProperties) {
         super(pProperties);
-    }
-
-    @Override
-    public ItemUseAnimation getUseAnimation(ItemStack pStack) {
-        return ItemUseAnimation.BLOCK;
-    }
-
-    @Override
-    public int getUseDuration(ItemStack pStack, LivingEntity entity) {
-        return 72000;
     }
 
     @Override
@@ -47,14 +34,7 @@ public class WarpShieldItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pHand) {
-        pPlayer.startUsingItem(pHand);
-        return InteractionResult.CONSUME;
-    }
-
-    @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility toolAction) {
-        return ItemAbilities.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+    public void appendHoverText(ItemStack p_43094_, TooltipContext p_339613_, List<Component> p_43096_, TooltipFlag p_43097_) {
     }
 
 }

@@ -17,6 +17,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -43,10 +44,10 @@ public final class ItemRegistry {
                         map.put(ArmorType.CHESTPLATE, 8);
                         map.put(ArmorType.HELMET, 3);
                     }
-            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, 2, 0, MultiverseTags.KALEIDITE_MATERIALS, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "kaleidite"));
+            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, 2, 0, MultiverseTags.KALEIDITE_MATERIALS, ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "kaleidite")));
     public static final ArmorMaterial BEACON_ARMOR = new ArmorMaterial(33,
             Util.make(new EnumMap<>(ArmorType.class), map -> map.put(ArmorType.CHESTPLATE, 8)
-            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, 2, 0, MultiverseTags.KALEIDITE_MATERIALS, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "beacon"));
+            ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, 2, 0, MultiverseTags.KALEIDITE_MATERIALS, ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "beacon")));
     public static final ToolMaterial KALEIDITE_TOOLS = new ToolMaterial(BlockTags.INCORRECT_FOR_STONE_TOOL, 250, 4, 2, 22, MultiverseTags.KALEIDITE_MATERIALS);
 
     public static final DeferredItem<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), RiftCoreItem::new, new Item.Properties().rarity(Rarity.UNCOMMON));

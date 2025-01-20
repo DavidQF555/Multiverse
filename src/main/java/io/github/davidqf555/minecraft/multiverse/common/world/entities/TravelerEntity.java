@@ -129,7 +129,6 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
     protected PathNavigation createNavigation(Level world) {
         NoGravityNavigator navigator = new NoGravityNavigator(this, world);
         navigator.setCanFloat(true);
-        navigator.setCanPassDoors(true);
         return navigator;
     }
 

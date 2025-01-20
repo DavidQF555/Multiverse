@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "model",
+    "model": "multiverse:item/kaleidite_cluster",
+    "tints": [
+      {
+        "type": "multiverse:kaleidite_current",
+        "default": 4294967295
+      }
+    ]
+  }
+}
