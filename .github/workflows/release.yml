@@ -30,10 +30,8 @@ jobs:
           cache: 'gradle'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Generate server data
+      - name: Generate data
         run: ./gradlew :runServerData
-      - name: Generate client data
-        run: ./gradlew :runClientData
       - name: Build
         run: ./gradlew :build
       - name: Cache
