@@ -7,12 +7,9 @@
         "temporary": "false"
       }
     },
-    "natural": true,
-    "size": {
-      "minWidth": 1,
-      "maxWidth": 4,
-      "minHeight": 16,
-      "maxHeight": 48
-    }
+    "min_width": 1,
+    "max_width": 4,
+    "min_height": 16,
+    "max_height": 30
   }
 }

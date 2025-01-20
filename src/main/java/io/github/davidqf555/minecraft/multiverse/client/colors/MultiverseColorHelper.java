@@ -1,14 +1,14 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.DimensionHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public final class MultiverseColorHelper {
 
+    private static final long FACTOR = 55555;
     private static final Random RANDOM = new Random(0);
 
     private MultiverseColorHelper() {
@@ -16,16 +16,37 @@ public final class MultiverseColorHelper {
 
     private static int getColor(Random rand) {
         int[] color = new int[]{rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)};
-        applyTransformations(color, rand);
+        shift(color, rand);
         return ARGB.color(0xFF, color[0], color[1], color[2]);
     }
 
-    public static int getColor(Level world, int index) {
-        return getColor(DimensionHelper.getSeed(world.getBiomeManager().biomeZoomSeed, index, true));
+    public static int getColor(Level world, ResourceKey<Level> dim) {
+        return getColor(getSeed(world.getBiomeManager().biomeZoomSeed, dim));
     }
 
     public static int getColor(Level level) {
-        return getColor(level, DimensionHelper.getIndex(level.dimension()));
+        return getColor(level, level.dimension());
+    }
+
+    private static long getSeed(long base, ResourceKey<Level> dim) {
+        String loc = dim.location().getNamespace();
+        String path = dim.location().getPath();
+        int i = 0;
+        int j = 0;
+        while (i < loc.length() || j < path.length()) {
+            char c;
+            if (i >= loc.length()) {
+                c = path.charAt(j++);
+            } else if (j >= path.length()) {
+                c = loc.charAt(i++);
+            } else if ((i + j) % 2 == 0) {
+                c = path.charAt(j++);
+            } else {
+                c = loc.charAt(i++);
+            }
+            base += FACTOR * c * (i + j);
+        }
+        return base;
     }
 
     private static int getColor(long seed) {
@@ -33,26 +54,9 @@ public final class MultiverseColorHelper {
         return getColor(RANDOM);
     }
 
-    private static void applyTransformations(int[] color, Random rand) {
-        shift(color, rand);
-        maximizeSaturation(color);
-    }
-
     private static void shift(int[] color, Random rand) {
         int i = rand.nextInt(color.length);
-        color[i] = color[i] < 0x80 ? 0xFF : 0x00;
-    }
-
-    private static void maximizeSaturation(int[] color) {
-        Arrays.stream(color).max().ifPresent(max -> {
-            if (max == 0x00) {
-                Arrays.fill(color, 0xFF);
-            } else {
-                for (int i = 0; i < color.length; i++) {
-                    color[i] = color[i] * 0xFF / max;
-                }
-            }
-        });
+        color[i] = color[i] < 0x80 ? 0x00 : 0xFF;
     }
 
 }

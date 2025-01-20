@@ -1,7 +1,5 @@
 {
   "values": [
-    "#axes",
-    "#swords",
-    "#c:tools/spear"
+    "#c:tools/melee_weapon"
   ]
 }

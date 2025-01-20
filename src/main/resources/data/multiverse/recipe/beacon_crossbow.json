@@ -1,0 +1,9 @@
+{
+  "type": "smithing_transform",
+  "addition": "#multiverse:kaleidite_materials",
+  "base": "#c:tools/crossbow",
+  "result": {
+    "id": "multiverse:beacon_crossbow"
+  },
+  "template": "multiverse:multiversal_beacon"
+}

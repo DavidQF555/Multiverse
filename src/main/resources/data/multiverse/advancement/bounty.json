@@ -1,0 +1,24 @@
+{
+  "parent": "multiverse:traveler",
+  "display": {
+    "icon": {
+      "id": "arrow"
+    },
+    "title": {
+      "translate": "advancements.multiverse.bounty.title"
+    },
+    "description": {
+      "translate": "advancements.multiverse.bounty.description"
+    }
+  },
+  "criteria": {
+    "bounty_effect": {
+      "trigger": "effects_changed",
+      "conditions": {
+        "effects": {
+          "multiverse:bounty": {}
+        }
+      }
+    }
+  }
+}

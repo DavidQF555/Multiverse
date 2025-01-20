@@ -4,9 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "multiverse.refmap.json",
   "mixins": [
-    "MixinNoiseGeneratorSettings",
     "MixinServerLevel",
-    "MixinLevel"
+    "MixinRaidType"
   ],
   "client": [
   ],

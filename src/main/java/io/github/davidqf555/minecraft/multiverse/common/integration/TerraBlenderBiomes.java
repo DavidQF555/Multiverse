@@ -1,9 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.integration;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseSurfaceRuleData;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseSurfaceRuleData;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.biomes.MultiverseBiomes;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
@@ -33,6 +34,7 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
         this.overworld = getSurface(SurfaceRuleManager.RuleCategory.OVERWORLD);
         this.nether = getSurface(SurfaceRuleManager.RuleCategory.NETHER);
         this.end = getSurface(SurfaceRuleManager.RuleCategory.END);
+        parameters.putAll(VanillaMultiverseBiomes.getParameters());
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> overworld = getBiomes(registry, RegionType.OVERWORLD);
         overworldBiomes = overworld.keySet();
         Map<ResourceKey<Biome>, List<Climate.ParameterPoint>> nether = getBiomes(registry, RegionType.NETHER);

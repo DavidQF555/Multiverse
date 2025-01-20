@@ -1,0 +1,9 @@
+{
+  "type": "smithing_transform",
+  "addition": "#multiverse:kaleidite_materials",
+  "base": "#c:ingots/gold",
+  "result": {
+    "id": "multiverse:warp_ring"
+  },
+  "template": "multiverse:dimensional_prism"
+}

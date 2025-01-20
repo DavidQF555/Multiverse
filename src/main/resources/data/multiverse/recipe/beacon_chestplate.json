@@ -1,0 +1,9 @@
+{
+  "type": "smithing_transform",
+  "addition": "#multiverse:kaleidite_materials",
+  "base": "multiverse:kaleidite_chestplate",
+  "result": {
+    "id": "multiverse:beacon_chestplate"
+  },
+  "template": "multiverse:multiversal_beacon"
+}

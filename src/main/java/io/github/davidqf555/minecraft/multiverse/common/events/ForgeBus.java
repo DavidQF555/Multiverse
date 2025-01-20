@@ -1,19 +1,37 @@
 package io.github.davidqf555.minecraft.multiverse.common.events;
 
-import io.github.davidqf555.minecraft.multiverse.common.ArrowSummonsData;
+import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.items.IDeathEffect;
-import io.github.davidqf555.minecraft.multiverse.common.worldgen.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesManager;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.ShapeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.registration.AttachmentTypeRegistry;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class ForgeBus {
@@ -22,8 +40,34 @@ public final class ForgeBus {
     }
 
     @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event) {
-        ShapesManager.INSTANCE.load(event.getServer());
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        MinecraftServer server = event.getServer();
+        ShapesManager.INSTANCE.load(server);
+
+        RegistryAccess.ImmutableRegistryAccess composite = (RegistryAccess.ImmutableRegistryAccess) server.registries().compositeAccess();
+        Map<ResourceKey<? extends Registry<?>>, Registry<?>> regmap = new HashMap<>(composite.registries);
+        MappedRegistry<LevelStem> old = (MappedRegistry<LevelStem>) regmap.get(Registries.LEVEL_STEM);
+        Lifecycle lifecycle = old.registryLifecycle();
+
+        MappedRegistry<LevelStem> newMap = new MappedRegistry<>(Registries.LEVEL_STEM, lifecycle, false);
+        for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : old.entrySet()) {
+            ResourceKey<LevelStem> oldKey = entry.getKey();
+            LevelStem dim = entry.getValue();
+            if (dim != null) {
+                Registry.register(newMap, oldKey, dim);
+            }
+        }
+
+        long seed = server.getWorldData().worldGenOptions().seed();
+        for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
+            ResourceKey<LevelStem> key = ResourceKey.create(Registries.LEVEL_STEM, DimensionHelper.getResourceLocation(i));
+            if (!newMap.containsKey(key)) {
+                newMap.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), new RegistrationInfo(Optional.empty(), Lifecycle.experimental()));
+            }
+        }
+        newMap.freeze();
+        regmap.replace(Registries.LEVEL_STEM, newMap);
+        composite.registries = regmap;
     }
 
     @SubscribeEvent
@@ -34,23 +78,12 @@ public final class ForgeBus {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        ItemStack main = entity.getItemInHand(InteractionHand.MAIN_HAND);
-        ItemStack off = entity.getItemInHand(InteractionHand.OFF_HAND);
-        if (!main.isEmpty() && main.getItem() instanceof IDeathEffect) {
-            if (((IDeathEffect) main.getItem()).onDeath(entity, main)) {
-                event.setCanceled(true);
-            }
-            main.split(1);
-            return;
-        }
-        if (!off.isEmpty() && off.getItem() instanceof IDeathEffect) {
-            if (((IDeathEffect) off.getItem()).onDeath(entity, off)) {
-                event.setCanceled(true);
-            }
-            off.split(1);
+        if (!event.isCanceled() && entity instanceof Mob && !entity.level().isClientSide() && entity.getData(AttachmentTypeRegistry.SUMMONED)) {
+            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()));
+            entity.discard();
         }
     }
 

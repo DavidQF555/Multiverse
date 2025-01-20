@@ -2,12 +2,11 @@
   "type": "crafting_shaped",
   "pattern": [
     "# #",
-    "#X#",
+    "###",
     "###"
   ],
   "key": {
-    "#": "#multiverse:kaleidite_tool_materials",
-    "X": "multiverse:multiversal_beacon"
+    "#": "#multiverse:kaleidite_materials"
   },
   "result": {
     "id": "multiverse:kaleidite_chestplate"
