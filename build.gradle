@@ -1,8 +1,9 @@
 plugins {
-    id 'idea'
     id 'java-library'
+    id 'eclipse'
+    id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '1.0.23'
+    id 'net.neoforged.gradle.userdev' version '7.0.173'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -26,50 +27,32 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-neoForge {
-    version = project.neo_version
+minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        modSource project.sourceSets.main
     }
 
-    runs {
-        client {
-            client()
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        server {
-            server()
-            programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        gameTestServer {
-            type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        data {
-            data()
-
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-            logLevel = org.slf4j.event.Level.DEBUG
-        }
+    client {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
 
-    mods {
-        "${mod_id}" {
-            sourceSet(sourceSets.main)
-        }
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        argument '--nogui'
+    }
+
+    gameTestServer {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    clientData {
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
@@ -80,10 +63,11 @@ configurations {
 }
 
 dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
     implementation "com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}"
 }
 
-var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
@@ -98,12 +82,11 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             terrablender_version   : terrablender_version
     ]
     inputs.properties replaceProperties
-    expand replaceProperties
-    from "src/main/templates"
-    into "build/generated/sources/modMetadata"
+
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
 }
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
 
 publishing {
     publications {
