@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.blocks;
 
 import com.mojang.serialization.MapCodec;
+import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.EntityHelper;
@@ -22,7 +23,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -114,7 +114,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     @SuppressWarnings("deprecation")
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !(entity instanceof ItemEntity) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
+        if (world instanceof ServerLevel && entity.canChangeDimensions() && tile instanceof RiftTileEntity && !entity.isPassenger() && !entity.isVehicle() && !entity.getType().is(MultiverseTags.IGNORE_RIFT) && ((RiftTileEntity) tile).isColliding(entity.getBoundingBox())) {
             if (!entity.isOnPortalCooldown()) {
                 MinecraftServer server = world.getServer();
                 ResourceKey<Level> target = ((RiftTileEntity) tile).getTarget();
