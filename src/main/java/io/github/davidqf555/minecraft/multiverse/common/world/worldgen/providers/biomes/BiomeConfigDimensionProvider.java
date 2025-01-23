@@ -13,6 +13,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.RandomSource;
 
@@ -35,7 +36,7 @@ public class BiomeConfigDimensionProvider implements DimensionProvider {
     @Override
     public LevelStem createDimension(RegistryAccess access, long seed, RandomSource random) {
         BiomeConfig config = this.config.value();
-        Pair<MultiverseType, Set<HolderSet<Biome>>> biomes = config.selectRandom(access.registryOrThrow(Registry.BIOME_REGISTRY), random);
+        Pair<MultiverseType, Set<HolderSet<Biome>>> biomes = config.selectRandom(random, access.registryOrThrow(Registry.BIOME_REGISTRY).getHolderOrThrow(Biomes.THE_VOID));
         return provider.provide(access, seed, random, biomes.getFirst(), biomes.getSecond());
     }
 
