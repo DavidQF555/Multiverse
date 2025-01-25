@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.RandomSource;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 public class TypeMapDimensionTypeProvider extends BiomeDimensionTypeProvider {
 
@@ -26,7 +25,7 @@ public class TypeMapDimensionTypeProvider extends BiomeDimensionTypeProvider {
     }
 
     @Override
-    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return values.get(type).value().provide(access, seed, random, type, biomes);
     }
 

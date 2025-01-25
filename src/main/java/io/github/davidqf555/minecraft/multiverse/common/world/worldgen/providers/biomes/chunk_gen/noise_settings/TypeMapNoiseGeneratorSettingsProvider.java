@@ -14,7 +14,6 @@ import net.minecraft.world.level.levelgen.RandomSource;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 public class TypeMapNoiseGeneratorSettingsProvider extends BiomeNoiseGeneratorSettingsProvider {
 
@@ -28,7 +27,7 @@ public class TypeMapNoiseGeneratorSettingsProvider extends BiomeNoiseGeneratorSe
     }
 
     @Override
-    public Holder<NoiseGeneratorSettings> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public Holder<NoiseGeneratorSettings> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return settings.get(type);
     }
 

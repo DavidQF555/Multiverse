@@ -12,7 +12,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.RandomSource;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class NoiseBiomeSourceProvider implements BiomeSourceProvider<LazyMultiverseBiomeSource> {
@@ -29,7 +28,7 @@ public class NoiseBiomeSourceProvider implements BiomeSourceProvider<LazyMultive
     }
 
     @Override
-    public LazyMultiverseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public LazyMultiverseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return new LazyMultiverseBiomeSource(access.registryOrThrow(Registry.BIOME_REGISTRY), access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY), minY, maxY, type, biomes);
     }
 

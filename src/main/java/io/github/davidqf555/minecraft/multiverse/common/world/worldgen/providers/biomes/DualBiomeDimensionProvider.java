@@ -15,8 +15,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.RandomSource;
 
-import java.util.Set;
-
 public class DualBiomeDimensionProvider implements BiomeDimensionProvider {
 
     public static final Codec<DualBiomeDimensionProvider> CODEC = RecordCodecBuilder.create(inst -> inst.group(
@@ -32,7 +30,7 @@ public class DualBiomeDimensionProvider implements BiomeDimensionProvider {
     }
 
     @Override
-    public LevelStem provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public LevelStem provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         ChunkGenerator gen = chunk.provide(access, seed, random, type, biomes);
         Holder<DimensionType> holder = this.type.value().provide(access, seed, random, type, biomes);
         return new LevelStem(holder, gen);
