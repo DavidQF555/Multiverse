@@ -62,53 +62,53 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     protected double[][] calculateColors(int layers, double minA, double maxA, int center, int edge) {
         double[][] colors = new double[layers][4];
-        double destA = 0;
-        for (int i = layers - 1; i >= 0; i--) {
-            if (destA >= 1) {
-                colors[i][0] = 1;
-            } else {
-                double next = Mth.lerp(getAlphaFactor(i, layers), minA, maxA);
-                colors[i][0] = (next - destA) / (1 - destA);
-                destA = next;
-            }
+        if (layers == 0) {
+            return colors;
         }
         double[] target = new double[]{FastColor.ARGB32.red(center) / 255.0, FastColor.ARGB32.green(center) / 255.0, FastColor.ARGB32.blue(center) / 255.0};
+        if (layers == 1 || minA == maxA && maxA < 1) {
+            colors[layers - 1][0] = maxA;
+            System.arraycopy(target, 0, colors[layers - 1], 1, 3);
+            return colors;
+        }
         double[] rate = new double[]{
                 (target[0] - FastColor.ARGB32.red(edge) / 255.0) / (layers - 1.0),
                 (target[1] - FastColor.ARGB32.green(edge) / 255.0) / (layers - 1.0),
                 (target[2] - FastColor.ARGB32.blue(edge) / 255.0) / (layers - 1.0)
         };
+        double destA = 0;
+        double factor = 1;
+        for (int i = layers - 1; i >= 0; i--) {
+            if (destA >= 1) {
+                colors[i][0] = 1;
+            } else {
+                double next = Mth.lerp(i / (layers - 1.0), maxA, minA);
+                colors[i][0] = (next - destA) / (1 - destA);
+                destA = next;
+                if (colors[i][0] == 0) {
+                    continue;
+                }
+            }
+            for (int j = 0; j < 3; j++) {
+                double scale = 1 / colors[i][0] - i - 1;
+                double color = target[j] + rate[j] * factor * scale;
+                if (color < 0) {
+                    factor *= 1 - color / scale / rate[j];
+                } else if (color > 1) {
+                    factor *= 1 - (color - 1) / scale / rate[j];
+                }
+            }
+        }
         for (int i = 0; i < layers; i++) {
             if (colors[i][0] == 0) {
                 continue;
             }
-            for (int j = 0; j < 3; j++) {
-                double scale = 1 / colors[i][0] - i - 1;
-                double color = target[j] + rate[j] * scale;
-                double factor;
-                if (color < 0) {
-                    factor = 1 - color / scale / rate[j];
-                } else if (color > 1) {
-                    factor = 1 - (color - 1) / scale / rate[j];
-                } else {
-                    continue;
-                }
-                rate[0] *= factor;
-                rate[1] *= factor;
-                rate[2] *= factor;
-            }
-        }
-        for (int i = 0; i < layers; i++) {
             double scale = 1 / colors[i][0] - i - 1;
             for (int j = 0; j < 3; j++) {
-                colors[i][j + 1] = target[j] + rate[j] * scale;
+                colors[i][j + 1] = target[j] + rate[j] * factor * scale;
             }
         }
         return colors;
-    }
-
-    protected double getAlphaFactor(int layer, int layers) {
-        return layers <= 1 ? 1 : 1 - layer / (layers - 1.0);
     }
 
     private void drawPolygon(VertexConsumer consumer, PoseStack pose, Vec3[] vertices, Vec3 offset, float alpha, float red, float green, float blue, boolean forward) {
