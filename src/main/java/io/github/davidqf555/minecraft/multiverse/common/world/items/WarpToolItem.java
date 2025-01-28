@@ -24,7 +24,7 @@ import java.util.List;
 
 public class WarpToolItem extends Item {
 
-    private static final Component INSTRUCTIONS = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "warp_ring")) + ".instructions").withStyle(ChatFormatting.BLUE);
+    private static final Component INSTRUCTIONS = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "warp_ring")) + ".instructions").withStyle(ChatFormatting.AQUA);
 
     public WarpToolItem(Properties pProperties) {
         super(pProperties);
