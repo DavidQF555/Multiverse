@@ -17,13 +17,24 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
 
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
-        int[] base = entity.hasLevel() ? MultiverseColorHelper.getColors(entity.getLevel(), entity.getTarget(), 2) : new int[]{0xFFFFFFFF, 0xFFFFFFFF};
+        int base, edge;
+        if (!entity.hasLevel()) {
+            base = 0xFFFFFFFF;
+            edge = 0xFFFFFFFF;
+        } else if (ClientConfigs.INSTANCE.multicolor.get()) {
+            int[] colors = MultiverseColorHelper.getColors(entity.getLevel(), entity.getTarget(), 2);
+            base = colors[0];
+            edge = colors[1];
+        } else {
+            base = MultiverseColorHelper.getColors(entity.getLevel(), entity.getTarget(), 1)[0];
+            edge = base;
+        }
         VertexConsumer consumer = buffer.getBuffer(ClientConfigs.INSTANCE.vanillaOnly.get() ? ShaderHelper.RIFT_VANILLA : ShaderHelper.RIFT);
         Vec3[][] visual = entity.getVisual();
         Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
         double max = ClientConfigs.INSTANCE.riftMaxOpacity.get();
-        double[][] colors = calculateColors(visual.length, min, max, base[0], base[1]);
+        double[][] colors = calculateColors(visual.length, min, max, base, edge);
         matrixStack.pushPose();
         for (int i = visual.length - 1; i >= 0; i--) {
             drawPolygon(consumer, matrixStack, visual[i], offset, (float) colors[i][0], (float) colors[i][1], (float) colors[i][2], (float) colors[i][3], true);

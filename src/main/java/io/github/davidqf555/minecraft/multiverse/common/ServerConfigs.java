@@ -16,6 +16,7 @@ public class ServerConfigs {
 
     public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, minFeatRiftWidth, maxFeatRiftWidth, minFeatRiftHeight, maxFeatRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
     public final ForgeConfigSpec.IntValue maxDimensions, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
+    public final ForgeConfigSpec.LongValue colorSeedOffset;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
@@ -26,6 +27,8 @@ public class ServerConfigs {
                 .defineInRange("chance", 100, 1, Integer.MAX_VALUE);
         riftRange = builder.comment("This is the range that is scanned for existing rifts using points of interest. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
+        colorSeedOffset = builder.comment("This is the factor that is added to the rift color seed. Change to modify all rift colors in the server. ")
+                .defineInRange("colorSeedOffset", 0, Long.MIN_VALUE, Long.MAX_VALUE);
         slowFalling = builder.comment("This is the number of ticks that players get slow falling after exiting a rift or warping. Set to 0 if don't want slow falling. ")
                 .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
         builder.push("Size");
@@ -45,7 +48,7 @@ public class ServerConfigs {
                 .defineInRange("minRiftHeight", 16, 0, Double.MAX_VALUE);
         maxRiftHeight = builder.comment("This is the maximum height of rifts placed artificially. This should be at least minRiftHeight. ")
                 .defineInRange("maxRiftHeight", 30, 0, Double.MAX_VALUE);
-        builder.pop(2).push("PrismaticSword");
+        builder.pop(2).push("Prismatic Sword");
         swordCooldown = builder.comment("This is the cooldown of the sword's rift spawning in ticks. ")
                 .defineInRange("swordCooldown", 500, 0, Integer.MAX_VALUE);
         swordSpawnDistance = builder.comment("This is the distance in blocks from the player's eyes in the direction they look in that the center of the rift spawns from the sword. ")
@@ -64,7 +67,7 @@ public class ServerConfigs {
                 .defineInRange("swordMaxHeight", 64, 0, Double.MAX_VALUE);
         swordHeightRate = builder.comment("This is the rate that the height of rifts spawned by the sword grow in blocks per tick charged. ")
                 .defineInRange("swordHeightRate", 2.0 / 25, 0, Double.MAX_VALUE);
-        builder.pop().push("KaleiditeCrossbow");
+        builder.pop().push("Kaleidite Crossbow");
         fireworkRate = builder.comment("This is the chance that fireworks are spawned when shooting an arrow. ")
                 .defineInRange("fireworkRate", 0.2, 0, 1);
         fireRate = builder.comment("This is the chance that a spawned arrow is on fire. ")
@@ -79,7 +82,7 @@ public class ServerConfigs {
                 .defineInRange("spawnPeriod", 5, 1, Integer.MAX_VALUE);
         spawnCount = builder.comment("This is the number of projectiles spawned every time the crossbow is shot. ")
                 .defineInRange("spawnCount", 20, 0, Integer.MAX_VALUE);
-        builder.pop().push("KaleiditeChestplate");
+        builder.pop().push("Kaleidite Chestplate");
         armorMinOffset = builder.comment("This is the minimum distance in blocks that a doppelganger will spawn from the wearer. ")
                 .defineInRange("armorMinOffset", 1, 0, Integer.MAX_VALUE);
         armorMaxOffset = builder.comment("This is the maximum distance in blocks that a doppelganger will spawn from the wearer. This should be at least armorMinOffset. ")

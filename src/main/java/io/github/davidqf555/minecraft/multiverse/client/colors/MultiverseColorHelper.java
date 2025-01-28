@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
@@ -58,7 +59,7 @@ public final class MultiverseColorHelper {
             }
             base += FACTOR * c * (i + j);
         }
-        return base;
+        return base + ServerConfigs.INSTANCE.colorSeedOffset.get();
     }
 
     private static int[] getColors(long seed, int n) {
