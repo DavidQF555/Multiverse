@@ -21,7 +21,7 @@ public final class ClientHelper {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
             ResourceKey<Level> from = dim.orElseGet(() -> DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())));
-            int color = MultiverseColorHelper.getColor(world, from);
+            int color = MultiverseColorHelper.getColors(world, from, 1)[0];
             world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }
@@ -30,7 +30,7 @@ public final class ClientHelper {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
             ResourceKey<Level> from = dim.orElseGet(() -> DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())));
-            int color = MultiverseColorHelper.getColor(world, from);
+            int color = MultiverseColorHelper.getColors(world, from, 1)[0];
             world.addParticle(ParticleTypeRegistry.RIFT_EXPLOSION_EMITTER.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }
