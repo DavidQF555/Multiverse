@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.blocks;
 
 import com.mojang.serialization.MapCodec;
+import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
@@ -66,7 +67,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
-        if (rand.nextDouble() < 0.01) {
+        if (rand.nextDouble() < ClientConfigs.INSTANCE.riftSoundFrequency.get()) {
             world.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.PORTAL_AMBIENT, SoundSource.BLOCKS, 0.5f, rand.nextFloat() * 0.4f + 0.8f, false);
         }
     }
