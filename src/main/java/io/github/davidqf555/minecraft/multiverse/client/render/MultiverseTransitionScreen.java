@@ -14,7 +14,7 @@ public class MultiverseTransitionScreen extends ReceivingLevelScreen {
 
     public MultiverseTransitionScreen(BooleanSupplier levelReceived, Reason reason, Level dim) {
         super(levelReceived, reason);
-        color = MultiverseColorHelper.getColors(dim, 1)[0];
+        color = MultiverseColorHelper.getColors(dim.dimension(), 1)[0];
     }
 
     @Override
