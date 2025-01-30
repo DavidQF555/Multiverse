@@ -58,6 +58,10 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
             System.arraycopy(target, 0, colors[layers - 1], 1, 3);
             return colors;
         }
+        int outer = layers - 1;
+        if (minA == 0) {
+            outer--;
+        }
         double[] rate = new double[]{
                 (target[0] - FastColor.ARGB32.red(edge) / 255.0) / (layers - 1.0),
                 (target[1] - FastColor.ARGB32.green(edge) / 255.0) / (layers - 1.0),
@@ -65,7 +69,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         };
         double destA = 0;
         double factor = 1;
-        for (int i = layers - 1; i >= 0; i--) {
+        for (int i = outer; i >= 0; i--) {
             if (destA >= 1) {
                 colors[i][0] = 1;
             } else {
@@ -76,7 +80,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                     continue;
                 }
             }
-            double scale = -i - 1 + 1 / colors[i][0];
+            double scale = layers - outer - i - 2 + 1 / colors[i][0];
             for (int j = 0; j < 3; j++) {
                 double color = target[j] + rate[j] * factor * scale;
                 if (color < 0) {
@@ -86,19 +90,14 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                 }
             }
         }
-        for (int i = 0; i < layers - 1; i++) {
-            if (colors[i][0] == 0) {
-                continue;
-            }
-            double scale = factor * (-i - 1 + 1 / colors[i][0]);
+        for (int i = 0; i < outer; i++) {
+            double scale = factor * (layers - outer - i - 2 + 1 / colors[i][0]);
             for (int j = 0; j < 3; j++) {
                 colors[i][j + 1] = target[j] + rate[j] * scale;
             }
         }
-        if (colors[layers - 1][0] != 0) {
-            for (int i = 0; i < 3; i++) {
-                colors[layers - 1][i + 1] = target[i] - rate[i] * factor * (layers - 1);
-            }
+        for (int i = 0; i < 3; i++) {
+            colors[outer][i + 1] = target[i] - rate[i] * factor * outer;
         }
         return colors;
     }
