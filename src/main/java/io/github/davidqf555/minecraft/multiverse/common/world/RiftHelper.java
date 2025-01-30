@@ -116,7 +116,7 @@ public final class RiftHelper {
         while (index < list.size()) {
             BlockPos pos = list.get(index++);
             BlockState state = world.getBlockState(pos);
-            if (pos.distSqr(start) <= distance * distance && state.getBlock() instanceof RiftBlock) {
+            if (pos.distSqr(start) <= distance * distance && state.is(BlockRegistry.RIFT.get())) {
                 BlockPos.betweenClosedStream(pos.relative(Direction.DOWN).relative(Direction.WEST).relative(Direction.SOUTH), pos.relative(Direction.UP).relative(Direction.EAST).relative(Direction.NORTH))
                         .filter(p -> !list.contains(p))
                         .map(BlockPos::immutable)
