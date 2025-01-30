@@ -40,7 +40,7 @@ public final class DimensionTypeRegistry {
                     for (EffectEntry effect : effects) {
                         if (!effect.nightOnly() || time == Time.NIGHT) {
                             ResourceLocation loc = new ResourceLocation(Multiverse.MOD_ID, base + "/" + effect.name());
-                            DimensionType val = DimensionType.create(OptionalLong.of(time.time), !roofed, roofed, type.isUltrawarm(), type.isNatural(), 1, false, type.isPiglinSafe(), true, true, type.hasRaids(), shape.minY(), shape.height(), shape.height(), type.getInfiniburn(), effect.effect(), shape.lighting());
+                            DimensionType val = DimensionType.create(time.time == null ? OptionalLong.empty() : OptionalLong.of(time.time), !roofed, roofed, type.isUltrawarm(), type.isNatural(), 1, false, type.isPiglinSafe(), true, true, type.hasRaids(), shape.minY(), shape.height(), shape.height(), type.getInfiniburn(), effect.effect(), shape.lighting());
                             builder.put(loc, val);
                         }
                     }
