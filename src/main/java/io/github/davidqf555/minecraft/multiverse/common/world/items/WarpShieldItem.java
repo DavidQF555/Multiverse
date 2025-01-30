@@ -51,7 +51,7 @@ public class WarpShieldItem extends Item {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> proj), new RiftParticlesPacket(proj.position(), null));
+                Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> proj), new RiftParticlesPacket(proj.getEyePosition(), null));
                 proj.discard();
             }
         }
