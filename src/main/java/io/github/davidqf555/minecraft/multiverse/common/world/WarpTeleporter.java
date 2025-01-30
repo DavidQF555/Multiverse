@@ -28,6 +28,9 @@ public class WarpTeleporter implements ITeleporter {
 
     public static final WarpTeleporter INSTANCE = new WarpTeleporter();
 
+    protected WarpTeleporter() {
+    }
+
     @Nullable
     public static Entity warp(Entity entity, ResourceKey<Level> target) {
         if (entity.level.isClientSide() || !entity.canChangeDimensions()) {
@@ -58,9 +61,6 @@ public class WarpTeleporter implements ITeleporter {
             }
         }
         return copy;
-    }
-
-    protected WarpTeleporter() {
     }
 
     @Nullable

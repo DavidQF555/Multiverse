@@ -33,14 +33,6 @@ public final class ShaderHelper {
             pTesselator.end();
         }
     };
-    public static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
-            RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(ShaderHelper::getRiftShader))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-                            .add(RIFT_TEXTURE, false, false).build())
-                    .createCompositeState(false)
-    );
     public static final RenderType RIFT_VANILLA = RenderType.create("rift_vanilla", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
@@ -49,8 +41,18 @@ public final class ShaderHelper {
                             .add(RIFT_TEXTURE, false, false).build())
                     .createCompositeState(false)
     );
-
     static ShaderInstance riftShader, riftParticleShader;
+    public static final RenderType RIFT = RenderType.create("rift", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(ShaderHelper::getRiftShader))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                            .add(RIFT_TEXTURE, false, false).build())
+                    .createCompositeState(false)
+    );
+
+    private ShaderHelper() {
+    }
 
     public static ShaderInstance getRiftShader() {
         return riftShader;
@@ -59,7 +61,5 @@ public final class ShaderHelper {
     public static ShaderInstance getRiftParticleShader() {
         return riftParticleShader;
     }
-
-    private ShaderHelper(){}
 
 }

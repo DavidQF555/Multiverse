@@ -16,6 +16,7 @@ import java.util.function.Function;
 public final class NoiseSettingsRegistry {
 
     public static final Map<ResourceLocation, NoiseSettingsEntry> SETTINGS;
+
     static {
         List<Pair<String, SettingsValue>> shapes = List.of(
                 Pair.of("normal", new SettingsValue(true, false, true, NoiseSettings.create(-64, 384, new NoiseSamplingSettings(1, 1, 80, 160), new NoiseSlider(-0.078125D, 2, 8), new NoiseSlider(0.1171875, 3, 0), 1, 2, TerrainProvider.overworld(false)), noise -> NoiseRouterData.overworldWithNewCaves(noise, false))),
