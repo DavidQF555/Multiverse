@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.blocks.RiftBlock;
+import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.ItemRegistry;
 import net.minecraft.core.BlockPos;
@@ -50,8 +50,8 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     @Override
     public void tick() {
         BlockPos pos = blockPosition();
-        if (!level().isClientSide() && isAlive() && level().getBlockState(pos).getBlock() instanceof RiftBlock) {
-            RiftHelper.destroyRift((ServerLevel) level(), pos, this);
+        if (isAlive() && level().getBlockState(pos).is(BlockRegistry.RIFT.get())) {
+            RiftHelper.destroyRift(level(), pos);
             discard();
         }
         super.tick();

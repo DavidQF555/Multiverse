@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.portal.PortalInfo;
@@ -21,7 +22,6 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 public class WarpTeleporter implements ITeleporter {
@@ -48,10 +48,10 @@ public class WarpTeleporter implements ITeleporter {
         Vec3 pos = entity.getEyePosition();
         Entity copy = entity.changeDimension(world, INSTANCE);
         if (copy != null) {
-            Multiverse.CHANNEL.send(new RiftParticlesPacket(Optional.of(target), pos), PacketDistributor.TRACKING_CHUNK.with(from.getChunkAt(BlockPos.containing(pos))));
+            Multiverse.CHANNEL.send(new RiftParticlesPacket(pos, target), PacketDistributor.TRACKING_CHUNK.with(from.getChunkAt(BlockPos.containing(pos))));
             from.playSound(null, pos.x(), pos.y(), pos.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
             Vec3 changed = copy.getEyePosition();
-            Multiverse.CHANNEL.send(new RiftParticlesPacket(Optional.of(current), changed), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(copy));
+            Multiverse.CHANNEL.send(new RiftParticlesPacket(changed, current), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(copy));
             world.playSound(null, changed.x(), changed.y(), changed.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
             if (copy instanceof LivingEntity) {
                 int duration = ServerConfigs.INSTANCE.slowFalling.get();
@@ -78,7 +78,10 @@ public class WarpTeleporter implements ITeleporter {
         AABB box = AABB.ofSize(to.add(0, entity.getBbHeight() / 2, 0), entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
         BlockPos.betweenClosedStream(box)
                 .filter(pos -> !destWorld.isOutsideBuildHeight(pos) && RiftPlacementHelper.ReplacementType.DESTROY.canReplace(destWorld, pos, destWorld.getBlockState(pos)))
-                .forEach(pos -> destWorld.destroyBlock(pos, true));
+                .forEach(pos -> {
+                    Block.dropResources(destWorld.getBlockState(pos), destWorld, pos);
+                    destWorld.removeBlock(pos, false);
+                });
         return new PortalInfo(to, Vec3.ZERO, entity.getYRot(), entity.getXRot());
     }
 

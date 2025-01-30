@@ -33,7 +33,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -54,7 +53,7 @@ public final class ForgeBus {
 
     // dynamic registering dimensions
     @SuppressWarnings("deprecation")
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
         ShapesManager.INSTANCE.load(server);
@@ -83,7 +82,7 @@ public final class ForgeBus {
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if (!event.isCanceled() && entity instanceof Mob && !entity.level().isClientSide() && SummonedData.isSummoned((Mob) entity)) {
-            Multiverse.CHANNEL.send(new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()), PacketDistributor.TRACKING_ENTITY.with(entity));
+            Multiverse.CHANNEL.send(new RiftParticlesPacket(entity.getEyePosition(), null), PacketDistributor.TRACKING_ENTITY.with(entity));
             entity.discard();
         }
     }
