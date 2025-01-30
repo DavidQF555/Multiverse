@@ -1,6 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
@@ -9,7 +10,6 @@ import java.util.Random;
 
 public final class MultiverseColorHelper {
 
-    private static final long FACTOR = 55555;
     private static final Random RANDOM = new Random(0);
 
     private MultiverseColorHelper() {
@@ -34,32 +34,11 @@ public final class MultiverseColorHelper {
     }
 
     public static int[] getColors(Level world, ResourceKey<Level> dim, int n) {
-        return getColors(getSeed(world.getBiomeManager().biomeZoomSeed, dim), n);
+        return getColors(DimensionHelper.resourceLocationToSeed(world.getBiomeManager().biomeZoomSeed, dim.location()) + ServerConfigs.INSTANCE.colorSeedOffset.get(), n);
     }
 
     public static int[] getColors(Level level, int n) {
         return getColors(level, level.dimension(), n);
-    }
-
-    private static long getSeed(long base, ResourceKey<Level> dim) {
-        String loc = dim.location().getNamespace();
-        String path = dim.location().getPath();
-        int i = 0;
-        int j = 0;
-        while (i < loc.length() || j < path.length()) {
-            char c;
-            if (i >= loc.length()) {
-                c = path.charAt(j++);
-            } else if (j >= path.length()) {
-                c = loc.charAt(i++);
-            } else if ((i + j) % 2 == 0) {
-                c = path.charAt(j++);
-            } else {
-                c = loc.charAt(i++);
-            }
-            base += FACTOR * c * (i + j);
-        }
-        return base + ServerConfigs.INSTANCE.colorSeedOffset.get();
     }
 
     private static int[] getColors(long seed, int n) {

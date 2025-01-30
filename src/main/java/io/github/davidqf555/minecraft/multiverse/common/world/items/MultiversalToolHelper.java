@@ -33,7 +33,7 @@ public final class MultiversalToolHelper {
 
     public static ResourceKey<Level> getTarget(ItemStack stack) {
         return stack.getOrDefault(DataComponentTypeRegistry.TARGET.get(), Level.OVERWORLD);
-}
+    }
 
     public static boolean setTarget(ItemStack stack, ResourceKey<Level> target) {
         if (!getTarget(stack).equals(target)) {

@@ -16,6 +16,8 @@ import java.util.Optional;
 
 public final class DimensionHelper {
 
+    private static final long FACTOR = 55555;
+
     private DimensionHelper() {
     }
 
@@ -35,6 +37,28 @@ public final class DimensionHelper {
     public static long getSeed(long overworld, int index) {
         return overworld + 80000L * index;
     }
+
+    public static long resourceLocationToSeed(long base, ResourceLocation dim) {
+        String loc = dim.getNamespace();
+        String path = dim.getPath();
+        int i = 0;
+        int j = 0;
+        while (i < loc.length() || j < path.length()) {
+            char c;
+            if (i >= loc.length()) {
+                c = path.charAt(j++);
+            } else if (j >= path.length()) {
+                c = loc.charAt(i++);
+            } else if ((i + j) % 2 == 0) {
+                c = path.charAt(j++);
+            } else {
+                c = loc.charAt(i++);
+            }
+            base += FACTOR * c * (i + j);
+        }
+        return base;
+    }
+
 
     public static Vec3 translate(Vec3 pos, DimensionType from, DimensionType to, boolean logical) {
         int fromHeight = logical ? from.logicalHeight() : from.height();
