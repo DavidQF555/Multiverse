@@ -19,7 +19,9 @@ import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -55,7 +57,7 @@ public final class RiftHelper {
 
     public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, double width, double height, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
         doRiftSpawnEffect(world, new BlockPos(center), Optional.of(target));
-        RiftPlacementHelper.place(world, world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, replacement);
+        RiftPlacementHelper.place(world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, replacement);
     }
 
     public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
@@ -106,12 +108,14 @@ public final class RiftHelper {
         list.add(start);
         while (index < list.size()) {
             BlockPos pos = list.get(index++);
-            if (pos.distSqr(start) <= distance * distance && world.getBlockState(pos).getBlock() instanceof RiftBlock) {
+            BlockState state = world.getBlockState(pos);
+            if (pos.distSqr(start) <= distance * distance && state.getBlock() instanceof RiftBlock) {
                 BlockPos.betweenClosedStream(pos.relative(Direction.DOWN).relative(Direction.WEST).relative(Direction.SOUTH), pos.relative(Direction.UP).relative(Direction.EAST).relative(Direction.NORTH))
                         .filter(p -> !list.contains(p))
                         .map(BlockPos::immutable)
                         .forEach(list::add);
-                world.destroyBlock(pos, true, entity);
+                Block.dropResources(state, world, pos);
+                world.removeBlock(pos, false);
             }
         }
     }

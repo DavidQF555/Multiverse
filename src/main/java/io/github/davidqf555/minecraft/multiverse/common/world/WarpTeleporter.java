@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.portal.PortalInfo;
@@ -78,7 +79,10 @@ public class WarpTeleporter implements ITeleporter {
         AABB box = AABB.ofSize(to.add(0, entity.getBbHeight() / 2, 0), entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
         BlockPos.betweenClosedStream(box)
                 .filter(pos -> !destWorld.isOutsideBuildHeight(pos) && RiftPlacementHelper.ReplacementType.DESTROY.canReplace(destWorld, pos, destWorld.getBlockState(pos)))
-                .forEach(pos -> destWorld.destroyBlock(pos, true));
+                .forEach(pos -> {
+                    Block.dropResources(destWorld.getBlockState(pos), destWorld, pos);
+                    destWorld.removeBlock(pos, false);
+                });
         return new PortalInfo(to, Vec3.ZERO, entity.getYRot(), entity.getXRot());
     }
 
