@@ -61,7 +61,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
         T entity = EntityHelper.randomSpawn(type, player.serverLevel(), center, minOffset, maxOffset, MobSpawnType.REINFORCEMENT);
         if (entity != null) {
-            Multiverse.CHANNEL.send(new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()), PacketDistributor.TRACKING_ENTITY.with(entity));
+            Multiverse.CHANNEL.send(new RiftParticlesPacket(entity.getEyePosition(), null), PacketDistributor.TRACKING_ENTITY.with(entity));
             entity.setOriginal(player);
         }
         return entity;
@@ -173,7 +173,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         if (level().isClientSide()) {
             super.tickDeath();
         } else {
-            Multiverse.CHANNEL.send(new RiftParticlesPacket(Optional.empty(), getEyePosition()), PacketDistributor.TRACKING_ENTITY.with(this));
+            Multiverse.CHANNEL.send(new RiftParticlesPacket(getEyePosition(), null), PacketDistributor.TRACKING_ENTITY.with(this));
             discard();
         }
     }

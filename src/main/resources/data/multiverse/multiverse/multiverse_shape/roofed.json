@@ -1,6 +1,6 @@
 {
   "type": "multiverse:biome_config",
-  "biomes": "multiverse:roofed",
+  "biomes": "multiverse:normal",
   "dimension": {
     "type": "multiverse:dual",
     "chunk": {

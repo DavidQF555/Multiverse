@@ -60,7 +60,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
@@ -231,7 +230,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                     SummonedData.setSummoned((Mob) clone, true);
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
-                    Multiverse.CHANNEL.send(new RiftParticlesPacket(Optional.empty(), clone.getEyePosition()), PacketDistributor.TRACKING_ENTITY.with(clone));
+                    Multiverse.CHANNEL.send(new RiftParticlesPacket(clone.getEyePosition(), null), PacketDistributor.TRACKING_ENTITY.with(clone));
                     clone.level().playSound(null, clone.getX(), clone.getY(), clone.getZ(), SoundEvents.ENDERMAN_TELEPORT, clone.getSoundSource(), 1, 1);
                 }
             }
