@@ -23,7 +23,6 @@ import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class WarpShieldItem extends Item {
@@ -52,7 +51,7 @@ public class WarpShieldItem extends Item {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : player.level.getEntitiesOfClass(Projectile.class, bounds)) {
-                Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> proj), new RiftParticlesPacket(Optional.empty(), proj.position()));
+                Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> proj), new RiftParticlesPacket(proj.position(), null));
                 proj.discard();
             }
         }

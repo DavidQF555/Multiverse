@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Random;
 
@@ -18,14 +19,14 @@ public final class DimensionHelper {
     private DimensionHelper() {
     }
 
-    public static ResourceKey<Level> randomMultiverseDimension(Random random, Optional<ResourceKey<Level>> exclude) {
-        Optional<Integer> multiverse = exclude.flatMap(DimensionHelper::getIndex);
+    public static ResourceKey<Level> randomMultiverseDimension(Random random, @Nullable ResourceKey<Level> exclude) {
+        int index = exclude == null ? -1 : DimensionHelper.getIndex(exclude).orElse(-1);
         int size = ServerConfigs.INSTANCE.maxDimensions.get() + 1;
-        if (multiverse.isPresent()) {
+        if (index != -1) {
             size--;
         }
         int rand = random.nextInt(size);
-        if (multiverse.isPresent() && rand >= multiverse.get()) {
+        if (index != -1 && rand >= index) {
             rand++;
         }
         return DimensionHelper.getRegistryKey(rand);

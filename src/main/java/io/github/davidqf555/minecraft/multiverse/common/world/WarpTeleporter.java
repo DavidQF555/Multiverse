@@ -22,7 +22,6 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 public class WarpTeleporter implements ITeleporter {
@@ -46,10 +45,10 @@ public class WarpTeleporter implements ITeleporter {
         Vec3 pos = entity.getEyePosition();
         Entity copy = entity.changeDimension(world, INSTANCE);
         if (copy != null) {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> from.getChunkAt(new BlockPos(pos))), new RiftParticlesPacket(Optional.of(target), pos));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> from.getChunkAt(new BlockPos(pos))), new RiftParticlesPacket(pos, target));
             from.playSound(null, pos.x(), pos.y(), pos.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
             Vec3 changed = copy.getEyePosition();
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(Optional.of(current), changed));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(changed, current));
             world.playSound(null, changed.x(), changed.y(), changed.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
             if (copy instanceof LivingEntity) {
                 int duration = ServerConfigs.INSTANCE.slowFalling.get();

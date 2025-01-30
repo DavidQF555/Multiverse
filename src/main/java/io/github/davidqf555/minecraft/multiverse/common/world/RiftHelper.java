@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public final class RiftHelper {
@@ -55,7 +56,7 @@ public final class RiftHelper {
     }
 
     public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, double width, double height, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
-        doRiftSpawnEffect(world, new BlockPos(center), Optional.of(target));
+        doRiftSpawnEffect(world, new BlockPos(center), target);
         RiftPlacementHelper.place(world, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, temporary), target, center, normal, angle, width, height, replacement);
     }
 
@@ -79,14 +80,14 @@ public final class RiftHelper {
 
     public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center, boolean mob) {
         RiftPlacementHelper.ReplacementType replacement = !mob || world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? RiftPlacementHelper.ReplacementType.DESTROY : RiftPlacementHelper.ReplacementType.NONE;
-        placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())), temporary, center, replacement);
+        placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), world.dimension()), temporary, center, replacement);
     }
 
-    public static void doRiftSpawnEffect(Level world, BlockPos pos, Optional<ResourceKey<Level>> target) {
+    public static void doRiftSpawnEffect(Level world, BlockPos pos, @Nullable ResourceKey<Level> target) {
         if (world.isClientSide()) {
-            ClientHelper.addRiftExplosionParticles(target, Vec3.atCenterOf(pos));
+            ClientHelper.addRiftExplosionParticles(Vec3.atCenterOf(pos), target);
         } else {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftExplosionParticlesPacket(target, Vec3.atCenterOf(pos)));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftExplosionParticlesPacket(Vec3.atCenterOf(pos), target));
         }
         world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.END_GATEWAY_SPAWN, SoundSource.BLOCKS, 10, 0.7f + (world.random.nextFloat() - world.random.nextFloat()) * 0.14f);
         world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 6, 0.8f + (world.random.nextFloat() - world.random.nextFloat()) * 0.14f);
@@ -97,7 +98,7 @@ public final class RiftHelper {
         if (be instanceof RiftTileEntity) {
             ResourceKey<Level> target = ((RiftTileEntity) be).getTarget();
             if (world.isClientSide()) {
-                doRiftSpawnEffect(world, pos, Optional.of(target));
+                doRiftSpawnEffect(world, pos, target);
             } else {
                 ServerLevel w = world.getServer().getLevel(target);
                 if (w != null) {
@@ -129,7 +130,7 @@ public final class RiftHelper {
     private static void destroyConnectedRifts(Level from, ServerLevel target, BlockPos start) {
         Vec3 pos = DimensionHelper.translate(Vec3.atCenterOf(start), from.dimensionType(), target.dimensionType(), true);
         RiftHelper.getClosestRift(target, from.dimension(), new BlockPos(pos), ServerConfigs.INSTANCE.riftRange.get()).ifPresent(b -> {
-            doRiftSpawnEffect(target, b, Optional.of(from.dimension()));
+            doRiftSpawnEffect(target, b, from.dimension());
             destroyConnectedBlocks(target, b, ServerConfigs.INSTANCE.coreRange.get());
         });
     }
