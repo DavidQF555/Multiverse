@@ -9,14 +9,17 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 
 public final class ShaderHelper {
 
     private static final ResourceLocation RIFT_TEXTURE = ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "textures/block/rift.png");
+    @SuppressWarnings("deprecation")
     public static final ParticleRenderType RIFT_PARTICLE_TYPE = (tesselator, textureManager) -> {
         RenderSystem.depthMask(true);
         RenderSystem.setShader(ShaderHelper::getRiftParticleShader);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
         RenderSystem.setShaderTexture(1, RIFT_TEXTURE);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
