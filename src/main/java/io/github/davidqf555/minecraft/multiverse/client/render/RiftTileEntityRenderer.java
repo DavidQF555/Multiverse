@@ -76,23 +76,28 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
                     continue;
                 }
             }
+            double scale = -i - 1 + 1 / colors[i][0];
             for (int j = 0; j < 3; j++) {
-                double scale = 1 / colors[i][0] - i - 1;
                 double color = target[j] + rate[j] * factor * scale;
                 if (color < 0) {
-                    factor *= 1 - color / scale / rate[j];
+                    factor *= 1 - color / scale / rate[j] / factor;
                 } else if (color > 1) {
-                    factor *= 1 - (color - 1) / scale / rate[j];
+                    factor *= 1 - (color - 1) / scale / rate[j] / factor;
                 }
             }
         }
-        for (int i = 0; i < layers; i++) {
+        for (int i = 0; i < layers - 1; i++) {
             if (colors[i][0] == 0) {
                 continue;
             }
-            double scale = factor * (1 / colors[i][0] - i - 1);
+            double scale = factor * (-i - 1 + 1 / colors[i][0]);
             for (int j = 0; j < 3; j++) {
                 colors[i][j + 1] = target[j] + rate[j] * scale;
+            }
+        }
+        if (colors[layers - 1][0] != 0) {
+            for (int i = 0; i < 3; i++) {
+                colors[layers - 1][i + 1] = target[i] - rate[i] * factor * (layers - 1);
             }
         }
         return colors;
