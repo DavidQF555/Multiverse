@@ -20,7 +20,7 @@ public class KaleiditeTargetColor implements ItemColor {
         if (layer == 0) {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                return MultiverseColorHelper.getColors(world, MultiversalToolHelper.getTarget(stack), 1)[0];
+                return MultiverseColorHelper.getColors(MultiversalToolHelper.getTarget(stack), 1)[0];
             }
         }
         return 0xFFFFFFFF;

@@ -23,7 +23,7 @@ public final class ClientHelper {
             if (dim == null) {
                 dim = DimensionHelper.randomMultiverseDimension(world.getRandom(), world.dimension());
             }
-            int color = MultiverseColorHelper.getColors(world, dim, 1)[0];
+            int color = MultiverseColorHelper.getColors(dim, 1)[0];
             world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }
@@ -34,7 +34,7 @@ public final class ClientHelper {
             if (dim == null) {
                 dim = DimensionHelper.randomMultiverseDimension(world.getRandom(), world.dimension());
             }
-            int color = MultiverseColorHelper.getColors(world, dim, 1)[0];
+            int color = MultiverseColorHelper.getColors(dim, 1)[0];
             world.addParticle(ParticleTypeRegistry.RIFT_EXPLOSION_EMITTER.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
         }
     }

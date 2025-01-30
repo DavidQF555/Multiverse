@@ -18,15 +18,12 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
     @Override
     public void render(RiftTileEntity entity, float partial, PoseStack matrixStack, MultiBufferSource buffer, int overlay, int packedLight) {
         int base, edge;
-        if (!entity.hasLevel()) {
-            base = 0xFFFFFFFF;
-            edge = 0xFFFFFFFF;
-        } else if (ClientConfigs.INSTANCE.multicolor.get()) {
-            int[] colors = MultiverseColorHelper.getColors(entity.getLevel(), entity.getTarget(), 2);
+        if (ClientConfigs.INSTANCE.multicolor.get()) {
+            int[] colors = MultiverseColorHelper.getColors(entity.getTarget(), 2);
             base = colors[0];
             edge = colors[1];
         } else {
-            base = MultiverseColorHelper.getColors(entity.getLevel(), entity.getTarget(), 1)[0];
+            base = MultiverseColorHelper.getColors(entity.getTarget(), 1)[0];
             edge = base;
         }
         VertexConsumer consumer = buffer.getBuffer(ClientConfigs.INSTANCE.vanillaOnly.get() ? ShaderHelper.RIFT_VANILLA : ShaderHelper.RIFT);
