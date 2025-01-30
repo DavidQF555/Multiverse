@@ -18,8 +18,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-import java.util.Set;
-
 public class NoiseChunkGeneratorProvider implements BiomeChunkGeneratorProvider<MultiverseNoiseChunkGenerator> {
 
     public static final Codec<NoiseChunkGeneratorProvider> CODEC = RecordCodecBuilder.create(inst -> inst.group(
@@ -38,7 +36,7 @@ public class NoiseChunkGeneratorProvider implements BiomeChunkGeneratorProvider<
     }
 
     @Override
-    public MultiverseNoiseChunkGenerator provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public MultiverseNoiseChunkGenerator provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         BiomeSource source = this.biomes.provide(access, seed, random, type, biomes);
         Holder<NoiseGeneratorSettings> noise = this.noise.value().provide(access, seed, random, type, biomes);
         SerializableFluidPicker fluid = sea.value().getSeaLevel(noise.value().defaultFluid(), random);
