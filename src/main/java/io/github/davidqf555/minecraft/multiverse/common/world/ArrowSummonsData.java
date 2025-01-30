@@ -82,7 +82,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(BlockPos.containing(start))), new RiftParticlesPacket(Optional.empty(), start));
+        Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(BlockPos.containing(start))), new RiftParticlesPacket(start, null));
     }
 
     protected ItemStack randomFirework(RandomSource random) {
