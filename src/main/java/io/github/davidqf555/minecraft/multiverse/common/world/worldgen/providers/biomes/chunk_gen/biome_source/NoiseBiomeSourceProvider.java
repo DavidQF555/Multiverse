@@ -11,8 +11,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 
-import java.util.Set;
-
 public class NoiseBiomeSourceProvider implements BiomeSourceProvider<LazyMultiverseBiomeSource> {
 
     public static final MapCodec<NoiseBiomeSourceProvider> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
@@ -28,7 +26,7 @@ public class NoiseBiomeSourceProvider implements BiomeSourceProvider<LazyMultive
     }
 
     @Override
-    public LazyMultiverseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public LazyMultiverseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return new LazyMultiverseBiomeSource(access.lookupOrThrow(Registries.BIOME), access.lookupOrThrow(Registries.DIMENSION_TYPE), minY, maxY, type, biomes, seed + OFFSET);
     }
 

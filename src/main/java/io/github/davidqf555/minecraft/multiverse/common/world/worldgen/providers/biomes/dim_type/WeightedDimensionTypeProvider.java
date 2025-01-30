@@ -14,7 +14,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import java.util.List;
-import java.util.Set;
 
 public class WeightedDimensionTypeProvider implements BiomeDimensionTypeProvider {
 
@@ -29,7 +28,7 @@ public class WeightedDimensionTypeProvider implements BiomeDimensionTypeProvider
     }
 
     @Override
-    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         int total = entries.stream().mapToInt(Entry::weight).sum();
         int rand = random.nextInt(total);
         for (Entry entry : entries) {

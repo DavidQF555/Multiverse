@@ -22,8 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Optional;
-
 public final class MultiversalToolHelper {
 
     public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
@@ -47,7 +45,7 @@ public final class MultiversalToolHelper {
 
     public static void setRandomTarget(Level world, ItemStack stack) {
         ResourceKey<Level> current = getTarget(stack);
-        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(current));
+        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(world.getRandom(), current);
         setTarget(stack, target);
     }
 
@@ -64,9 +62,9 @@ public final class MultiversalToolHelper {
                 BlockPos block = BlockPos.containing(DimensionHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
-                    PacketDistributor.sendToPlayersTrackingChunk(w, new ChunkPos(block), new RiftParticlesPacket(Optional.of(current), Vec3.atCenterOf(block)));
+                    PacketDistributor.sendToPlayersTrackingChunk(w, new ChunkPos(block), new RiftParticlesPacket(Vec3.atCenterOf(block), current));
                     w.playSound(null, block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1, 1);
-                    PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(pos), new RiftParticlesPacket(Optional.of(current), Vec3.atCenterOf(pos)));
+                    PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(pos), new RiftParticlesPacket(Vec3.atCenterOf(pos), target));
                     world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1, 1);
                     Block.dropResources(s, world, pos, w.getBlockEntity(block), entity, stack);
                 }

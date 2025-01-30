@@ -17,8 +17,6 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Optional;
-
 public class WarpShieldItem extends Item implements Equipable {
 
     private final TagKey<Item> repair;
@@ -45,7 +43,7 @@ public class WarpShieldItem extends Item implements Equipable {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(Optional.empty(), proj.position()));
+                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(proj.position(), null));
                 proj.discard();
             }
         }

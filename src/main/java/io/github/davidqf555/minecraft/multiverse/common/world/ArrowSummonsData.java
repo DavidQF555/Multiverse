@@ -95,7 +95,7 @@ public class ArrowSummonsData extends SavedData {
     }
 
     protected void addParticles(ServerLevel world, Vec3 start) {
-        PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(BlockPos.containing(start)), new RiftParticlesPacket(Optional.empty(), start));
+        PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(BlockPos.containing(start)), new RiftParticlesPacket(start, null));
     }
 
     protected ItemStack randomFirework(RandomSource random) {

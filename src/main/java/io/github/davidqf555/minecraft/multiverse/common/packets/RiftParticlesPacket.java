@@ -11,26 +11,31 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class RiftParticlesPacket implements CustomPacketPayload {
 
     public static final StreamCodec<FriendlyByteBuf, RiftParticlesPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(TagUtil.WORLD_CODEC), packet -> packet.from,
             ByteBufCodecs.DOUBLE, packet -> packet.x,
             ByteBufCodecs.DOUBLE, packet -> packet.y,
             ByteBufCodecs.DOUBLE, packet -> packet.z,
+            ByteBufCodecs.optional(TagUtil.WORLD_CODEC), packet -> Optional.ofNullable(packet.from),
             RiftParticlesPacket::new
     );
-    public static final IPayloadHandler<RiftParticlesPacket> HANDLER = (packet, context) -> ClientHelper.addRiftParticles(packet.from, new Vec3(packet.x, packet.y, packet.z));
-    private final Optional<ResourceKey<Level>> from;
+    public static final IPayloadHandler<RiftParticlesPacket> HANDLER = (packet, context) -> ClientHelper.addRiftParticles(new Vec3(packet.x, packet.y, packet.z), packet.from);
+    private final ResourceKey<Level> from;
     private final double x, y, z;
 
-    public RiftParticlesPacket(Optional<ResourceKey<Level>> from, Vec3 loc) {
-        this(from, loc.x(), loc.y(), loc.z());
+    public RiftParticlesPacket(Vec3 loc, @Nullable ResourceKey<Level> from) {
+        this(loc.x(), loc.y(), loc.z(), from);
     }
 
-    public RiftParticlesPacket(Optional<ResourceKey<Level>> from, double x, double y, double z) {
+    public RiftParticlesPacket(double x, double y, double z, Optional<ResourceKey<Level>> from) {
+        this(x, y, z, from.orElse(null));
+    }
+
+    public RiftParticlesPacket(double x, double y, double z, @Nullable ResourceKey<Level> from) {
         this.from = from;
         this.x = x;
         this.y = y;

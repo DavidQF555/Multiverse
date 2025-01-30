@@ -28,7 +28,7 @@ public final class KaleiditeCurrentColor {
         @Override
         public int getColor(BlockState state, @Nullable BlockAndTintGetter tint, @Nullable BlockPos pos, int layer) {
             Level level = Minecraft.getInstance().level;
-            return level == null ? 0xFFFFFFFF : MultiverseColorHelper.getColor(level);
+            return level == null ? 0xFFFFFFFF : MultiverseColorHelper.getColors(level, 1)[0];
         }
 
     }
@@ -45,7 +45,7 @@ public final class KaleiditeCurrentColor {
             if (layer == 0) {
                 Level level = Minecraft.getInstance().level;
                 if (level != null) {
-                    return MultiverseColorHelper.getColor(level);
+                    return MultiverseColorHelper.getColors(level, 1)[0];
                 }
             }
             return 0xFFFFFFFF;

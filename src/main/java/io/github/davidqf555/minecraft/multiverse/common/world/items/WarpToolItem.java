@@ -41,15 +41,18 @@ public class WarpToolItem extends Item {
             if (!MultiversalToolHelper.setCurrent(world, stack)) {
                 return InteractionResultHolder.pass(stack);
             }
+        } else if (world.dimension().equals(MultiversalToolHelper.getTarget(stack))) {
+            return InteractionResultHolder.pass(stack);
         } else if (world instanceof ServerLevel) {
             ResourceKey<Level> current = world.dimension();
             ResourceKey<Level> target = MultiversalToolHelper.getTarget(stack);
             Entity copy = WarpTeleporter.warp(player, target);
-            if (copy != null) {
-                MultiversalToolHelper.setTarget(stack, current);
-                if (!player.isCreative()) {
-                    player.getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.warpRingCooldown.get());
-                }
+            if (copy == null) {
+                return InteractionResultHolder.pass(stack);
+            }
+            MultiversalToolHelper.setTarget(stack, current);
+            if (!player.isCreative()) {
+                player.getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.warpRingCooldown.get());
             }
         }
         return InteractionResultHolder.consume(stack);
