@@ -50,8 +50,8 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
     @Override
     public void tick() {
         BlockPos pos = blockPosition();
-        if (level instanceof ServerLevel && isAlive() && level.getBlockState(pos).getBlock() instanceof RiftBlock) {
-            RiftHelper.destroyRift((ServerLevel) level, pos, this);
+        if (isAlive() && level.getBlockState(pos).getBlock() instanceof RiftBlock) {
+            RiftHelper.destroyRift(level, pos);
             discard();
         }
         super.tick();
