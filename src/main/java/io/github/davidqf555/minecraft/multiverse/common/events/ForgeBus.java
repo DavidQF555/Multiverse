@@ -53,7 +53,7 @@ public final class ForgeBus {
 
     // dynamic registering dimensions
     @SuppressWarnings("deprecation")
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
         ShapesManager.INSTANCE.load(server);
