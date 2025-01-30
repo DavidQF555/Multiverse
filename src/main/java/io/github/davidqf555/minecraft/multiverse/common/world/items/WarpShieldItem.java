@@ -15,7 +15,6 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
-import java.util.Optional;
 
 public class WarpShieldItem extends ShieldItem {
 
@@ -29,7 +28,7 @@ public class WarpShieldItem extends ShieldItem {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(Optional.empty(), proj.position()));
+                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(proj.position(), null));
                 proj.discard();
             }
         }

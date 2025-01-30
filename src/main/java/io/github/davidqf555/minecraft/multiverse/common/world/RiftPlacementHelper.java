@@ -10,7 +10,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.LevelWriter;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -31,31 +32,32 @@ public final class RiftPlacementHelper {
     private RiftPlacementHelper() {
     }
 
-    public static void place(LevelWriter writer, LevelReader reader, BlockState rift, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, ReplacementType replacement) {
+    public static void place(ServerLevelAccessor world, BlockState rift, ResourceKey<Level> target, Vec3 center, Vec3 normal, float angle, double width, double height, ReplacementType replacement) {
         normal = normal.normalize();
         if (normal.lengthSqr() == 0) {
             normal = new Vec3(0, 1, 0);
         }
         Vec3 n = normal;
         Vec3[][] vertices = calculateVertices(center, n, angle, width, height);
-        iterate(vertices, reader.getMinY(), reader.getMaxY(), pos -> {
-            BlockState state = reader.getBlockState(pos);
-            if (replacement.canReplace(reader, pos, state)) {
+        iterate(vertices, world.getMinY(), world.getMaxY(), pos -> {
+            BlockState state = world.getBlockState(pos);
+            if (replacement.canReplace(world, pos, state)) {
                 Vec3 corner = Vec3.atLowerCornerOf(pos);
                 Vec3[] polygon = calculateSectionPolygon(vertices, n, AABB.unitCubeFromLowerCorner(corner));
                 if (polygon.length >= 3) {
                     BlockState base = rift;
-                    Fluid fluid = reader.getFluidState(pos).getType();
+                    Fluid fluid = world.getFluidState(pos).getType();
                     if (replacement.hasDrops()) {
-                        writer.destroyBlock(pos, true);
+                        Block.dropResources(state, world.getLevel(), pos);
+                        world.removeBlock(pos, false);
                     }
                     if (fluid == Fluids.WATER) {
                         base = base.setValue(RiftBlock.FLUID, RiftBlock.LoggedFluid.WATER);
                     } else if (fluid == Fluids.LAVA) {
                         base = base.setValue(RiftBlock.FLUID, RiftBlock.LoggedFluid.LAVA);
                     }
-                    writer.setBlock(pos, base, 3);
-                    BlockEntity tile = reader.getBlockEntity(pos);
+                    world.setBlock(pos, base, 3);
+                    BlockEntity tile = world.getBlockEntity(pos);
                     if (tile instanceof RiftTileEntity) {
                         ((RiftTileEntity) tile).setTarget(target);
                         ((RiftTileEntity) tile).setCollision(polygon);

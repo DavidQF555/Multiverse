@@ -38,7 +38,7 @@ public final class ForgeBus {
 
     // dynamic registering dimensions
     @SuppressWarnings("deprecation")
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
         ShapesManager.INSTANCE.load(server);
@@ -69,7 +69,7 @@ public final class ForgeBus {
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if (!event.isCanceled() && entity instanceof Mob && !entity.level().isClientSide() && entity.getData(AttachmentTypeRegistry.SUMMONED)) {
-            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftParticlesPacket(Optional.empty(), entity.getEyePosition()));
+            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftParticlesPacket(entity.getEyePosition(), null));
             entity.discard();
         }
     }

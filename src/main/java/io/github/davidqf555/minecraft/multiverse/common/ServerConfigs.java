@@ -16,6 +16,7 @@ public class ServerConfigs {
 
     public final ModConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, temperatureScale, humidityScale, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
     public final ModConfigSpec.IntValue maxDimensions, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
+    public final ModConfigSpec.LongValue colorSeedOffset;
 
     public ServerConfigs(ModConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
@@ -24,6 +25,8 @@ public class ServerConfigs {
         builder.pop().push("Rifts");
         riftRange = builder.comment("This is the range that is scanned for existing rifts using points of interest. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
+        colorSeedOffset = builder.comment("This is the factor that is added to the rift color seed. Change to modify all rift colors in the server. ")
+                .defineInRange("colorSeedOffset", 0, Long.MIN_VALUE, Long.MAX_VALUE);
         slowFalling = builder.comment("This is the number of ticks that players get slow falling for after exiting a rift. Set to 0 if don't want slow falling. ")
                 .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
         builder.comment("Only for artificially placed rifts (Modify configured/placed feature for naturally generated rifts)").push("Size");

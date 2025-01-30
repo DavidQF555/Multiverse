@@ -27,7 +27,7 @@ public class KaleiditeTargetColor implements ItemTintSource {
     @Override
     public int calculate(ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity) {
         if (world != null) {
-            return MultiverseColorHelper.getColor(world, MultiversalToolHelper.getTarget(stack));
+            return MultiverseColorHelper.getColors(MultiversalToolHelper.getTarget(stack), 1)[0];
         }
         return defaultColor;
     }

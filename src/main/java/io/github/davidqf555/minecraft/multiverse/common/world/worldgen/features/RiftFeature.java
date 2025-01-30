@@ -14,7 +14,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 public class RiftFeature extends Feature<RiftConfig> {
@@ -42,8 +41,8 @@ public class RiftFeature extends Feature<RiftConfig> {
         double x = rand.nextDouble() * center.x() + origin.getX() + size.x() / 2 + 1;
         double z = rand.nextDouble() * center.z() + origin.getZ() + size.z() / 2 + 1;
         double y = rand.nextDouble() * center.y() + reader.getMinY();
-        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(rand, Optional.of(reader.getLevel().dimension()));
-        RiftPlacementHelper.place(reader, reader, state, target, new Vec3(x, y, z), normal, angle, width, height, RiftPlacementHelper.ReplacementType.FEATURE_REMOVE);
+        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(rand, reader.getLevel().dimension());
+        RiftPlacementHelper.place(reader, state, target, new Vec3(x, y, z), normal, angle, width, height, RiftPlacementHelper.ReplacementType.FEATURE_REMOVE);
         return true;
     }
 

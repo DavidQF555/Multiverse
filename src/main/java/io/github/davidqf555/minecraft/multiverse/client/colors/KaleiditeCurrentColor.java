@@ -35,7 +35,7 @@ public final class KaleiditeCurrentColor {
         @Override
         public int getColor(BlockState state, @Nullable BlockAndTintGetter tint, @Nullable BlockPos pos, int layer) {
             Level level = Minecraft.getInstance().level;
-            return level == null ? 0xFFFFFFFF : MultiverseColorHelper.getColor(level);
+            return level == null ? 0xFFFFFFFF : MultiverseColorHelper.getColors(level.dimension(), 1)[0];
         }
 
     }
@@ -55,7 +55,7 @@ public final class KaleiditeCurrentColor {
         @Override
         public int calculate(ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity) {
             if (world != null) {
-                return MultiverseColorHelper.getColor(world);
+                return MultiverseColorHelper.getColors(world.dimension(), 1)[0];
             }
             return defaultColor;
         }

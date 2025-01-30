@@ -15,8 +15,8 @@ public class ClientConfigs {
     }
 
     public final ModConfigSpec.IntValue riftLayers, riftRenderDistance, riftExplosionParticles;
-    public final ModConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity, riftExplosionParticleRange;
-    public final ModConfigSpec.BooleanValue vanillaOnly;
+    public final ModConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity, riftExplosionParticleRange, riftSoundFrequency;
+    public final ModConfigSpec.BooleanValue vanillaOnly, multicolor;
 
     public ClientConfigs(ModConfigSpec.Builder builder) {
         builder.comment("Multiverse client-side configuration");
@@ -29,7 +29,7 @@ public class ClientConfigs {
         riftLayerGrowth = builder.comment("This is the rate that the distance between rift layer grows using an exponential function. ")
                 .defineInRange("riftLayerGrowth", 0.5, 0, Double.MAX_VALUE);
         riftMinOpacity = builder.comment("This is the minimum opacity of a rift's layers as a fraction. ")
-                .defineInRange("riftMinOpacity", 0.5, 0, 1);
+                .defineInRange("riftMinOpacity", 0.65, 0, 1);
         riftMaxOpacity = builder.comment("This is the maximum opacity of a rift's layers as a fraction. Must be at least riftMinOpacity. ")
                 .defineInRange("riftMaxOpacity", 1.0, 0, 1);
         riftRenderDistance = builder.comment("This is the distance in blocks that rift blocks are rendered. ")
@@ -38,6 +38,10 @@ public class ClientConfigs {
                 .defineInRange("riftExplosionParticleRange", 4, 0, Double.MAX_VALUE);
         riftExplosionParticles = builder.comment("This is the number of rift explosion particles spawned per tick. ")
                 .defineInRange("riftExplosionParticles", 6, 0, Integer.MAX_VALUE);
+        riftSoundFrequency = builder.comment("This is the chance that each rift block plays a sound per tick. ")
+                .defineInRange("riftSoundFrequency", 0.005, 0, 1);
+        multicolor = builder.comment("This is whether rifts use multiple colors. ")
+                .define("multicolor", true);
         vanillaOnly = builder.comment("This is whether only vanilla shaders are used to render. Try setting to true if rifts are invisible due to custom shaders. ")
                 .define("vanillaOnly", false);
     }

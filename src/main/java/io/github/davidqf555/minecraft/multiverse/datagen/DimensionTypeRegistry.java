@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public final class DimensionTypeRegistry {
                     for (EffectEntry effect : effects) {
                         if (!effect.nightOnly() || time == Time.NIGHT) {
                             ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, base + "/" + effect.name());
-                            DimensionType val = new DimensionType(time.time, !roofed, roofed, type.isUltrawarm(), type.isNatural(), 1, true, true, shape.minY(), shape.height(), shape.height(), type.getInfiniburn(), effect.effect(), shape.lighting(), type.getMonsterSettings());
+                            DimensionType val = new DimensionType(time.time == null ? OptionalLong.empty() : OptionalLong.of(time.time), !roofed, roofed, type.isUltrawarm(), type.isNatural(), 1, true, true, shape.minY(), shape.height(), shape.height(), type.getInfiniburn(), effect.effect(), shape.lighting(), type.getMonsterSettings());
                             builder.put(loc, val);
                         }
                     }
@@ -55,16 +56,16 @@ public final class DimensionTypeRegistry {
 
     private enum Time {
 
-        DYNAMIC("dynamic", OptionalLong.empty()),
-        DAY("day", OptionalLong.of(6000)),
-        NIGHT("night", OptionalLong.of(18000)),
-        SUNRISE("sunrise", OptionalLong.of(23500)),
-        SUNSET("sunset", OptionalLong.of(12500));
+        DYNAMIC("dynamic", null),
+        DAY("day", 6000L),
+        NIGHT("night", 18000L),
+        SUNRISE("sunrise", 23500L),
+        SUNSET("sunset", 12500L);
 
         private final String name;
-        private final OptionalLong time;
+        private final Long time;
 
-        Time(String name, OptionalLong time) {
+        Time(String name, @Nullable Long time) {
             this.name = name;
             this.time = time;
         }

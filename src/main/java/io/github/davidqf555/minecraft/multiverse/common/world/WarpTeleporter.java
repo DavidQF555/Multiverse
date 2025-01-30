@@ -15,8 +15,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public final class WarpTeleporter {
 
     private static final TeleportTransition.PostTeleportTransition POST = RiftHelper.SLOW_FALLING.then(RiftHelper.CLEAR).then(TeleportTransition.PLAY_PORTAL_SOUND);
@@ -42,10 +40,10 @@ public final class WarpTeleporter {
         if (entity.canTeleport(from, world)) {
             Entity copy = entity.teleport(getPortalDestination(world, entity, entity.blockPosition()));
             if (copy != null) {
-                PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) from, new ChunkPos(BlockPos.containing(pos)), new RiftParticlesPacket(Optional.of(target), pos));
+                PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) from, new ChunkPos(BlockPos.containing(pos)), new RiftParticlesPacket(pos, target));
                 from.playSound(null, pos.x(), pos.y(), pos.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
                 Vec3 changed = copy.getEyePosition();
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(copy, new RiftParticlesPacket(Optional.of(current), changed));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(copy, new RiftParticlesPacket(changed, current));
                 world.playSound(null, changed.x(), changed.y(), changed.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
                 return copy;
             }
