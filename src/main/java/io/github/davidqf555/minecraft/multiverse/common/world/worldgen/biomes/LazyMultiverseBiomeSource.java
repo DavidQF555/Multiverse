@@ -21,7 +21,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class LazyMultiverseBiomeSource extends LazyBiomeSource {
 
@@ -31,16 +30,16 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
             Codec.INT.fieldOf("min_y").forGetter(source -> source.minY),
             Codec.INT.fieldOf("max_y").forGetter(source -> source.maxY),
             MultiverseType.CODEC.fieldOf("multiverse_type").forGetter(source -> source.type),
-            RegistryCodecs.homogeneousList(Registries.BIOME, true).listOf().xmap(Set::copyOf, List::copyOf).fieldOf("biomes").forGetter(source -> source.biomes)
+            RegistryCodecs.homogeneousList(Registries.BIOME, true).fieldOf("biomes").forGetter(source -> source.biomes)
     ).apply(inst, LazyMultiverseBiomeSource::new));
 
     private final HolderLookup.RegistryLookup<Biome> registry;
     private final HolderLookup.RegistryLookup<DimensionType> dimType;
     private final MultiverseType type;
-    private final Set<HolderSet<Biome>> biomes;
+    private final HolderSet<Biome> biomes;
     private final int minY, maxY;
 
-    public LazyMultiverseBiomeSource(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public LazyMultiverseBiomeSource(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, HolderSet<Biome> biomes) {
         super(() -> MultiNoiseBiomeSource.createFromList(parameters(registry, dimType, minY, maxY, type, biomes)));
         this.registry = registry;
         this.dimType = dimType;
@@ -50,11 +49,10 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
         this.maxY = maxY;
     }
 
-    public static Climate.ParameterList<Holder<Biome>> parameters(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public static Climate.ParameterList<Holder<Biome>> parameters(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, HolderSet<Biome> biomes) {
         MultiverseBiomes ref = MultiverseConfig.getBiomesManager();
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> all = new ArrayList<>();
-        for (HolderSet<Biome> set : biomes) {
-            for (Holder<Biome> holder : set) {
+        for (Holder<Biome> holder : biomes) {
                 holder.unwrapKey().ifPresent(key -> {
                     if (ref.is(type, key)) {
                         for (Climate.ParameterPoint orig : ref.getParameters(key)) {
@@ -65,7 +63,6 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
                     }
                 });
             }
-        }
         if (all.isEmpty()) {
             all.add(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), registry.getOrThrow(Biomes.THE_VOID)));
         }

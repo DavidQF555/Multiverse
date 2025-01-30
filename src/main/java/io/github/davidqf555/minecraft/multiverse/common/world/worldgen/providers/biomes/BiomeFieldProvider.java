@@ -6,10 +6,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 
-import java.util.Set;
-
 public interface BiomeFieldProvider<T> {
 
-    T provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes);
+    T provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes);
 
 }
