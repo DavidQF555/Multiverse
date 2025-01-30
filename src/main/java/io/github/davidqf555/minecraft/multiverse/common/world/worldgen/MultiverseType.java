@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.worldgen;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
@@ -74,8 +74,8 @@ public enum MultiverseType {
         return ultrawarm;
     }
 
-    public boolean is(Registry<Biome> registry, ResourceKey<Biome> biome) {
-        return registry.get(biome).flatMap(holder -> registry.get(biomes).map(set -> set.contains(holder))).orElse(false);
+    public boolean is(Holder<Biome> biome) {
+        return biome.is(biomes);
     }
 
     public TagKey<Block> getInfiniburn() {

@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.util.MultiverseConfig;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -19,32 +20,31 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class LazyMultiverseBiomeSource extends LazyBiomeSource {
 
+    private static final long SEED_OFFSET = 5555555555L;
     public static final MapCodec<LazyMultiverseBiomeSource> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(source -> source.registry),
             RegistryOps.retrieveRegistryLookup(Registries.DIMENSION_TYPE).forGetter(source -> source.dimType),
             Codec.INT.fieldOf("min_y").forGetter(source -> source.minY),
             Codec.INT.fieldOf("max_y").forGetter(source -> source.maxY),
             MultiverseType.CODEC.fieldOf("multiverse_type").forGetter(source -> source.type),
-            RegistryCodecs.homogeneousList(Registries.BIOME, true).listOf().xmap(Set::copyOf, List::copyOf).fieldOf("biomes").forGetter(source -> source.biomes),
+            RegistryCodecs.homogeneousList(Registries.BIOME, true).fieldOf("biomes").forGetter(source -> source.biomes),
             Codec.LONG.fieldOf("seed").forGetter(source -> source.seed)
     ).apply(inst, LazyMultiverseBiomeSource::new));
-
     private final HolderLookup.RegistryLookup<Biome> registry;
     private final HolderLookup.RegistryLookup<DimensionType> dimType;
     private final MultiverseType type;
-    private final Set<HolderSet<Biome>> biomes;
+    private final HolderSet<Biome> biomes;
     private final int minY, maxY;
     private final long seed;
 
-    public LazyMultiverseBiomeSource(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, Set<HolderSet<Biome>> biomes, long seed) {
+    public LazyMultiverseBiomeSource(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, HolderSet<Biome> biomes, long seed) {
         super(() -> MultiNoiseBiomeSource.createFromList(parameters(registry, dimType, minY, maxY, type, biomes, seed)));
         this.registry = registry;
         this.dimType = dimType;
@@ -55,22 +55,21 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
         this.seed = seed;
     }
 
-    public static Climate.ParameterList<Holder<Biome>> parameters(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, Set<HolderSet<Biome>> biomes, long seed) {
+    public static Climate.ParameterList<Holder<Biome>> parameters(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, MultiverseType type, HolderSet<Biome> biomes, long seed) {
         MultiverseBiomes ref = MultiverseConfig.getBiomesManager();
-        RandomSource random = new XoroshiroRandomSource(seed);
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> all = new ArrayList<>();
-        for (HolderSet<Biome> set : biomes) {
-            for (Holder<Biome> holder : set) {
-                holder.unwrapKey().ifPresent(key -> {
-                    if (ref.is(type, key)) {
-                        for (Climate.ParameterPoint orig : ref.getParameters(key, random)) {
-                            Climate.Parameter depth = translateDepth(orig.depth(), minY, maxY, dimType.getOrThrow(type.getNormalType()).value());
-                            Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
-                            all.add(Pair.of(point, holder));
-                        }
+        RandomSource random = new SingleThreadedRandomSource(0);
+        for (Holder<Biome> holder : biomes) {
+            holder.unwrapKey().ifPresent(key -> {
+                if (ref.is(type, key)) {
+                    random.setSeed(DimensionHelper.resourceLocationToSeed(seed, key.location()) + SEED_OFFSET);
+                    for (Climate.ParameterPoint orig : ref.getParameters(key, random)) {
+                        Climate.Parameter depth = translateDepth(orig.depth(), minY, maxY, dimType.getOrThrow(type.getNormalType()).value());
+                        Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
+                        all.add(Pair.of(point, holder));
                     }
-                });
-            }
+                }
+            });
         }
         if (all.isEmpty()) {
             all.add(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), registry.getOrThrow(Biomes.THE_VOID)));

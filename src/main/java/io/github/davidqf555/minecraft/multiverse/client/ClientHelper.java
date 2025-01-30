@@ -10,27 +10,31 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 public final class ClientHelper {
 
     private ClientHelper() {
     }
 
-    public static void addRiftParticles(Optional<ResourceKey<Level>> dim, Vec3 center) {
+    public static void addRiftParticles(Vec3 center, @Nullable ResourceKey<Level> dim) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
-            ResourceKey<Level> from = dim.orElseGet(() -> DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())));
-            int color = MultiverseColorHelper.getColor(world, from);
+            if (dim == null) {
+                dim = DimensionHelper.randomMultiverseDimension(world.getRandom(), world.dimension());
+            }
+            int color = MultiverseColorHelper.getColors(world, dim, 1)[0];
             world.addParticle(ParticleTypeRegistry.RIFT.get(), center.x(), center.y(), center.z(), ARGB.red(color) / 255.0, ARGB.green(color) / 255.0, ARGB.blue(color) / 255.0);
         }
     }
 
-    public static void addRiftExplosionParticles(Optional<ResourceKey<Level>> dim, Vec3 center) {
+    public static void addRiftExplosionParticles(Vec3 center, @Nullable ResourceKey<Level> dim) {
         ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
-            ResourceKey<Level> from = dim.orElseGet(() -> DimensionHelper.randomMultiverseDimension(world.getRandom(), Optional.of(world.dimension())));
-            int color = MultiverseColorHelper.getColor(world, from);
+            if (dim == null) {
+                dim = DimensionHelper.randomMultiverseDimension(world.getRandom(), world.dimension());
+            }
+            int color = MultiverseColorHelper.getColors(world, dim, 1)[0];
             world.addParticle(ParticleTypeRegistry.RIFT_EXPLOSION_EMITTER.get(), center.x(), center.y(), center.z(), ARGB.red(color) / 255.0, ARGB.green(color) / 255.0, ARGB.blue(color) / 255.0);
         }
     }

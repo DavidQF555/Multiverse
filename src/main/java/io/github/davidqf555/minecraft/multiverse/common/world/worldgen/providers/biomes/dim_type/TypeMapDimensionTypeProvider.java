@@ -14,7 +14,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 public class TypeMapDimensionTypeProvider implements BiomeDimensionTypeProvider {
 
@@ -27,7 +26,7 @@ public class TypeMapDimensionTypeProvider implements BiomeDimensionTypeProvider 
     }
 
     @Override
-    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, Set<HolderSet<Biome>> biomes) {
+    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return values.get(type).value().provide(access, seed, random, type, biomes);
     }
 

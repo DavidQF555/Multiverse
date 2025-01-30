@@ -1,5 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.client.colors;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
@@ -8,55 +10,40 @@ import java.util.Random;
 
 public final class MultiverseColorHelper {
 
-    private static final long FACTOR = 55555;
     private static final Random RANDOM = new Random(0);
 
     private MultiverseColorHelper() {
     }
 
-    private static int getColor(Random rand) {
-        int[] color = new int[]{rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)};
-        shift(color, rand);
-        return ARGB.color(0xFF, color[0], color[1], color[2]);
-    }
-
-    public static int getColor(Level world, ResourceKey<Level> dim) {
-        return getColor(getSeed(world.getBiomeManager().biomeZoomSeed, dim));
-    }
-
-    public static int getColor(Level level) {
-        return getColor(level, level.dimension());
-    }
-
-    private static long getSeed(long base, ResourceKey<Level> dim) {
-        String loc = dim.location().getNamespace();
-        String path = dim.location().getPath();
-        int i = 0;
-        int j = 0;
-        while (i < loc.length() || j < path.length()) {
-            char c;
-            if (i >= loc.length()) {
-                c = path.charAt(j++);
-            } else if (j >= path.length()) {
-                c = loc.charAt(i++);
-            } else if ((i + j) % 2 == 0) {
-                c = path.charAt(j++);
-            } else {
-                c = loc.charAt(i++);
+    private static int[] getColors(Random rand, int n) {
+        int[] colors = new int[n];
+        int shift = rand.nextInt(3);
+        boolean side = rand.nextBoolean();
+        for (int i = 0; i < n; i++) {
+            int[] color = new int[3];
+            for (int j = 0; j < 3; j++) {
+                if (j == shift) {
+                    color[j] = side ? 0 : 0xFF;
+                } else {
+                    color[j] = rand.nextInt(256);
+                }
             }
-            base += FACTOR * c * (i + j);
+            colors[i] = ARGB.color(0xFF, color[0], color[1], color[2]);
         }
-        return base;
+        return colors;
     }
 
-    private static int getColor(long seed) {
+    public static int[] getColors(Level world, ResourceKey<Level> dim, int n) {
+        return getColors(DimensionHelper.resourceLocationToSeed(world.getBiomeManager().biomeZoomSeed, dim.location()) + ServerConfigs.INSTANCE.colorSeedOffset.get(), n);
+    }
+
+    public static int[] getColors(Level level, int n) {
+        return getColors(level, level.dimension(), n);
+    }
+
+    private static int[] getColors(long seed, int n) {
         RANDOM.setSeed(seed);
-        return getColor(RANDOM);
-    }
-
-    private static void shift(int[] color, Random rand) {
-        int i = rand.nextInt(color.length);
-        color[i] = color[i] < 0x80 ? 0x00 : 0xFF;
+        return getColors(RANDOM, n);
     }
 
 }
