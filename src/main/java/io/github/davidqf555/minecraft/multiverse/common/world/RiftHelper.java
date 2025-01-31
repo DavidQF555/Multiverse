@@ -135,9 +135,9 @@ public final class RiftHelper {
 
     private static void destroyConnectedRifts(Level from, ServerLevel target, BlockPos start) {
         Vec3 pos = DimensionHelper.translate(Vec3.atCenterOf(start), from.dimensionType(), target.dimensionType(), true);
-            RiftHelper.getClosestRift(target, from.dimension(), BlockPos.containing(pos), ServerConfigs.INSTANCE.riftRange.get()).ifPresent(b -> {
-                doRiftSpawnEffect(target, b, from.dimension());
-                destroyConnectedBlocks(target, b, ServerConfigs.INSTANCE.coreRange.get());
+        RiftHelper.getClosestRift(target, from.dimension(), BlockPos.containing(pos), ServerConfigs.INSTANCE.riftRange.get()).ifPresent(b -> {
+            doRiftSpawnEffect(target, b, from.dimension());
+            destroyConnectedBlocks(target, b, ServerConfigs.INSTANCE.coreRange.get());
         });
     }
 

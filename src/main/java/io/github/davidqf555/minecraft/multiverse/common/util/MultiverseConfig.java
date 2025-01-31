@@ -7,11 +7,11 @@ public final class MultiverseConfig {
 
     private static MultiverseBiomes biomes = VanillaMultiverseBiomes.INSTANCE;
 
-    public static MultiverseBiomes getBiomesManager() {
-        return biomes;
+    private MultiverseConfig() {
     }
 
-    private MultiverseConfig() {
+    public static MultiverseBiomes getBiomesManager() {
+        return biomes;
     }
 
     public static void setBiomesManager(MultiverseBiomes biomes) {
