@@ -16,7 +16,12 @@ import java.util.function.Supplier;
 public final class ItemRegistry {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Multiverse.MOD_ID);
+
     private ItemRegistry() {
+    }
+
+    private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> item) {
+        return ITEMS.register(name, item);
     }    public static final CreativeModeTab TAB = new CreativeModeTab(Multiverse.MOD_ID) {
         @Nonnull
         @Override
@@ -48,9 +53,7 @@ public final class ItemRegistry {
     public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> new WarpToolItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> new WarpStickItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
 
-    private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> item) {
-        return ITEMS.register(name, item);
-    }
+
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
 
