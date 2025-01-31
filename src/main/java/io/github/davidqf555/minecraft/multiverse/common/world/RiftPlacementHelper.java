@@ -502,9 +502,6 @@ public final class RiftPlacementHelper {
         };
     }
 
-    private record Point2D(double x, double y) {
-    }
-
     public enum ReplacementType {
 
         DESTROY((world, pos, state) -> state.getDestroySpeed(world, pos) != -1, true),
@@ -534,6 +531,9 @@ public final class RiftPlacementHelper {
 
         boolean canReplace(LevelReader world, BlockPos pos, BlockState state);
 
+    }
+
+    private record Point2D(double x, double y) {
     }
 
 }

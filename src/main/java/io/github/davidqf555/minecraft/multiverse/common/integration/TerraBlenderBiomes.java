@@ -98,21 +98,6 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Set<ResourceKey<Biome>> getOverworldBiomes() {
-        return overworldBiomes;
-    }
-
-    @Override
-    public Set<ResourceKey<Biome>> getNetherBiomes() {
-        return netherBiomes;
-    }
-
-    @Override
-    public Set<ResourceKey<Biome>> getEndBiomes() {
-        return endBiomes;
-    }
-
     private static Climate.ParameterPoint offset(Climate.ParameterPoint base, RandomSource random) {
         float tOffset = (float) (random.nextGaussian() * ServerConfigs.INSTANCE.temperatureScale.get());
         float hOffset = (float) (random.nextGaussian() * ServerConfigs.INSTANCE.humidityScale.get());
@@ -133,6 +118,21 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
                 base.weirdness(),
                 base.offset()
         );
+    }
+
+    @Override
+    public Set<ResourceKey<Biome>> getOverworldBiomes() {
+        return overworldBiomes;
+    }
+
+    @Override
+    public Set<ResourceKey<Biome>> getNetherBiomes() {
+        return netherBiomes;
+    }
+
+    @Override
+    public Set<ResourceKey<Biome>> getEndBiomes() {
+        return endBiomes;
     }
 
     @Override
