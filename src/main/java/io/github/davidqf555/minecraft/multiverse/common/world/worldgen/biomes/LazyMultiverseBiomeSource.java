@@ -53,16 +53,16 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
         MultiverseBiomes ref = MultiverseConfig.getBiomesManager();
         List<Pair<Climate.ParameterPoint, Holder<Biome>>> all = new ArrayList<>();
         for (Holder<Biome> holder : biomes) {
-                holder.unwrapKey().ifPresent(key -> {
-                    if (ref.is(type, key)) {
-                        for (Climate.ParameterPoint orig : ref.getParameters(key)) {
-                            Climate.Parameter depth = translateDepth(orig.depth(), minY, maxY, dimType.getOrThrow(type.getNormalType()).value());
-                            Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
-                            all.add(Pair.of(point, holder));
-                        }
+            holder.unwrapKey().ifPresent(key -> {
+                if (ref.is(type, key)) {
+                    for (Climate.ParameterPoint orig : ref.getParameters(key)) {
+                        Climate.Parameter depth = translateDepth(orig.depth(), minY, maxY, dimType.getOrThrow(type.getNormalType()).value());
+                        Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
+                        all.add(Pair.of(point, holder));
                     }
-                });
-            }
+                }
+            });
+        }
         if (all.isEmpty()) {
             all.add(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), registry.getOrThrow(Biomes.THE_VOID)));
         }
