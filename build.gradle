@@ -67,7 +67,7 @@ tasks.named('processResources', ProcessResources).configure {
             loader_version_range: loader_version_range,
             terrablender_version: terrablender_version,
             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors: mod_authors
+            mod_authors         : mod_authors
     ]
     inputs.properties replaceProperties
 
