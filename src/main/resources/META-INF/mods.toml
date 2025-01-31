@@ -10,7 +10,7 @@ displayURL = "https://github.com/DavidQF555/Multiverse"
 updateJSONURL = "https://raw.githubusercontent.com/DavidQF555/Multiverse/update/update.json"
 logoFile = "logo.png"
 authors = "${mod_authors}"
-description = 'This mod adds a multiverse.'
+description = 'Adds rifts to a multiverse.'
 [[dependencies.${ mod_id }]]
 modId = "forge"
 mandatory = true
