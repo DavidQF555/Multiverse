@@ -50,10 +50,10 @@ import java.util.Optional;
 @ParametersAreNonnullByDefault
 public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBlockContainer, Portal {
 
-    private static final DimensionTransition.PostDimensionTransition POST = RiftHelper.SLOW_FALLING.then(RiftHelper.TRIGGER).then(DimensionTransition.PLAY_PORTAL_SOUND);
-    public static final MapCodec<RiftBlock> CODEC = simpleCodec(RiftBlock::new);
     public static final BooleanProperty TEMPORARY = BooleanProperty.create("temporary");
     public static final EnumProperty<LoggedFluid> FLUID = EnumProperty.create("fluid", LoggedFluid.class, LoggedFluid.values());
+    public static final MapCodec<RiftBlock> CODEC = simpleCodec(RiftBlock::new);
+    private static final DimensionTransition.PostDimensionTransition POST = RiftHelper.SLOW_FALLING.then(RiftHelper.TRIGGER).then(DimensionTransition.PLAY_PORTAL_SOUND);
 
     public RiftBlock(Properties properties) {
         super(properties.noCollission().randomTicks());
@@ -187,18 +187,18 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     @Nullable
     @Override
     public DimensionTransition getPortalDestination(ServerLevel level, Entity entity, BlockPos pos) {
-            BlockEntity be = level.getBlockEntity(pos);
-            if(be instanceof RiftTileEntity) {
-                ServerLevel target = level.getServer().getLevel(((RiftTileEntity) be).getTarget());
-                if(target != null) {
-                    Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(pos), level.dimensionType(), target.dimensionType(), true);
-                    WorldBorder border = target.getWorldBorder();
-                    BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
-                    Vec3 loc = RiftHelper.getOrCreateRift(target, level.dimension(), Vec3.atCenterOf(clamped), level.getBlockState(pos).getValue(RiftBlock.TEMPORARY), ServerConfigs.INSTANCE.riftRange.get(), RiftPlacementHelper.ReplacementType.DESTROY);
-                    return new DimensionTransition(target, loc, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), POST);
-                }
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof RiftTileEntity) {
+            ServerLevel target = level.getServer().getLevel(((RiftTileEntity) be).getTarget());
+            if (target != null) {
+                Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(pos), level.dimensionType(), target.dimensionType(), true);
+                WorldBorder border = target.getWorldBorder();
+                BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
+                Vec3 loc = RiftHelper.getOrCreateRift(target, level.dimension(), Vec3.atCenterOf(clamped), level.getBlockState(pos).getValue(RiftBlock.TEMPORARY), ServerConfigs.INSTANCE.riftRange.get(), RiftPlacementHelper.ReplacementType.DESTROY);
+                return new DimensionTransition(target, loc, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), POST);
             }
-            return null;
+        }
+        return null;
     }
 
     public enum LoggedFluid implements StringRepresentable {

@@ -27,6 +27,7 @@ import java.util.List;
 
 public class LazyMultiverseBiomeSource extends LazyBiomeSource {
 
+    private static final long SEED_OFFSET = 5555555555L;
     public static final MapCodec<LazyMultiverseBiomeSource> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(source -> source.registry),
             RegistryOps.retrieveRegistryLookup(Registries.DIMENSION_TYPE).forGetter(source -> source.dimType),
@@ -36,8 +37,6 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
             RegistryCodecs.homogeneousList(Registries.BIOME, true).fieldOf("biomes").forGetter(source -> source.biomes),
             Codec.LONG.fieldOf("seed").forGetter(source -> source.seed)
     ).apply(inst, LazyMultiverseBiomeSource::new));
-
-    private static final long SEED_OFFSET = 5555555555L;
     private final HolderLookup.RegistryLookup<Biome> registry;
     private final HolderLookup.RegistryLookup<DimensionType> dimType;
     private final MultiverseType type;

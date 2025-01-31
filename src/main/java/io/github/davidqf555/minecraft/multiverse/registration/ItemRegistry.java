@@ -25,10 +25,8 @@ import java.util.function.Supplier;
 public final class ItemRegistry {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Multiverse.MOD_ID);
-    private static final List<Pair<List<ResourceKey<CreativeModeTab>>, DeferredHolder<Item, ? extends Item>>> TABS = new LinkedList<>();
-
     public static final SimpleTier KALEIDITE_TIER = new SimpleTier(BlockTags.INCORRECT_FOR_STONE_TOOL, 250, 4, 2, 22, () -> Ingredient.of(MultiverseTags.KALEIDITE_MATERIALS));
-
+    private static final List<Pair<List<ResourceKey<CreativeModeTab>>, DeferredHolder<Item, ? extends Item>>> TABS = new LinkedList<>();
     public static final DeferredItem<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), () -> new RiftCoreItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> KALEIDITE_SHARD = register("kaleidite_shard", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.INGREDIENTS), () -> new Item(new Item.Properties()));
     public static final DeferredItem<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), () -> new SwordItem(KALEIDITE_TIER, new Item.Properties().attributes(SwordItem.createAttributes(KALEIDITE_TIER, 3, -2.4f))));
