@@ -24,7 +24,7 @@ public class ConquerorRenderer extends IllagerRenderer<ConquerorEntity, EvokerRe
                 if (!p_365089_.isCastingSpell) {
                     super.render(p_117193_, p_117194_, p_117195_, p_365089_, p_117197_, p_117198_);
                 }
-                }
+            }
         });
         getModel().getHat().visible = true;
     }

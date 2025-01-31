@@ -35,8 +35,6 @@ import java.util.function.Supplier;
 public final class ItemRegistry {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Multiverse.MOD_ID);
-    private static final List<Pair<List<ResourceKey<CreativeModeTab>>, DeferredHolder<Item, ? extends Item>>> TABS = new LinkedList<>();
-
     public static final ArmorMaterial KALEIDITE_ARMOR = new ArmorMaterial(33,
             Util.make(new EnumMap<>(ArmorType.class), map -> {
                         map.put(ArmorType.BOOTS, 3);
@@ -49,7 +47,7 @@ public final class ItemRegistry {
             Util.make(new EnumMap<>(ArmorType.class), map -> map.put(ArmorType.CHESTPLATE, 8)
             ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, 2, 0, MultiverseTags.KALEIDITE_MATERIALS, ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "beacon")));
     public static final ToolMaterial KALEIDITE_TOOLS = new ToolMaterial(BlockTags.INCORRECT_FOR_STONE_TOOL, 250, 4, 2, 22, MultiverseTags.KALEIDITE_MATERIALS);
-
+    private static final List<Pair<List<ResourceKey<CreativeModeTab>>, DeferredHolder<Item, ? extends Item>>> TABS = new LinkedList<>();
     public static final DeferredItem<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), RiftCoreItem::new, new Item.Properties().rarity(Rarity.UNCOMMON));
     public static final DeferredItem<Item> KALEIDITE_SHARD = register("kaleidite_shard", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.INGREDIENTS), Item::new, new Item.Properties());
     public static final DeferredItem<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), prop -> new SwordItem(KALEIDITE_TOOLS, 3, -2.4f, prop), new Item.Properties());
