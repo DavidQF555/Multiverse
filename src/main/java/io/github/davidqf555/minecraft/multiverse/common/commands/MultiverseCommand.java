@@ -30,9 +30,9 @@ public final class MultiverseCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("multiverse")
                 .requires(source -> source.hasPermission(2))
-                        .then(Commands.argument("index", IntegerArgumentType.integer(0))
-                                .executes(context -> teleport(context.getSource(), IntegerArgumentType.getInteger(context, "index")))
-                        )
+                .then(Commands.argument("index", IntegerArgumentType.integer(0))
+                        .executes(context -> teleport(context.getSource(), IntegerArgumentType.getInteger(context, "index")))
+                )
         );
     }
 

@@ -56,14 +56,6 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         this(TileEntityRegistry.RIFT.get(), pos, state);
     }
 
-    public ResourceKey<Level> getTarget() {
-        return target;
-    }
-
-    public void setTarget(ResourceKey<Level> target) {
-        this.target = target;
-    }
-
     protected static Vec3[][] convert(Vec3[] vertices) {
         if (vertices.length < 2) {
             return new Vec3[2][0];
@@ -73,6 +65,14 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         all[1][all.length - 1] = all[0][0];
         System.arraycopy(all[0], 1, all[1], 0, all.length - 1);
         return all;
+    }
+
+    public ResourceKey<Level> getTarget() {
+        return target;
+    }
+
+    public void setTarget(ResourceKey<Level> target) {
+        this.target = target;
     }
 
     public Vec3 getNormal() {
