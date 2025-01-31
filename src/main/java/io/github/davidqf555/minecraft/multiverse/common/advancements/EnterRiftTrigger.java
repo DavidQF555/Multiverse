@@ -2,7 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.common.advancements;
 
 import com.google.gson.JsonObject;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
