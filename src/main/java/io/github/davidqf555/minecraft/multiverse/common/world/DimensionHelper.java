@@ -49,16 +49,4 @@ public final class DimensionHelper {
         return new ResourceLocation(Multiverse.MOD_ID, String.valueOf(index));
     }
 
-    public static Optional<Integer> getIndex(ResourceKey<Level> world) {
-        if (world.equals(Level.OVERWORLD)) {
-            return Optional.of(0);
-        } else if (world.location().getNamespace().equals(Multiverse.MOD_ID)) {
-            try {
-                return Optional.of(Integer.parseInt(world.location().getPath()));
-            } catch (NumberFormatException ignored) {
-            }
-        }
-        return Optional.empty();
-    }
-
 }

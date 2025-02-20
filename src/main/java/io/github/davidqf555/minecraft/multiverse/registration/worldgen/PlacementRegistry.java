@@ -2,8 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration.worldgen;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.MultiverseDimensionPlacement;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.RiftDimensionPlacement;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.DimensionPlacement;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features.placement.SolidPlacement;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
@@ -15,8 +14,7 @@ public final class PlacementRegistry {
 
     public static final DeferredRegister<PlacementModifierType<?>> TYPES = DeferredRegister.create(Registry.PLACEMENT_MODIFIER_REGISTRY, Multiverse.MOD_ID);
 
-    public static final RegistryObject<PlacementModifierType<RiftDimensionPlacement>> RIFT_DIMENSION = register("rift_dimension", RiftDimensionPlacement.CODEC);
-    public static final RegistryObject<PlacementModifierType<MultiverseDimensionPlacement>> MULTIVERSE = register("multiverse", MultiverseDimensionPlacement.CODEC);
+    public static final RegistryObject<PlacementModifierType<DimensionPlacement>> DIMENSION = register("dimension", DimensionPlacement.CODEC);
     public static final RegistryObject<PlacementModifierType<SolidPlacement>> SOLID = register("solid", SolidPlacement.CODEC);
 
     private PlacementRegistry() {

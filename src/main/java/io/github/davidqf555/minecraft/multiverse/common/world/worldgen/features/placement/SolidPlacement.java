@@ -55,7 +55,7 @@ public class SolidPlacement extends PlacementModifier {
     }
 
     @Override
-    public PlacementModifierType<?> type() {
+    public PlacementModifierType<? extends SolidPlacement> type() {
         return PlacementRegistry.SOLID.get();
     }
 
