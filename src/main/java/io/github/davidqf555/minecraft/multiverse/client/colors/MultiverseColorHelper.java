@@ -15,7 +15,7 @@ public final class MultiverseColorHelper {
     private MultiverseColorHelper() {
     }
 
-    private static int[] getColors(Random rand, int n) {
+    public static int[] getColors(Random rand, int n) {
         int[] colors = new int[n];
         int shift = rand.nextInt(3);
         boolean side = rand.nextBoolean();

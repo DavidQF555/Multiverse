@@ -51,8 +51,7 @@ public final class MultiversalToolHelper {
 
     public static void setRandomTarget(Level world, ItemStack stack) {
         ResourceKey<Level> current = getTarget(stack);
-        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(world.getRandom(), current);
-        setTarget(stack, target);
+        DimensionHelper.randomTargetDimension(world.getRandom(), current).ifPresent(target -> setTarget(stack, target));
     }
 
     public static boolean setCurrent(Level world, ItemStack stack) {

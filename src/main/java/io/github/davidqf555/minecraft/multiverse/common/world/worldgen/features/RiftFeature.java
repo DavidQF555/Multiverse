@@ -13,6 +13,7 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
@@ -29,6 +30,10 @@ public class RiftFeature extends Feature<RiftConfig> {
         Random rand = context.random();
         BlockPos origin = context.origin();
         BlockState state = config.getBlockState();
+        Optional<ResourceKey<Level>> target = DimensionHelper.randomTargetDimension(rand, reader.getLevel().dimension());
+        if (target.isEmpty()) {
+            return false;
+        }
         double width = config.getWidth(rand);
         double height = config.getHeight(rand);
         Vec3 normal = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
@@ -41,8 +46,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         double x = (center.x() == 0 ? 0 : rand.nextDouble(center.x())) + origin.getX() + size.x() / 2 + 1;
         double z = (center.z() == 0 ? 0 : rand.nextDouble(center.z())) + origin.getZ() + size.z() / 2 + 1;
         double y = (center.y() == 0 ? 0 : rand.nextDouble(center.y())) + reader.getMinBuildHeight();
-        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(rand, reader.getLevel().dimension());
-        RiftPlacementHelper.place(reader, state, target, new Vec3(x, y, z), normal, angle, width, height, RiftPlacementHelper.ReplacementType.FEATURE_REMOVE);
+        RiftPlacementHelper.place(reader, state, target.get(), new Vec3(x, y, z), normal, angle, width, height, RiftPlacementHelper.ReplacementType.FEATURE_REMOVE);
         return true;
     }
 

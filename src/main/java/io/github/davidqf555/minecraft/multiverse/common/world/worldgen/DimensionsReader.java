@@ -7,13 +7,13 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.dimension.LevelStem;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -22,23 +22,20 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShapesManager {
+public class DimensionsReader {
 
-    public static final Codec<List<Entry>> ENTRY_CODEC = RecordCodecBuilder.<Entry>create(inst -> inst.group(
-            MultiverseShape.CODEC.fieldOf("shape").forGetter(Entry::shape),
-            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("weight", 1).forGetter(Entry::weight)
-    ).apply(inst, Entry::new)).listOf().fieldOf("shapes").codec();
+    private static final Codec<List<ResourceKey<LevelStem>>> CODEC = ResourceKey.codec(Registry.LEVEL_STEM_REGISTRY).listOf().fieldOf("dimensions").codec();
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final List<Entry> shapes = new ArrayList<>();
     private final ResourceLocation loc;
+    private final List<ResourceKey<LevelStem>> worlds = new ArrayList<>();
 
-    public ShapesManager(ResourceLocation loc) {
+    public DimensionsReader(ResourceLocation loc) {
         this.loc = loc;
     }
 
-    public List<Entry> getShapes() {
-        return shapes;
+    public List<ResourceKey<LevelStem>> getDimensions() {
+        return worlds;
     }
 
     public void load(MinecraftServer server) {
@@ -49,18 +46,18 @@ public class ShapesManager {
             throw new IllegalStateException(e.getMessage());
         }
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
-        shapes.clear();
-        ENTRY_CODEC.decode(ops, value).resultOrPartial(LOGGER::error).map(Pair::getFirst)
-                .ifPresent(shapes::addAll);
-        if (shapes.isEmpty()) {
-            throw new IllegalStateException("There cannot be 0 shapes");
-        }
-        if (shapes.stream().mapToInt(Entry::weight).sum() <= 0) {
-            throw new IllegalStateException("Total weight must be greater than 0");
-        }
-    }
-
-    public record Entry(Holder<MultiverseShape> shape, int weight) {
+        worlds.clear();
+        Registry<LevelStem> registry = server.getWorldData().worldGenSettings().dimensions();
+        CODEC.decode(ops, value).resultOrPartial(LOGGER::error).map(Pair::getFirst)
+                .ifPresent(list -> {
+                    for (ResourceKey<LevelStem> key : list) {
+                        if (registry.containsKey(key)) {
+                            worlds.add(key);
+                        } else {
+                            LOGGER.error("Could not find dimension: " + key.location());
+                        }
+                    }
+                });
     }
 
 }

@@ -12,16 +12,16 @@ import java.util.List;
 
 public class ShapeDimensionProvider {
 
-    public static final ShapeDimensionProvider INSTANCE = new ShapeDimensionProvider();
+    private final List<ShapesManager.Entry> entries;
 
-    protected ShapeDimensionProvider() {
+    public ShapeDimensionProvider(List<ShapesManager.Entry> entries) {
+        this.entries = entries;
     }
 
     public LevelStem createDimension(RegistryAccess access, long seed, RandomSource random) {
-        List<ShapesManager.Entry> all = ShapesManager.INSTANCE.getShapes();
-        int total = all.stream().mapToInt(ShapesManager.Entry::weight).sum();
+        int total = entries.stream().mapToInt(ShapesManager.Entry::weight).sum();
         int rand = random.nextInt(total);
-        for (ShapesManager.Entry entry : all) {
+        for (ShapesManager.Entry entry : entries) {
             total -= entry.weight();
             if (total <= rand) {
                 return entry.shape().value().getDimensionProvider().createDimension(access, seed, random);

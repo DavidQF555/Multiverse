@@ -15,13 +15,13 @@ public class ServerConfigs {
     }
 
     public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, minRiftHeight, maxRiftHeight, minFeatRiftWidth, maxFeatRiftWidth, minFeatRiftHeight, maxFeatRiftHeight, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
-    public final ForgeConfigSpec.IntValue maxDimensions, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
+    public final ForgeConfigSpec.IntValue generated, riftChance, riftRange, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
     public final ForgeConfigSpec.LongValue colorSeedOffset;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
-        maxDimensions = builder.comment("This is the number of Multiverse dimensions that will be loaded and rifts will generate for. Changing does not modify existing rifts or existing multiverse dimensions. Note: all dimensions will still be registered, so setting too high may negatively impact memory. ")
-                .defineInRange("max", 25, 1, Integer.MAX_VALUE);
+        generated = builder.comment("This is the number of multiverse dimensions that will be generated. ")
+                .defineInRange("generated", 25, 0, Integer.MAX_VALUE);
         builder.pop().push("Rifts");
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
                 .defineInRange("chance", 100, 1, Integer.MAX_VALUE);

@@ -80,7 +80,7 @@ public final class RiftHelper {
 
     public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center, boolean mob) {
         RiftPlacementHelper.ReplacementType replacement = !mob || world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? RiftPlacementHelper.ReplacementType.DESTROY : RiftPlacementHelper.ReplacementType.NONE;
-        placeRandomRift(world, DimensionHelper.randomMultiverseDimension(world.getRandom(), world.dimension()), temporary, center, replacement);
+        DimensionHelper.randomTargetDimension(world.getRandom(), world.dimension()).ifPresent(target -> placeRandomRift(world, target, temporary, center, replacement));
     }
 
     public static void doRiftSpawnEffect(Level world, BlockPos pos, @Nullable ResourceKey<Level> target) {
