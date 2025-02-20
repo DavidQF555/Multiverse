@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.BiomeSourceProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.BiomeSourceProviderType;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.NoiseBiomeSourceProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source.BiomeSourceGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source.BiomeSourceGeneratorType;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source.NoiseBiomeSourceGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,25 +17,25 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeSourceProviderTypeRegistry {
 
-    public static final ResourceKey<Registry<BiomeSourceProviderType<?>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_source_provider"));
-    public static final DeferredRegister<BiomeSourceProviderType<?>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
-    public static final RegistryObject<BiomeSourceProviderType<NoiseBiomeSourceProvider>> NOISE = register("noise", NoiseBiomeSourceProvider.CODEC);
-    private static Supplier<IForgeRegistry<BiomeSourceProviderType<?>>> registry = null;
+    public static final ResourceKey<Registry<BiomeSourceGeneratorType<?>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_source_provider"));
+    public static final DeferredRegister<BiomeSourceGeneratorType<?>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
+    public static final RegistryObject<BiomeSourceGeneratorType<NoiseBiomeSourceGenerator>> NOISE = register("noise", NoiseBiomeSourceGenerator.CODEC);
+    private static Supplier<IForgeRegistry<BiomeSourceGeneratorType<?>>> registry = null;
 
     private BiomeSourceProviderTypeRegistry() {
     }
 
-    private static <T extends BiomeSourceProvider<?>> RegistryObject<BiomeSourceProviderType<T>> register(String name, Supplier<Codec<T>> codec) {
-        return TYPES.register(name, () -> new BiomeSourceProviderType<>(codec.get()));
+    private static <T extends BiomeSourceGenerator<?>> RegistryObject<BiomeSourceGeneratorType<T>> register(String name, Supplier<Codec<T>> codec) {
+        return TYPES.register(name, () -> new BiomeSourceGeneratorType<>(codec.get()));
     }
 
-    public static IForgeRegistry<BiomeSourceProviderType<?>> getRegistry() {
+    public static IForgeRegistry<BiomeSourceGeneratorType<?>> getRegistry() {
         return registry.get();
     }
 
     @SubscribeEvent
     public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<BiomeSourceProviderType<?>>().setName(LOCATION.location()).setType((Class<BiomeSourceProviderType<?>>) (Class<?>) BiomeSourceProviderType.class));
+        registry = event.create(new RegistryBuilder<BiomeSourceGeneratorType<?>>().setName(LOCATION.location()).setType((Class<BiomeSourceGeneratorType<?>>) (Class<?>) BiomeSourceGeneratorType.class));
     }
 
 }

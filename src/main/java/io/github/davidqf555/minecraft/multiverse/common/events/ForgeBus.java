@@ -10,9 +10,9 @@ import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.NBTCapabilityProvider;
 import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.SummonedData;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.DimensionsReader;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesManager;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.ShapeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesReader;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.TargetDimensionsReader;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -67,9 +67,9 @@ public final class ForgeBus {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
-        ShapesManager shapes = new ShapesManager(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
+        ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
         shapes.load(server);
-        ShapeDimensionProvider provider = new ShapeDimensionProvider(shapes.getShapes());
+        ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
         WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
         long seed = server.getWorldData().worldGenSettings().seed();
         for (int i = 1; i <= ServerConfigs.INSTANCE.generated.get(); i++) {
@@ -78,7 +78,7 @@ public final class ForgeBus {
                 registry.register(key, provider.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
             }
         }
-        DimensionsReader targets = new DimensionsReader(new ResourceLocation(Multiverse.MOD_ID, "targets.json"));
+        TargetDimensionsReader targets = new TargetDimensionsReader(new ResourceLocation(Multiverse.MOD_ID, "targets.json"));
         targets.load(server);
         ImmutableList.Builder<ResourceKey<Level>> all = ImmutableList.builder();
         for (ResourceKey<LevelStem> key : targets.getDimensions()) {

@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.registration.custom;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.sea_level.SeaLevelProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.SeaLevelGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,19 +16,19 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SeaLevelProviderRegistry {
 
-    public static final ResourceKey<Registry<SeaLevelProvider>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "sea_level_provider"));
-    private static Supplier<IForgeRegistry<SeaLevelProvider>> registry = null;
+    public static final ResourceKey<Registry<SeaLevelGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "sea_level_provider"));
+    private static Supplier<IForgeRegistry<SeaLevelGenerator>> registry = null;
 
     private SeaLevelProviderRegistry() {
     }
 
-    public static IForgeRegistry<SeaLevelProvider> getRegistry() {
+    public static IForgeRegistry<SeaLevelGenerator> getRegistry() {
         return registry.get();
     }
 
     @SubscribeEvent
     public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<SeaLevelProvider>().setType(SeaLevelProvider.class).setName(LOCATION.location()).dataPackRegistry(SeaLevelProvider.DIRECT_CODEC));
+        registry = event.create(new RegistryBuilder<SeaLevelGenerator>().setType(SeaLevelGenerator.class).setName(LOCATION.location()).dataPackRegistry(SeaLevelGenerator.DIRECT_CODEC));
     }
 
 }

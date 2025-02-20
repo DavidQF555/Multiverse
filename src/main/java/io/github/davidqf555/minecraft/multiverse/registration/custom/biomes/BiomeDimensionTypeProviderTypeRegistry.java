@@ -2,10 +2,10 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.BiomeDimensionTypeProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.BiomeDimensionTypeProviderType;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.TypeMapDimensionTypeProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.WeightedDimensionTypeProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.BiomeDimensionTypeGeneratorType;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.BiomeDimensionTypeProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.TypeMapDimensionTypeGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.WeightedDimensionTypeGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,26 +18,26 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeDimensionTypeProviderTypeRegistry {
 
-    public static final ResourceKey<Registry<BiomeDimensionTypeProviderType>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_type_provider_type"));
-    public static final DeferredRegister<BiomeDimensionTypeProviderType> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
-    public static final RegistryObject<BiomeDimensionTypeProviderType> WEIGHTED = register("weighted", () -> WeightedDimensionTypeProvider.CODEC);
-    public static final RegistryObject<BiomeDimensionTypeProviderType> TYPE_MAP = register("type_map", () -> TypeMapDimensionTypeProvider.CODEC);
-    private static Supplier<IForgeRegistry<BiomeDimensionTypeProviderType>> registry = null;
+    public static final ResourceKey<Registry<BiomeDimensionTypeGeneratorType>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_type_provider_type"));
+    public static final DeferredRegister<BiomeDimensionTypeGeneratorType> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
+    public static final RegistryObject<BiomeDimensionTypeGeneratorType> WEIGHTED = register("weighted", () -> WeightedDimensionTypeGenerator.CODEC);
+    public static final RegistryObject<BiomeDimensionTypeGeneratorType> TYPE_MAP = register("type_map", () -> TypeMapDimensionTypeGenerator.CODEC);
+    private static Supplier<IForgeRegistry<BiomeDimensionTypeGeneratorType>> registry = null;
 
     private BiomeDimensionTypeProviderTypeRegistry() {
     }
 
-    private static <T extends BiomeDimensionTypeProvider> RegistryObject<BiomeDimensionTypeProviderType> register(String name, Supplier<Codec<T>> codec) {
-        return TYPES.register(name, () -> new BiomeDimensionTypeProviderType(codec.get()));
+    private static <T extends BiomeDimensionTypeProvider> RegistryObject<BiomeDimensionTypeGeneratorType> register(String name, Supplier<Codec<T>> codec) {
+        return TYPES.register(name, () -> new BiomeDimensionTypeGeneratorType(codec.get()));
     }
 
-    public static IForgeRegistry<BiomeDimensionTypeProviderType> getRegistry() {
+    public static IForgeRegistry<BiomeDimensionTypeGeneratorType> getRegistry() {
         return registry.get();
     }
 
     @SubscribeEvent
     public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<BiomeDimensionTypeProviderType>().setType(BiomeDimensionTypeProviderType.class).setName(LOCATION.location()));
+        registry = event.create(new RegistryBuilder<BiomeDimensionTypeGeneratorType>().setType(BiomeDimensionTypeGeneratorType.class).setName(LOCATION.location()));
     }
 
 }
