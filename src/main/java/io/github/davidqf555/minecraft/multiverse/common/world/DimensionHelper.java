@@ -10,7 +10,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -21,12 +20,21 @@ public final class DimensionHelper {
     }
 
     public static Optional<ResourceKey<Level>> randomTargetDimension(Random random, @Nullable ResourceKey<Level> exclude) {
-        List<ResourceKey<Level>> possible = new ArrayList<>(MultiverseConfig.getTargetDimensions());
-        if (exclude != null) {
-            possible.remove(exclude);
-        }
+        List<ResourceKey<Level>> possible = MultiverseConfig.getTargetDimensions();
         if (possible.isEmpty()) {
             return Optional.empty();
+        } else if (exclude != null) {
+            int found = possible.indexOf(exclude);
+            if (found != -1) {
+                if (possible.size() == 1) {
+                    return Optional.empty();
+                }
+                int i = random.nextInt(possible.size() - 1);
+                if (i >= found) {
+                    i++;
+                }
+                return Optional.of(possible.get(i));
+            }
         }
         int i = random.nextInt(possible.size());
         return Optional.of(possible.get(i));

@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.events;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
@@ -26,7 +25,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -80,11 +78,7 @@ public final class ForgeBus {
         }
         TargetDimensionsReader targets = new TargetDimensionsReader(new ResourceLocation(Multiverse.MOD_ID, "targets.json"));
         targets.load(server);
-        ImmutableList.Builder<ResourceKey<Level>> all = ImmutableList.builder();
-        for (ResourceKey<LevelStem> key : targets.getDimensions()) {
-            all.add(ResourceKey.create(Registry.DIMENSION_REGISTRY, key.location()));
-        }
-        MultiverseConfig.setTargetDimensions(all.build());
+        MultiverseConfig.setTargetDimensions(targets.getDimensions().stream().map(key -> ResourceKey.create(Registry.DIMENSION_REGISTRY, key.location())).toList());
     }
 
     @SubscribeEvent
