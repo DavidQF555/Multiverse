@@ -1,6 +1,5 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators;
 
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesReader;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -34,7 +33,7 @@ public class ShapeDimensionGenerator {
     }
 
     public LevelStem createDimension(RegistryAccess access, long base, int index) {
-        long seed = DimensionHelper.getSeed(base, index);
+        long seed = GeneratorHelper.getSeed(base, index);
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
         return createDimension(access, seed, random);
     }

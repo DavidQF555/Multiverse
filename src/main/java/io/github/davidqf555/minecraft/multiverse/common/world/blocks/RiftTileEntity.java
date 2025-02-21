@@ -2,7 +2,6 @@ package io.github.davidqf555.minecraft.multiverse.common.world.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.util.TagUtil;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.TileEntityRegistry;
@@ -181,7 +180,7 @@ public class RiftTileEntity extends BlockEntity implements ITeleporter {
         DimensionType target = destWorld.dimensionType();
         DimensionType from = entity.level.dimensionType();
         BlockPos rift = getBlockPos();
-        Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(rift), from, target, true);
+        Vec3 scaled = RiftHelper.translate(Vec3.atCenterOf(rift), from, target, true);
         WorldBorder border = destWorld.getWorldBorder();
         BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
         Vec3 pos = RiftHelper.getOrCreateRift(destWorld, entity.level.dimension(), Vec3.atCenterOf(clamped), level.getBlockState(rift).getValue(RiftBlock.TEMPORARY), ServerConfigs.INSTANCE.riftRange.get(), RiftPlacementHelper.ReplacementType.DESTROY);

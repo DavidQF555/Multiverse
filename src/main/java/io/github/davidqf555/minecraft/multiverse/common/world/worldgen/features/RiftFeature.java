@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.features;
 
 import com.mojang.serialization.Codec;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftPlacementHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -30,7 +30,7 @@ public class RiftFeature extends Feature<RiftConfig> {
         Random rand = context.random();
         BlockPos origin = context.origin();
         BlockState state = config.getBlockState();
-        Optional<ResourceKey<Level>> target = DimensionHelper.randomTargetDimension(rand, reader.getLevel().dimension());
+        Optional<ResourceKey<Level>> target = RiftHelper.randomTargetDimension(rand, reader.getLevel().dimension());
         if (target.isEmpty()) {
             return false;
         }
