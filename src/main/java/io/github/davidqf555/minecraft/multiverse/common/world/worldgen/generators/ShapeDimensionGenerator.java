@@ -20,6 +20,9 @@ public class ShapeDimensionGenerator {
 
     public LevelStem createDimension(RegistryAccess access, long seed, RandomSource random) {
         int total = entries.stream().mapToInt(ShapesReader.Entry::weight).sum();
+        if (total <= 0) {
+            throw new IllegalStateException("Total shape weights cannot be 0 when generating multiverse dimensions");
+        }
         int rand = random.nextInt(total);
         for (ShapesReader.Entry entry : entries) {
             total -= entry.weight();

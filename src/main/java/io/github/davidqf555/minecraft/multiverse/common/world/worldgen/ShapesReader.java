@@ -52,12 +52,6 @@ public class ShapesReader {
         shapes.clear();
         ENTRY_CODEC.decode(ops, value).resultOrPartial(LOGGER::error).map(Pair::getFirst)
                 .ifPresent(shapes::addAll);
-        if (shapes.isEmpty()) {
-            throw new IllegalStateException("There cannot be 0 shapes");
-        }
-        if (shapes.stream().mapToInt(Entry::weight).sum() <= 0) {
-            throw new IllegalStateException("Total weight must be greater than 0");
-        }
     }
 
     public record Entry(Holder<MultiverseShape> shape, int weight) {
