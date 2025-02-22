@@ -15,13 +15,13 @@ public class ServerConfigs {
     }
 
     public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
-    public final ForgeConfigSpec.IntValue maxDimensions, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
+    public final ForgeConfigSpec.IntValue generated, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
     public final ForgeConfigSpec.LongValue colorSeedOffset;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
-        maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
-                .defineInRange("max", 25, 1, Integer.MAX_VALUE);
+        generated = builder.comment("This is the number of multiverse dimensions that will be generated. Generated multiverse dimensions will use IDs 'multiverse:1', 'multiverse:2', 'multiverse:3', etc. ")
+                .defineInRange("generated", 25, 0, Integer.MAX_VALUE);
         builder.pop().push("Rifts");
         riftRange = builder.comment("This is the range that is scanned for existing rifts using points of interest. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
