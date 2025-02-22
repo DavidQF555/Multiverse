@@ -14,14 +14,14 @@ import net.minecraftforge.registries.*;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class DimensionProviderTypeRegistry {
+public final class DimensionGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends DimensionGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_provider"));
+    public static final ResourceKey<Registry<Codec<? extends DimensionGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_generator"));
     public static final DeferredRegister<Codec<? extends DimensionGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final RegistryObject<Codec<BiomeConfigDimensionGenerator>> BIOME_CONFIG = register("biome_config", () -> BiomeConfigDimensionGenerator.CODEC);
     private static Supplier<IForgeRegistry<Codec<? extends DimensionGenerator>>> registry = null;
 
-    private DimensionProviderTypeRegistry() {
+    private DimensionGeneratorTypeRegistry() {
     }
 
     private static <T extends DimensionGenerator> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {

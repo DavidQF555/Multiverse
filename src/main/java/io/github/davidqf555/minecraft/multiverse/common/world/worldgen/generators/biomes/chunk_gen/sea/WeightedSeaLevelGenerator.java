@@ -1,9 +1,9 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level;
+package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers.SerializableFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.SerializableFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
@@ -40,7 +40,7 @@ public class WeightedSeaLevelGenerator implements SeaLevelGenerator {
 
     @Override
     public Codec<? extends WeightedSeaLevelGenerator> getCodec() {
-        return SeaLevelProviderTypeRegistry.WEIGHTED.get();
+        return SeaLevelGeneratorTypeRegistry.WEIGHTED.get();
     }
 
     protected record Entry(Holder<SeaLevelGenerator> selector, int weight) {

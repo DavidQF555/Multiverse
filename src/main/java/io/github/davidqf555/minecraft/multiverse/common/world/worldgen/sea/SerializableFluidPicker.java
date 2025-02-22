@@ -1,4 +1,4 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers;
+package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.FluidPickerTypeRegistry;

@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers.FlatFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers.SerializableFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers.WaveFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.FlatFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.SerializableFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.WaveFluidPicker;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

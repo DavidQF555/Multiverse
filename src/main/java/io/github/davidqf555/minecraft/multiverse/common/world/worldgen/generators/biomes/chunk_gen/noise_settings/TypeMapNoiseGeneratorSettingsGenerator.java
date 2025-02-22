@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Keyable;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeNoiseGeneratorSettingsProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeNoiseGeneratorSettingsGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
@@ -27,13 +27,13 @@ public class TypeMapNoiseGeneratorSettingsGenerator implements BiomeNoiseGenerat
     }
 
     @Override
-    public Holder<NoiseGeneratorSettings> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
+    public Holder<NoiseGeneratorSettings> generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return settings.get(type);
     }
 
     @Override
     public Codec<? extends TypeMapNoiseGeneratorSettingsGenerator> getCodec() {
-        return BiomeNoiseGeneratorSettingsProviderTypeRegistry.TYPE_MAP.get();
+        return BiomeNoiseGeneratorSettingsGeneratorTypeRegistry.TYPE_MAP.get();
     }
 
 }

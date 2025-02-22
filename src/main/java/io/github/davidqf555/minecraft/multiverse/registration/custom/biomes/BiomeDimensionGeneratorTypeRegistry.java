@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.BiomeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.BiomeDimensionGenerator;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.DualBiomeDimensionGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -14,27 +14,27 @@ import net.minecraftforge.registries.*;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class BiomeDimensionProviderTypeRegistry {
+public final class BiomeDimensionGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends BiomeDimensionProvider>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_dimension_provider"));
-    public static final DeferredRegister<Codec<? extends BiomeDimensionProvider>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
+    public static final ResourceKey<Registry<Codec<? extends BiomeDimensionGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_dimension_generator"));
+    public static final DeferredRegister<Codec<? extends BiomeDimensionGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final RegistryObject<Codec<DualBiomeDimensionGenerator>> DUAL = register("dual", () -> DualBiomeDimensionGenerator.CODEC);
-    private static Supplier<IForgeRegistry<Codec<? extends BiomeDimensionProvider>>> registry = null;
+    private static Supplier<IForgeRegistry<Codec<? extends BiomeDimensionGenerator>>> registry = null;
 
-    private BiomeDimensionProviderTypeRegistry() {
+    private BiomeDimensionGeneratorTypeRegistry() {
     }
 
-    private static <T extends BiomeDimensionProvider> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {
+    private static <T extends BiomeDimensionGenerator> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {
         return TYPES.register(name, codec);
     }
 
-    public static IForgeRegistry<Codec<? extends BiomeDimensionProvider>> getRegistry() {
+    public static IForgeRegistry<Codec<? extends BiomeDimensionGenerator>> getRegistry() {
         return registry.get();
     }
 
     @SubscribeEvent
     public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<Codec<? extends BiomeDimensionProvider>>().setName(LOCATION.location()));
+        registry = event.create(new RegistryBuilder<Codec<? extends BiomeDimensionGenerator>>().setName(LOCATION.location()));
     }
 
 }

@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class BiomeNoiseGeneratorSettingsProviderRegistry {
+public final class BiomeNoiseGeneratorSettingsGeneratorRegistry {
 
-    public static final ResourceKey<Registry<BiomeNoiseGeneratorSettingsGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "noise_generator_settings_provider"));
+    public static final ResourceKey<Registry<BiomeNoiseGeneratorSettingsGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "noise_generator_settings_generator"));
 
-    private BiomeNoiseGeneratorSettingsProviderRegistry() {
+    private BiomeNoiseGeneratorSettingsGeneratorRegistry() {
     }
 
     @SubscribeEvent

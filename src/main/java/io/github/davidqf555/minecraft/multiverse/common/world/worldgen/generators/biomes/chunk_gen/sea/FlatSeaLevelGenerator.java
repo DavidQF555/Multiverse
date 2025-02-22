@@ -1,10 +1,10 @@
-package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level;
+package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.util.IntRange;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers.FlatFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea_level.fluid_pickers.SerializableFluidPicker;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.FlatFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.SerializableFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -28,7 +28,7 @@ public class FlatSeaLevelGenerator implements SeaLevelGenerator {
 
     @Override
     public Codec<? extends FlatSeaLevelGenerator> getCodec() {
-        return SeaLevelProviderTypeRegistry.FLAT.get();
+        return SeaLevelGeneratorTypeRegistry.FLAT.get();
     }
 
 }
