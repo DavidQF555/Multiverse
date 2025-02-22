@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.common;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.registration.*;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.DimensionProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.DimensionGeneratorTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.FluidPickerTypeRegistry;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.*;
 import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
 import net.minecraft.resources.ResourceLocation;
@@ -45,14 +45,14 @@ public class Multiverse {
         SurfaceRuleSourceRegistry.SOURCES.register(bus);
         EffectRegistry.EFFECTS.register(bus);
 
-        BiomeChunkGeneratorProviderTypeRegistry.TYPES.register(bus);
-        BiomeDimensionProviderTypeRegistry.TYPES.register(bus);
-        BiomeDimensionTypeProviderTypeRegistry.TYPES.register(bus);
-        BiomeNoiseGeneratorSettingsProviderTypeRegistry.TYPES.register(bus);
-        BiomeSourceProviderTypeRegistry.TYPES.register(bus);
-        DimensionProviderTypeRegistry.TYPES.register(bus);
+        BiomeChunkGeneratorGeneratorTypeRegistry.TYPES.register(bus);
+        BiomeDimensionGeneratorTypeRegistry.TYPES.register(bus);
+        BiomeDimensionTypeGeneratorTypeRegistry.TYPES.register(bus);
+        BiomeNoiseGeneratorSettingsGeneratorTypeRegistry.TYPES.register(bus);
+        BiomeSourceGeneratorTypeRegistry.TYPES.register(bus);
+        DimensionGeneratorTypeRegistry.TYPES.register(bus);
         FluidPickerTypeRegistry.TYPES.register(bus);
-        SeaLevelProviderTypeRegistry.TYPES.register(bus);
+        SeaLevelGeneratorTypeRegistry.TYPES.register(bus);
     }
 
 }

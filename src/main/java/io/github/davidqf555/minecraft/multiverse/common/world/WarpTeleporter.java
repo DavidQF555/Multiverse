@@ -68,7 +68,7 @@ public class WarpTeleporter implements ITeleporter {
     public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
         DimensionType target = destWorld.dimensionType();
         DimensionType from = entity.level().dimensionType();
-        Vec3 scaled = DimensionHelper.translate(entity.position(), from, target, true);
+        Vec3 scaled = RiftHelper.translate(entity.position(), from, target, true);
         if (scaled.y() <= target.minY()) {
             scaled = new Vec3(scaled.x(), target.minY() + 1, scaled.z());
         }
