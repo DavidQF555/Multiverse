@@ -20,7 +20,7 @@ public class ServerConfigs {
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
-        generated = builder.comment("This is the number of multiverse dimensions that will be generated. ")
+        generated = builder.comment("This is the number of multiverse dimensions that will be generated. Generated multiverse dimensions will use IDs 'multiverse:1', 'multiverse:2', 'multiverse:3', etc. ")
                 .defineInRange("generated", 25, 0, Integer.MAX_VALUE);
         builder.pop().push("Rifts");
         riftChance = builder.comment("This is the chance a rift will generate. Increasing it will cause less rifts to generate. Specifically, each rift has a reciprocal of this value chance to generate per chunk. ")
