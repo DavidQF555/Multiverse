@@ -16,6 +16,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.slf4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -40,7 +41,7 @@ public class TargetDimensionsReader {
 
     public void load(MinecraftServer server) {
         JsonElement value;
-        try (Reader reader = new InputStreamReader(server.getResourceManager().getResource(loc).getInputStream())) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(server.getResourceManager().getResource(loc).getInputStream()))) {
             value = GsonHelper.fromJson(GSON, reader, JsonElement.class);
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());

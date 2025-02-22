@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class DimensionPlacement extends PlacementModifier {
 
-    public static final Codec<DimensionPlacement> CODEC = ResourceKey.codec(Registry.DIMENSION_REGISTRY).listOf().fieldOf("dimensions").codec().xmap(list -> new DimensionPlacement(Set.copyOf(list)), placement -> List.copyOf(placement.worlds));
+    public static final Codec<DimensionPlacement> CODEC = ResourceKey.codec(Registry.DIMENSION_REGISTRY).listOf().xmap(list -> new DimensionPlacement(Set.copyOf(list)), placement -> List.copyOf(placement.worlds)).fieldOf("dimensions").codec();
     private final Set<ResourceKey<Level>> worlds;
 
     public DimensionPlacement(Set<ResourceKey<Level>> worlds) {
