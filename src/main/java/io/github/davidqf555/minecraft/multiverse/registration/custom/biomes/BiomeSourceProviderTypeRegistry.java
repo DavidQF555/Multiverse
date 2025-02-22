@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.BiomeSourceProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.biome_source.NoiseBiomeSourceProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source.BiomeSourceGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source.NoiseBiomeSourceGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,25 +16,25 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeSourceProviderTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends BiomeSourceProvider<?>>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_source_provider"));
-    public static final DeferredRegister<Codec<? extends BiomeSourceProvider<?>>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
-    public static final RegistryObject<Codec<NoiseBiomeSourceProvider>> NOISE = register("noise", NoiseBiomeSourceProvider.CODEC);
-    private static Supplier<IForgeRegistry<Codec<? extends BiomeSourceProvider<?>>>> registry = null;
+    public static final ResourceKey<Registry<Codec<? extends BiomeSourceGenerator<?>>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_source_provider"));
+    public static final DeferredRegister<Codec<? extends BiomeSourceGenerator<?>>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
+    public static final RegistryObject<Codec<NoiseBiomeSourceGenerator>> NOISE = register("noise", NoiseBiomeSourceGenerator.CODEC);
+    private static Supplier<IForgeRegistry<Codec<? extends BiomeSourceGenerator<?>>>> registry = null;
 
     private BiomeSourceProviderTypeRegistry() {
     }
 
-    private static <T extends BiomeSourceProvider<?>> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {
+    private static <T extends BiomeSourceGenerator<?>> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {
         return TYPES.register(name, codec);
     }
 
-    public static IForgeRegistry<Codec<? extends BiomeSourceProvider<?>>> getRegistry() {
+    public static IForgeRegistry<Codec<? extends BiomeSourceGenerator<?>>> getRegistry() {
         return registry.get();
     }
 
     @SubscribeEvent
     public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<Codec<? extends BiomeSourceProvider<?>>>().setName(LOCATION.location()));
+        registry = event.create(new RegistryBuilder<Codec<? extends BiomeSourceGenerator<?>>>().setName(LOCATION.location()));
     }
 
 }

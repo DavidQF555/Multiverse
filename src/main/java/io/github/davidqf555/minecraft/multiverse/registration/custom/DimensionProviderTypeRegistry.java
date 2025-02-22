@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.DimensionProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.BiomeConfigDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.DimensionGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.BiomeConfigDimensionGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,25 +16,25 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DimensionProviderTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends DimensionProvider>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_provider"));
-    public static final DeferredRegister<Codec<? extends DimensionProvider>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
-    public static final RegistryObject<Codec<BiomeConfigDimensionProvider>> BIOME_CONFIG = register("biome_config", () -> BiomeConfigDimensionProvider.CODEC);
-    private static Supplier<IForgeRegistry<Codec<? extends DimensionProvider>>> registry = null;
+    public static final ResourceKey<Registry<Codec<? extends DimensionGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_provider"));
+    public static final DeferredRegister<Codec<? extends DimensionGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
+    public static final RegistryObject<Codec<BiomeConfigDimensionGenerator>> BIOME_CONFIG = register("biome_config", () -> BiomeConfigDimensionGenerator.CODEC);
+    private static Supplier<IForgeRegistry<Codec<? extends DimensionGenerator>>> registry = null;
 
     private DimensionProviderTypeRegistry() {
     }
 
-    private static <T extends DimensionProvider> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {
+    private static <T extends DimensionGenerator> RegistryObject<Codec<T>> register(String name, Supplier<Codec<T>> codec) {
         return TYPES.register(name, codec);
     }
 
-    public static IForgeRegistry<Codec<? extends DimensionProvider>> getRegistry() {
+    public static IForgeRegistry<Codec<? extends DimensionGenerator>> getRegistry() {
         return registry.get();
     }
 
     @SubscribeEvent
     public static void onNewRegistry(NewRegistryEvent event) {
-        registry = event.create(new RegistryBuilder<Codec<? extends DimensionProvider>>().setName(LOCATION.location()));
+        registry = event.create(new RegistryBuilder<Codec<? extends DimensionGenerator>>().setName(LOCATION.location()));
     }
 
 }

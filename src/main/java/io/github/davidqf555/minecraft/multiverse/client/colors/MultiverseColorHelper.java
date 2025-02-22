@@ -15,15 +15,25 @@ public final class MultiverseColorHelper {
     private MultiverseColorHelper() {
     }
 
-    private static int[] getColors(Random rand, int n) {
+    public static int[] getColors(Random rand, int n) {
         int[] colors = new int[n];
-        int shift = rand.nextInt(3);
-        boolean side = rand.nextBoolean();
+        int fixed = rand.nextInt(3);
+        int half = rand.nextInt(2);
+        if (half >= fixed) {
+            half++;
+        }
+        boolean side1 = rand.nextBoolean();
+        boolean side2 = rand.nextBoolean();
         for (int i = 0; i < n; i++) {
             int[] color = new int[3];
             for (int j = 0; j < 3; j++) {
-                if (j == shift) {
-                    color[j] = side ? 0 : 0xFF;
+                if (j == fixed) {
+                    color[j] = side1 ? 0x00 : 0xFF;
+                } else if (j == half) {
+                    color[j] = rand.nextInt(128);
+                    if (side2) {
+                        color[j] = 0xFF - color[j];
+                    }
                 } else {
                     color[j] = rand.nextInt(256);
                 }

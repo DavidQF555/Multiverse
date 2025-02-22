@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -48,6 +49,8 @@ public final class ItemRegistry {
     public static final RegistryObject<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new BeaconArmorItem(KaleiditeArmorMaterial.BEACON, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> List.of(ItemRegistry.getTab()), () -> new WarpToolItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> List.of(ItemRegistry.getTab()), () -> new WarpStickItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final RegistryObject<ForgeSpawnEggItem> TRAVELER_SPAWN_EGG = register("traveler_spawn_egg", () -> List.of(CreativeModeTabs.SPAWN_EGGS), () -> new ForgeSpawnEggItem(EntityRegistry.TRAVELER, 0x5BE6FF, 0x4A6CF7, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> CONQUEROR_SPAWN_EGG = register("conqueror_spawn_egg", () -> List.of(CreativeModeTabs.SPAWN_EGGS), () -> new ForgeSpawnEggItem(EntityRegistry.CONQUEROR, 0x5BE6FF, 0xE0B230, new Item.Properties()));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.NATURAL_BLOCKS), () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties()));
 

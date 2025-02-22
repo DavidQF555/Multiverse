@@ -2,9 +2,9 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.BiomeDimensionTypeProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.TypeMapDimensionTypeProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.dim_type.WeightedDimensionTypeProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.BiomeDimensionTypeProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.TypeMapDimensionTypeGenerator;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.dim_type.WeightedDimensionTypeGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,8 +19,8 @@ public final class BiomeDimensionTypeProviderTypeRegistry {
 
     public static final ResourceKey<Registry<Codec<? extends BiomeDimensionTypeProvider>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_type_provider_type"));
     public static final DeferredRegister<Codec<? extends BiomeDimensionTypeProvider>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
-    public static final RegistryObject<Codec<WeightedDimensionTypeProvider>> WEIGHTED = register("weighted", () -> WeightedDimensionTypeProvider.CODEC);
-    public static final RegistryObject<Codec<TypeMapDimensionTypeProvider>> TYPE_MAP = register("type_map", () -> TypeMapDimensionTypeProvider.CODEC);
+    public static final RegistryObject<Codec<WeightedDimensionTypeGenerator>> WEIGHTED = register("weighted", () -> WeightedDimensionTypeGenerator.CODEC);
+    public static final RegistryObject<Codec<TypeMapDimensionTypeGenerator>> TYPE_MAP = register("type_map", () -> TypeMapDimensionTypeGenerator.CODEC);
     private static Supplier<IForgeRegistry<Codec<? extends BiomeDimensionTypeProvider>>> registry = null;
 
     private BiomeDimensionTypeProviderTypeRegistry() {

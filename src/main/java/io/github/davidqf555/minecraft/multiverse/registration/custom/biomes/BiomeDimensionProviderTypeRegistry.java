@@ -2,8 +2,8 @@ package io.github.davidqf555.minecraft.multiverse.registration.custom.biomes;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.BiomeDimensionProvider;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.DualBiomeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.BiomeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.biomes.DualBiomeDimensionGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +18,7 @@ public final class BiomeDimensionProviderTypeRegistry {
 
     public static final ResourceKey<Registry<Codec<? extends BiomeDimensionProvider>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_dimension_provider"));
     public static final DeferredRegister<Codec<? extends BiomeDimensionProvider>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
-    public static final RegistryObject<Codec<DualBiomeDimensionProvider>> DUAL = register("dual", () -> DualBiomeDimensionProvider.CODEC);
+    public static final RegistryObject<Codec<DualBiomeDimensionGenerator>> DUAL = register("dual", () -> DualBiomeDimensionGenerator.CODEC);
     private static Supplier<IForgeRegistry<Codec<? extends BiomeDimensionProvider>>> registry = null;
 
     private BiomeDimensionProviderTypeRegistry() {
