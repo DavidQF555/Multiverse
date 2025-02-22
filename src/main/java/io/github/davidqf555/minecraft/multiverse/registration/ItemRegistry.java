@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.world.items.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -16,13 +17,7 @@ import java.util.function.Supplier;
 public final class ItemRegistry {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Multiverse.MOD_ID);
-
-    private ItemRegistry() {
-    }
-
-    private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> item) {
-        return ITEMS.register(name, item);
-    }    public static final CreativeModeTab TAB = new CreativeModeTab(Multiverse.MOD_ID) {
+    public static final CreativeModeTab TAB = new CreativeModeTab(Multiverse.MOD_ID) {
         @Nonnull
         @Override
         public ItemStack makeIcon() {
@@ -30,11 +25,13 @@ public final class ItemRegistry {
         }
     };
 
-    public static final RegistryObject<ArmorItem> KALEIDITE_HELMET = register("kaleidite_helmet", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.HEAD, new Item.Properties().tab(TAB)));
+    private ItemRegistry() {
+    }
 
     public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> new RiftCoreItem(new Item.Properties().tab(TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDITE_SHARD = register("kaleidite_shard", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<SimpleLoreItem> MULTIVERSAL_BEACON = register("multiversal_beacon", () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().tab(TAB).rarity(Rarity.RARE)));
+    public static final RegistryObject<ArmorItem> KALEIDITE_HELMET = register("kaleidite_helmet", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.HEAD, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_CHESTPLATE = register("kaleidite_chestplate", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.CHEST, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_LEGGINGS = register("kaleidite_leggings", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.LEGS, new Item.Properties().tab(TAB)));
     public static final RegistryObject<ArmorItem> KALEIDITE_BOOTS = register("kaleidite_boots", () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, EquipmentSlot.FEET, new Item.Properties().tab(TAB)));
@@ -52,9 +49,13 @@ public final class ItemRegistry {
     public static final RegistryObject<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", () -> new BeaconArmorItem(KaleiditeArmorMaterial.BEACON, EquipmentSlot.CHEST, new Item.Properties().tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> new WarpToolItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> new WarpStickItem(new Item.Properties().stacksTo(1).tab(TAB).rarity(Rarity.EPIC)));
-
-
+    public static final RegistryObject<ForgeSpawnEggItem> TRAVELER_SPAWN_EGG = register("traveler_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.TRAVELER, 0x5BE6FF, 0x4A6CF7, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+    public static final RegistryObject<ForgeSpawnEggItem> CONQUEROR_SPAWN_EGG = register("conqueror_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.CONQUEROR, 0x5BE6FF, 0xE0B230, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
 
     public static final RegistryObject<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties().tab(TAB)));
+
+    private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> item) {
+        return ITEMS.register(name, item);
+    }
 
 }

@@ -4,12 +4,14 @@ import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.util.MultiverseConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.NBTCapabilityProvider;
 import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.SummonedData;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesManager;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.ShapeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesReader;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.TargetDimensionsReader;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.GeneratorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
@@ -51,17 +53,26 @@ public final class ForgeBus {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+    public static void onServerAboutToStartHigh(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
-        ShapesManager.INSTANCE.load(server);
+        ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
+        shapes.load(server);
+        ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
         WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
         long seed = server.getWorldData().worldGenSettings().seed();
-        for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
-            ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, DimensionHelper.getResourceLocation(i));
+        for (int i = 1; i <= ServerConfigs.INSTANCE.generated.get(); i++) {
+            ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, GeneratorHelper.getResourceLocation(i));
             if (!registry.containsKey(key)) {
-                registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
+                registry.register(key, provider.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onServerAboutToStartLow(ServerAboutToStartEvent event) {
+        TargetDimensionsReader targets = new TargetDimensionsReader(new ResourceLocation(Multiverse.MOD_ID, "targets.json"));
+        targets.load(event.getServer());
+        MultiverseConfig.setTargetDimensions(targets.getDimensions().stream().map(key -> ResourceKey.create(Registry.DIMENSION_REGISTRY, key.location())).toList());
     }
 
     @SubscribeEvent
