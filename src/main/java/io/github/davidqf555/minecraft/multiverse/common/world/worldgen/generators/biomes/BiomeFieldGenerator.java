@@ -8,6 +8,6 @@ import net.minecraft.world.level.levelgen.RandomSource;
 
 public interface BiomeFieldGenerator<T> {
 
-    T provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes);
+    T generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes);
 
 }

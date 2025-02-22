@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generato
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeDimensionTypeProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeDimensionTypeGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.RandomSource;
 
 import java.util.List;
 
-public class WeightedDimensionTypeGenerator extends BiomeDimensionTypeProvider {
+public class WeightedDimensionTypeGenerator extends BiomeDimensionTypeGenerator {
 
     public static final Codec<WeightedDimensionTypeGenerator> CODEC = Entry.CODEC.listOf().xmap(WeightedDimensionTypeGenerator::new, val -> val.entries).fieldOf("entries").codec();
     private final List<Entry> entries;
@@ -27,7 +27,7 @@ public class WeightedDimensionTypeGenerator extends BiomeDimensionTypeProvider {
     }
 
     @Override
-    public Holder<DimensionType> provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
+    public Holder<DimensionType> generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         int total = entries.stream().mapToInt(Entry::weight).sum();
         int rand = random.nextInt(total);
         for (Entry entry : entries) {
@@ -41,7 +41,7 @@ public class WeightedDimensionTypeGenerator extends BiomeDimensionTypeProvider {
 
     @Override
     public BiomeDimensionTypeGeneratorType getType() {
-        return BiomeDimensionTypeProviderTypeRegistry.WEIGHTED.get();
+        return BiomeDimensionTypeGeneratorTypeRegistry.WEIGHTED.get();
     }
 
     public record Entry(Holder<DimensionType> value, int weight) {

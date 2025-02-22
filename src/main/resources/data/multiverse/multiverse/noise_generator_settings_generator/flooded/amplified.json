@@ -1,0 +1,8 @@
+{
+  "type": "multiverse:type_map",
+  "types": {
+    "overworld": "multiverse:flooded/amplified/overworld",
+    "nether": "multiverse:flooded/amplified/nether",
+    "end": "multiverse:flooded/amplified/end"
+  }
+}

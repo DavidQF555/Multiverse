@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.biomes.LazyMultiverseBiomeSource;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeSourceProviderTypeRegistry;
+import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeSourceGeneratorTypeRegistry;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -28,13 +28,13 @@ public class NoiseBiomeSourceGenerator implements BiomeSourceGenerator<LazyMulti
     }
 
     @Override
-    public LazyMultiverseBiomeSource provide(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
+    public LazyMultiverseBiomeSource generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
         return new LazyMultiverseBiomeSource(access.registryOrThrow(Registry.BIOME_REGISTRY), access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY), minY, maxY, type, biomes);
     }
 
     @Override
     public BiomeSourceGeneratorType<? extends NoiseBiomeSourceGenerator> getType() {
-        return BiomeSourceProviderTypeRegistry.NOISE.get();
+        return BiomeSourceGeneratorTypeRegistry.NOISE.get();
     }
 
 }

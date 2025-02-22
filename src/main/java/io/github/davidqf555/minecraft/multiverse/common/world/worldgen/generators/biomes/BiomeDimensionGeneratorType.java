@@ -5,13 +5,13 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class BiomeDimensionGeneratorType extends ForgeRegistryEntry<BiomeDimensionGeneratorType> {
 
-    private final Codec<? extends BiomeDimensionProvider> codec;
+    private final Codec<? extends BiomeDimensionGenerator> codec;
 
-    public BiomeDimensionGeneratorType(Codec<? extends BiomeDimensionProvider> codec) {
+    public BiomeDimensionGeneratorType(Codec<? extends BiomeDimensionGenerator> codec) {
         this.codec = codec;
     }
 
-    public Codec<? extends BiomeDimensionProvider> getCodec() {
+    public Codec<? extends BiomeDimensionGenerator> getCodec() {
         return codec;
     }
 
