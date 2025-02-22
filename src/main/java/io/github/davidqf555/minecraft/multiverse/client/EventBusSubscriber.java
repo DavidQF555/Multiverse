@@ -3,6 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeCurrentColor;
 import io.github.davidqf555.minecraft.multiverse.client.colors.KaleiditeTargetColor;
+import io.github.davidqf555.minecraft.multiverse.client.particles.RiftEffectParticle;
 import io.github.davidqf555.minecraft.multiverse.client.particles.RiftExplosionParticle;
 import io.github.davidqf555.minecraft.multiverse.client.particles.RiftExplosionSeedParticle;
 import io.github.davidqf555.minecraft.multiverse.client.particles.RiftParticle;
@@ -80,6 +81,7 @@ public final class EventBusSubscriber {
     public static void onRegisterParticleFactory(ParticleFactoryRegisterEvent event) {
         ParticleEngine engine = Minecraft.getInstance().particleEngine;
         engine.register(ParticleTypeRegistry.RIFT.get(), RiftParticle.Provider::new);
+        engine.register(ParticleTypeRegistry.RIFT_EFFECT.get(), RiftEffectParticle.Provider::new);
         engine.register(ParticleTypeRegistry.RIFT_EXPLOSION.get(), RiftExplosionParticle.Provider::new);
         engine.register(ParticleTypeRegistry.RIFT_EXPLOSION_EMITTER.get(), new RiftExplosionSeedParticle.Provider());
     }

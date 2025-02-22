@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.EntityHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -66,6 +68,20 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
         if (rand.nextDouble() < ClientConfigs.INSTANCE.riftSoundFrequency.get()) {
             world.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.PORTAL_AMBIENT, SoundSource.BLOCKS, 0.5f, rand.nextFloat() * 0.4f + 0.8f, false);
+        }
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof RiftTileEntity) {
+            RiftEffectParticleOption particle = new RiftEffectParticleOption(((RiftTileEntity) be).getTarget());
+            double area = ((RiftTileEntity) be).getTotalVisualArea();
+            if (rand.nextDouble() < ClientConfigs.INSTANCE.riftParticleRate.get() * area) {
+                Vec3 normal = ((RiftTileEntity) be).getParent().normal().normalize();
+                ((RiftTileEntity) be).getRandomVisualPoint(rand).map(end -> end.add(Vec3.atLowerCornerOf(pos))).ifPresent(end -> {
+                    double dist = rand.nextGaussian() * ClientConfigs.INSTANCE.riftParticleMax.get();
+                    Vec3 dir = normal.scale(dist);
+                    Vec3 start = end.add(dir);
+                    world.addParticle(particle, start.x(), start.y(), start.z(), -dir.x(), -dir.y(), -dir.z());
+                });
+            }
         }
     }
 
