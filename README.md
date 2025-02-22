@@ -1,9 +1,9 @@
 # [Multiverse](https://www.curseforge.com/minecraft/mc-mods/multiverse)
 
-A Minecraft mod that adds rifts to limitless dynamically generated dimensions.
+A Minecraft mod that adds rifts to randomly generated dimensions.
 
 Features:
 
 * Uniquely colored rifts
-* Dynamically generated dimensions
+* Randomly generated dimensions
 * Various items

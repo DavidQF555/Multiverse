@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -48,8 +48,7 @@ public final class MultiversalToolHelper {
 
     public static void setRandomTarget(Level world, ItemStack stack) {
         ResourceKey<Level> current = getTarget(stack);
-        ResourceKey<Level> target = DimensionHelper.randomMultiverseDimension(world.getRandom(), current);
-        setTarget(stack, target);
+        RiftHelper.randomTargetDimension(world.getRandom(), current).ifPresent(target -> setTarget(stack, target));
     }
 
     public static boolean setCurrent(Level world, ItemStack stack) {
@@ -62,7 +61,7 @@ public final class MultiversalToolHelper {
         if (target != current) {
             ServerLevel w = world.getServer().getLevel(target);
             if (w != null) {
-                BlockPos block = BlockPos.containing(DimensionHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
+                BlockPos block = BlockPos.containing(RiftHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
                     Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftParticlesPacket(Vec3.atCenterOf(block), current));
