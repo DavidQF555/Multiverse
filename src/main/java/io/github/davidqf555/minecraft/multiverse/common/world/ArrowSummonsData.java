@@ -81,10 +81,6 @@ public class ArrowSummonsData extends SavedData {
         }
     }
 
-    protected void addEffect(ServerLevel world, Vec3 start) {
-        Multiverse.CHANNEL.send(new RiftEffectPacket(start, SoundSource.PLAYERS, null), PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(BlockPos.containing(start))));
-    }
-
     protected ItemStack randomFirework(RandomSource random) {
         ItemStack stack = Items.FIREWORK_ROCKET.getDefaultInstance();
         CompoundTag tag = stack.getOrCreateTagElement(FireworkRocketItem.TAG_FIREWORKS);
@@ -194,7 +190,7 @@ public class ArrowSummonsData extends SavedData {
                 float variation = rand.nextFloat() * 0.4f + 0.8f;
                 projectile.shoot(direction.x(), direction.y(), direction.z(), multiplier, variation);
                 world.addFreshEntity(projectile);
-                addEffect(world, start);
+                Multiverse.CHANNEL.send(new RiftEffectPacket(projectile.getEyePosition(), SoundSource.PLAYERS, null), PacketDistributor.TRACKING_ENTITY.with(projectile));
             }
         }
     }
