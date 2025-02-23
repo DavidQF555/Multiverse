@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 
 import com.mojang.serialization.Codec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -18,10 +18,10 @@ public final class ParticleTypeRegistry {
     public static final RegistryObject<SimpleParticleType> RIFT = register("rift", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> RIFT_EXPLOSION = register("rift_explosion", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> RIFT_EXPLOSION_EMITTER = register("rift_explosion_emitter", () -> new SimpleParticleType(true));
-    public static final RegistryObject<ParticleType<RiftEffectParticleOption>> RIFT_EFFECT = register("rift_effect", () -> new ParticleType<>(false, RiftEffectParticleOption.DESERIALIZER) {
+    public static final RegistryObject<ParticleType<RiftEffectParticleOptions>> RIFT_EFFECT = register("rift_effect", () -> new ParticleType<>(false, RiftEffectParticleOptions.DESERIALIZER) {
         @Override
-        public Codec<RiftEffectParticleOption> codec() {
-            return RiftEffectParticleOption.CODEC;
+        public Codec<RiftEffectParticleOptions> codec() {
+            return RiftEffectParticleOptions.CODEC;
         }
     });
 

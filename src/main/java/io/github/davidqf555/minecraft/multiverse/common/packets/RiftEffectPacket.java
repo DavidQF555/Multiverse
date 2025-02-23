@@ -5,6 +5,7 @@ import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
@@ -16,37 +17,43 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RiftParticlesPacket {
+public class RiftEffectPacket {
 
-    private static final BiConsumer<RiftParticlesPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
+    private static final BiConsumer<RiftEffectPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
         buffer.writeDouble(message.center.x());
         buffer.writeDouble(message.center.y());
         buffer.writeDouble(message.center.z());
+        buffer.writeEnum(message.source);
         buffer.writeBoolean(message.from != null);
         if (message.from != null) {
             buffer.writeResourceLocation(message.from.location());
         }
     };
-    private static final Function<FriendlyByteBuf, RiftParticlesPacket> DECODER = buffer -> new RiftParticlesPacket(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), buffer.readBoolean() ? ResourceKey.create(Registries.DIMENSION, buffer.readResourceLocation()) : null);
-    private static final BiConsumer<RiftParticlesPacket, Supplier<NetworkEvent.Context>> CONSUMER = (message, context) -> {
+    private static final Function<FriendlyByteBuf, RiftEffectPacket> DECODER = buffer -> new RiftEffectPacket(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), buffer.readEnum(SoundSource.class), buffer.readBoolean() ? ResourceKey.create(Registries.DIMENSION, buffer.readResourceLocation()) : null);
+    private static final BiConsumer<RiftEffectPacket, Supplier<NetworkEvent.Context>> CONSUMER = (message, context) -> {
         NetworkEvent.Context cont = context.get();
         message.handle(cont);
     };
 
     private final ResourceKey<Level> from;
+    private final SoundSource source;
     private final Vec3 center;
 
-    public RiftParticlesPacket(Vec3 center, @Nullable ResourceKey<Level> from) {
+    public RiftEffectPacket(Vec3 center, SoundSource source, @Nullable ResourceKey<Level> from) {
         this.center = center;
+        this.source = source;
         this.from = from;
     }
 
     public static void register(int index) {
-        Multiverse.CHANNEL.registerMessage(index, RiftParticlesPacket.class, ENCODER, DECODER, CONSUMER, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        Multiverse.CHANNEL.registerMessage(index, RiftEffectPacket.class, ENCODER, DECODER, CONSUMER, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     private void handle(NetworkEvent.Context context) {
-        context.enqueueWork(() -> ClientHelper.addRiftParticles(center, from));
+        context.enqueueWork(() -> {
+            ClientHelper.addRiftParticles(center, from);
+            ClientHelper.playWarpSound(center, source);
+        });
         context.setPacketHandled(true);
     }
 

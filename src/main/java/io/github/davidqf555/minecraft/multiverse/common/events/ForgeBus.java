@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.events;
 import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.MultiverseConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
 import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.NBTCapabilityProvider;
@@ -92,7 +92,7 @@ public final class ForgeBus {
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if (!event.isCanceled() && entity instanceof Mob && !entity.level().isClientSide() && SummonedData.isSummoned((Mob) entity)) {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftParticlesPacket(entity.getEyePosition(), null));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftEffectPacket(entity.getEyePosition(), entity.getSoundSource(), null));
             entity.discard();
         }
     }

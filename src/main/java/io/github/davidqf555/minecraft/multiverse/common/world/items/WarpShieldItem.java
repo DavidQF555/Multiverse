@@ -1,9 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.client.render.WarpShieldRenderer;
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.WarpTeleporter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -21,16 +22,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Consumer;
 
-public class WarpShieldItem extends Item {
+public class WarpShieldItem extends SimpleLoreItem {
 
     private final TagKey<Item> repair;
 
-    public WarpShieldItem(TagKey<Item> repair, Properties pProperties) {
-        super(pProperties);
+    public WarpShieldItem(TagKey<Item> repair, ChatFormatting color, Properties pProperties) {
+        super(false, color, pProperties);
         this.repair = repair;
         DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
     }
@@ -51,8 +51,7 @@ public class WarpShieldItem extends Item {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> proj), new RiftParticlesPacket(proj.getEyePosition(), null));
-                proj.discard();
+                RiftHelper.randomTargetDimension(player.getRandom(), player.level().dimension()).ifPresent(target -> WarpTeleporter.warp(proj, target));
             }
         }
     }
