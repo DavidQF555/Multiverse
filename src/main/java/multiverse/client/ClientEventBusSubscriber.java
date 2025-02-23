@@ -1,8 +1,6 @@
 package multiverse.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import io.github.davidqf555.minecraft.multiverse.client.render.*;
-import io.github.davidqf555.minecraft.multiverse.registration.*;
 import multiverse.client.colors.KaleiditeCurrentColor;
 import multiverse.client.colors.KaleiditeTargetColor;
 import multiverse.client.particles.RiftEffectParticle;

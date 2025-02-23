@@ -1,7 +1,6 @@
 package multiverse.registration;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.davidqf555.minecraft.multiverse.common.world.items.*;
 import multiverse.common.Multiverse;
 import multiverse.common.MultiverseTags;
 import multiverse.common.world.items.*;

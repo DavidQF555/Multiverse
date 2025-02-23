@@ -1,8 +1,5 @@
 package multiverse.common;
 
-import io.github.davidqf555.minecraft.multiverse.registration.*;
-import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.*;
-import io.github.davidqf555.minecraft.multiverse.registration.worldgen.*;
 import multiverse.client.ClientConfigs;
 import multiverse.registration.*;
 import multiverse.registration.custom.DimensionGeneratorTypeRegistry;
