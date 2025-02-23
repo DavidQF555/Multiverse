@@ -12,7 +12,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeNoiseGeneratorSettingsGeneratorRegistry {
 
-    public static final ResourceKey<Registry<BiomeNoiseGeneratorSettingsGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "noise_generator_settings_generator"));
+    public static final ResourceKey<Registry<BiomeNoiseGeneratorSettingsGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "noise_settings_generator"));
 
     private BiomeNoiseGeneratorSettingsGeneratorRegistry() {
     }

@@ -17,6 +17,7 @@ public class ServerConfigs {
     public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
     public final ForgeConfigSpec.IntValue generated, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
     public final ForgeConfigSpec.LongValue colorSeedOffset;
+    public final ForgeConfigSpec.BooleanValue riftSwordTemporary, coreTemporary;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
@@ -57,6 +58,8 @@ public class ServerConfigs {
                 .defineInRange("swordMaxHeight", 64, 0, Double.MAX_VALUE);
         swordHeightRate = builder.comment("This is the rate that the height of rifts spawned by the sword grow in blocks per tick charged. ")
                 .defineInRange("swordHeightRate", 2.0 / 25, 0, Double.MAX_VALUE);
+        riftSwordTemporary = builder.comment("This is whether the sword spawns temporary rifts instead of permanent rifts. ")
+                .define("riftSwordTemporary", true);
         builder.pop().push("KaleiditeCrossbow");
         fireworkRate = builder.comment("This is the chance that fireworks are spawned when shooting an arrow. ")
                 .defineInRange("fireworkRate", 0.2, 0, 1);
@@ -120,6 +123,8 @@ public class ServerConfigs {
                 .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
         coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
                 .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
+        coreTemporary = builder.comment("This is whether kaleidite cores spawn temporary rifts instead of permanent rifts. ")
+                .define("coreTemporary", false);
         shieldRange = builder.comment("This is the range in blocks that the warp shield item warps projectiles. ")
                 .defineInRange("shieldRange", 3, 0, Double.MAX_VALUE);
         warpRingCooldown = builder.comment("This is the cooldown of the warp ring in ticks. ")

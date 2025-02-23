@@ -28,7 +28,7 @@ public final class ItemRegistry {
 
     private static CreativeModeTab tab;
 
-    public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> List.of(ItemRegistry.getTab()), () -> new RiftCoreItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", () -> List.of(ItemRegistry.getTab()), () -> new RiftCoreItem(ChatFormatting.LIGHT_PURPLE, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> KALEIDITE_SHARD = register("kaleidite_shard", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.INGREDIENTS), () -> new Item(new Item.Properties()));
     public static final RegistryObject<SimpleLoreItem> MULTIVERSAL_BEACON = register("multiversal_beacon", () -> List.of(ItemRegistry.getTab()), () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<ArmorItem> KALEIDITE_HELMET = register("kaleidite_helmet", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new ArmorItem(KaleiditeArmorMaterial.KALEIDITE, ArmorItem.Type.HELMET, new Item.Properties()));
@@ -45,10 +45,10 @@ public final class ItemRegistry {
     public static final RegistryObject<MultiversalShovelItem> PRISMATIC_SHOVEL = register("prismatic_shovel", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalShovelItem(KaleiditeItemTier.INSTANCE, 2.5f, -3, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<MultiversalAxeItem> PRISMATIC_AXE = register("prismatic_axe", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.TOOLS_AND_UTILITIES), () -> new MultiversalAxeItem(KaleiditeItemTier.INSTANCE, 6, -2.1f, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<SimpleLoreItem> DIMENSIONAL_PRISM = register("dimensional_prism", () -> List.of(ItemRegistry.getTab()), () -> new SimpleLoreItem(true, ChatFormatting.GOLD, new Item.Properties().rarity(Rarity.RARE)));
-    public static final RegistryObject<WarpShieldItem> WARP_SHIELD = register("warp_shield", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().durability(336).rarity(Rarity.EPIC)));
+    public static final RegistryObject<WarpShieldItem> WARP_SHIELD = register("warp_shield", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, ChatFormatting.GOLD, new Item.Properties().durability(336).rarity(Rarity.EPIC)));
     public static final RegistryObject<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", () -> List.of(ItemRegistry.getTab(), CreativeModeTabs.COMBAT), () -> new BeaconArmorItem(KaleiditeArmorMaterial.BEACON, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<WarpToolItem> WARP_RING = register("warp_ring", () -> List.of(ItemRegistry.getTab()), () -> new WarpToolItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
-    public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> List.of(ItemRegistry.getTab()), () -> new WarpStickItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final RegistryObject<WarpStickItem> WARP_STICK = register("warp_stick", () -> List.of(ItemRegistry.getTab()), () -> new WarpStickItem(ChatFormatting.GOLD, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     public static final RegistryObject<ForgeSpawnEggItem> TRAVELER_SPAWN_EGG = register("traveler_spawn_egg", () -> List.of(CreativeModeTabs.SPAWN_EGGS), () -> new ForgeSpawnEggItem(EntityRegistry.TRAVELER, 0x5BE6FF, 0x4A6CF7, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> CONQUEROR_SPAWN_EGG = register("conqueror_spawn_egg", () -> List.of(CreativeModeTabs.SPAWN_EGGS), () -> new ForgeSpawnEggItem(EntityRegistry.CONQUEROR, 0x5BE6FF, 0xE0B230, new Item.Properties()));
 
