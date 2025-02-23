@@ -16,7 +16,7 @@ public final class PacketRegistry {
     @SubscribeEvent
     public static void onFMLCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            RiftParticlesPacket.register(index++);
+            RiftEffectPacket.register(index++);
             RiftExplosionParticlesPacket.register(index++);
         });
     }

@@ -2,11 +2,10 @@ package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -48,11 +47,9 @@ public class WarpTeleporter implements ITeleporter {
         Vec3 pos = entity.getEyePosition();
         Entity copy = entity.changeDimension(world, INSTANCE);
         if (copy != null) {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> from.getChunkAt(new BlockPos(pos))), new RiftParticlesPacket(pos, target));
-            from.playSound(null, pos.x(), pos.y(), pos.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> from.getChunkAt(new BlockPos(pos))), new RiftEffectPacket(pos, copy.getSoundSource(), target));
             Vec3 changed = copy.getEyePosition();
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftParticlesPacket(changed, current));
-            world.playSound(null, changed.x(), changed.y(), changed.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> copy), new RiftEffectPacket(changed, copy.getSoundSource(), current));
             if (copy instanceof LivingEntity) {
                 int duration = ServerConfigs.INSTANCE.slowFalling.get();
                 if (duration > 0) {

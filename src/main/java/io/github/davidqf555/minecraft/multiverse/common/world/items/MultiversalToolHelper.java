@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -14,7 +14,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -67,10 +66,8 @@ public final class MultiversalToolHelper {
                 BlockPos block = new BlockPos(RiftHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
                 BlockState s = w.getBlockState(block);
                 if (isBreakable(w, s, block) && w.destroyBlock(block, false, entity)) {
-                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftParticlesPacket(Vec3.atCenterOf(block), current));
-                    w.playSound(null, block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1, 1);
-                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftParticlesPacket(Vec3.atCenterOf(pos), target));
-                    world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1, 1);
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> w.getChunkAt(block)), new RiftEffectPacket(Vec3.atCenterOf(block), SoundSource.BLOCKS, current));
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new RiftEffectPacket(Vec3.atCenterOf(pos), SoundSource.BLOCKS, target));
                     Block.dropResources(s, new LootContext.Builder(world)
                             .withRandom(entity.getRandom())
                             .withParameter(LootContextParams.TOOL, stack)

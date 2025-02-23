@@ -1,9 +1,11 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.EntityHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
 import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOptions;
@@ -46,6 +48,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -106,6 +109,10 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
             TravelerEntity entity = EntityHelper.randomSpawn(EntityRegistry.TRAVELER.get(), world, pos, 0, 8, MobSpawnType.NATURAL);
             if (entity != null) {
                 entity.setPortalCooldown();
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be instanceof RiftTileEntity) {
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftEffectPacket(entity.getEyePosition(), entity.getSoundSource(), ((RiftTileEntity) be).getTarget()));
+                }
             }
         }
     }
