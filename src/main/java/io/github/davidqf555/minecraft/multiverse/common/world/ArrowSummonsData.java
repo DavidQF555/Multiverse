@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.util.TagUtil;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.Util;
@@ -16,7 +16,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
@@ -38,7 +37,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -92,10 +90,6 @@ public class ArrowSummonsData extends SavedData {
                 }
             }
         }
-    }
-
-    protected void addParticles(ServerLevel world, Vec3 start) {
-        PacketDistributor.sendToPlayersTrackingChunk(world, new ChunkPos(BlockPos.containing(start)), new RiftParticlesPacket(start, null));
     }
 
     protected ItemStack randomFirework(RandomSource random) {
@@ -213,8 +207,7 @@ public class ArrowSummonsData extends SavedData {
                 float variation = rand.nextFloat() * 0.4f + 0.8f;
                 projectile.shoot(direction.x(), direction.y(), direction.z(), multiplier, variation);
                 world.addFreshEntity(projectile);
-                addParticles(world, start);
-                world.playSound(null, start.x(), start.y(), start.z(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1, rand.nextFloat() * 0.3f + 0.85f);
+                PacketDistributor.sendToPlayersTrackingEntity(projectile, new RiftEffectPacket(projectile.getEyePosition(), SoundSource.PLAYERS, null));
             }
         }
     }

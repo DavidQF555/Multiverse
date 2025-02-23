@@ -48,7 +48,7 @@ public final class ItemRegistry {
             ), 30, SoundEvents.ARMOR_EQUIP_DIAMOND, 2, 0, MultiverseTags.KALEIDITE_MATERIALS, ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "beacon")));
     public static final ToolMaterial KALEIDITE_TOOLS = new ToolMaterial(BlockTags.INCORRECT_FOR_STONE_TOOL, 250, 4, 2, 22, MultiverseTags.KALEIDITE_MATERIALS);
     private static final List<Pair<List<ResourceKey<CreativeModeTab>>, DeferredHolder<Item, ? extends Item>>> TABS = new LinkedList<>();
-    public static final DeferredItem<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), RiftCoreItem::new, new Item.Properties().rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<RiftCoreItem> KALEIDITE_CORE = register("kaleidite_core", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), prop -> new RiftCoreItem(ChatFormatting.LIGHT_PURPLE, prop), new Item.Properties().rarity(Rarity.UNCOMMON));
     public static final DeferredItem<Item> KALEIDITE_SHARD = register("kaleidite_shard", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.INGREDIENTS), Item::new, new Item.Properties());
     public static final DeferredItem<SwordItem> KALEIDITE_SWORD = register("kaleidite_sword", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), prop -> new SwordItem(KALEIDITE_TOOLS, 3, -2.4f, prop), new Item.Properties());
     public static final DeferredItem<PickaxeItem> KALEIDITE_PICKAXE = register("kaleidite_pickaxe", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.TOOLS_AND_UTILITIES), prop -> new PickaxeItem(KALEIDITE_TOOLS, 1, -2.8f, prop), new Item.Properties());
@@ -68,7 +68,9 @@ public final class ItemRegistry {
     public static final DeferredItem<BeaconArmorItem> BEACON_CHESTPLATE = register("beacon_chestplate", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), prop -> new BeaconArmorItem(BEACON_ARMOR, ArmorType.CHESTPLATE, prop), new Item.Properties().rarity(Rarity.EPIC));
     public static final DeferredItem<WarpShieldItem> WARP_SHIELD = register("warp_shield", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), WarpShieldItem::new, () -> new Item.Properties().durability(336).repairable(MultiverseTags.KALEIDITE_MATERIALS).equippableUnswappable(EquipmentSlot.OFFHAND).rarity(Rarity.EPIC));
     public static final DeferredItem<WarpToolItem> WARP_RING = register("warp_ring", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), WarpToolItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
-    public static final DeferredItem<WarpStickItem> WARP_STICK = register("warp_stick", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), WarpStickItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<WarpStickItem> WARP_STICK = register("warp_stick", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), prop -> new WarpStickItem(ChatFormatting.GOLD, prop), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<SpawnEggItem> TRAVELER_SPAWN_EGG = register("traveler_spawn_egg", List.of(CreativeModeTabs.SPAWN_EGGS), prop -> new SpawnEggItem(EntityRegistry.TRAVELER.get(), prop), new Item.Properties());
+    public static final DeferredItem<SpawnEggItem> CONQUEROR_SPAWN_EGG = register("conqueror_spawn_egg", List.of(CreativeModeTabs.SPAWN_EGGS), prop -> new SpawnEggItem(EntityRegistry.CONQUEROR.get(), prop), new Item.Properties());
 
     public static final DeferredItem<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.NATURAL_BLOCKS), prop -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), prop), new Item.Properties());
 

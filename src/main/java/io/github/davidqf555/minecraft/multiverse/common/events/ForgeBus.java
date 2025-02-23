@@ -3,17 +3,20 @@ package io.github.davidqf555.minecraft.multiverse.common.events;
 import com.mojang.serialization.Lifecycle;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
+import io.github.davidqf555.minecraft.multiverse.common.util.MultiverseConfig;
 import io.github.davidqf555.minecraft.multiverse.common.world.ArrowSummonsData;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesManager;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.ShapeDimensionProvider;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.ShapesReader;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.TargetDimensionsReader;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.GeneratorHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
 import io.github.davidqf555.minecraft.multiverse.registration.AttachmentTypeRegistry;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,23 +42,30 @@ public final class ForgeBus {
     // dynamic registering dimensions
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+    public static void onServerAboutToStartHigh(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
-        ShapesManager.INSTANCE.load(server);
-
+        ShapesReader shapes = new ShapesReader(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "shapes.json"));
+        shapes.load(server);
+        ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
         RegistryAccess.Frozen composite = server.registries().compositeAccess();
         MappedRegistry<LevelStem> registry = (MappedRegistry<LevelStem>) composite.lookupOrThrow(Registries.LEVEL_STEM);
         registry.unfreeze(true);
         long seed = server.getWorldData().worldGenOptions().seed();
-        for (int i = 1; i <= ServerConfigs.INSTANCE.maxDimensions.get(); i++) {
-            ResourceKey<LevelStem> key = ResourceKey.create(Registries.LEVEL_STEM, DimensionHelper.getResourceLocation(i));
+        for (int i = 1; i <= ServerConfigs.INSTANCE.generated.get(); i++) {
+            ResourceKey<LevelStem> key = ResourceKey.create(Registries.LEVEL_STEM, GeneratorHelper.getResourceLocation(i));
             if (!registry.containsKey(key)) {
-                registry.register(key, ShapeDimensionProvider.INSTANCE.createDimension(server.registryAccess(), seed, i), new RegistrationInfo(Optional.empty(), Lifecycle.experimental()));
+                registry.register(key, provider.createDimension(server.registryAccess(), seed, i), new RegistrationInfo(Optional.empty(), Lifecycle.experimental()));
             }
         }
         registry.freeze();
     }
 
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onServerAboutToStartLow(ServerAboutToStartEvent event) {
+        TargetDimensionsReader targets = new TargetDimensionsReader(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "targets.json"));
+        targets.load(event.getServer());
+        MultiverseConfig.setTargetDimensions(targets.getDimensions().stream().map(key -> ResourceKey.create(Registries.DIMENSION, key.location())).toList());
+    }
 
     @SubscribeEvent
     public static void onLevelTick(LevelTickEvent.Pre event) {
@@ -69,7 +79,7 @@ public final class ForgeBus {
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if (!event.isCanceled() && entity instanceof Mob && !entity.level().isClientSide() && entity.getData(AttachmentTypeRegistry.SUMMONED)) {
-            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftParticlesPacket(entity.getEyePosition(), null));
+            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftEffectPacket(entity.getEyePosition(), entity.getSoundSource(), null));
             entity.discard();
         }
     }

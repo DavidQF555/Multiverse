@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class PacketRegistry {
 
-    public static final CustomPacketPayload.Type<RiftParticlesPacket> RIFT_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_particles"));
+    public static final CustomPacketPayload.Type<RiftEffectPacket> RIFT_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_particles"));
     public static final CustomPacketPayload.Type<RiftExplosionParticlesPacket> RIFT_EXPLOSION_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_explosion_particles"));
 
     private PacketRegistry() {
@@ -21,8 +21,8 @@ public final class PacketRegistry {
         event.registrar("1")
                 .playToClient(
                         RIFT_PARTICLES,
-                        RiftParticlesPacket.CODEC,
-                        RiftParticlesPacket.HANDLER
+                        RiftEffectPacket.CODEC,
+                        RiftEffectPacket.HANDLER
                 )
                 .playToClient(
                         RIFT_EXPLOSION_PARTICLES,

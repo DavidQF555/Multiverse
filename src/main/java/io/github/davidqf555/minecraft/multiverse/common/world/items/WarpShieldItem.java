@@ -1,7 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.WarpTeleporter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -12,14 +14,21 @@ import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
 public class WarpShieldItem extends ShieldItem {
 
+    private final Component lore;
+
     public WarpShieldItem(Properties pProperties) {
         super(pProperties);
+        lore = Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack p_43094_, TooltipContext p_339613_, List<Component> p_43096_, TooltipFlag p_43097_) {
+        p_43096_.add(lore);
     }
 
     @Override
@@ -28,8 +37,7 @@ public class WarpShieldItem extends ShieldItem {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(proj.position(), null));
-                proj.discard();
+                RiftHelper.randomTargetDimension(player.getRandom(), player.level().dimension()).ifPresent(target -> WarpTeleporter.warp(proj, target));
             }
         }
     }
@@ -37,10 +45,6 @@ public class WarpShieldItem extends ShieldItem {
     @Override
     public Component getName(ItemStack stack) {
         return stack.getComponents().getOrDefault(DataComponents.ITEM_NAME, CommonComponents.EMPTY);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack p_43094_, TooltipContext p_339613_, List<Component> p_43096_, TooltipFlag p_43097_) {
     }
 
 }

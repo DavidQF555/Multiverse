@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "model",
+    "model": "item/template_spawn_egg",
+    "tints": [
+      {
+        "type": "constant",
+        "value": 6022911
+      },
+      {
+        "type": "constant",
+        "value": 4877559
+      }
+    ]
+  }
+}
