@@ -5,7 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -13,24 +12,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class RiftCoreItem extends Item {
+public class RiftCoreItem extends SimpleLoreItem {
 
-    private Component lore;
-
-    public RiftCoreItem(Properties properties) {
-        super(properties);
+    public RiftCoreItem(ChatFormatting formatting, Properties properties) {
+        super(false, formatting, properties);
         DispenserBlock.registerBehavior(this, new AbstractProjectileDispenseBehavior() {
             @Nonnull
             @Override
@@ -38,12 +31,6 @@ public class RiftCoreItem extends Item {
                 return Util.make(new KaleiditeCoreEntity(pos.x(), pos.y(), pos.z(), world), entity -> entity.setItem(stack));
             }
         });
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        super.appendHoverText(stack, level, lines, flag);
-        lines.add(getLore());
     }
 
     @Nonnull
@@ -63,13 +50,6 @@ public class RiftCoreItem extends Item {
             stack.shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
-    }
-
-    protected Component getLore() {
-        if (lore == null) {
-            lore = Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.LIGHT_PURPLE);
-        }
-        return lore;
     }
 
 }

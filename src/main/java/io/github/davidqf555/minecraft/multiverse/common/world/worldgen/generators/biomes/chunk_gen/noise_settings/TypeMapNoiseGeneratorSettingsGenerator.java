@@ -2,7 +2,6 @@ package io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generato
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Keyable;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
 import io.github.davidqf555.minecraft.multiverse.registration.custom.biomes.BiomeNoiseGeneratorSettingsGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
@@ -17,9 +16,7 @@ import java.util.Map;
 
 public class TypeMapNoiseGeneratorSettingsGenerator implements BiomeNoiseGeneratorSettingsGenerator {
 
-    public static final Codec<TypeMapNoiseGeneratorSettingsGenerator> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            Codec.simpleMap(MultiverseType.CODEC, NoiseGeneratorSettings.CODEC, Keyable.forStrings(() -> Arrays.stream(MultiverseType.values()).map(MultiverseType::getName))).codec().fieldOf("types").forGetter(val -> val.settings)
-    ).apply(inst, TypeMapNoiseGeneratorSettingsGenerator::new));
+    public static final Codec<TypeMapNoiseGeneratorSettingsGenerator> CODEC = Codec.simpleMap(MultiverseType.CODEC, NoiseGeneratorSettings.CODEC, Keyable.forStrings(() -> Arrays.stream(MultiverseType.values()).map(MultiverseType::getName))).xmap(TypeMapNoiseGeneratorSettingsGenerator::new, gen -> gen.settings).fieldOf("types").codec();
     private final Map<MultiverseType, Holder<NoiseGeneratorSettings>> settings;
 
     public TypeMapNoiseGeneratorSettingsGenerator(Map<MultiverseType, Holder<NoiseGeneratorSettings>> settings) {

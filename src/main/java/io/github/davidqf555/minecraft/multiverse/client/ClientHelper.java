@@ -5,6 +5,8 @@ import io.github.davidqf555.minecraft.multiverse.registration.ParticleTypeRegist
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -42,6 +44,13 @@ public final class ClientHelper {
                 color = MultiverseColorHelper.getColors(world, dim, 1)[0];
             }
             world.addParticle(ParticleTypeRegistry.RIFT_EXPLOSION_EMITTER.get(), center.x(), center.y(), center.z(), FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0, FastColor.ARGB32.blue(color) / 255.0);
+        }
+    }
+
+    public static void playWarpSound(Vec3 pos, SoundSource source) {
+        ClientLevel world = Minecraft.getInstance().level;
+        if (world != null) {
+            world.playLocalSound(pos.x(), pos.y(), pos.z(), SoundEvents.ENDERMAN_TELEPORT, source, 1, 1, false);
         }
     }
 

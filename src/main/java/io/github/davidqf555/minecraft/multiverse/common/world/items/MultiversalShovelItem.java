@@ -30,8 +30,11 @@ public class MultiversalShovelItem extends ShovelItem {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, world, text, flag);
         text.add(MultiversalToolHelper.LORE);
-        text.add(MultiversalToolHelper.INSTRUCTIONS);
-        text.add(MultiversalToolHelper.CROUCH_INSTRUCTIONS);
+        text.add(Component.empty());
+        text.add(MultiversalToolHelper.getRightHeader());
+        text.add(MultiversalToolHelper.SELECT_RANDOM);
+        text.add(MultiversalToolHelper.getShiftRightHeader());
+        text.add(MultiversalToolHelper.SELECT_CURRENT);
     }
 
     @Override

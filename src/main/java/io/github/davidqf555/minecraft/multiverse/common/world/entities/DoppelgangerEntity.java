@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.entities;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FollowEntityGoal;
@@ -61,7 +61,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
         T entity = EntityHelper.randomSpawn(type, player.getLevel(), center, minOffset, maxOffset, MobSpawnType.REINFORCEMENT);
         if (entity != null) {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftParticlesPacket(entity.getEyePosition(), null));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RiftEffectPacket(entity.getEyePosition(), entity.getSoundSource(), null));
             entity.setOriginal(player);
         }
         return entity;
@@ -173,7 +173,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         if (level.isClientSide()) {
             super.tickDeath();
         } else {
-            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new RiftParticlesPacket(getEyePosition(), null));
+            Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new RiftEffectPacket(getEyePosition(), getSoundSource(), null));
             discard();
         }
     }

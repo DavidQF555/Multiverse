@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.capabilities.SummonedData;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FlyingMoveThroughVillageGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FlyingPathfindToRaidGoal;
@@ -235,8 +235,7 @@ public class TravelerEntity extends AbstractIllager implements CrossbowAttackMob
                     SummonedData.setSummoned((Mob) clone, true);
                     ((TravelerEntity) clone).setOriginal(getUUID());
                     ((LivingEntity) clone).setHealth(getHealth() / 5);
-                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> clone), new RiftParticlesPacket(clone.getEyePosition(), null));
-                    clone.level.playSound(null, clone.getX(), clone.getY(), clone.getZ(), SoundEvents.ENDERMAN_TELEPORT, clone.getSoundSource(), 1, 1);
+                    Multiverse.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> clone), new RiftEffectPacket(clone.getEyePosition(), clone.getSoundSource(), null));
                 }
             }
         } else if (getOriginal() == null) {
