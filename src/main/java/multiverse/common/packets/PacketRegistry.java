@@ -1,0 +1,34 @@
+package multiverse.common.packets;
+
+import multiverse.common.Multiverse;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+
+@EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+public final class PacketRegistry {
+
+    public static final CustomPacketPayload.Type<RiftEffectPacket> RIFT_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_particles"));
+    public static final CustomPacketPayload.Type<RiftExplosionParticlesPacket> RIFT_EXPLOSION_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_explosion_particles"));
+
+    private PacketRegistry() {
+    }
+
+    @SubscribeEvent
+    public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        event.registrar("1")
+                .playToClient(
+                        RIFT_PARTICLES,
+                        RiftEffectPacket.CODEC,
+                        RiftEffectPacket.HANDLER
+                )
+                .playToClient(
+                        RIFT_EXPLOSION_PARTICLES,
+                        RiftExplosionParticlesPacket.CODEC,
+                        RiftExplosionParticlesPacket.HANDLER
+                );
+    }
+
+}
