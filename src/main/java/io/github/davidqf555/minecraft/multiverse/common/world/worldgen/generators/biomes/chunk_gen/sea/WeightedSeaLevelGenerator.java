@@ -14,9 +14,7 @@ import java.util.List;
 
 public class WeightedSeaLevelGenerator implements SeaLevelGenerator {
 
-    public static final MapCodec<WeightedSeaLevelGenerator> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            Entry.CODEC.listOf().fieldOf("selectors").forGetter(val -> val.selectors)
-    ).apply(inst, WeightedSeaLevelGenerator::new));
+    public static final MapCodec<WeightedSeaLevelGenerator> CODEC = Entry.CODEC.listOf().xmap(WeightedSeaLevelGenerator::new, entry -> entry.selectors).fieldOf("selectors");
     private final List<Entry> selectors;
 
     protected WeightedSeaLevelGenerator(List<Entry> selectors) {
