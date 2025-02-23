@@ -15,7 +15,6 @@ public class RiftExplosionParticle extends TextureSheetParticle {
         super(pLevel, pX, pY, pZ);
         sprites = pSprites;
         hasPhysics = false;
-        setAlpha((float) (double) ClientConfigs.INSTANCE.riftMaxOpacity.get());
         lifetime = 6 + random.nextInt(4);
         quadSize = 2 - random.nextFloat();
         setSpriteFromAge(pSprites);
@@ -50,6 +49,7 @@ public class RiftExplosionParticle extends TextureSheetParticle {
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double dX, double dY, double dZ) {
             RiftExplosionParticle particle = new RiftExplosionParticle(level, x, y, z, sprites);
             particle.setColor((float) dX, (float) dY, (float) dZ);
+            particle.setAlpha((float) (double) ClientConfigs.INSTANCE.riftMaxOpacity.get());
             return particle;
         }
 

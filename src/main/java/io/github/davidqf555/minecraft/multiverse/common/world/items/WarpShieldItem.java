@@ -1,25 +1,25 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.WarpTeleporter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-public class WarpShieldItem extends Item {
+public class WarpShieldItem extends SimpleLoreItem {
 
-    public WarpShieldItem(Properties pProperties) {
-        super(pProperties);
+    public WarpShieldItem(ChatFormatting color, Properties pProperties) {
+        super(false, color, pProperties);
     }
 
     @Override
@@ -38,8 +38,7 @@ public class WarpShieldItem extends Item {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(proj.position(), null));
-                proj.discard();
+                RiftHelper.randomTargetDimension(player.getRandom(), player.level().dimension()).ifPresent(target -> WarpTeleporter.warp(proj, target));
             }
         }
     }

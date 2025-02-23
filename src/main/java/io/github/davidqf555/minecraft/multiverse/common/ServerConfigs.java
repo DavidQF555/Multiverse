@@ -15,13 +15,14 @@ public class ServerConfigs {
     }
 
     public final ModConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, temperatureScale, humidityScale, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
-    public final ModConfigSpec.IntValue maxDimensions, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
+    public final ModConfigSpec.IntValue generated, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
     public final ModConfigSpec.LongValue colorSeedOffset;
+    public final ModConfigSpec.BooleanValue riftSwordTemporary, coreTemporary;
 
     public ServerConfigs(ModConfigSpec.Builder builder) {
         builder.comment("Multiverse server-side configuration").push("Dimensions");
-        maxDimensions = builder.comment("This is the number of Multiverse dimensions that rifts will generate for. ")
-                .defineInRange("max", 25, 1, Integer.MAX_VALUE);
+        generated = builder.comment("This is the number of multiverse dimensions that will be generated. Generated multiverse dimensions will use IDs 'multiverse:1', 'multiverse:2', 'multiverse:3', etc. ")
+                .defineInRange("generated", 25, 0, Integer.MAX_VALUE);
         builder.pop().push("Rifts");
         riftRange = builder.comment("This is the range that is scanned for existing rifts using points of interest. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
@@ -29,6 +30,8 @@ public class ServerConfigs {
                 .defineInRange("colorSeedOffset", 0, Long.MIN_VALUE, Long.MAX_VALUE);
         slowFalling = builder.comment("This is the number of ticks that players get slow falling for after exiting a rift. Set to 0 if don't want slow falling. ")
                 .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
+        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
+                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
         builder.comment("Only for artificially placed rifts (Modify configured/placed feature for naturally generated rifts)").push("Size");
         minRiftWidth = builder.comment("This is the minimum width of artificially placed rifts. ")
                 .defineInRange("minRiftWidth", 1, 0, Double.MAX_VALUE);
@@ -38,7 +41,12 @@ public class ServerConfigs {
                 .defineInRange("minRiftHeight", 16, 0, Integer.MAX_VALUE);
         maxRiftHeight = builder.comment("This is the maximum height of artificially placed rifts. This should be greater or equal to minRiftHeight. ")
                 .defineInRange("maxRiftHeight", 48, 0, Integer.MAX_VALUE);
-        builder.pop(2).push("PrismaticSword");
+        builder.pop(2).push("Kaleidite Core");
+        coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
+                .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
+        coreTemporary = builder.comment("This is whether kaleidite cores spawn temporary rifts instead of permanent rifts. ")
+                .define("coreTemporary", false);
+        builder.pop().push("Prismatic Sword");
         swordCooldown = builder.comment("This is the cooldown of the sword's rift spawning in ticks. ")
                 .defineInRange("swordCooldown", 500, 0, Integer.MAX_VALUE);
         swordSpawnDistance = builder.comment("This is the distance in blocks from the player's eyes in the direction they look in that the center of the rift spawns from the sword. ")
@@ -57,7 +65,9 @@ public class ServerConfigs {
                 .defineInRange("swordMaxHeight", 64, 0, Double.MAX_VALUE);
         swordHeightRate = builder.comment("This is the rate that the height of rifts spawned by the sword grow in blocks per tick charged. ")
                 .defineInRange("swordHeightRate", 2.0 / 25, 0, Double.MAX_VALUE);
-        builder.pop().push("KaleiditeCrossbow");
+        riftSwordTemporary = builder.comment("This is whether the sword spawns temporary rifts instead of permanent rifts. ")
+                .define("riftSwordTemporary", true);
+        builder.pop().push("Kaleidite Crossbow");
         fireworkRate = builder.comment("This is the chance that fireworks are spawned when shooting an arrow. ")
                 .defineInRange("fireworkRate", 0.2, 0, 1);
         fireRate = builder.comment("This is the chance that a spawned arrow is on fire. ")
@@ -72,7 +82,7 @@ public class ServerConfigs {
                 .defineInRange("spawnPeriod", 5, 1, Integer.MAX_VALUE);
         spawnCount = builder.comment("This is the number of projectiles spawned every time the crossbow is shot. ")
                 .defineInRange("spawnCount", 20, 0, Integer.MAX_VALUE);
-        builder.pop().push("KaleiditeChestplate");
+        builder.pop().push("Beacon Chestplate");
         armorMinOffset = builder.comment("This is the minimum distance in blocks that a doppelganger will spawn from the wearer. ")
                 .defineInRange("armorMinOffset", 1, 0, Integer.MAX_VALUE);
         armorMaxOffset = builder.comment("This is the maximum distance in blocks that a doppelganger will spawn from the wearer. This should be at least armorMinOffset. ")
@@ -81,9 +91,9 @@ public class ServerConfigs {
                 .defineInRange("armorMaxSpawn", 8, 0, Integer.MAX_VALUE);
         armorSpawnPeriod = builder.comment("This is the period in ticks that the wearer spawns doppelgangers when in combat. ")
                 .defineInRange("armorSpawnPeriod", 40, 1, Integer.MAX_VALUE);
+        doppelTimeout = builder.comment("This is the time in ticks after exiting combat that before doppelgangers despawn. ")
+                .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
         builder.pop().push("Traveler");
-        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
-                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
         travelerMinRange = builder.comment("This is the minimum distance in blocks that the traveler spawns doppelgangers and teleports when hurt. ")
                 .defineInRange("travelerMinRange", 8, 0, Integer.MAX_VALUE);
         travelerMaxRange = builder.comment("This is the maximum distance in blocks that the traveler spawns doppelgangers and teleports when hurt. This should be at least travelerMinRange. ")
@@ -121,10 +131,6 @@ public class ServerConfigs {
         humidityScale = builder.comment("This is the scale of the Gaussian random humidity offset applied to biome parameters to mitigate collisions. ")
                 .defineInRange("humidityScale", 0.15, 0.0, Double.MAX_VALUE);
         builder.pop().push("Miscellaneous");
-        doppelTimeout = builder.comment("This is the time in ticks after exiting combat that before doppelgangers despawn. ")
-                .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
-        coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
-                .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
         shieldRange = builder.comment("This is the range in blocks that the warp shield item warps projectiles. ")
                 .defineInRange("shieldRange", 3, 0, Double.MAX_VALUE);
         warpRingCooldown = builder.comment("This is the cooldown of the warp ring in ticks. ")

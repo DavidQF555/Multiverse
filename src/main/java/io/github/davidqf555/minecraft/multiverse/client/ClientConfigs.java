@@ -15,7 +15,7 @@ public class ClientConfigs {
     }
 
     public final ModConfigSpec.IntValue riftLayers, riftRenderDistance, riftExplosionParticles;
-    public final ModConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity, riftExplosionParticleRange, riftSoundFrequency;
+    public final ModConfigSpec.DoubleValue riftZOffset, riftLayerStart, riftLayerGrowth, riftMinOpacity, riftMaxOpacity, riftExplosionParticleRange, riftSoundFrequency, riftParticleMax, riftParticleRate;
     public final ModConfigSpec.BooleanValue vanillaOnly, multicolor;
 
     public ClientConfigs(ModConfigSpec.Builder builder) {
@@ -40,6 +40,10 @@ public class ClientConfigs {
                 .defineInRange("riftExplosionParticles", 6, 0, Integer.MAX_VALUE);
         riftSoundFrequency = builder.comment("This is the chance that each rift block plays a sound per tick. ")
                 .defineInRange("riftSoundFrequency", 0.005, 0, 1);
+        riftParticleMax = builder.comment("This is the max distance in blocks from a rift that particles will spawn. ")
+                .defineInRange("riftParticleMax", 1, 0, Double.MAX_VALUE);
+        riftParticleRate = builder.comment("This is the chance that a rift particle spawns per tick for every rift block surface area in. ")
+                .defineInRange("riftParticleRate", 0.75, 0, Double.MAX_VALUE);
         multicolor = builder.comment("This is whether rifts use multiple colors. ")
                 .define("multicolor", true);
         vanillaOnly = builder.comment("This is whether only vanilla shaders are used to render. Try setting to true if rifts are invisible due to custom shaders. ")

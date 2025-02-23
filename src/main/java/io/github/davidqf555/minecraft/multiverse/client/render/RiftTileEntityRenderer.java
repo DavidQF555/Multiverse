@@ -28,7 +28,7 @@ public class RiftTileEntityRenderer implements BlockEntityRenderer<RiftTileEntit
         }
         VertexConsumer consumer = buffer.getBuffer(ClientConfigs.INSTANCE.vanillaOnly.get() ? ShaderHelper.RIFT_VANILLA : ShaderHelper.RIFT);
         Vec3[][] visual = entity.getVisual();
-        Vec3 offset = entity.getNormal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
+        Vec3 offset = entity.getParent().normal().normalize().scale(ClientConfigs.INSTANCE.riftZOffset.get());
         double min = ClientConfigs.INSTANCE.riftMinOpacity.get();
         double max = ClientConfigs.INSTANCE.riftMaxOpacity.get();
         double[][] colors = calculateColors(visual.length, min, max, base, edge);

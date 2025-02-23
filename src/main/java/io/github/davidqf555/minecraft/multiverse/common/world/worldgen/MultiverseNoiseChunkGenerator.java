@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.worldgen;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.providers.biomes.chunk_gen.sea_level.fluid_pickers.SerializableFluidPicker;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.sea.SerializableFluidPicker;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;

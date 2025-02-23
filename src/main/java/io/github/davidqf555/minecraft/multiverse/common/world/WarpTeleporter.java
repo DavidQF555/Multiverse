@@ -1,10 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.world;
 
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -40,11 +39,9 @@ public final class WarpTeleporter {
         if (entity.canTeleport(from, world)) {
             Entity copy = entity.teleport(getPortalDestination(world, entity, entity.blockPosition()));
             if (copy != null) {
-                PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) from, new ChunkPos(BlockPos.containing(pos)), new RiftParticlesPacket(pos, target));
-                from.playSound(null, pos.x(), pos.y(), pos.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
+                PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) from, new ChunkPos(BlockPos.containing(pos)), new RiftEffectPacket(pos, copy.getSoundSource(), target));
                 Vec3 changed = copy.getEyePosition();
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(copy, new RiftParticlesPacket(changed, current));
-                world.playSound(null, changed.x(), changed.y(), changed.z(), SoundEvents.ENDERMAN_TELEPORT, copy.getSoundSource(), 1, 1);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(copy, new RiftEffectPacket(changed, copy.getSoundSource(), current));
                 return copy;
             }
         }
@@ -54,7 +51,7 @@ public final class WarpTeleporter {
     public static TeleportTransition getPortalDestination(ServerLevel level, Entity entity, BlockPos pos) {
         DimensionType target = level.dimensionType();
         DimensionType from = entity.level().dimensionType();
-        Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(pos), from, target, true);
+        Vec3 scaled = RiftHelper.translate(Vec3.atCenterOf(pos), from, target, true);
         if (scaled.y() <= target.minY()) {
             scaled = new Vec3(scaled.x(), target.minY() + 1, scaled.z());
         }

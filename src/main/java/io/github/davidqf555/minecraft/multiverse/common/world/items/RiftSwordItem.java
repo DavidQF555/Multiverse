@@ -1,11 +1,15 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftPlacementHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +27,8 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class RiftSwordItem extends SwordItem {
 
+    private static final Component HOLD = Component.literal(" ").append(Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "prismatic_sword.use"))).withStyle(ChatFormatting.AQUA));
+
     public RiftSwordItem(ToolMaterial tier, float damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
     }
@@ -30,13 +36,17 @@ public class RiftSwordItem extends SwordItem {
     public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, ResourceKey<Level> target) {
         look = look.normalize();
         Vec3 center = start.add(look.scale(dist));
-        RiftHelper.placeRandomRift(level, target, true, width, height, center, look, angle, RiftPlacementHelper.ReplacementType.DESTROY);
+        RiftHelper.placeRandomRift(level, target, ServerConfigs.INSTANCE.riftSwordTemporary.get(), width, height, center, look, angle, RiftPlacementHelper.ReplacementType.DESTROY);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, context, text, flag);
-        text.add(MultiversalToolHelper.CROUCH_INSTRUCTIONS);
+        text.add(Component.empty());
+        text.add(MultiversalToolHelper.getHoldRightHeader());
+        text.add(HOLD);
+        text.add(MultiversalToolHelper.getShiftRightHeader());
+        text.add(MultiversalToolHelper.SELECT_CURRENT);
     }
 
     @Override

@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.entities;
 
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.EntityHurtByTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.EntityHurtTargetGoal;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.ai.FollowEntityGoal;
@@ -62,7 +62,7 @@ public class DoppelgangerEntity extends PathfinderMob {
     public static <T extends DoppelgangerEntity> T spawnRandom(EntityType<T> type, ServerPlayer player, BlockPos center, int minOffset, int maxOffset) {
         T entity = EntityHelper.randomSpawn(type, player.serverLevel(), center, minOffset, maxOffset, EntitySpawnReason.REINFORCEMENT);
         if (entity != null) {
-            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftParticlesPacket(entity.getEyePosition(), null));
+            PacketDistributor.sendToPlayersTrackingEntity(entity, new RiftEffectPacket(entity.getEyePosition(), entity.getSoundSource(), null));
             entity.setOriginal(player);
         }
         return entity;
@@ -158,7 +158,7 @@ public class DoppelgangerEntity extends PathfinderMob {
         if (level().isClientSide()) {
             super.tickDeath();
         } else {
-            PacketDistributor.sendToPlayersTrackingEntity(this, new RiftParticlesPacket(getEyePosition(), null));
+            PacketDistributor.sendToPlayersTrackingEntity(this, new RiftEffectPacket(getEyePosition(), getSoundSource(), null));
             discard();
         }
     }
