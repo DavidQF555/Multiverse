@@ -4,11 +4,11 @@ import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftPlacementHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.EntityHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -69,6 +69,20 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
         if (rand.nextDouble() < ClientConfigs.INSTANCE.riftSoundFrequency.get()) {
             world.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.PORTAL_AMBIENT, SoundSource.BLOCKS, 0.5f, rand.nextFloat() * 0.4f + 0.8f, false);
+        }
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof RiftTileEntity) {
+            RiftEffectParticleOption particle = new RiftEffectParticleOption(((RiftTileEntity) be).getTarget());
+            double area = ((RiftTileEntity) be).getTotalVisualArea();
+            if (rand.nextDouble() < ClientConfigs.INSTANCE.riftParticleRate.get() * area) {
+                Vec3 normal = ((RiftTileEntity) be).getParent().normal().normalize();
+                ((RiftTileEntity) be).getRandomVisualPoint(rand).map(end -> end.add(Vec3.atLowerCornerOf(pos))).ifPresent(end -> {
+                    double dist = rand.nextGaussian() * ClientConfigs.INSTANCE.riftParticleMax.get();
+                    Vec3 dir = normal.scale(dist);
+                    Vec3 start = end.add(dir);
+                    world.addParticle(particle, start.x(), start.y(), start.z(), -dir.x(), -dir.y(), -dir.z());
+                });
+            }
         }
     }
 
@@ -191,7 +205,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
         if (be instanceof RiftTileEntity) {
             ServerLevel target = level.getServer().getLevel(((RiftTileEntity) be).getTarget());
             if (target != null) {
-                Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(pos), level.dimensionType(), target.dimensionType(), true);
+                Vec3 scaled = RiftHelper.translate(Vec3.atCenterOf(pos), level.dimensionType(), target.dimensionType(), true);
                 WorldBorder border = target.getWorldBorder();
                 BlockPos clamped = border.clampToBounds(scaled.x(), scaled.y(), scaled.z());
                 Vec3 loc = RiftHelper.getOrCreateRift(target, level.dimension(), Vec3.atCenterOf(clamped), level.getBlockState(pos).getValue(RiftBlock.TEMPORARY), ServerConfigs.INSTANCE.riftRange.get(), RiftPlacementHelper.ReplacementType.DESTROY);

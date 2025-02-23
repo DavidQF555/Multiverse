@@ -11,6 +11,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -48,6 +49,8 @@ public final class ItemRegistry {
     public static final DeferredItem<WarpShieldItem> WARP_SHIELD = register("warp_shield", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.COMBAT), () -> new WarpShieldItem(MultiverseTags.KALEIDITE_MATERIALS, new Item.Properties().durability(336).rarity(Rarity.EPIC)));
     public static final DeferredItem<WarpToolItem> WARP_RING = register("warp_ring", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), () -> new WarpToolItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     public static final DeferredItem<WarpStickItem> WARP_STICK = register("warp_stick", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey()), () -> new WarpStickItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final DeferredItem<DeferredSpawnEggItem> TRAVELER_SPAWN_EGG = register("traveler_spawn_egg", List.of(CreativeModeTabs.SPAWN_EGGS), () -> new DeferredSpawnEggItem(EntityRegistry.TRAVELER, 0x5BE6FF, 0x4A6CF7, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> CONQUEROR_SPAWN_EGG = register("conqueror_spawn_egg", List.of(CreativeModeTabs.SPAWN_EGGS), () -> new DeferredSpawnEggItem(EntityRegistry.CONQUEROR, 0x5BE6FF, 0xE0B230, new Item.Properties()));
 
     public static final DeferredItem<BlockItem> KALEIDITE_CLUSTER = register("kaleidite_cluster", List.of(CreativeModeTabRegistry.MULTIVERSE.getKey(), CreativeModeTabs.NATURAL_BLOCKS), () -> new BlockItem(BlockRegistry.KALEIDITE_CLUSTER.get(), new Item.Properties()));
 

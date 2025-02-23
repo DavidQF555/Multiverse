@@ -54,7 +54,7 @@ public final class WarpTeleporter {
     public static DimensionTransition getPortalDestination(ServerLevel level, Entity entity, BlockPos pos) {
         DimensionType target = level.dimensionType();
         DimensionType from = entity.level().dimensionType();
-        Vec3 scaled = DimensionHelper.translate(Vec3.atCenterOf(pos), from, target, true);
+        Vec3 scaled = RiftHelper.translate(Vec3.atCenterOf(pos), from, target, true);
         if (scaled.y() <= target.minY()) {
             scaled = new Vec3(scaled.x(), target.minY() + 1, scaled.z());
         }

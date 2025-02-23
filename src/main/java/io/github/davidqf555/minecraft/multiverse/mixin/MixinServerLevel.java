@@ -1,7 +1,7 @@
 package io.github.davidqf555.minecraft.multiverse.mixin;
 
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.generators.GeneratorHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -66,9 +66,8 @@ public abstract class MixinServerLevel extends Level {
             @Nullable RandomSequences randomSequences,
             CallbackInfo callback
     ) {
-        DimensionHelper.getIndex(dimension)
-                .filter(index -> index > 0)
-                .ifPresent(index -> seed = OptionalLong.of(DimensionHelper.getSeed(server.getWorldData().worldGenOptions().seed(), index)));
+        GeneratorHelper.getIndex(dimension.location())
+                .ifPresent(index -> seed = OptionalLong.of(GeneratorHelper.getSeed(server.getWorldData().worldGenOptions().seed(), index)));
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -87,10 +86,9 @@ public abstract class MixinServerLevel extends Level {
             @Nullable RandomSequences randomSequences,
             CallbackInfo callback
     ) {
-        DimensionHelper.getIndex(dimension)
-                .filter(index -> index > 0)
+        GeneratorHelper.getIndex(dimension.location())
                 .ifPresent(index -> {
-                    long seed = DimensionHelper.getSeed(server.getWorldData().worldGenOptions().seed(), index);
+                    long seed = GeneratorHelper.getSeed(server.getWorldData().worldGenOptions().seed(), index);
                     ServerChunkCache cache = (ServerChunkCache) getChunkSource();
                     structureCheck = new StructureCheck(
                             cache.chunkScanner(),

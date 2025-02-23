@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.davidqf555.minecraft.multiverse.common.util.MultiverseConfig;
-import io.github.davidqf555.minecraft.multiverse.common.world.DimensionHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.worldgen.MultiverseType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -62,7 +62,7 @@ public class LazyMultiverseBiomeSource extends LazyBiomeSource {
         for (Holder<Biome> holder : biomes) {
             holder.unwrapKey().ifPresent(key -> {
                 if (ref.is(type, key)) {
-                    random.setSeed(DimensionHelper.resourceLocationToSeed(seed, key.location()) + SEED_OFFSET);
+                    random.setSeed(RiftHelper.resourceLocationToSeed(seed + SEED_OFFSET, key.location()));
                     for (Climate.ParameterPoint orig : ref.getParameters(key, random)) {
                         Climate.Parameter depth = translateDepth(orig.depth(), minY, maxY, dimType.getOrThrow(type.getNormalType()).value());
                         Climate.ParameterPoint point = new Climate.ParameterPoint(orig.temperature(), orig.humidity(), orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
