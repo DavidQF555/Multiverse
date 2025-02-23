@@ -32,6 +32,8 @@ public class ServerConfigs {
                 .defineInRange("colorSeedOffset", 0, Long.MIN_VALUE, Long.MAX_VALUE);
         slowFalling = builder.comment("This is the number of ticks that players get slow falling after exiting a rift or warping. Set to 0 if don't want slow falling. ")
                 .defineInRange("slowFalling", 600, 0, Integer.MAX_VALUE);
+        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
+                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
         builder.push("Size");
         minFeatRiftWidth = builder.comment("This is the minimum width of rifts placed naturally through features. ")
                 .defineInRange("minFeatRiftWidth", 1.0, 0, 30);
@@ -49,7 +51,12 @@ public class ServerConfigs {
                 .defineInRange("minRiftHeight", 16, 0, Double.MAX_VALUE);
         maxRiftHeight = builder.comment("This is the maximum height of rifts placed artificially. This should be at least minRiftHeight. ")
                 .defineInRange("maxRiftHeight", 30, 0, Double.MAX_VALUE);
-        builder.pop(2).push("Prismatic Sword");
+        builder.pop(2).push("Kaleidite Core");
+        coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
+                .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
+        coreTemporary = builder.comment("This is whether kaleidite cores spawn temporary rifts instead of permanent rifts. ")
+                .define("coreTemporary", false);
+        builder.pop().push("Prismatic Sword");
         swordCooldown = builder.comment("This is the cooldown of the sword's rift spawning in ticks. ")
                 .defineInRange("swordCooldown", 500, 0, Integer.MAX_VALUE);
         swordSpawnDistance = builder.comment("This is the distance in blocks from the player's eyes in the direction they look in that the center of the rift spawns from the sword. ")
@@ -85,7 +92,7 @@ public class ServerConfigs {
                 .defineInRange("spawnPeriod", 5, 1, Integer.MAX_VALUE);
         spawnCount = builder.comment("This is the number of projectiles spawned every time the crossbow is shot. ")
                 .defineInRange("spawnCount", 20, 0, Integer.MAX_VALUE);
-        builder.pop().push("Kaleidite Chestplate");
+        builder.pop().push("Beacon Chestplate");
         armorMinOffset = builder.comment("This is the minimum distance in blocks that a doppelganger will spawn from the wearer. ")
                 .defineInRange("armorMinOffset", 1, 0, Integer.MAX_VALUE);
         armorMaxOffset = builder.comment("This is the maximum distance in blocks that a doppelganger will spawn from the wearer. This should be at least armorMinOffset. ")
@@ -94,6 +101,8 @@ public class ServerConfigs {
                 .defineInRange("armorMaxSpawn", 8, 0, Integer.MAX_VALUE);
         armorSpawnPeriod = builder.comment("This is the period in ticks that the wearer spawns doppelgangers when in combat. ")
                 .defineInRange("armorSpawnPeriod", 40, 1, Integer.MAX_VALUE);
+        doppelTimeout = builder.comment("This is the time in ticks after exiting combat that before doppelgangers despawn. ")
+                .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
         builder.pop().push("Traveler");
         travelerMinRange = builder.comment("This is the minimum distance in blocks that the traveler spawns doppelgangers and teleports when hurt. ")
                 .defineInRange("travelerMinRange", 8, 0, Integer.MAX_VALUE);
@@ -127,14 +136,6 @@ public class ServerConfigs {
         conquerorSpawnCount = builder.comment("This is the number of raiders that spawn from every rift the conqueror summons. ")
                 .defineInRange("conquerorSpawnCount", 3, 0, Integer.MAX_VALUE);
         builder.pop().push("Miscellaneous");
-        travelerSpawnChance = builder.comment("This is the chance that a Traveler spawns per random tick for each rift block. ")
-                .defineInRange("travelerSpawnChance", 0.0001, 0, 1);
-        doppelTimeout = builder.comment("This is the time in ticks after exiting combat that before doppelgangers despawn. ")
-                .defineInRange("doppelTimeout", 600, 0, Integer.MAX_VALUE);
-        coreRange = builder.comment("This is the distance in blocks that the kaleidite core searches for connected rifts to remove. ")
-                .defineInRange("coreRange", 50, 0, Double.MAX_VALUE);
-        coreTemporary = builder.comment("This is whether kaleidite cores spawn temporary rifts instead of permanent rifts. ")
-                .define("coreTemporary", false);
         shieldRange = builder.comment("This is the range in blocks that the warp shield item warps projectiles. ")
                 .defineInRange("shieldRange", 3, 0, Double.MAX_VALUE);
         warpRingCooldown = builder.comment("This is the cooldown of the warp ring in ticks. ")
