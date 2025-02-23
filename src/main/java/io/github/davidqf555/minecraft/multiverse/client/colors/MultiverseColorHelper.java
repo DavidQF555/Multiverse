@@ -26,22 +26,22 @@ public final class MultiverseColorHelper {
         if (half >= fixed) {
             half++;
         }
+        int free = 0;
+        if (fixed != 1 && half != 1) {
+            free = 1;
+        } else if (fixed != 2 && half != 2) {
+            free = 2;
+        }
         boolean side1 = rand.nextBoolean();
         boolean side2 = rand.nextBoolean();
         for (int i = 0; i < n; i++) {
             int[] color = new int[3];
-            for (int j = 0; j < 3; j++) {
-                if (j == fixed) {
-                    color[j] = side1 ? 0x00 : 0xFF;
-                } else if (j == half) {
-                    color[j] = rand.nextInt(128);
-                    if (side2) {
-                        color[j] = 0xFF - color[j];
-                    }
-                } else {
-                    color[j] = rand.nextInt(256);
-                }
+            color[fixed] = side1 ? 0x00 : 0xFF;
+            color[half] = rand.nextInt(128);
+            if (side2) {
+                color[half] = 0xFF - color[half];
             }
+            color[free] = rand.nextInt(256);
             colors[i] = ARGB.color(0xFF, color[0], color[1], color[2]);
         }
         return colors;
