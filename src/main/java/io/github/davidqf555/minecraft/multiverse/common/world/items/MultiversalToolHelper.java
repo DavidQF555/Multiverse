@@ -37,7 +37,7 @@ public final class MultiversalToolHelper {
     }
 
     public static Component getShiftRightHeader() {
-        return new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header")), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.plus")), new KeybindComponent("key.mouse.right"), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.hold")), new KeybindComponent("key.sneak")))).withStyle(ChatFormatting.BLUE);
+        return new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header")), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.plus")), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.hold")), new KeybindComponent("key.sneak")), new KeybindComponent("key.mouse.right"))).withStyle(ChatFormatting.BLUE);
     }
 
     public static Component getRightHeader() {
