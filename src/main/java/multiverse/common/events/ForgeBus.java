@@ -2,7 +2,6 @@ package multiverse.common.events;
 
 import com.mojang.serialization.Lifecycle;
 import multiverse.common.Multiverse;
-import multiverse.common.ServerConfigs;
 import multiverse.common.packets.RiftEffectPacket;
 import multiverse.common.util.MultiverseConfig;
 import multiverse.common.world.ArrowSummonsData;
@@ -11,6 +10,7 @@ import multiverse.common.world.capabilities.SummonedData;
 import multiverse.common.world.worldgen.ShapesReader;
 import multiverse.common.world.worldgen.TargetDimensionsReader;
 import multiverse.common.world.worldgen.generators.GeneratorHelper;
+import multiverse.common.world.worldgen.generators.GeneratorSettingsReader;
 import multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
 import multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -67,10 +67,12 @@ public final class ForgeBus {
         MinecraftServer server = event.getServer();
         ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
         shapes.load(server);
+        GeneratorSettingsReader settings = new GeneratorSettingsReader(new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
+        settings.load(server);
         ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
         WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
         long seed = server.getWorldData().worldGenSettings().seed();
-        for (int i = 1; i <= ServerConfigs.INSTANCE.generated.get(); i++) {
+        for (int i = 1; i <= settings.getDimensionsCount(); i++) {
             ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, GeneratorHelper.getResourceLocation(i));
             if (!registry.containsKey(key)) {
                 registry.register(key, provider.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
