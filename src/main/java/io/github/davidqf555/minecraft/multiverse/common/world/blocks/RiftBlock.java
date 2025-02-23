@@ -1,12 +1,14 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.blocks;
 
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.MultiverseTags;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
+import io.github.davidqf555.minecraft.multiverse.common.packets.RiftEffectPacket;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.EntityHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
-import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOptions;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,7 +73,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
         }
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof RiftTileEntity) {
-            RiftEffectParticleOption particle = new RiftEffectParticleOption(((RiftTileEntity) be).getTarget());
+            RiftEffectParticleOptions particle = new RiftEffectParticleOptions(((RiftTileEntity) be).getTarget());
             double area = ((RiftTileEntity) be).getTotalVisualArea();
             if (rand.nextDouble() < ClientConfigs.INSTANCE.riftParticleRate.get() * area) {
                 Vec3 normal = ((RiftTileEntity) be).getParent().normal().normalize();
@@ -105,6 +108,10 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
             TravelerEntity entity = EntityHelper.randomSpawn(EntityRegistry.TRAVELER.get(), world, pos, 0, 8, MobSpawnType.NATURAL);
             if (entity != null) {
                 entity.setPortalCooldown();
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be instanceof RiftTileEntity) {
+                    Multiverse.CHANNEL.send(new RiftEffectPacket(entity.getEyePosition(), entity.getSoundSource(), ((RiftTileEntity) be).getTarget()), PacketDistributor.TRACKING_ENTITY.with(entity));
+                }
             }
         }
     }

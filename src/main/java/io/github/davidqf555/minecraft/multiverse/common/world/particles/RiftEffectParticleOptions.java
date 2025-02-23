@@ -15,27 +15,27 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Locale;
 
-public record RiftEffectParticleOption(ResourceKey<Level> color) implements ParticleOptions {
+public record RiftEffectParticleOptions(ResourceKey<Level> color) implements ParticleOptions {
 
-    public static final Codec<RiftEffectParticleOption> CODEC = ResourceKey.codec(Registries.DIMENSION).fieldOf("color").codec().xmap(RiftEffectParticleOption::new, RiftEffectParticleOption::color);
+    public static final Codec<RiftEffectParticleOptions> CODEC = ResourceKey.codec(Registries.DIMENSION).fieldOf("color").codec().xmap(RiftEffectParticleOptions::new, RiftEffectParticleOptions::color);
     @SuppressWarnings("deprecation")
-    public static final Deserializer<RiftEffectParticleOption> DESERIALIZER = new Deserializer<>() {
+    public static final Deserializer<RiftEffectParticleOptions> DESERIALIZER = new Deserializer<>() {
         @Override
-        public RiftEffectParticleOption fromCommand(ParticleType<RiftEffectParticleOption> pParticleType, StringReader pReader) throws CommandSyntaxException {
+        public RiftEffectParticleOptions fromCommand(ParticleType<RiftEffectParticleOptions> pParticleType, StringReader pReader) throws CommandSyntaxException {
             pReader.expect(' ');
             String color = pReader.readString();
-            return new RiftEffectParticleOption(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(color)));
+            return new RiftEffectParticleOptions(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(color)));
         }
 
         @Override
-        public RiftEffectParticleOption fromNetwork(ParticleType<RiftEffectParticleOption> pParticleType, FriendlyByteBuf pBuffer) {
+        public RiftEffectParticleOptions fromNetwork(ParticleType<RiftEffectParticleOptions> pParticleType, FriendlyByteBuf pBuffer) {
             ResourceLocation color = pBuffer.readResourceLocation();
-            return new RiftEffectParticleOption(ResourceKey.create(Registries.DIMENSION, color));
+            return new RiftEffectParticleOptions(ResourceKey.create(Registries.DIMENSION, color));
         }
     };
 
     @Override
-    public ParticleType<? extends RiftEffectParticleOption> getType() {
+    public ParticleType<? extends RiftEffectParticleOptions> getType() {
         return ParticleTypeRegistry.RIFT_EFFECT.get();
     }
 

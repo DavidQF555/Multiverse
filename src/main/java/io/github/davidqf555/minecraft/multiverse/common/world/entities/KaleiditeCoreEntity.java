@@ -1,5 +1,6 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.entities;
 
+import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.registration.BlockRegistry;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
@@ -62,7 +63,7 @@ public class KaleiditeCoreEntity extends ThrowableItemProjectile {
         super.onHit(pResult);
         if (level() instanceof ServerLevel && isAlive()) {
             Entity owner = getOwner();
-            RiftHelper.placeRandomRift((ServerLevel) level(), false, position(), owner instanceof Mob);
+            RiftHelper.placeRandomRift((ServerLevel) level(), ServerConfigs.INSTANCE.coreTemporary.get(), position(), owner instanceof Mob);
             discard();
         }
     }

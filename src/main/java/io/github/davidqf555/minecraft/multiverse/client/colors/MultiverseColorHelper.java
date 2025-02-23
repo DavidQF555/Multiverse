@@ -44,7 +44,7 @@ public final class MultiverseColorHelper {
     }
 
     public static int[] getColors(Level world, ResourceKey<Level> dim, int n) {
-        return getColors(getSeed(world.getBiomeManager().biomeZoomSeed, dim), n);
+        return getColors(getSeed(world.getBiomeManager().biomeZoomSeed + ServerConfigs.INSTANCE.colorSeedOffset.get(), dim), n);
     }
 
     public static int[] getColors(Level level, int n) {
@@ -69,7 +69,7 @@ public final class MultiverseColorHelper {
             }
             base += FACTOR * c * (i + j);
         }
-        return base + ServerConfigs.INSTANCE.colorSeedOffset.get();
+        return base;
     }
 
     private static int[] getColors(long seed, int n) {
