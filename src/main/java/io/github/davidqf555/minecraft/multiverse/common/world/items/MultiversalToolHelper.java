@@ -10,6 +10,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.KeybindComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,10 +30,22 @@ import net.minecraftforge.network.PacketDistributor;
 public final class MultiversalToolHelper {
 
     public static final Component LORE = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
-    public static final Component CROUCH_INSTRUCTIONS = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_crouch_instructions"))).withStyle(ChatFormatting.AQUA);
-    public static final Component INSTRUCTIONS = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_instructions"))).withStyle(ChatFormatting.AQUA);
+    public static final Component SELECT_CURRENT = new TextComponent(" ").append(new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_select_current"))).withStyle(ChatFormatting.AQUA));
+    public static final Component SELECT_RANDOM = new TextComponent(" ").append(new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_select_random"))).withStyle(ChatFormatting.AQUA));
 
     private MultiversalToolHelper() {
+    }
+
+    public static Component getShiftRightHeader() {
+        return new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header")), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.plus")), new KeybindComponent("key.mouse.right"), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.hold")), new KeybindComponent("key.sneak")))).withStyle(ChatFormatting.BLUE);
+    }
+
+    public static Component getRightHeader() {
+        return new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header")), new KeybindComponent("key.mouse.right")).withStyle(ChatFormatting.BLUE);
+    }
+
+    public static Component getHoldRightHeader() {
+        return new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header")), new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.hold")), new KeybindComponent("key.mouse.right"))).withStyle(ChatFormatting.BLUE);
     }
 
     public static ResourceKey<Level> getTarget(ItemStack stack) {

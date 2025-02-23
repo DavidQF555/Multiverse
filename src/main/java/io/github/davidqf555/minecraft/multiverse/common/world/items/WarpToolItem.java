@@ -6,6 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.world.WarpTeleporter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class WarpToolItem extends Item {
 
-    private static final Component INSTRUCTIONS = new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "warp_ring")) + ".instructions").withStyle(ChatFormatting.AQUA);
+    private static final Component USE = new TextComponent(" ").append(new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "warp_ring.use"))).withStyle(ChatFormatting.AQUA));
 
     public WarpToolItem(Properties pProperties) {
         super(pProperties);
@@ -33,7 +34,11 @@ public class WarpToolItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, world, text, flag);
-        text.add(INSTRUCTIONS);
+        text.add(TextComponent.EMPTY);
+        text.add(MultiversalToolHelper.getRightHeader());
+        text.add(USE);
+        text.add(MultiversalToolHelper.getShiftRightHeader());
+        text.add(MultiversalToolHelper.SELECT_RANDOM);
     }
 
     @Override

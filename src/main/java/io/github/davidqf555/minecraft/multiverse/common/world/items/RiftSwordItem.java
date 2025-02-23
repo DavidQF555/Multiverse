@@ -1,11 +1,17 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
+import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftPlacementHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,6 +30,8 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class RiftSwordItem extends SwordItem {
 
+    private static final Component HOLD = new TextComponent(" ").append(new TranslatableComponent(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "prismatic_sword.use"))).withStyle(ChatFormatting.AQUA));
+
     public RiftSwordItem(Tier tier, int damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
     }
@@ -37,7 +45,11 @@ public class RiftSwordItem extends SwordItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, world, text, flag);
-        text.add(MultiversalToolHelper.CROUCH_INSTRUCTIONS);
+        text.add(TextComponent.EMPTY);
+        text.add(MultiversalToolHelper.getHoldRightHeader());
+        text.add(HOLD);
+        text.add(MultiversalToolHelper.getShiftRightHeader());
+        text.add(MultiversalToolHelper.SELECT_CURRENT);
     }
 
     @Override

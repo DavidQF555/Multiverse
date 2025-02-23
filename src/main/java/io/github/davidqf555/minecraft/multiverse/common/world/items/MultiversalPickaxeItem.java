@@ -2,6 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,8 +31,11 @@ public class MultiversalPickaxeItem extends PickaxeItem {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> text, TooltipFlag flag) {
         super.appendHoverText(stack, world, text, flag);
         text.add(MultiversalToolHelper.LORE);
-        text.add(MultiversalToolHelper.INSTRUCTIONS);
-        text.add(MultiversalToolHelper.CROUCH_INSTRUCTIONS);
+        text.add(TextComponent.EMPTY);
+        text.add(MultiversalToolHelper.getRightHeader());
+        text.add(MultiversalToolHelper.SELECT_RANDOM);
+        text.add(MultiversalToolHelper.getShiftRightHeader());
+        text.add(MultiversalToolHelper.SELECT_CURRENT);
     }
 
     @Override
