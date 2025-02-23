@@ -1,7 +1,9 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
-import io.github.davidqf555.minecraft.multiverse.common.packets.RiftParticlesPacket;
+import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
+import io.github.davidqf555.minecraft.multiverse.common.world.WarpTeleporter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,14 +17,13 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-public class WarpShieldItem extends Item implements Equipable {
+public class WarpShieldItem extends SimpleLoreItem implements Equipable {
 
     private final TagKey<Item> repair;
 
-    public WarpShieldItem(TagKey<Item> repair, Properties pProperties) {
-        super(pProperties);
+    public WarpShieldItem(TagKey<Item> repair, ChatFormatting color, Properties pProperties) {
+        super(false, color, pProperties);
         this.repair = repair;
         DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
     }
@@ -43,8 +44,7 @@ public class WarpShieldItem extends Item implements Equipable {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : world.getEntitiesOfClass(Projectile.class, bounds)) {
-                PacketDistributor.sendToPlayersTrackingEntity(proj, new RiftParticlesPacket(proj.position(), null));
-                proj.discard();
+                RiftHelper.randomTargetDimension(player.getRandom(), player.level().dimension()).ifPresent(target -> WarpTeleporter.warp(proj, target));
             }
         }
     }

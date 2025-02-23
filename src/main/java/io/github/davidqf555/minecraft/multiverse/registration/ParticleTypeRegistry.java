@@ -2,7 +2,7 @@ package io.github.davidqf555.minecraft.multiverse.registration;
 
 import com.mojang.serialization.MapCodec;
 import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
-import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -20,15 +20,15 @@ public final class ParticleTypeRegistry {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> RIFT = register("rift", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> RIFT_EXPLOSION = register("rift_explosion", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> RIFT_EXPLOSION_EMITTER = register("rift_explosion_emitter", () -> new SimpleParticleType(true));
-    public static final DeferredHolder<ParticleType<?>, ParticleType<RiftEffectParticleOption>> RIFT_EFFECT = register("rift_effect", () -> new ParticleType<>(false) {
+    public static final DeferredHolder<ParticleType<?>, ParticleType<RiftEffectParticleOptions>> RIFT_EFFECT = register("rift_effect", () -> new ParticleType<>(false) {
         @Override
-        public MapCodec<RiftEffectParticleOption> codec() {
-            return RiftEffectParticleOption.CODEC;
+        public MapCodec<RiftEffectParticleOptions> codec() {
+            return RiftEffectParticleOptions.CODEC;
         }
 
         @Override
-        public StreamCodec<? super RegistryFriendlyByteBuf, RiftEffectParticleOption> streamCodec() {
-            return RiftEffectParticleOption.STREAM_CODEC;
+        public StreamCodec<? super RegistryFriendlyByteBuf, RiftEffectParticleOptions> streamCodec() {
+            return RiftEffectParticleOptions.STREAM_CODEC;
         }
     });
 

@@ -11,17 +11,17 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
-public record RiftEffectParticleOption(ResourceKey<Level> color) implements ParticleOptions {
+public record RiftEffectParticleOptions(ResourceKey<Level> color) implements ParticleOptions {
 
-    public static final MapCodec<RiftEffectParticleOption> CODEC = ResourceKey.codec(Registries.DIMENSION).xmap(RiftEffectParticleOption::new, RiftEffectParticleOption::color).fieldOf("color");
-    public static final StreamCodec<RegistryFriendlyByteBuf, RiftEffectParticleOption> STREAM_CODEC = StreamCodec.composite(
+    public static final MapCodec<RiftEffectParticleOptions> CODEC = ResourceKey.codec(Registries.DIMENSION).xmap(RiftEffectParticleOptions::new, RiftEffectParticleOptions::color).fieldOf("color");
+    public static final StreamCodec<RegistryFriendlyByteBuf, RiftEffectParticleOptions> STREAM_CODEC = StreamCodec.composite(
             TagUtil.WORLD_CODEC,
-            RiftEffectParticleOption::color,
-            RiftEffectParticleOption::new
+            RiftEffectParticleOptions::color,
+            RiftEffectParticleOptions::new
     );
 
     @Override
-    public ParticleType<? extends RiftEffectParticleOption> getType() {
+    public ParticleType<? extends RiftEffectParticleOptions> getType() {
         return ParticleTypeRegistry.RIFT_EFFECT.get();
     }
 
