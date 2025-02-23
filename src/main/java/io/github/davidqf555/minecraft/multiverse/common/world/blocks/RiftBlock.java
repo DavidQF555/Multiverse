@@ -6,7 +6,7 @@ import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.advancements.EnterRiftTrigger;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.EntityHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.entities.TravelerEntity;
-import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOptions;
 import io.github.davidqf555.minecraft.multiverse.registration.EntityRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -71,7 +71,7 @@ public class RiftBlock extends BaseEntityBlock implements BucketPickup, LiquidBl
         }
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof RiftTileEntity) {
-            RiftEffectParticleOption particle = new RiftEffectParticleOption(((RiftTileEntity) be).getTarget());
+            RiftEffectParticleOptions particle = new RiftEffectParticleOptions(((RiftTileEntity) be).getTarget());
             double area = ((RiftTileEntity) be).getTotalVisualArea();
             if (rand.nextDouble() < ClientConfigs.INSTANCE.riftParticleRate.get() * area) {
                 Vec3 normal = ((RiftTileEntity) be).getParent().normal().normalize();

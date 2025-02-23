@@ -3,7 +3,7 @@ package io.github.davidqf555.minecraft.multiverse.client.particles;
 import io.github.davidqf555.minecraft.multiverse.client.ClientConfigs;
 import io.github.davidqf555.minecraft.multiverse.client.ShaderHelper;
 import io.github.davidqf555.minecraft.multiverse.client.colors.MultiverseColorHelper;
-import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOption;
+import io.github.davidqf555.minecraft.multiverse.common.world.particles.RiftEffectParticleOptions;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.FastColor;
@@ -43,7 +43,7 @@ public class RiftEffectParticle extends TextureSheetParticle {
         return ClientConfigs.INSTANCE.vanillaOnly.get() ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ShaderHelper.RIFT_PARTICLE_TYPE;
     }
 
-    public static class Provider implements ParticleProvider<RiftEffectParticleOption> {
+    public static class Provider implements ParticleProvider<RiftEffectParticleOptions> {
 
         private final SpriteSet sprites;
 
@@ -53,7 +53,7 @@ public class RiftEffectParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(RiftEffectParticleOption pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(RiftEffectParticleOptions pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
             RiftEffectParticle particle = new RiftEffectParticle(pLevel, pX, pY, pZ);
             particle.pickSprite(sprites);
             particle.setParticleSpeed(pXSpeed, pYSpeed, pZSpeed);
