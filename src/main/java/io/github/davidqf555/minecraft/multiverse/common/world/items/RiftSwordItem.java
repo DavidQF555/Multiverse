@@ -1,15 +1,12 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftHelper;
 import io.github.davidqf555.minecraft.multiverse.common.world.RiftPlacementHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,10 +24,11 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class RiftSwordItem extends SwordItem {
 
-    private static final Component HOLD = Component.literal(" ").append(Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "prismatic_sword.use"))).withStyle(ChatFormatting.AQUA));
+    private final Component hold;
 
     public RiftSwordItem(ToolMaterial tier, float damage, float speed, Properties properties) {
         super(tier, damage, speed, properties);
+        hold = Component.literal(" ").append(Component.translatable(getDescriptionId() + ".use").withStyle(ChatFormatting.AQUA));
     }
 
     public static void slash(ServerLevel level, Vec3 start, Vec3 look, double dist, double width, double height, float angle, ResourceKey<Level> target) {
@@ -44,7 +42,7 @@ public class RiftSwordItem extends SwordItem {
         super.appendHoverText(stack, context, text, flag);
         text.add(Component.empty());
         text.add(MultiversalToolHelper.getHoldRightHeader());
-        text.add(HOLD);
+        text.add(hold);
         text.add(MultiversalToolHelper.getShiftRightHeader());
         text.add(MultiversalToolHelper.SELECT_CURRENT);
     }

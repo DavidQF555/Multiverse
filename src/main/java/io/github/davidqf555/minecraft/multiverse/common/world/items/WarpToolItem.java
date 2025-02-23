@@ -1,13 +1,10 @@
 package io.github.davidqf555.minecraft.multiverse.common.world.items;
 
-import io.github.davidqf555.minecraft.multiverse.common.Multiverse;
 import io.github.davidqf555.minecraft.multiverse.common.ServerConfigs;
 import io.github.davidqf555.minecraft.multiverse.common.world.WarpTeleporter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,10 +19,11 @@ import java.util.List;
 
 public class WarpToolItem extends Item {
 
-    private static final Component USE = Component.literal(" ").append(Component.translatable(Util.makeDescriptionId("item", ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "warp_ring.use"))).withStyle(ChatFormatting.AQUA));
+    private final Component use;
 
     public WarpToolItem(Properties pProperties) {
         super(pProperties);
+        use = Component.literal(" ").append(Component.translatable(getDescriptionId() + ".use").withStyle(ChatFormatting.AQUA));
     }
 
     @Override
@@ -33,7 +31,7 @@ public class WarpToolItem extends Item {
         super.appendHoverText(stack, context, text, flag);
         text.add(Component.empty());
         text.add(MultiversalToolHelper.getRightHeader());
-        text.add(USE);
+        text.add(use);
         text.add(MultiversalToolHelper.getShiftRightHeader());
         text.add(MultiversalToolHelper.SELECT_RANDOM);
     }
