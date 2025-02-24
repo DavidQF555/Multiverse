@@ -15,15 +15,12 @@ public class ServerConfigs {
     }
 
     public final ForgeConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
-    public final ForgeConfigSpec.IntValue generated, riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
+    public final ForgeConfigSpec.IntValue riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
     public final ForgeConfigSpec.LongValue colorSeedOffset;
     public final ForgeConfigSpec.BooleanValue riftSwordTemporary, coreTemporary;
 
     public ServerConfigs(ForgeConfigSpec.Builder builder) {
-        builder.comment("Multiverse server-side configuration").push("Dimensions");
-        generated = builder.comment("This is the number of multiverse dimensions that will be generated. Generated multiverse dimensions will use IDs 'multiverse:1', 'multiverse:2', 'multiverse:3', etc. ")
-                .defineInRange("generated", 25, 0, Integer.MAX_VALUE);
-        builder.pop().push("Rifts");
+        builder.comment("Multiverse server-side configuration").push("Rifts");
         riftRange = builder.comment("This is the range that is scanned for existing rifts using points of interest. ")
                 .defineInRange("range", 128, 0, Integer.MAX_VALUE);
         colorSeedOffset = builder.comment("This is the factor that is added to the rift color seed. Change to modify all rift colors in the server. ")
