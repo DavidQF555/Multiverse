@@ -3,6 +3,7 @@ package multiverse.registration.worldgen;
 import com.google.common.collect.ImmutableSet;
 import multiverse.common.Multiverse;
 import multiverse.common.ServerConfigs;
+import multiverse.common.world.DimensionsList;
 import multiverse.common.world.blocks.RiftBlock;
 import multiverse.common.world.worldgen.features.RiftConfig;
 import multiverse.common.world.worldgen.features.RiftFeature;
@@ -15,7 +16,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AmethystClusterBlock;
@@ -41,23 +41,23 @@ public final class FeatureRegistry {
     public static final RegistryObject<RiftFeature> RIFT = register("rift", () -> new RiftFeature(RiftConfig.CODEC));
     public static final RegistryObject<WaterLoggedBlockFeature> WATERLOGGED_BLOCK = register("waterlogged_block", () -> new WaterLoggedBlockFeature(SimpleBlockConfiguration.CODEC));
 
-    private static final Set<ResourceKey<Level>> CLUSTER_DIM;
-    private static final Set<ResourceKey<Level>> RIFT_DIM;
+    private static final Set<ResourceLocation> CLUSTER_DIM;
+    private static final Set<ResourceLocation> RIFT_DIM;
     static {
-        ImmutableSet.Builder<ResourceKey<Level>> cluster = ImmutableSet.builder();
-        ImmutableSet.Builder<ResourceKey<Level>> rift = ImmutableSet.builder();
-        rift.add(Level.OVERWORLD);
+        ImmutableSet.Builder<ResourceLocation> cluster = ImmutableSet.builder();
+        ImmutableSet.Builder<ResourceLocation> rift = ImmutableSet.builder();
+        rift.add(Level.OVERWORLD.location());
         for (int i = 1; i <= 25; i++) {
-            ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(Multiverse.MOD_ID, i + ""));
-            cluster.add(key);
-            rift.add(key);
+            ResourceLocation loc = new ResourceLocation(Multiverse.MOD_ID, i + "");
+            cluster.add(loc);
+            rift.add(loc);
         }
         CLUSTER_DIM = cluster.build();
         RIFT_DIM = rift.build();
     }
 
-    public static final RegistryObject<PlacedFeature> PLACED_RIFT = registerPlaced("rift", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false)))), List.of(new DimensionPlacement(RIFT_DIM), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), BiomeFilter.biome())));
-    public static final RegistryObject<PlacedFeature> KALEIDITE_CLUSTER = registerPlaced("kaleidite_cluster", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values())))), List.of(new DimensionPlacement(CLUSTER_DIM), PlacementUtils.FULL_RANGE, CountPlacement.of(16), InSquarePlacement.spread(), BiomeFilter.biome())));
+    public static final RegistryObject<PlacedFeature> KALEIDITE_CLUSTER = registerPlaced("kaleidite_cluster", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values())))), List.of(new DimensionPlacement(new DimensionsList(DimensionsList.ListOperation.WHITELIST, CLUSTER_DIM)), PlacementUtils.FULL_RANGE, CountPlacement.of(16), InSquarePlacement.spread(), BiomeFilter.biome())));
+    public static final RegistryObject<PlacedFeature> PLACED_RIFT = registerPlaced("rift", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false)))), List.of(new DimensionPlacement(new DimensionsList(DimensionsList.ListOperation.WHITELIST, RIFT_DIM)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), BiomeFilter.biome())));
 
     private FeatureRegistry() {
     }
