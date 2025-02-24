@@ -65,17 +65,20 @@ public final class ForgeBus {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerAboutToStartHigh(ServerAboutToStartEvent event) {
         MinecraftServer server = event.getServer();
-        ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
-        shapes.load(server);
         GeneratorSettingsReader settings = new GeneratorSettingsReader(new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
         settings.load(server);
-        ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
-        WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
-        long seed = server.getWorldData().worldGenSettings().seed();
-        for (int i = 1; i <= settings.getDimensionsCount(); i++) {
-            ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, GeneratorHelper.getResourceLocation(i));
-            if (!registry.containsKey(key)) {
-                registry.register(key, provider.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
+        int count = settings.getDimensionsCount();
+        if (count > 0) {
+            ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
+            shapes.load(server);
+            ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
+            WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
+            long seed = server.getWorldData().worldGenSettings().seed();
+            for (int i = 1; i <= settings.getDimensionsCount(); i++) {
+                ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, GeneratorHelper.getResourceLocation(i));
+                if (!registry.containsKey(key)) {
+                    registry.register(key, provider.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
+                }
             }
         }
     }
