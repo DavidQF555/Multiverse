@@ -1,6 +1,5 @@
 package multiverse.common.events;
 
-import com.mojang.serialization.Lifecycle;
 import multiverse.common.Multiverse;
 import multiverse.common.packets.RiftEffectPacket;
 import multiverse.common.util.MultiverseConfig;
@@ -8,24 +7,17 @@ import multiverse.common.world.ArrowSummonsData;
 import multiverse.common.world.TargetDimensionsReader;
 import multiverse.common.world.capabilities.NBTCapabilityProvider;
 import multiverse.common.world.capabilities.SummonedData;
-import multiverse.common.world.worldgen.ShapesReader;
-import multiverse.common.world.worldgen.generators.GeneratorHelper;
-import multiverse.common.world.worldgen.generators.GeneratorSettingsReader;
-import multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
 import multiverse.registration.worldgen.FeatureRegistry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -60,27 +52,6 @@ public final class ForgeBus {
     public static void onBiomeLoading(BiomeLoadingEvent event) {
         event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, Holder.direct(FeatureRegistry.PLACED_RIFT.get()));
         event.getGeneration().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, Holder.direct(FeatureRegistry.KALEIDITE_CLUSTER.get()));
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onServerAboutToStartHigh(ServerAboutToStartEvent event) {
-        MinecraftServer server = event.getServer();
-        GeneratorSettingsReader settings = new GeneratorSettingsReader(new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
-        settings.load(server);
-        int count = settings.getDimensionsCount();
-        if (count > 0) {
-            ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
-            shapes.load(server);
-            ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
-            WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
-            long seed = server.getWorldData().worldGenSettings().seed();
-            for (int i = 1; i <= settings.getDimensionsCount(); i++) {
-                ResourceKey<LevelStem> key = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, GeneratorHelper.getResourceLocation(i));
-                if (!registry.containsKey(key)) {
-                    registry.register(key, provider.createDimension(server.registryAccess(), seed, i), Lifecycle.experimental());
-                }
-            }
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
