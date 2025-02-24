@@ -4,8 +4,7 @@ import multiverse.common.world.worldgen.ShapesReader;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.RandomSource;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class ShapeDimensionGenerator {
 
     public LevelStem createDimension(RegistryAccess access, long base, int index) {
         long seed = GeneratorHelper.getSeed(base, index);
-        WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(seed));
+        RandomSource random = new SingleThreadedRandomSource(seed);
         return createDimension(access, seed, random);
     }
 
