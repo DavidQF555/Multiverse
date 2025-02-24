@@ -1,5 +1,6 @@
 package multiverse.common.events;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
 import multiverse.common.Multiverse;
@@ -20,6 +21,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class GeneratorEvents {
 
@@ -36,20 +40,23 @@ public final class GeneratorEvents {
         settings.load(server);
         int count = settings.getDimensionsCount();
         LOGGER.info("Configured " + count + " generated multiverse dimensions");
-        if (count > 0) {
+        RegistryAccess access = server.registryAccess();
+        MappedRegistry<LevelStem> registry = (MappedRegistry<LevelStem>) access.registryOrThrow(Registries.LEVEL_STEM);
+        List<Pair<Integer, ResourceKey<LevelStem>>> missing = IntStream.range(1, count + 1)
+                .mapToObj(i -> Pair.of(i, GeneratorHelper.getResourceLocation(i)))
+                .filter(pair -> !registry.containsKey(pair.getSecond()))
+                .map(pair -> pair.mapSecond(loc -> ResourceKey.create(Registries.LEVEL_STEM, loc)))
+                .toList();
+        if (!missing.isEmpty()) {
             ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
             shapes.load(server);
             ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
-            RegistryAccess access = server.registryAccess();
-            MappedRegistry<LevelStem> registry = (MappedRegistry<LevelStem>) access.registryOrThrow(Registries.LEVEL_STEM);
             registry.unfreeze();
             long seed = server.getWorldData().worldGenOptions().seed();
-            for (int i = 1; i <= count; i++) {
-                ResourceKey<LevelStem> key = ResourceKey.create(Registries.LEVEL_STEM, GeneratorHelper.getResourceLocation(i));
-                if (!registry.containsKey(key)) {
-                    registry.register(key, provider.createDimension(access, seed, i), Lifecycle.experimental());
-                    LOGGER.debug("Generated and registered multiverse dimension: " + key.location());
-                }
+            for (Pair<Integer, ResourceKey<LevelStem>> pair : missing) {
+                ResourceKey<LevelStem> key = pair.getSecond();
+                registry.register(key, provider.createDimension(access, seed, pair.getFirst()), Lifecycle.experimental());
+                LOGGER.debug("Generated and registered multiverse dimension: " + key.location());
             }
             registry.freeze();
         }
