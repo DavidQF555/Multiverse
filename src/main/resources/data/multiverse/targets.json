@@ -1,5 +1,6 @@
 {
-  "dimensions": [
+  "type": "whitelist",
+  "values": [
     "overworld",
     "multiverse:1",
     "multiverse:2",

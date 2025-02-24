@@ -6,6 +6,7 @@ import multiverse.common.world.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
+import java.util.Collection;
 import java.util.List;
 
 public final class MultiverseConfig {
@@ -28,7 +29,7 @@ public final class MultiverseConfig {
         return dimensions;
     }
 
-    public static void setTargetDimensions(List<ResourceKey<Level>> dimensions) {
+    public static void setTargetDimensions(Collection<ResourceKey<Level>> dimensions) {
         ImmutableList.Builder<ResourceKey<Level>> builder = ImmutableList.builder();
         dimensions.stream().sorted().forEach(builder::add);
         MultiverseConfig.dimensions = builder.build();
