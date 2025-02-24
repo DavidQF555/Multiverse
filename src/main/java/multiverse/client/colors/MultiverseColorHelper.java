@@ -21,27 +21,23 @@ public final class MultiverseColorHelper {
 
     public static int[] getColors(Random rand, int n) {
         int[] colors = new int[n];
-        int fixed = rand.nextInt(3);
-        int half = rand.nextInt(2);
-        if (half >= fixed) {
-            half++;
-        }
-        int free = 0;
-        if (fixed != 1 && half != 1) {
-            free = 1;
-        } else if (fixed != 2 && half != 2) {
-            free = 2;
+        int[] bounds = new int[]{0, 1, 2};
+        for (int i = 2; i >= 1; i--) {
+            int j = rand.nextInt(i + 1);
+            int temp = bounds[i];
+            bounds[i] = bounds[j];
+            bounds[j] = temp;
         }
         boolean side1 = rand.nextBoolean();
         boolean side2 = rand.nextBoolean();
         for (int i = 0; i < n; i++) {
             int[] color = new int[3];
-            color[fixed] = side1 ? 0x00 : 0xFF;
-            color[half] = rand.nextInt(128);
+            color[bounds[0]] = side1 ? 0x00 : 0xFF;
+            color[bounds[1]] = rand.nextInt(128);
             if (side2) {
-                color[half] = 0xFF - color[half];
+                color[bounds[1]] = 0xFF - color[bounds[1]];
             }
-            color[free] = rand.nextInt(256);
+            color[bounds[2]] = rand.nextInt(256);
             colors[i] = FastColor.ARGB32.color(0xFF, color[0], color[1], color[2]);
         }
         return colors;
