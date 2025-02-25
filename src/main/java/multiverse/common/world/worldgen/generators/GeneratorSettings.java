@@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -19,24 +20,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-public class GeneratorSettingsReader {
+public record GeneratorSettings(int count, double temperature, double humidity) {
 
-    private static final Codec<Integer> CODEC = ExtraCodecs.NON_NEGATIVE_INT.fieldOf("count").codec();
+    public static final Codec<GeneratorSettings> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("count", 0).forGetter(GeneratorSettings::count),
+            Codec.DOUBLE.optionalFieldOf("temperature", 0.0).forGetter(GeneratorSettings::temperature),
+            Codec.DOUBLE.optionalFieldOf("humidity", 0.0).forGetter(GeneratorSettings::humidity)
+    ).apply(inst, GeneratorSettings::new));
     private static final Gson GSON = new GsonBuilder().create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final ResourceLocation loc;
-    private int count;
+    private static final GeneratorSettings DEFAULT = new GeneratorSettings(0, 0, 0);
+    private static GeneratorSettings settings = DEFAULT;
 
-    public GeneratorSettingsReader(ResourceLocation loc) {
-        this.loc = loc;
+    public static GeneratorSettings getSettings() {
+        return settings;
     }
 
-    public int getDimensionsCount() {
-        return count;
-    }
-
-    public void load(MinecraftServer server) {
-        count = 0;
+    public static void load(MinecraftServer server, ResourceLocation loc) {
+        settings = DEFAULT;
         JsonElement value;
         try (Reader reader = new BufferedReader(new InputStreamReader(server.getResourceManager().getResource(loc).getInputStream()))) {
             value = GsonHelper.fromJson(GSON, reader, JsonElement.class);
@@ -44,7 +45,8 @@ public class GeneratorSettingsReader {
             return;
         }
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, server.registryAccess());
-        CODEC.decode(ops, value).resultOrPartial(LOGGER::error).map(Pair::getFirst).ifPresent(val -> count = val);
+        CODEC.decode(ops, value).resultOrPartial(LOGGER::error).map(Pair::getFirst)
+                .ifPresent(val -> settings = val);
     }
 
 }
