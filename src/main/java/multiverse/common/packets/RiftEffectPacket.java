@@ -15,29 +15,19 @@ import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class RiftEffectPacket {
+public record RiftEffectPacket(Vec3 center, SoundSource source, @Nullable ResourceKey<Level> from) {
 
     private static final BiConsumer<RiftEffectPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
-        buffer.writeDouble(message.center.x());
-        buffer.writeDouble(message.center.y());
-        buffer.writeDouble(message.center.z());
-        buffer.writeEnum(message.source);
-        buffer.writeBoolean(message.from != null);
-        if (message.from != null) {
-            buffer.writeResourceLocation(message.from.location());
+        buffer.writeDouble(message.center().x());
+        buffer.writeDouble(message.center().y());
+        buffer.writeDouble(message.center().z());
+        buffer.writeEnum(message.source());
+        buffer.writeBoolean(message.from() != null);
+        if (message.from() != null) {
+            buffer.writeResourceLocation(message.from().location());
         }
     };
     private static final Function<FriendlyByteBuf, RiftEffectPacket> DECODER = buffer -> new RiftEffectPacket(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), buffer.readEnum(SoundSource.class), buffer.readBoolean() ? ResourceKey.create(Registries.DIMENSION, buffer.readResourceLocation()) : null);
-
-    private final ResourceKey<Level> from;
-    private final SoundSource source;
-    private final Vec3 center;
-
-    public RiftEffectPacket(Vec3 center, SoundSource source, @Nullable ResourceKey<Level> from) {
-        this.center = center;
-        this.source = source;
-        this.from = from;
-    }
 
     public static void register(int index) {
         Multiverse.CHANNEL.messageBuilder(RiftEffectPacket.class, index, NetworkDirection.PLAY_TO_CLIENT)
@@ -49,7 +39,7 @@ public class RiftEffectPacket {
 
     private void handle(CustomPayloadEvent.Context context) {
         ClientHelper.addRiftParticles(center, from);
-            ClientHelper.playWarpSound(center, source);
+        ClientHelper.playWarpSound(center, source);
     }
 
 }
