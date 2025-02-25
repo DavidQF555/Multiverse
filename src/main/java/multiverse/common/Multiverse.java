@@ -8,7 +8,6 @@ import multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
 import multiverse.registration.custom.biomes.*;
 import multiverse.registration.worldgen.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +26,6 @@ public class Multiverse {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC);
         addRegistries(FMLJavaModLoadingContext.get().getModEventBus());
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void addRegistries(IEventBus bus) {
