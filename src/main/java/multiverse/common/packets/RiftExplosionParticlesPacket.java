@@ -14,26 +14,18 @@ import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class RiftExplosionParticlesPacket {
+public record RiftExplosionParticlesPacket(Vec3 center, @Nullable ResourceKey<Level> from) {
 
     private static final BiConsumer<RiftExplosionParticlesPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
-        buffer.writeDouble(message.center.x());
-        buffer.writeDouble(message.center.y());
-        buffer.writeDouble(message.center.z());
-        buffer.writeBoolean(message.from != null);
-        if (message.from != null) {
-            buffer.writeResourceLocation(message.from.location());
+        buffer.writeDouble(message.center().x());
+        buffer.writeDouble(message.center().y());
+        buffer.writeDouble(message.center().z());
+        buffer.writeBoolean(message.from() != null);
+        if (message.from() != null) {
+            buffer.writeResourceLocation(message.from().location());
         }
     };
     private static final Function<FriendlyByteBuf, RiftExplosionParticlesPacket> DECODER = buffer -> new RiftExplosionParticlesPacket(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), buffer.readBoolean() ? buffer.readResourceKey(Registries.DIMENSION) : null);
-
-    private final ResourceKey<Level> from;
-    private final Vec3 center;
-
-    public RiftExplosionParticlesPacket(Vec3 center, @Nullable ResourceKey<Level> from) {
-        this.center = center;
-        this.from = from;
-    }
 
     public static void register(int index) {
         Multiverse.CHANNEL.messageBuilder(RiftExplosionParticlesPacket.class, index, NetworkDirection.PLAY_TO_CLIENT)

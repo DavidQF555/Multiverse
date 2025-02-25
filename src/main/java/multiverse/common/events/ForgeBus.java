@@ -45,7 +45,7 @@ public final class ForgeBus {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         ServerLevel world = player.getServer().getLevel(Level.OVERWORLD);
         long seed = world == null ? 0 : BiomeManager.obfuscateSeed(world.getSeed());
-        Multiverse.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new UpdateColorSeedPacket(seed));
+        Multiverse.CHANNEL.send(new UpdateColorSeedPacket(seed), PacketDistributor.PLAYER.with(player));
     }
 
     @SubscribeEvent
