@@ -57,7 +57,7 @@ public class RiftEffectParticle extends TextureSheetParticle {
             RiftEffectParticle particle = new RiftEffectParticle(pLevel, pX, pY, pZ);
             particle.pickSprite(sprites);
             particle.setParticleSpeed(pXSpeed, pYSpeed, pZSpeed);
-            int color = MultiverseColorHelper.getColors(pLevel, pType.color(), 1)[0];
+            int color = MultiverseColorHelper.getColors(pType.color(), 1)[0];
             particle.setColor(FastColor.ARGB32.red(color) / 255f, FastColor.ARGB32.green(color) / 255f, FastColor.ARGB32.blue(color) / 255f);
             particle.setAlpha((float) (double) ClientConfigs.INSTANCE.riftMaxOpacity.get());
             return particle;

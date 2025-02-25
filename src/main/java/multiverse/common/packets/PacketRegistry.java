@@ -18,6 +18,7 @@ public final class PacketRegistry {
         event.enqueueWork(() -> {
             RiftEffectPacket.register(index++);
             RiftExplosionParticlesPacket.register(index++);
+            UpdateColorSeedPacket.register(index++);
         });
     }
 

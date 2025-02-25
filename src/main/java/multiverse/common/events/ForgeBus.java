@@ -2,6 +2,7 @@ package multiverse.common.events;
 
 import multiverse.common.Multiverse;
 import multiverse.common.packets.RiftEffectPacket;
+import multiverse.common.packets.UpdateColorSeedPacket;
 import multiverse.common.world.ArrowSummonsData;
 import multiverse.common.world.DimensionHelper;
 import multiverse.common.world.capabilities.NBTCapabilityProvider;
@@ -9,13 +10,17 @@ import multiverse.common.world.capabilities.SummonedData;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,6 +38,14 @@ public final class ForgeBus {
     private static final ResourceLocation SUMMONED_DATA = new ResourceLocation(Multiverse.MOD_ID, "summoned");
 
     private ForgeBus() {
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        ServerLevel world = player.getServer().getLevel(Level.OVERWORLD);
+        long seed = world == null ? 0 : BiomeManager.obfuscateSeed(world.getSeed());
+        Multiverse.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new UpdateColorSeedPacket(seed));
     }
 
     @SubscribeEvent
