@@ -1,6 +1,5 @@
 {
-  "type": "neoforge:add_features",
-  "biomes": "#multiverse:multiverse",
+  "type": "multiverse:add_features_all",
   "features": "multiverse:rift",
   "step": "local_modifications"
 }

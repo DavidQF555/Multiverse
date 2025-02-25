@@ -14,32 +14,20 @@ import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class RiftExplosionParticlesPacket implements CustomPacketPayload {
+public record RiftExplosionParticlesPacket(Vec3 center,
+                                           @Nullable ResourceKey<Level> from) implements CustomPacketPayload {
 
     public static final StreamCodec<FriendlyByteBuf, RiftExplosionParticlesPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.DOUBLE, packet -> packet.x,
-            ByteBufCodecs.DOUBLE, packet -> packet.y,
-            ByteBufCodecs.DOUBLE, packet -> packet.z,
-            ByteBufCodecs.optional(TagUtil.WORLD_CODEC), packet -> Optional.ofNullable(packet.from),
+            ByteBufCodecs.DOUBLE, packet -> packet.center().x(),
+            ByteBufCodecs.DOUBLE, packet -> packet.center().y(),
+            ByteBufCodecs.DOUBLE, packet -> packet.center().z(),
+            ByteBufCodecs.optional(TagUtil.WORLD_CODEC), packet -> Optional.ofNullable(packet.from()),
             RiftExplosionParticlesPacket::new
     );
-    public static final IPayloadHandler<RiftExplosionParticlesPacket> HANDLER = (packet, context) -> ClientHelper.addRiftExplosionParticles(new Vec3(packet.x, packet.y, packet.z), packet.from);
-    private final ResourceKey<Level> from;
-    private final double x, y, z;
-
-    public RiftExplosionParticlesPacket(Vec3 loc, @Nullable ResourceKey<Level> from) {
-        this(loc.x(), loc.y(), loc.z(), from);
-    }
+    public static final IPayloadHandler<RiftExplosionParticlesPacket> HANDLER = (packet, context) -> ClientHelper.addRiftExplosionParticles(packet.center(), packet.from());
 
     public RiftExplosionParticlesPacket(double x, double y, double z, Optional<ResourceKey<Level>> from) {
-        this(x, y, z, from.orElse(null));
-    }
-
-    public RiftExplosionParticlesPacket(double x, double y, double z, @Nullable ResourceKey<Level> from) {
-        this.from = from;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this(new Vec3(x, y, z), from.orElse(null));
     }
 
     @Override
