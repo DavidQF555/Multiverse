@@ -12,8 +12,13 @@ public final class MultiverseColorHelper {
 
     private static final long FACTOR = 55555L;
     private static final Random RANDOM = new Random(0);
+    private static long baseSeed;
 
     private MultiverseColorHelper() {
+    }
+
+    public static void setBaseSeed(long seed) {
+        baseSeed = seed;
     }
 
     public static int[] getColors(Random rand, int n) {
@@ -40,12 +45,8 @@ public final class MultiverseColorHelper {
         return colors;
     }
 
-    public static int[] getColors(Level world, ResourceKey<Level> dim, int n) {
-        return getColors(DimensionHelper.resourceLocationToSeed(dim.location(), world.getBiomeManager().biomeZoomSeed + ServerConfigs.INSTANCE.colorSeedOffset.get(), FACTOR), n);
-    }
-
-    public static int[] getColors(Level level, int n) {
-        return getColors(level, level.dimension(), n);
+    public static int[] getColors(ResourceKey<Level> dim, int n) {
+        return getColors(DimensionHelper.resourceLocationToSeed(dim.location(), baseSeed + ServerConfigs.INSTANCE.colorSeedOffset.get(), FACTOR), n);
     }
 
     private static int[] getColors(long seed, int n) {
