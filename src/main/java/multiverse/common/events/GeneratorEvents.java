@@ -27,14 +27,14 @@ import java.io.IOException;
 public final class GeneratorEvents {
 
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final String TERRABLENDER = "terrablender";
 
     private GeneratorEvents() {
     }
 
-    @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
-        if (ModList.get().isLoaded("terrablender")) {
+        if (ModList.get().isLoaded(TERRABLENDER)) {
             MultiverseConfig.setBiomesManager(new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY)));
         }
         MinecraftServer server = event.getServer();
