@@ -55,7 +55,7 @@ public final class ForgeBus {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
         DimensionHelper.loadTargetDimensions(event.getServer(), new ResourceLocation(Multiverse.MOD_ID, "targets.json"));
     }

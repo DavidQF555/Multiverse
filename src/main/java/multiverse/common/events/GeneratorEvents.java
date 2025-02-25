@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
 import multiverse.common.Multiverse;
+import multiverse.common.util.MultiverseConfig;
+import multiverse.common.world.worldgen.biomes.TerraBlenderBiomes;
 import multiverse.common.world.worldgen.generators.GeneratorHelper;
 import multiverse.common.world.worldgen.generators.GeneratorSettings;
 import multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -33,8 +36,11 @@ public final class GeneratorEvents {
     }
 
     @SuppressWarnings("deprecation")
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
+        if (ModList.get().isLoaded("terrablender")) {
+            MultiverseConfig.setBiomesManager(new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME)));
+        }
         MinecraftServer server = event.getServer();
         GeneratorSettings.load(server, new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
         int count = GeneratorSettings.getSettings().count();
