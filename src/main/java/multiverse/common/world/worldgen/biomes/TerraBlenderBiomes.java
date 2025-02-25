@@ -1,9 +1,7 @@
-package multiverse.common.integration;
+package multiverse.common.world.worldgen.biomes;
 
 import multiverse.common.world.worldgen.MultiverseSurfaceRuleData;
 import multiverse.common.world.worldgen.MultiverseType;
-import multiverse.common.world.worldgen.biomes.MultiverseBiomes;
-import multiverse.common.world.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;

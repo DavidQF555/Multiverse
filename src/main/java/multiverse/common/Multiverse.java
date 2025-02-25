@@ -46,7 +46,6 @@ public class Multiverse {
         ParticleTypeRegistry.TYPES.register(bus);
         PlacementRegistry.TYPES.register(bus);
         ChunkGeneratorRegistry.GENERATORS.register(bus);
-        BiomeSourceRegistry.SOURCES.register(bus);
         SurfaceRuleSourceRegistry.SOURCES.register(bus);
         EffectRegistry.EFFECTS.register(bus);
         BiomeModifierRegistry.TYPES.register(bus);
