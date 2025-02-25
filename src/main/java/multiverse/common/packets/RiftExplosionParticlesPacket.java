@@ -16,38 +16,26 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RiftExplosionParticlesPacket {
+public record RiftExplosionParticlesPacket(Vec3 center, @Nullable ResourceKey<Level> from) {
 
     private static final BiConsumer<RiftExplosionParticlesPacket, FriendlyByteBuf> ENCODER = (message, buffer) -> {
-        buffer.writeDouble(message.center.x());
-        buffer.writeDouble(message.center.y());
-        buffer.writeDouble(message.center.z());
-        buffer.writeBoolean(message.from != null);
-        if (message.from != null) {
-            buffer.writeResourceLocation(message.from.location());
+        buffer.writeDouble(message.center().x());
+        buffer.writeDouble(message.center().y());
+        buffer.writeDouble(message.center().z());
+        buffer.writeBoolean(message.from() != null);
+        if (message.from() != null) {
+            buffer.writeResourceLocation(message.from().location());
         }
     };
     private static final Function<FriendlyByteBuf, RiftExplosionParticlesPacket> DECODER = buffer -> new RiftExplosionParticlesPacket(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), buffer.readBoolean() ? ResourceKey.create(Registries.DIMENSION, buffer.readResourceLocation()) : null);
     private static final BiConsumer<RiftExplosionParticlesPacket, Supplier<NetworkEvent.Context>> CONSUMER = (message, context) -> {
         NetworkEvent.Context cont = context.get();
-        message.handle(cont);
+        cont.enqueueWork(() -> ClientHelper.addRiftExplosionParticles(message.center(), message.from()));
+        cont.setPacketHandled(true);
     };
-
-    private final ResourceKey<Level> from;
-    private final Vec3 center;
-
-    public RiftExplosionParticlesPacket(Vec3 center, @Nullable ResourceKey<Level> from) {
-        this.center = center;
-        this.from = from;
-    }
 
     public static void register(int index) {
         Multiverse.CHANNEL.registerMessage(index, RiftExplosionParticlesPacket.class, ENCODER, DECODER, CONSUMER, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-    }
-
-    private void handle(NetworkEvent.Context context) {
-        context.enqueueWork(() -> ClientHelper.addRiftExplosionParticles(center, from));
-        context.setPacketHandled(true);
     }
 
 }
