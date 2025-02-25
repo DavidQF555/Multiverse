@@ -31,6 +31,7 @@ import java.util.stream.IntStream;
 public final class GeneratorEvents {
 
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final String TERRABLENDER = "terrablender";
 
     private GeneratorEvents() {
     }
@@ -38,7 +39,7 @@ public final class GeneratorEvents {
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
-        if (ModList.get().isLoaded("terrablender")) {
+        if (ModList.get().isLoaded(TERRABLENDER)) {
             MultiverseConfig.setBiomesManager(new TerraBlenderBiomes(event.getServer().registryAccess().registryOrThrow(Registries.BIOME)));
         }
         MinecraftServer server = event.getServer();
