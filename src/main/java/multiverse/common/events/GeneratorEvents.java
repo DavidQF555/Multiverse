@@ -4,9 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
 import multiverse.common.Multiverse;
-import multiverse.common.world.worldgen.ShapesReader;
 import multiverse.common.world.worldgen.generators.GeneratorHelper;
-import multiverse.common.world.worldgen.generators.GeneratorSettingsReader;
+import multiverse.common.world.worldgen.generators.GeneratorSettings;
 import multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistryAccess;
@@ -21,6 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -34,11 +34,10 @@ public final class GeneratorEvents {
 
     @SuppressWarnings("deprecation")
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onServerAboutToStartHigh(ServerAboutToStartEvent event) {
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
         MinecraftServer server = event.getServer();
-        GeneratorSettingsReader settings = new GeneratorSettingsReader(new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
-        settings.load(server);
-        int count = settings.getDimensionsCount();
+        GeneratorSettings.load(server, new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
+        int count = GeneratorSettings.getSettings().count();
         LOGGER.info("Configured " + count + " generated multiverse dimensions");
         RegistryAccess access = server.registryAccess();
         MappedRegistry<LevelStem> registry = (MappedRegistry<LevelStem>) access.registryOrThrow(Registries.LEVEL_STEM);
@@ -48,9 +47,7 @@ public final class GeneratorEvents {
                 .map(pair -> pair.mapSecond(loc -> ResourceKey.create(Registries.LEVEL_STEM, loc)))
                 .toList();
         if (!missing.isEmpty()) {
-            ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
-            shapes.load(server);
-            ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
+            ShapeDimensionGenerator provider = ShapeDimensionGenerator.load(server, new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
             registry.unfreeze();
             long seed = server.getWorldData().worldGenOptions().seed();
             for (Pair<Integer, ResourceKey<LevelStem>> pair : missing) {
