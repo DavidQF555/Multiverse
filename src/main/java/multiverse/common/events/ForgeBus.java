@@ -38,7 +38,7 @@ public final class ForgeBus {
         PacketDistributor.sendToPlayer(player, new UpdateColorSeedPacket(seed));
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
         DimensionHelper.loadTargetDimensions(event.getServer(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "targets.json"));
     }
