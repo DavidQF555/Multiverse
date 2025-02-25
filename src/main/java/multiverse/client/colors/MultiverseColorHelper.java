@@ -2,10 +2,6 @@ package multiverse.client.colors;
 
 import multiverse.common.ServerConfigs;
 import multiverse.common.world.DimensionHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
@@ -16,8 +12,13 @@ public final class MultiverseColorHelper {
 
     private static final long FACTOR = 55555L;
     private static final Random RANDOM = new Random(0);
+    private static long baseSeed;
 
     private MultiverseColorHelper() {
+    }
+
+    public static void setBaseSeed(long seed) {
+        baseSeed = seed;
     }
 
     public static int[] getColors(Random rand, int n) {
@@ -45,24 +46,12 @@ public final class MultiverseColorHelper {
     }
 
     public static int[] getColors(ResourceKey<Level> dim, int n) {
-        return getColors(DimensionHelper.resourceLocationToSeed(dim.location(), getBaseSeed() + ServerConfigs.INSTANCE.colorSeedOffset.get(), FACTOR), n);
+        return getColors(DimensionHelper.resourceLocationToSeed(dim.location(), baseSeed + ServerConfigs.INSTANCE.colorSeedOffset.get(), FACTOR), n);
     }
 
     private static int[] getColors(long seed, int n) {
         RANDOM.setSeed(seed);
         return getColors(RANDOM, n);
-    }
-
-    private static long getBaseSeed() {
-        ClientPacketListener listener = Minecraft.getInstance().getConnection();
-        if (listener != null) {
-            return listener.registryAccess().lookup(Registries.DIMENSION)
-                    .flatMap(registry -> registry.get(Level.OVERWORLD))
-                    .filter(Holder::isBound)
-                    .map(Holder::value)
-                    .map(world -> world.getBiomeManager().biomeZoomSeed).orElse(0L);
-        }
-        return 0;
     }
 
 }

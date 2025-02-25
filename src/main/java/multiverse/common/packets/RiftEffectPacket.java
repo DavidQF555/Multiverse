@@ -53,7 +53,7 @@ public class RiftEffectPacket implements CustomPacketPayload {
 
     @Override
     public Type<? extends RiftEffectPacket> type() {
-        return PacketRegistry.RIFT_PARTICLES;
+        return PacketRegistry.RIFT_EFFECT;
     }
 
 }
