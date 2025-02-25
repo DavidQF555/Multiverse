@@ -10,8 +10,9 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class PacketRegistry {
 
-    public static final CustomPacketPayload.Type<RiftEffectPacket> RIFT_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_particles"));
+    public static final CustomPacketPayload.Type<RiftEffectPacket> RIFT_EFFECT = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_effect"));
     public static final CustomPacketPayload.Type<RiftExplosionParticlesPacket> RIFT_EXPLOSION_PARTICLES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "rift_explosion_particles"));
+    public static final CustomPacketPayload.Type<UpdateColorSeedPacket> UPDATE_COLOR_SEED = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "update_color_seed"));
 
     private PacketRegistry() {
     }
@@ -20,7 +21,7 @@ public final class PacketRegistry {
     public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
         event.registrar("1")
                 .playToClient(
-                        RIFT_PARTICLES,
+                        RIFT_EFFECT,
                         RiftEffectPacket.CODEC,
                         RiftEffectPacket.HANDLER
                 )
@@ -28,6 +29,10 @@ public final class PacketRegistry {
                         RIFT_EXPLOSION_PARTICLES,
                         RiftExplosionParticlesPacket.CODEC,
                         RiftExplosionParticlesPacket.HANDLER
+                ).playToClient(
+                        UPDATE_COLOR_SEED,
+                        UpdateColorSeedPacket.CODEC,
+                        UpdateColorSeedPacket.HANDLER
                 );
     }
 

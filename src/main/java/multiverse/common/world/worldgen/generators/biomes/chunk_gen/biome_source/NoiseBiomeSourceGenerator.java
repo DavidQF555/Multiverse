@@ -1,23 +1,39 @@
 package multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import multiverse.common.util.MultiverseConfig;
+import multiverse.common.world.DimensionHelper;
 import multiverse.common.world.worldgen.MultiverseType;
-import multiverse.common.world.worldgen.biomes.LazyMultiverseBiomeSource;
+import multiverse.common.world.worldgen.biomes.MultiverseBiomes;
+import multiverse.common.world.worldgen.generators.GeneratorSettings;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 
-public class NoiseBiomeSourceGenerator implements BiomeSourceGenerator<LazyMultiverseBiomeSource> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class NoiseBiomeSourceGenerator implements BiomeSourceGenerator<MultiNoiseBiomeSource> {
 
     public static final MapCodec<NoiseBiomeSourceGenerator> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             Codec.INT.fieldOf("min_y").forGetter(val -> val.minY),
             Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)
     ).apply(inst, NoiseBiomeSourceGenerator::new));
-    private static final long OFFSET = 55555;
+    private static final long FACTOR = 5555555555L;
+    private static final long OFFSET = 55555L;
     private final int minY, maxY;
 
     public NoiseBiomeSourceGenerator(int minY, int maxY) {
@@ -25,9 +41,62 @@ public class NoiseBiomeSourceGenerator implements BiomeSourceGenerator<LazyMulti
         this.maxY = maxY;
     }
 
+    private static Climate.ParameterList<Holder<Biome>> parameters(HolderLookup.RegistryLookup<Biome> registry, HolderLookup.RegistryLookup<DimensionType> dimType, int minY, int maxY, long seed, double temperature, double humidity, MultiverseType type, HolderSet<Biome> biomes) {
+        MultiverseBiomes ref = MultiverseConfig.getBiomesManager();
+        List<Pair<Climate.ParameterPoint, Holder<Biome>>> all = new ArrayList<>();
+        RandomSource random = new SingleThreadedRandomSource(0);
+        for (Holder<Biome> holder : biomes) {
+            holder.unwrapKey().ifPresent(key -> {
+                if (ref.is(type, key)) {
+                    random.setSeed(DimensionHelper.resourceLocationToSeed(key.location(), seed + OFFSET, FACTOR));
+                    for (Climate.ParameterPoint orig : ref.getParameters(key)) {
+                        Climate.Parameter depth = translateDepth(orig.depth(), minY, maxY, dimType.getOrThrow(type.getNormalType()).value());
+                        Climate.Parameter temp = offset(orig.temperature(), random, temperature);
+                        Climate.Parameter humid = offset(orig.humidity(), random, humidity);
+                        Climate.ParameterPoint point = new Climate.ParameterPoint(temp, humid, orig.continentalness(), orig.erosion(), depth, orig.weirdness(), orig.offset());
+                        all.add(Pair.of(point, holder));
+                    }
+                }
+            });
+        }
+        if (all.isEmpty()) {
+            all.add(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), registry.getOrThrow(Biomes.THE_VOID)));
+        }
+        return new Climate.ParameterList<>(all);
+    }
+
+    private static Climate.Parameter offset(Climate.Parameter parameter, RandomSource random, double range) {
+        float offset = (float) (random.nextGaussian() * range);
+        return Climate.Parameter.span(
+                Mth.clamp(Climate.unquantizeCoord(parameter.min()) + offset, -2, 2),
+                Mth.clamp(Climate.unquantizeCoord(parameter.max()) + offset, -2, 2)
+        );
+    }
+
+    //needed because depth function has a constant lerp of y from -64 to 320, scaled from 1.5 to -1.5
+    private static Climate.Parameter translateDepth(Climate.Parameter depth, int minY, int maxY, DimensionType from) {
+        double start = Climate.unquantizeCoord(depth.min());
+        double end = Climate.unquantizeCoord(depth.max());
+
+        double fDepthStart = Mth.clampedMap(from.minY(), -64, 320, 1.5, -1.5);
+        double fDepthEnd = Mth.clampedMap(from.minY() + from.height(), -64, 320, 1.5, -1.5);
+
+        double fStartFactor = Mth.inverseLerp(start, fDepthStart, fDepthEnd);
+        double fEndFactor = Mth.inverseLerp(end, fDepthStart, fDepthEnd);
+
+        double tDepthStart = Mth.clampedMap(minY, -64, 320, 1.5, -1.5);
+        double tDepthEnd = Mth.clampedMap(maxY, -64, 320, 1.5, -1.5);
+
+        float nStart = (float) Mth.lerp(fStartFactor, tDepthStart, tDepthEnd);
+        float nEnd = (float) Mth.lerp(fEndFactor, tDepthStart, tDepthEnd);
+
+        return Climate.Parameter.span(nStart, nEnd);
+    }
+
     @Override
-    public LazyMultiverseBiomeSource generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
-        return new LazyMultiverseBiomeSource(access.lookupOrThrow(Registries.BIOME), access.lookupOrThrow(Registries.DIMENSION_TYPE), minY, maxY, type, biomes, seed + OFFSET);
+    public MultiNoiseBiomeSource generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
+        GeneratorSettings settings = GeneratorSettings.getSettings();
+        return MultiNoiseBiomeSource.createFromList(parameters(access.lookupOrThrow(Registries.BIOME), access.lookupOrThrow(Registries.DIMENSION_TYPE), minY, maxY, seed, settings.temperature(), settings.humidity(), type, biomes));
     }
 
     @Override

@@ -1,11 +1,7 @@
 package multiverse.client.colors;
 
 import multiverse.common.ServerConfigs;
-import multiverse.common.world.RiftHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
+import multiverse.common.world.DimensionHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
@@ -14,58 +10,48 @@ import java.util.Random;
 
 public final class MultiverseColorHelper {
 
+    private static final long FACTOR = 55555L;
     private static final Random RANDOM = new Random(0);
+    private static long baseSeed;
 
     private MultiverseColorHelper() {
     }
 
+    public static void setBaseSeed(long seed) {
+        baseSeed = seed;
+    }
+
     public static int[] getColors(Random rand, int n) {
         int[] colors = new int[n];
-        int fixed = rand.nextInt(3);
-        int half = rand.nextInt(2);
-        if (half >= fixed) {
-            half++;
-        }
-        int free = 0;
-        if (fixed != 1 && half != 1) {
-            free = 1;
-        } else if (fixed != 2 && half != 2) {
-            free = 2;
+        int[] bounds = new int[]{0, 1, 2};
+        for (int i = 2; i >= 1; i--) {
+            int j = rand.nextInt(i + 1);
+            int temp = bounds[i];
+            bounds[i] = bounds[j];
+            bounds[j] = temp;
         }
         boolean side1 = rand.nextBoolean();
         boolean side2 = rand.nextBoolean();
         for (int i = 0; i < n; i++) {
             int[] color = new int[3];
-            color[fixed] = side1 ? 0x00 : 0xFF;
-            color[half] = rand.nextInt(128);
+            color[bounds[0]] = side1 ? 0x00 : 0xFF;
+            color[bounds[1]] = rand.nextInt(128);
             if (side2) {
-                color[half] = 0xFF - color[half];
+                color[bounds[1]] = 0xFF - color[bounds[1]];
             }
-            color[free] = rand.nextInt(256);
+            color[bounds[2]] = rand.nextInt(256);
             colors[i] = ARGB.color(0xFF, color[0], color[1], color[2]);
         }
         return colors;
     }
 
     public static int[] getColors(ResourceKey<Level> dim, int n) {
-        return getColors(RiftHelper.resourceLocationToSeed(getBaseSeed() + ServerConfigs.INSTANCE.colorSeedOffset.get(), dim.location()), n);
+        return getColors(DimensionHelper.resourceLocationToSeed(dim.location(), baseSeed + ServerConfigs.INSTANCE.colorSeedOffset.get(), FACTOR), n);
     }
 
     private static int[] getColors(long seed, int n) {
         RANDOM.setSeed(seed);
         return getColors(RANDOM, n);
-    }
-
-    private static long getBaseSeed() {
-        ClientPacketListener listener = Minecraft.getInstance().getConnection();
-        if (listener != null) {
-            return listener.registryAccess().lookup(Registries.DIMENSION)
-                    .flatMap(registry -> registry.get(Level.OVERWORLD))
-                    .filter(Holder::isBound)
-                    .map(Holder::value)
-                    .map(world -> world.getBiomeManager().biomeZoomSeed).orElse(0L);
-        }
-        return 0;
     }
 
 }
