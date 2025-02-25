@@ -14,7 +14,7 @@ public class ServerConfigs {
         SPEC = pair.getRight();
     }
 
-    public final ModConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, temperatureScale, humidityScale, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
+    public final ModConfigSpec.DoubleValue travelerSpawnChance, minRiftWidth, maxRiftWidth, fireworkRate, fireRate, minSpawnRadius, maxSpawnRadius, spawnOffset, swordMinWidth, swordMaxWidth, swordWidthRate, swordMinHeight, swordMaxHeight, swordHeightRate, swordSpawnDistance, coreRange, bountyRate, conquerorMinSpawnDist, conquerorMaxSpawnDist, conquerorMaxSpawnHDist, conquerorDistanceThreshold, shieldRange;
     public final ModConfigSpec.IntValue riftRange, minRiftHeight, maxRiftHeight, spawnPeriod, spawnCount, slowFalling, swordMinCharge, swordCooldown, armorMinOffset, armorMaxOffset, armorMaxSpawn, armorSpawnPeriod, doppelTimeout, travelerMaxDoppel, travelerDoppelPeriod, travelerMinRange, travelerMaxRange, conquerorMobThreshold, conquerorCastTime, conquerorCooldown, conquerorSlowFallingDuration, conquerorSlowFallingAmplifier, conquerorSpawnCount, warpRingCooldown;
     public final ModConfigSpec.LongValue colorSeedOffset;
     public final ModConfigSpec.BooleanValue riftSwordTemporary, coreTemporary;
@@ -122,11 +122,6 @@ public class ServerConfigs {
                 .defineInRange("conquerorSlowFallingAmplifier", 1, 0, Integer.MAX_VALUE);
         conquerorSpawnCount = builder.comment("This is the number of raiders that spawn from every rift the conqueror summons. ")
                 .defineInRange("conquerorSpawnCount", 3, 0, Integer.MAX_VALUE);
-        builder.pop().push("Terrablender").comment("The following settings only apply if Terrablender is included. ");
-        temperatureScale = builder.comment("This is the scale of the Gaussian random temperature offset applied to biome parameters to mitigate collisions. ")
-                .defineInRange("temperatureScale", 0.15, 0.0, Double.MAX_VALUE);
-        humidityScale = builder.comment("This is the scale of the Gaussian random humidity offset applied to biome parameters to mitigate collisions. ")
-                .defineInRange("humidityScale", 0.15, 0.0, Double.MAX_VALUE);
         builder.pop().push("Miscellaneous");
         shieldRange = builder.comment("This is the range in blocks that the warp shield item warps projectiles. ")
                 .defineInRange("shieldRange", 3, 0, Double.MAX_VALUE);

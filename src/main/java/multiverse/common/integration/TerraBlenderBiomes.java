@@ -1,14 +1,11 @@
 package multiverse.common.integration;
 
-import multiverse.common.ServerConfigs;
 import multiverse.common.world.worldgen.MultiverseSurfaceRuleData;
 import multiverse.common.world.worldgen.MultiverseType;
 import multiverse.common.world.worldgen.biomes.MultiverseBiomes;
 import multiverse.common.world.worldgen.biomes.VanillaMultiverseBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
@@ -98,28 +95,6 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
                 .collect(Collectors.toList());
     }
 
-    private static Climate.ParameterPoint offset(Climate.ParameterPoint base, RandomSource random) {
-        float tOffset = (float) (random.nextGaussian() * ServerConfigs.INSTANCE.temperatureScale.get());
-        float hOffset = (float) (random.nextGaussian() * ServerConfigs.INSTANCE.humidityScale.get());
-        Climate.Parameter temperature = Climate.Parameter.span(
-                Mth.clamp(Climate.unquantizeCoord(base.temperature().min()) + tOffset, -2.0f, 2.0f),
-                Mth.clamp(Climate.unquantizeCoord(base.temperature().min()) + tOffset, -2.0f, 2.0f)
-        );
-        Climate.Parameter humidity = Climate.Parameter.span(
-                Mth.clamp(Climate.unquantizeCoord(base.humidity().min()) + hOffset, -2.0f, 2.0f),
-                Mth.clamp(Climate.unquantizeCoord(base.humidity().min()) + hOffset, -2.0f, 2.0f)
-        );
-        return new Climate.ParameterPoint(
-                temperature,
-                humidity,
-                base.continentalness(),
-                base.erosion(),
-                base.depth(),
-                base.weirdness(),
-                base.offset()
-        );
-    }
-
     @Override
     public Set<ResourceKey<Biome>> getOverworldBiomes() {
         return overworldBiomes;
@@ -136,13 +111,8 @@ public class TerraBlenderBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome, RandomSource random) {
-        List<Climate.ParameterPoint> original = parameters.getOrDefault(biome, ZERO);
-        List<Climate.ParameterPoint> offset = new ArrayList<>();
-        for (Climate.ParameterPoint base : original) {
-            offset.add(offset(base, random));
-        }
-        return offset;
+    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome) {
+        return parameters.getOrDefault(biome, ZERO);
     }
 
     @Override

@@ -2,12 +2,9 @@ package multiverse.common.events;
 
 import multiverse.common.Multiverse;
 import multiverse.common.packets.RiftEffectPacket;
-import multiverse.common.util.MultiverseConfig;
 import multiverse.common.world.ArrowSummonsData;
-import multiverse.common.world.TargetDimensionsReader;
+import multiverse.common.world.DimensionHelper;
 import multiverse.registration.AttachmentTypeRegistry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,6 +18,8 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.io.IOException;
+
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class ForgeBus {
 
@@ -28,10 +27,8 @@ public final class ForgeBus {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onServerAboutToStartLow(ServerAboutToStartEvent event) {
-        TargetDimensionsReader targets = new TargetDimensionsReader(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "targets.json"));
-        targets.load(event.getServer());
-        MultiverseConfig.setTargetDimensions(targets.getDimensions().stream().map(loc -> ResourceKey.create(Registries.DIMENSION, loc)).toList());
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
+        DimensionHelper.loadTargetDimensions(event.getServer(), ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "targets.json"));
     }
 
     @SubscribeEvent

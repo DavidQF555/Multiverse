@@ -12,7 +12,6 @@ import multiverse.registration.POIRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -202,27 +201,6 @@ public final class RiftHelper {
             doRiftSpawnEffect(target, b, from.dimension());
             destroyConnectedBlocks(target, b, ServerConfigs.INSTANCE.coreRange.get());
         });
-    }
-
-    public static long resourceLocationToSeed(long base, ResourceLocation dir) {
-        String loc = dir.getNamespace();
-        String path = dir.getPath();
-        int i = 0;
-        int j = 0;
-        while (i < loc.length() || j < path.length()) {
-            char c;
-            if (i >= loc.length()) {
-                c = path.charAt(j++);
-            } else if (j >= path.length()) {
-                c = loc.charAt(i++);
-            } else if ((i + j) % 2 == 0) {
-                c = path.charAt(j++);
-            } else {
-                c = loc.charAt(i++);
-            }
-            base += FACTOR * c * (i + j);
-        }
-        return base + ServerConfigs.INSTANCE.colorSeedOffset.get();
     }
 
 }

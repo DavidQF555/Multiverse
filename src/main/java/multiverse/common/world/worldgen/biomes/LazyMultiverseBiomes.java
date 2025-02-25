@@ -3,7 +3,6 @@ package multiverse.common.world.worldgen.biomes;
 import com.google.common.base.Suppliers;
 import multiverse.common.world.worldgen.MultiverseType;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.SurfaceRules;
@@ -36,8 +35,8 @@ public class LazyMultiverseBiomes implements MultiverseBiomes {
     }
 
     @Override
-    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome, RandomSource random) {
-        return biomes.get().getParameters(biome, random);
+    public List<Climate.ParameterPoint> getParameters(ResourceKey<Biome> biome) {
+        return biomes.get().getParameters(biome);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package multiverse.client.colors;
 
 import multiverse.common.ServerConfigs;
-import multiverse.common.world.RiftHelper;
+import multiverse.common.world.DimensionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.Holder;
@@ -14,6 +14,7 @@ import java.util.Random;
 
 public final class MultiverseColorHelper {
 
+    private static final long FACTOR = 55555L;
     private static final Random RANDOM = new Random(0);
 
     private MultiverseColorHelper() {
@@ -44,7 +45,7 @@ public final class MultiverseColorHelper {
     }
 
     public static int[] getColors(ResourceKey<Level> dim, int n) {
-        return getColors(RiftHelper.resourceLocationToSeed(getBaseSeed() + ServerConfigs.INSTANCE.colorSeedOffset.get(), dim.location()), n);
+        return getColors(DimensionHelper.resourceLocationToSeed(dim.location(), getBaseSeed() + ServerConfigs.INSTANCE.colorSeedOffset.get(), FACTOR), n);
     }
 
     private static int[] getColors(long seed, int n) {
