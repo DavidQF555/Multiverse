@@ -3,7 +3,6 @@ package multiverse.common.events;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
 import multiverse.common.Multiverse;
-import multiverse.common.world.worldgen.ShapesReader;
 import multiverse.common.world.worldgen.generators.GeneratorHelper;
 import multiverse.common.world.worldgen.generators.GeneratorSettings;
 import multiverse.common.world.worldgen.generators.ShapeDimensionGenerator;
@@ -19,6 +18,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
+import java.io.IOException;
+
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class GeneratorEvents {
 
@@ -28,15 +29,13 @@ public final class GeneratorEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onServerAboutToStartHigh(ServerAboutToStartEvent event) {
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
         MinecraftServer server = event.getServer();
         GeneratorSettings.load(server, new ResourceLocation(Multiverse.MOD_ID, "generator.json"));
         int count = GeneratorSettings.getSettings().count();
         LOGGER.info("Configured " + count + " generated multiverse dimensions");
         if (count > 0) {
-            ShapesReader shapes = new ShapesReader(new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
-            shapes.load(server);
-            ShapeDimensionGenerator provider = new ShapeDimensionGenerator(shapes.getShapes());
+            ShapeDimensionGenerator provider = ShapeDimensionGenerator.load(server, new ResourceLocation(Multiverse.MOD_ID, "shapes.json"));
             WritableRegistry<LevelStem> registry = (WritableRegistry<LevelStem>) server.getWorldData().worldGenSettings().dimensions();
             long seed = server.getWorldData().worldGenSettings().seed();
             for (int i = 1; i <= count; i++) {
