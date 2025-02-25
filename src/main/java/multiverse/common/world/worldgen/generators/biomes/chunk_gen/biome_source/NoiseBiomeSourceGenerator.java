@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.world.worldgen.MultiverseType;
 import multiverse.common.world.worldgen.biomes.LazyMultiverseBiomeSource;
+import multiverse.common.world.worldgen.generators.GeneratorSettings;
 import multiverse.registration.custom.biomes.BiomeSourceGeneratorTypeRegistry;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -29,7 +30,8 @@ public class NoiseBiomeSourceGenerator implements BiomeSourceGenerator<LazyMulti
 
     @Override
     public LazyMultiverseBiomeSource generate(RegistryAccess access, long seed, RandomSource random, MultiverseType type, HolderSet<Biome> biomes) {
-        return new LazyMultiverseBiomeSource(access.registryOrThrow(Registry.BIOME_REGISTRY), access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY), minY, maxY, type, biomes);
+        GeneratorSettings settings = GeneratorSettings.getSettings();
+        return new LazyMultiverseBiomeSource(access.registryOrThrow(Registry.BIOME_REGISTRY), access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY), minY, maxY, seed, settings.temperature(), settings.humidity(), type, biomes);
     }
 
     @Override
