@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Keyable;
 import com.mojang.serialization.MapCodec;
 import multiverse.common.world.worldgen.MultiverseType;
-import multiverse.registration.custom.biomes.BiomeDimensionTypeGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeDimensionTypeGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;

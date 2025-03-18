@@ -1,4 +1,4 @@
-package multiverse.registration.custom.biomes;
+package multiverse.registration.custom.generator.biomes;
 
 import com.mojang.serialization.MapCodec;
 import multiverse.common.Multiverse;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class BiomeDimensionTypeGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<MapCodec<? extends BiomeDimensionTypeGenerator>>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "dimension_type_generator_type"));
+    public static final ResourceKey<Registry<MapCodec<? extends BiomeDimensionTypeGenerator>>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "generator/dimension_type_types"));
     public static final DeferredRegister<MapCodec<? extends BiomeDimensionTypeGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends BiomeDimensionTypeGenerator>, MapCodec<WeightedDimensionTypeGenerator>> WEIGHTED = register("weighted", () -> WeightedDimensionTypeGenerator.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiomeDimensionTypeGenerator>, MapCodec<TypeMapDimensionTypeGenerator>> TYPE_MAP = register("type_map", () -> TypeMapDimensionTypeGenerator.CODEC);

@@ -3,7 +3,7 @@ package multiverse.common.world.worldgen.generators.biomes.chunk_gen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import multiverse.common.world.worldgen.generators.biomes.BiomeFieldGenerator;
-import multiverse.registration.custom.biomes.BiomeChunkGeneratorGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeChunkGeneratorGeneratorTypeRegistry;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
 import java.util.function.Function;

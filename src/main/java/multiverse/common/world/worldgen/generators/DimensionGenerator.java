@@ -2,7 +2,7 @@ package multiverse.common.world.worldgen.generators;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import multiverse.registration.custom.DimensionGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.DimensionGeneratorTypeRegistry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.dimension.LevelStem;
