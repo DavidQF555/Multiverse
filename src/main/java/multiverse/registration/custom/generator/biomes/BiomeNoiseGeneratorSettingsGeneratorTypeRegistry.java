@@ -1,4 +1,4 @@
-package multiverse.registration.custom.biomes;
+package multiverse.registration.custom.generator.biomes;
 
 import com.mojang.serialization.Codec;
 import multiverse.common.Multiverse;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeNoiseGeneratorSettingsGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends BiomeNoiseGeneratorSettingsGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "noise_settings_generator_type"));
+    public static final ResourceKey<Registry<Codec<? extends BiomeNoiseGeneratorSettingsGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/noise_settings_types"));
     public static final DeferredRegister<Codec<? extends BiomeNoiseGeneratorSettingsGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final RegistryObject<Codec<TypeMapNoiseGeneratorSettingsGenerator>> TYPE_MAP = register("type_map", () -> TypeMapNoiseGeneratorSettingsGenerator.CODEC);
     private static Supplier<IForgeRegistry<Codec<? extends BiomeNoiseGeneratorSettingsGenerator>>> registry = null;

@@ -1,4 +1,4 @@
-package multiverse.registration.custom.biomes;
+package multiverse.registration.custom.generator.biomes;
 
 import multiverse.common.Multiverse;
 import multiverse.common.world.worldgen.generators.biomes.chunk_gen.noise_settings.BiomeNoiseGeneratorSettingsGenerator;
@@ -12,7 +12,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeNoiseGeneratorSettingsGeneratorRegistry {
 
-    public static final ResourceKey<Registry<BiomeNoiseGeneratorSettingsGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "noise_settings_generator"));
+    public static final ResourceKey<Registry<BiomeNoiseGeneratorSettingsGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/noise_settings"));
 
     private BiomeNoiseGeneratorSettingsGeneratorRegistry() {
     }

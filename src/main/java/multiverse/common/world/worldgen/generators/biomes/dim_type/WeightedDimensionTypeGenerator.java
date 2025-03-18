@@ -3,7 +3,7 @@ package multiverse.common.world.worldgen.generators.biomes.dim_type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.world.worldgen.MultiverseType;
-import multiverse.registration.custom.biomes.BiomeDimensionTypeGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeDimensionTypeGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;

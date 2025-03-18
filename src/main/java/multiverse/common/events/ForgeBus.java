@@ -4,7 +4,6 @@ import multiverse.common.Multiverse;
 import multiverse.common.packets.RiftEffectPacket;
 import multiverse.common.packets.UpdateColorSeedPacket;
 import multiverse.common.world.ArrowSummonsData;
-import multiverse.common.world.DimensionHelper;
 import multiverse.common.world.capabilities.NBTCapabilityProvider;
 import multiverse.common.world.capabilities.SummonedData;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -21,14 +20,12 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,11 +50,6 @@ public final class ForgeBus {
         if (event.getObject() instanceof Raider) {
             event.addCapability(SUMMONED_DATA, new NBTCapabilityProvider<>(SummonedData.CAPABILITY, new SummonedData()));
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) throws IOException {
-        DimensionHelper.loadTargetDimensions(event.getServer(), new ResourceLocation(Multiverse.MOD_ID, "targets.json"));
     }
 
     @SubscribeEvent

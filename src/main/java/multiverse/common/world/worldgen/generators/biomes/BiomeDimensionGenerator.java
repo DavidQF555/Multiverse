@@ -1,7 +1,7 @@
 package multiverse.common.world.worldgen.generators.biomes;
 
 import com.mojang.serialization.Codec;
-import multiverse.registration.custom.biomes.BiomeDimensionGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeDimensionGeneratorTypeRegistry;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.dimension.LevelStem;
 
