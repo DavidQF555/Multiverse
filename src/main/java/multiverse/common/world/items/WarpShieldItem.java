@@ -51,7 +51,7 @@ public class WarpShieldItem extends SimpleLoreItem {
             double range = ServerConfigs.INSTANCE.shieldRange.get();
             AABB bounds = AABB.ofSize(player.getEyePosition(), range * 2, range * 2, range * 2);
             for (Projectile proj : player.level.getEntitiesOfClass(Projectile.class, bounds)) {
-                RiftHelper.randomTargetDimension(player.getRandom(), player.level.dimension()).ifPresent(target -> WarpTeleporter.warp(proj, target));
+                RiftHelper.randomTargetDimension(player.level.getServer(), player.getRandom(), player.level.dimension()).ifPresent(target -> WarpTeleporter.warp(proj, target));
             }
         }
     }

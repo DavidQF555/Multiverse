@@ -1,10 +1,10 @@
 package multiverse.common.world.worldgen.features;
 
 import com.mojang.serialization.Codec;
-import multiverse.common.world.RiftHelper;
 import multiverse.common.world.RiftPlacementHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,7 +30,8 @@ public class RiftFeature extends Feature<RiftConfig> {
         Random rand = context.random();
         BlockPos origin = context.origin();
         BlockState state = config.getBlockState();
-        Optional<ResourceKey<Level>> target = RiftHelper.randomTargetDimension(rand, reader.getLevel().dimension());
+        ServerLevel world = reader.getLevel();
+        Optional<ResourceKey<Level>> target = config.getTarget(world.getServer().levelKeys(), rand, reader.getLevel().dimension());
         if (target.isEmpty()) {
             return false;
         }

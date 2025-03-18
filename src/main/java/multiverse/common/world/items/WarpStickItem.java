@@ -50,7 +50,7 @@ public class WarpStickItem extends SimpleLoreItem {
                 return InteractionResultHolder.pass(stack);
             }
         } else if (world instanceof ServerLevel) {
-            MultiversalToolHelper.setRandomTarget(world, stack);
+            MultiversalToolHelper.setRandomTarget((ServerLevel) world, stack);
         }
         return InteractionResultHolder.consume(stack);
     }

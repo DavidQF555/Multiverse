@@ -1,5 +1,5 @@
 {
-  "type": "whitelist",
+  "invert": false,
   "values": [
     "overworld",
     "multiverse:1",

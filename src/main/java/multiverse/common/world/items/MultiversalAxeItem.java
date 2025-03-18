@@ -58,7 +58,7 @@ public class MultiversalAxeItem extends AxeItem {
                 return InteractionResultHolder.pass(stack);
             }
         } else if (world instanceof ServerLevel) {
-            MultiversalToolHelper.setRandomTarget(world, stack);
+            MultiversalToolHelper.setRandomTarget((ServerLevel) world, stack);
         }
         return InteractionResultHolder.consume(stack);
     }

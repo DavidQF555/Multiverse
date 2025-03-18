@@ -3,7 +3,7 @@ package multiverse.registration.worldgen;
 import com.google.common.collect.ImmutableSet;
 import multiverse.common.Multiverse;
 import multiverse.common.ServerConfigs;
-import multiverse.common.world.DimensionsList;
+import multiverse.common.world.DimensionList;
 import multiverse.common.world.blocks.RiftBlock;
 import multiverse.common.world.worldgen.features.RiftConfig;
 import multiverse.common.world.worldgen.features.RiftFeature;
@@ -30,7 +30,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public final class FeatureRegistry {
@@ -41,8 +40,8 @@ public final class FeatureRegistry {
     public static final RegistryObject<RiftFeature> RIFT = register("rift", () -> new RiftFeature(RiftConfig.CODEC));
     public static final RegistryObject<WaterLoggedBlockFeature> WATERLOGGED_BLOCK = register("waterlogged_block", () -> new WaterLoggedBlockFeature(SimpleBlockConfiguration.CODEC));
 
-    private static final Set<ResourceLocation> CLUSTER_DIM;
-    private static final Set<ResourceLocation> RIFT_DIM;
+    private static final Holder<DimensionList> CLUSTER_DIM, RIFT_DIM;
+
     static {
         ImmutableSet.Builder<ResourceLocation> cluster = ImmutableSet.builder();
         ImmutableSet.Builder<ResourceLocation> rift = ImmutableSet.builder();
@@ -52,12 +51,12 @@ public final class FeatureRegistry {
             cluster.add(loc);
             rift.add(loc);
         }
-        CLUSTER_DIM = cluster.build();
-        RIFT_DIM = rift.build();
+        CLUSTER_DIM = Holder.direct(new DimensionList(cluster.build(), false));
+        RIFT_DIM = Holder.direct(new DimensionList(rift.build(), false));
     }
 
-    public static final RegistryObject<PlacedFeature> KALEIDITE_CLUSTER = registerPlaced("kaleidite_cluster", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values())))), List.of(new DimensionPlacement(new DimensionsList(DimensionsList.ListOperation.WHITELIST, CLUSTER_DIM)), PlacementUtils.FULL_RANGE, CountPlacement.of(16), InSquarePlacement.spread(), BiomeFilter.biome())));
-    public static final RegistryObject<PlacedFeature> PLACED_RIFT = registerPlaced("rift", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false)))), List.of(new DimensionPlacement(new DimensionsList(DimensionsList.ListOperation.WHITELIST, RIFT_DIM)), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()), BiomeFilter.biome())));
+    public static final RegistryObject<PlacedFeature> PLACED_RIFT = registerPlaced("rift", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(RIFT.get(), RiftConfig.of(RIFT_DIM, BlockRegistry.RIFT.get().defaultBlockState().setValue(RiftBlock.TEMPORARY, false)))), List.of(new DimensionPlacement(RIFT_DIM), BiomeFilter.biome(), RarityFilter.onAverageOnceEvery(ServerConfigs.INSTANCE.riftChance.get()))));
+    public static final RegistryObject<PlacedFeature> KALEIDITE_CLUSTER = registerPlaced("kaleidite_cluster", () -> new PlacedFeature(Holder.direct(new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(HolderSet.direct(FeatureRegistry::getDirectional, Direction.values())))), List.of(new DimensionPlacement(CLUSTER_DIM), PlacementUtils.FULL_RANGE, CountPlacement.of(16), InSquarePlacement.spread(), BiomeFilter.biome())));
 
     private FeatureRegistry() {
     }
