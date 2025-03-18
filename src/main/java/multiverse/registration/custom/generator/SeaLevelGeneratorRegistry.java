@@ -1,4 +1,4 @@
-package multiverse.registration.custom;
+package multiverse.registration.custom.generator;
 
 import multiverse.common.Multiverse;
 import multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea.SeaLevelGenerator;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class SeaLevelGeneratorRegistry {
 
-    public static final ResourceKey<Registry<SeaLevelGenerator>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "sea_level_generator"));
+    public static final ResourceKey<Registry<SeaLevelGenerator>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "generator/sea_levels"));
 
     private SeaLevelGeneratorRegistry() {
     }

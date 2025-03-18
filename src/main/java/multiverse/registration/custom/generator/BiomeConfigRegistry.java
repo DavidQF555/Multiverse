@@ -1,4 +1,4 @@
-package multiverse.registration.custom;
+package multiverse.registration.custom.generator;
 
 import multiverse.common.Multiverse;
 import multiverse.common.world.worldgen.generators.biomes.BiomeConfig;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class BiomeConfigRegistry {
 
-    public static final ResourceKey<Registry<BiomeConfig>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "biome_config"));
+    public static final ResourceKey<Registry<BiomeConfig>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "generator/biome_configs"));
 
     private BiomeConfigRegistry() {
     }

@@ -2,7 +2,7 @@ package multiverse.common.world.worldgen.generators.biomes;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import multiverse.registration.custom.biomes.BiomeDimensionGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeDimensionGeneratorTypeRegistry;
 import net.minecraft.world.level.dimension.LevelStem;
 
 import java.util.function.Function;

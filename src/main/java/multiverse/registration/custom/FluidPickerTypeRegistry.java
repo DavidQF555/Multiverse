@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class FluidPickerTypeRegistry {
 
-    public static final ResourceKey<Registry<MapCodec<? extends SerializableFluidPicker>>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "fluid_picker"));
+    public static final ResourceKey<Registry<MapCodec<? extends SerializableFluidPicker>>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "fluid_pickers"));
     public static final DeferredRegister<MapCodec<? extends SerializableFluidPicker>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends SerializableFluidPicker>, MapCodec<FlatFluidPicker>> FLAT = register("flat", () -> FlatFluidPicker.CODEC);
     public static final DeferredHolder<MapCodec<? extends SerializableFluidPicker>, MapCodec<WaveFluidPicker>> WAVE = register("wave", () -> WaveFluidPicker.CODEC);

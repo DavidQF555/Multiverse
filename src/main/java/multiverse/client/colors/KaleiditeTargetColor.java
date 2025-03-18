@@ -6,10 +6,12 @@ import multiverse.common.Multiverse;
 import multiverse.common.world.items.MultiversalToolHelper;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class KaleiditeTargetColor implements ItemTintSource {
@@ -27,7 +29,8 @@ public class KaleiditeTargetColor implements ItemTintSource {
     @Override
     public int calculate(ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity) {
         if (world != null) {
-            return MultiverseColorHelper.getColors(MultiversalToolHelper.getTarget(stack), 1)[0];
+            ResourceKey<Level> target = MultiversalToolHelper.getTarget(stack);
+            return MultiverseColorHelper.getColors(target == null ? world.dimension() : target, 1)[0];
         }
         return defaultColor;
     }

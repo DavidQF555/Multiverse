@@ -2,7 +2,7 @@ package multiverse.common.world.worldgen;
 
 import com.mojang.serialization.Codec;
 import multiverse.common.world.worldgen.generators.DimensionGenerator;
-import multiverse.registration.custom.MultiverseShapeRegistry;
+import multiverse.registration.custom.generator.MultiverseShapeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 
