@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.world.worldgen.sea.SerializableFluidPicker;
-import multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.SeaLevelGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;

@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.world.worldgen.MultiverseType;
 import multiverse.common.world.worldgen.generators.biomes.chunk_gen.BiomeChunkGeneratorGenerator;
 import multiverse.common.world.worldgen.generators.biomes.dim_type.BiomeDimensionTypeGenerator;
-import multiverse.registration.custom.biomes.BiomeDimensionGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeDimensionGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;

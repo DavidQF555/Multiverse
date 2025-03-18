@@ -1,4 +1,4 @@
-package multiverse.registration.custom;
+package multiverse.registration.custom.generator;
 
 import com.mojang.serialization.MapCodec;
 import multiverse.common.Multiverse;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Multiverse.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class SeaLevelGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<MapCodec<? extends SeaLevelGenerator>>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "sea_level_generator_type"));
+    public static final ResourceKey<Registry<MapCodec<? extends SeaLevelGenerator>>> LOCATION = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Multiverse.MOD_ID, "generator/sea_level_types"));
     public static final DeferredRegister<MapCodec<? extends SeaLevelGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends SeaLevelGenerator>, MapCodec<FlatSeaLevelGenerator>> FLAT = register("flat", () -> FlatSeaLevelGenerator.CODEC);
     public static final DeferredHolder<MapCodec<? extends SeaLevelGenerator>, MapCodec<WaveSeaLevelGenerator>> WAVE = register("wave", () -> WaveSeaLevelGenerator.CODEC);
