@@ -87,7 +87,7 @@ public class RiftSwordItem extends SwordItem {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                MultiversalToolHelper.setRandomTarget(world, stack);
+                MultiversalToolHelper.setRandomTarget((ServerLevel) world, stack);
             }
         } else if (MultiversalToolHelper.getTarget(stack).equals(world.dimension())) {
             return InteractionResultHolder.pass(stack);

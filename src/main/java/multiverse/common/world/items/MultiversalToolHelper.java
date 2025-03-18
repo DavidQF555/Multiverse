@@ -59,9 +59,9 @@ public final class MultiversalToolHelper {
         return false;
     }
 
-    public static void setRandomTarget(Level world, ItemStack stack) {
+    public static void setRandomTarget(ServerLevel world, ItemStack stack) {
         ResourceKey<Level> current = getTarget(stack);
-        RiftHelper.randomTargetDimension(world.getRandom(), current).ifPresent(target -> setTarget(stack, target));
+        RiftHelper.randomTargetDimension(world.getServer(), world.getRandom(), current).ifPresent(target -> setTarget(stack, target));
     }
 
     public static boolean setCurrent(Level world, ItemStack stack) {

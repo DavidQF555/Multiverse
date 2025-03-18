@@ -4,14 +4,15 @@ import multiverse.client.ClientHelper;
 import multiverse.common.Multiverse;
 import multiverse.common.ServerConfigs;
 import multiverse.common.packets.RiftExplosionParticlesPacket;
-import multiverse.common.util.MultiverseConfig;
 import multiverse.common.world.blocks.RiftBlock;
 import multiverse.common.world.blocks.RiftTileEntity;
 import multiverse.registration.BlockRegistry;
 import multiverse.registration.POIRegistry;
+import multiverse.registration.custom.DimensionListRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -71,25 +72,8 @@ public final class RiftHelper {
                 });
     }
 
-    public static Optional<ResourceKey<Level>> randomTargetDimension(RandomSource random, @Nullable ResourceKey<Level> exclude) {
-        List<ResourceKey<Level>> possible = MultiverseConfig.getTargetDimensions();
-        if (possible.isEmpty()) {
-            return Optional.empty();
-        } else if (exclude != null) {
-            int found = possible.indexOf(exclude);
-            if (found != -1) {
-                if (possible.size() == 1) {
-                    return Optional.empty();
-                }
-                int i = random.nextInt(possible.size() - 1);
-                if (i >= found) {
-                    i++;
-                }
-                return Optional.of(possible.get(i));
-            }
-        }
-        int i = random.nextInt(possible.size());
-        return Optional.of(possible.get(i));
+    public static Optional<ResourceKey<Level>> randomTargetDimension(MinecraftServer server, RandomSource random, @Nullable ResourceKey<Level> exclude) {
+        return server.registryAccess().registryOrThrow(DimensionListRegistry.LOCATION).getHolder(DimensionListRegistry.TARGETS).orElseThrow(IllegalStateException::new).value().selectRandom(server.levelKeys(), random, exclude);
     }
 
     public static void placeRandomRift(ServerLevel world, ResourceKey<Level> target, boolean temporary, double width, double height, Vec3 center, Vec3 normal, float angle, RiftPlacementHelper.ReplacementType replacement) {
@@ -117,7 +101,7 @@ public final class RiftHelper {
 
     public static void placeRandomRift(ServerLevel world, boolean temporary, Vec3 center, boolean mob) {
         RiftPlacementHelper.ReplacementType replacement = !mob || world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? RiftPlacementHelper.ReplacementType.DESTROY : RiftPlacementHelper.ReplacementType.NONE;
-        randomTargetDimension(world.getRandom(), world.dimension()).ifPresent(target -> placeRandomRift(world, target, temporary, center, replacement));
+        randomTargetDimension(world.getServer(), world.getRandom(), world.dimension()).ifPresent(target -> placeRandomRift(world, target, temporary, center, replacement));
     }
 
     public static void doRiftSpawnEffect(Level world, BlockPos pos, @Nullable ResourceKey<Level> target) {
