@@ -1,7 +1,7 @@
-package multiverse.registration.custom.biomes;
+package multiverse.registration.custom.generator;
 
 import multiverse.common.Multiverse;
-import multiverse.common.world.worldgen.generators.biomes.dim_type.BiomeDimensionTypeGenerator;
+import multiverse.common.world.worldgen.generators.biomes.BiomeConfig;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -10,16 +10,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class BiomeDimensionTypeGeneratorRegistry {
+public final class BiomeConfigRegistry {
 
-    public static final ResourceKey<Registry<BiomeDimensionTypeGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_type_generator"));
+    public static final ResourceKey<Registry<BiomeConfig>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/biome_configs"));
 
-    private BiomeDimensionTypeGeneratorRegistry() {
+    private BiomeConfigRegistry() {
     }
 
     @SubscribeEvent
     public static void onNewDataPackRegistry(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(LOCATION, BiomeDimensionTypeGenerator.DIRECT_CODEC);
+        event.dataPackRegistry(LOCATION, BiomeConfig.DIRECT_CODEC);
     }
+
 
 }

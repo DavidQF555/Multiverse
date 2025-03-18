@@ -1,4 +1,4 @@
-package multiverse.registration.custom;
+package multiverse.registration.custom.generator;
 
 import com.mojang.serialization.Codec;
 import multiverse.common.Multiverse;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DimensionGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends DimensionGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_generator"));
+    public static final ResourceKey<Registry<Codec<? extends DimensionGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/dimensions"));
     public static final DeferredRegister<Codec<? extends DimensionGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final RegistryObject<Codec<BiomeConfigDimensionGenerator>> BIOME_CONFIG = register("biome_config", () -> BiomeConfigDimensionGenerator.CODEC);
     private static Supplier<IForgeRegistry<Codec<? extends DimensionGenerator>>> registry = null;
