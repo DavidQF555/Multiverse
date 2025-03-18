@@ -4,6 +4,7 @@ import multiverse.common.world.WarpTeleporter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,7 +37,10 @@ public class WarpStickItem extends SimpleLoreItem {
     @Override
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
         if (!pTarget.level.isClientSide() && !pStack.isEmpty()) {
-            WarpTeleporter.warp(pTarget, MultiversalToolHelper.getTarget(pStack));
+            ResourceKey<Level> target = MultiversalToolHelper.getTarget(pStack);
+            if (target != null) {
+                WarpTeleporter.warp(pTarget, target);
+            }
         }
         return false;
     }
