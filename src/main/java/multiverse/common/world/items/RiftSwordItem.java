@@ -53,8 +53,9 @@ public class RiftSwordItem extends SwordItem {
     @Override
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int remaining) {
         if (world instanceof ServerLevel) {
+            ResourceKey<Level> target = MultiversalToolHelper.getTarget(stack);
             int duration = getUseDuration(stack) - remaining - ServerConfigs.INSTANCE.swordMinCharge.get();
-            if (duration >= 0) {
+            if (target != null && duration >= 0) {
                 double width = Math.min(ServerConfigs.INSTANCE.swordMinWidth.get() + ServerConfigs.INSTANCE.swordWidthRate.get() * duration, ServerConfigs.INSTANCE.swordMaxWidth.get());
                 double height = Math.min(ServerConfigs.INSTANCE.swordMinHeight.get() + ServerConfigs.INSTANCE.swordHeightRate.get() * duration, ServerConfigs.INSTANCE.swordMaxHeight.get());
                 HumanoidArm used = entity.getMainArm();
@@ -64,7 +65,7 @@ public class RiftSwordItem extends SwordItem {
                 float angle = used == HumanoidArm.RIGHT ? 45 : -45;
                 Vec3 look = entity.getLookAngle();
                 Vec3 start = entity.getEyePosition();
-                slash((ServerLevel) world, start, look, ServerConfigs.INSTANCE.swordSpawnDistance.get(), width, height, angle, MultiversalToolHelper.getTarget(stack));
+                slash((ServerLevel) world, start, look, ServerConfigs.INSTANCE.swordSpawnDistance.get(), width, height, angle, target);
                 if (entity instanceof Player && !((Player) entity).isCreative()) {
                     ((Player) entity).getCooldowns().addCooldown(this, ServerConfigs.INSTANCE.swordCooldown.get());
                 }
@@ -89,10 +90,13 @@ public class RiftSwordItem extends SwordItem {
             if (!world.isClientSide()) {
                 MultiversalToolHelper.setRandomTarget((ServerLevel) world, stack);
             }
-        } else if (MultiversalToolHelper.getTarget(stack).equals(world.dimension())) {
-            return InteractionResultHolder.pass(stack);
         } else {
-            player.startUsingItem(hand);
+            ResourceKey<Level> target = MultiversalToolHelper.getTarget(stack);
+            if (target == null || target.equals(world.dimension())) {
+                return InteractionResultHolder.pass(stack);
+            } else {
+                player.startUsingItem(hand);
+            }
         }
         return InteractionResultHolder.consume(stack);
     }

@@ -24,6 +24,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
+
 public final class MultiversalToolHelper {
 
     public static final Component LORE = Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_lore"))).withStyle(ChatFormatting.GOLD);
@@ -45,13 +47,14 @@ public final class MultiversalToolHelper {
         return Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header")), Component.translatable(Util.makeDescriptionId("item", new ResourceLocation(Multiverse.MOD_ID, "multiversal_header.hold")), Component.keybind("key.mouse.right"))).withStyle(ChatFormatting.BLUE);
     }
 
+    @Nullable
     public static ResourceKey<Level> getTarget(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
-        return tag.contains("Target", Tag.TAG_STRING) ? ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("Target"))) : Level.OVERWORLD;
+        return tag.contains("Target", Tag.TAG_STRING) ? ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("Target"))) : null;
     }
 
     public static boolean setTarget(ItemStack stack, ResourceKey<Level> target) {
-        if (!getTarget(stack).equals(target)) {
+        if (!target.equals(getTarget(stack))) {
             CompoundTag tag = stack.getOrCreateTagElement(Multiverse.MOD_ID);
             tag.putString("Target", target.location().toString());
             return true;
@@ -71,7 +74,7 @@ public final class MultiversalToolHelper {
     public static void mineBlock(Player entity, ServerLevel world, ItemStack stack, BlockPos pos) {
         ResourceKey<Level> target = MultiversalToolHelper.getTarget(stack);
         ResourceKey<Level> current = world.dimension();
-        if (target != current) {
+        if (target != null && !target.equals(current)) {
             ServerLevel w = world.getServer().getLevel(target);
             if (w != null) {
                 BlockPos block = BlockPos.containing(RiftHelper.translate(Vec3.atCenterOf(pos), world.dimensionType(), w.dimensionType(), false));
