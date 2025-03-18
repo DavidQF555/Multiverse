@@ -8,7 +8,7 @@ import multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_source
 import multiverse.common.world.worldgen.generators.biomes.chunk_gen.noise_settings.BiomeNoiseGeneratorSettingsGenerator;
 import multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea.SeaLevelGenerator;
 import multiverse.common.world.worldgen.sea.SerializableFluidPicker;
-import multiverse.registration.custom.biomes.BiomeChunkGeneratorGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeChunkGeneratorGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;

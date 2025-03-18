@@ -1,7 +1,7 @@
-package multiverse.registration.custom;
+package multiverse.registration.custom.generator;
 
 import multiverse.common.Multiverse;
-import multiverse.common.world.worldgen.generators.biomes.BiomeConfig;
+import multiverse.common.world.worldgen.MultiverseShape;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -10,16 +10,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class BiomeConfigRegistry {
+public final class MultiverseShapeRegistry {
 
-    public static final ResourceKey<Registry<BiomeConfig>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_config"));
+    public static final ResourceKey<Registry<MultiverseShape>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/shapes"));
 
-    private BiomeConfigRegistry() {
+    private MultiverseShapeRegistry() {
     }
 
     @SubscribeEvent
     public static void onNewDataPackRegistry(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(LOCATION, BiomeConfig.DIRECT_CODEC);
+        event.dataPackRegistry(LOCATION, MultiverseShape.DIRECT_CODEC);
     }
 
 
