@@ -1,4 +1,4 @@
-package multiverse.registration.custom;
+package multiverse.registration.custom.generator;
 
 import com.mojang.serialization.Codec;
 import multiverse.common.Multiverse;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SeaLevelGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<Codec<? extends SeaLevelGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "sea_level_generator_type"));
+    public static final ResourceKey<Registry<Codec<? extends SeaLevelGenerator>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/sea_level_types"));
     public static final DeferredRegister<Codec<? extends SeaLevelGenerator>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final RegistryObject<Codec<FlatSeaLevelGenerator>> FLAT = register("flat", () -> FlatSeaLevelGenerator.CODEC);
     public static final RegistryObject<Codec<WaveSeaLevelGenerator>> WAVE = register("wave", () -> WaveSeaLevelGenerator.CODEC);

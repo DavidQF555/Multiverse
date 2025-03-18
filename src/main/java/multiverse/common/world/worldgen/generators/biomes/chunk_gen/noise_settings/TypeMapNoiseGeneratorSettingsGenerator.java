@@ -3,7 +3,7 @@ package multiverse.common.world.worldgen.generators.biomes.chunk_gen.noise_setti
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Keyable;
 import multiverse.common.world.worldgen.MultiverseType;
-import multiverse.registration.custom.biomes.BiomeNoiseGeneratorSettingsGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeNoiseGeneratorSettingsGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;

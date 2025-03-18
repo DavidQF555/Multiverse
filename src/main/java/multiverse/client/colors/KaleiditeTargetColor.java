@@ -4,7 +4,9 @@ import multiverse.common.world.items.MultiversalToolHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +22,8 @@ public class KaleiditeTargetColor implements ItemColor {
         if (layer == 0) {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                return MultiverseColorHelper.getColors(MultiversalToolHelper.getTarget(stack), 1)[0];
+                ResourceKey<Level> target = MultiversalToolHelper.getTarget(stack);
+                return MultiverseColorHelper.getColors(target == null ? world.dimension() : target, 1)[0];
             }
         }
         return 0xFFFFFFFF;

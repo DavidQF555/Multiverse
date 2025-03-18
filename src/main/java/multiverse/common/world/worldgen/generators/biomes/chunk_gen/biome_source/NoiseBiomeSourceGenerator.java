@@ -9,7 +9,7 @@ import multiverse.common.world.DimensionHelper;
 import multiverse.common.world.worldgen.MultiverseType;
 import multiverse.common.world.worldgen.biomes.MultiverseBiomes;
 import multiverse.common.world.worldgen.generators.GeneratorSettings;
-import multiverse.registration.custom.biomes.BiomeSourceGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeSourceGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;

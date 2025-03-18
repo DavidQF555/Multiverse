@@ -2,10 +2,10 @@ package multiverse.common;
 
 import multiverse.client.ClientConfigs;
 import multiverse.registration.*;
-import multiverse.registration.custom.DimensionGeneratorTypeRegistry;
 import multiverse.registration.custom.FluidPickerTypeRegistry;
-import multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
-import multiverse.registration.custom.biomes.*;
+import multiverse.registration.custom.generator.DimensionGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.SeaLevelGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.*;
 import multiverse.registration.worldgen.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
