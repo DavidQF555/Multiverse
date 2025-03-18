@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import multiverse.common.util.IntRange;
 import multiverse.common.world.worldgen.sea.FlatFluidPicker;
 import multiverse.common.world.worldgen.sea.SerializableFluidPicker;
-import multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.SeaLevelGeneratorTypeRegistry;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.RandomSource;
 

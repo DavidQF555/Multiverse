@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.util.IntRange;
 import multiverse.common.world.worldgen.MultiverseType;
-import multiverse.registration.custom.BiomeConfigRegistry;
+import multiverse.registration.custom.generator.BiomeConfigRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.RegistryFileCodec;

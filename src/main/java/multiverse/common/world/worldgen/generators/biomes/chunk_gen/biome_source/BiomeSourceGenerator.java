@@ -2,7 +2,7 @@ package multiverse.common.world.worldgen.generators.biomes.chunk_gen.biome_sourc
 
 import com.mojang.serialization.Codec;
 import multiverse.common.world.worldgen.generators.biomes.BiomeFieldGenerator;
-import multiverse.registration.custom.biomes.BiomeSourceGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.biomes.BiomeSourceGeneratorTypeRegistry;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.BiomeSource;
 

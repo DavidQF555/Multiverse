@@ -1,4 +1,4 @@
-package multiverse.registration.custom.biomes;
+package multiverse.registration.custom.generator.biomes;
 
 import multiverse.common.Multiverse;
 import multiverse.common.world.worldgen.generators.biomes.dim_type.BiomeDimensionTypeGenerator;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeDimensionTypeGeneratorRegistry {
 
-    public static final ResourceKey<Registry<BiomeDimensionTypeGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_type_generator"));
+    public static final ResourceKey<Registry<BiomeDimensionTypeGenerator>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/dimension_types"));
     private static Supplier<IForgeRegistry<BiomeDimensionTypeGenerator>> registry = null;
 
     private BiomeDimensionTypeGeneratorRegistry() {

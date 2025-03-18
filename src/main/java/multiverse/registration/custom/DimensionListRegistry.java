@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class DimensionListRegistry {
 
-    public static final ResourceKey<Registry<DimensionList>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_list"));
+    public static final ResourceKey<Registry<DimensionList>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "dimension_lists"));
     public static final ResourceKey<DimensionList> TARGETS = ResourceKey.create(LOCATION, new ResourceLocation(Multiverse.MOD_ID, "targets"));
     private static Supplier<IForgeRegistry<DimensionList>> registry = null;
 

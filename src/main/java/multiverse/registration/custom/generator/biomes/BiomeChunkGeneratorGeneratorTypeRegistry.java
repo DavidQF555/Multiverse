@@ -1,4 +1,4 @@
-package multiverse.registration.custom.biomes;
+package multiverse.registration.custom.generator.biomes;
 
 import com.mojang.serialization.Codec;
 import multiverse.common.Multiverse;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Multiverse.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class BiomeChunkGeneratorGeneratorTypeRegistry {
 
-    public static final ResourceKey<Registry<BiomeChunkGeneratorGeneratorType<?>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "biome_chunk_generator"));
+    public static final ResourceKey<Registry<BiomeChunkGeneratorGeneratorType<?>>> LOCATION = ResourceKey.createRegistryKey(new ResourceLocation(Multiverse.MOD_ID, "generator/biome_chunk_generators"));
     public static final DeferredRegister<BiomeChunkGeneratorGeneratorType<?>> TYPES = DeferredRegister.create(LOCATION, Multiverse.MOD_ID);
     public static final RegistryObject<BiomeChunkGeneratorGeneratorType<NoiseChunkGeneratorGenerator>> NOISE = register("noise", () -> NoiseChunkGeneratorGenerator.CODEC);
     private static Supplier<IForgeRegistry<BiomeChunkGeneratorGeneratorType<?>>> registry = null;

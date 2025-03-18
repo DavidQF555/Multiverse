@@ -3,7 +3,7 @@ package multiverse.common.world.worldgen.generators.biomes.chunk_gen.sea;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.world.worldgen.sea.SerializableFluidPicker;
-import multiverse.registration.custom.SeaLevelGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.SeaLevelGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.state.BlockState;

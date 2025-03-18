@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import multiverse.common.world.worldgen.MultiverseType;
 import multiverse.common.world.worldgen.generators.DimensionGenerator;
 import multiverse.common.world.worldgen.generators.DimensionGeneratorType;
-import multiverse.registration.custom.DimensionGeneratorTypeRegistry;
+import multiverse.registration.custom.generator.DimensionGeneratorTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
